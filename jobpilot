@@ -67,6 +67,8 @@ usage() { cat <<'TXT'
     ./jobpilot markets         sweep a country's employer list: markets <name> [--add]
     ./jobpilot startups        sweep YC for AI companies with live boards
     ./jobpilot boards          how many boards, by platform
+    ./jobpilot tenants         grow boards.yaml: find employers' ATS boards (Workday etc.)
+                               --sources sweep,search,adzuna  --dry-run
 
   REFERRALS  (sending is always manual — never automated)
     ./jobpilot who <company>   who to contact there, scoped to the hiring office
@@ -169,6 +171,7 @@ case "$cmd" in
   log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
   intake)     py discover.intake "$@" ;;
+  tenants)    py discover.tenants "$@" ;;
   rank)       py rank.rank --all --top "${1:-12}" ;;
   digest)     py core.daily --digest-only "$@" ;;
   top)        py rank.rank --top "${1:-12}" ;;

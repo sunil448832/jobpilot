@@ -298,7 +298,16 @@ def add(url, deep=True):
     if plat == "workday":
         entry = workday_entry(url)
         if not entry:
-            print("    -> Workday URL without a site path (need https://<tenant>.wdN.myworkdayjobs.com/<site>/...)")
+            # A company careers page that links out to its Workday tenant: take
+            # the first tenant link with a site path from the page itself.
+            try:
+                html = requests.get(url, headers={"User-Agent": UA}, timeout=20).text
+                m = re.search(r'https?://[a-z0-9-]+\.wd\d+\.myworkdayjobs\.com/[^"\'\s<>?#]+', html, re.I)
+                entry = workday_entry(m.group(0)) if m else None
+            except Exception:
+                entry = None
+        if not entry:
+            print("    -> Workday tenant found but no site path (need https://<tenant>.wdN.myworkdayjobs.com/<site>/...)")
             return False
         d = yaml.safe_load(open(BOARDS)) if os.path.isfile(BOARDS) else {}
         d.setdefault("workday", [])

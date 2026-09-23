@@ -804,10 +804,14 @@ def fill_react_select(frame, sel, text):
                     return True, f"react-select ({shown[:30]})"
         # Nothing matched by text. Taking whatever the menu highlights would be
         # a guess on a form that goes out under his name, so leave it empty.
+        # Say what the menu DID offer, so the next answer can be one of them.
         frame.press(sel, "Control+A")
         frame.press(sel, "Backspace")
+        frame.wait_for_timeout(500)
+        offered = [t for _, t in visible_options()][:12]
         frame.press(sel, "Escape")
-        return False, f"react-select: no option matched {order[-1][:30]!r}"
+        return False, (f"react-select: no option matched {order[-1][:30]!r}"
+                       + (f"; menu offers: {offered}" if offered else ""))
     except Exception as e:
         return False, str(e)[:60]
 

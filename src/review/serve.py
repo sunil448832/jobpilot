@@ -270,6 +270,11 @@ class H(BaseHTTPRequestHandler):
             decision = payload.get("decision")
             if decision not in ("approved", "deferred", "rejected"):
                 return self._err(400, "bad decision")
+            # An application that has actually been filed is final. A tap on its
+            # card once flipped it back to 'approved', which would have made
+            # submit-approved file it a second time — and spend a second OpenAI slot.
+            if item.get("status") == "submitted" or item.get("submitted_at"):
+                return self._err(409, f"already submitted on {str(item.get('submitted_at',''))[:10]} — no changes accepted")
             for a in payload.get("answers", []):
                 for qq in item.get("questions", []):
                     if qq["qid"] == a.get("qid") and (a.get("text") or "").strip():

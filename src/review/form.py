@@ -180,7 +180,7 @@ const DATA = __DATA__;
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const answers = {};
-let db = null, decided = false;
+let db = null, decided = (DATA.status === "submitted" || DATA.status === "approved" || DATA.status === "rejected" || !!DATA.submitted_at);
 
 /* header ------------------------------------------------------------- */
 $("#role").textContent = DATA.role || "(role)";
@@ -252,6 +252,12 @@ function refresh() {
   $("#count").textContent = qs.length ? `${done} / ${qs.length}` : "none";
   const missing = qs.filter((q, i) => q.required && !answered(i)).length;
   $("#approve").disabled = missing > 0 || decided;
+  if (DATA.status === "submitted" || DATA.submitted_at) {
+    $("#skip").disabled = true; $("#reject").disabled = true;
+    $("#result").classList.add("show");
+    $("#rtitle").textContent = "Already submitted";
+    $("#rbody").textContent = "This application was filed on " + String(DATA.submitted_at || "").slice(0, 10) + ". Nothing here can be changed.";
+  }
   const h = $("#hint");
   h.className = "hint" + (missing ? " bad" : "");
   h.textContent = missing ? `${missing} required question${missing > 1 ? "s" : ""} left` : "";

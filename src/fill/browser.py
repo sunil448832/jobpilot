@@ -741,7 +741,7 @@ def submit_approved(answers, one=None):
         it = json.load(open(os.path.join(QUEUE_DIR, fn)))
         if one and it["id"] != one:
             continue
-        if it.get("status") != "approved":
+        if it.get("status") != "approved" or it.get("submitted_at"):
             continue
         items.append(it)
 

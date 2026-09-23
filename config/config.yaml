@@ -75,12 +75,23 @@ pipeline:
   # score, non-US markets first. Rank measures "worth pursuing" (market,
   # sponsorship, keywords); fit measures "matches the role as a human reads it".
   fit_weight: 0.7
+  # Roles are prepared concurrently: each role's scaffold -> build -> score ->
+  # tailoring rounds -> question drafting runs on its own worker. Only the
+  # browser fill is serialised (one Chrome profile). 3 keeps the concurrent
+  # claude -p sessions modest; pdflatex and the rest are cheap.
+  tailor_workers: 3
 
 screen:
   # Claude reviews this many before anything is tailored. One call over 30 costs
   # far less than tailoring even one role that was never viable.
   top: 30
   per_company: 3
+  # Inside a round, the Claude call is split into chunks of `chunk` roles run
+  # `workers` at a time. A 30-role round then takes about as long as one
+  # 10-role call. Rounds themselves stay sequential — round 2's draw depends on
+  # round 1's verdicts being written.
+  chunk: 10
+  workers: 3
   # Kept at or below pipeline.tailor_floor — see the note there. Lowered with it
   # 50 -> 45. This widens the screened pool from 18 companies to 31.
   floor: 45.0

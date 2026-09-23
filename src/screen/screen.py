@@ -40,6 +40,7 @@ import re
 import sqlite3
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
                    RESUME, APPLICATIONS, TRACKERS, MEMORY)
@@ -356,25 +357,46 @@ def main():
     return
 
 
-def screen_round(rows, con):
-    prompt = build_prompt(rows)
-    print(f"    prompt: {len(prompt)} chars")
+def _ask(cli, chunk, auto):
+    """One claude -p call over one chunk of rows -> {row_index_in_chunk: verdict}."""
+    from jobpilot.tailor import autotailor
+    prompt = build_prompt(chunk).replace("jobs/POLICY.md", POLICY)
+    p = subprocess.run([cli, "-p", prompt, *autotailor.llm_flags("screen"),
+                        "--add-dir", TRACKING, "--add-dir", TOOL,
+                        "--allowedTools", "Read", "--output-format", "text"],
+                       cwd=auto, capture_output=True, text=True, timeout=900)
+    v = parse_verdicts(p.stdout or "", len(chunk))
+    return v, (p.stdout or p.stderr)[-300:]
 
+
+def screen_round(rows, con):
+    """One round = one shortlist draw. The Claude work is split into chunks of
+    screen.chunk roles and the chunks run CONCURRENTLY (screen.workers): three
+    calls of 10 finish in about the time of one call of 10, not one of 30. Each
+    chunk repeats the short preamble, which is cheap; the DB writes stay on this
+    thread, in order, so nothing about verdict handling changes."""
     cli = claude_bin()
     if not cli:
         print("    claude CLI not found")
         return 0
     auto = os.path.join(DATA, ".auto")
     os.makedirs(auto, exist_ok=True)
-    prompt = prompt.replace("jobs/POLICY.md", POLICY)   # it lives in the tool now
-    from jobpilot.tailor import autotailor
-    p = subprocess.run([cli, "-p", prompt, *autotailor.llm_flags("screen"),
-                        "--add-dir", TRACKING, "--add-dir", TOOL,
-                        "--allowedTools", "Read", "--output-format", "text"],
-                       cwd=auto, capture_output=True, text=True, timeout=900)
-    verdicts = parse_verdicts(p.stdout or "", len(rows))
+    chunk_n = max(1, int(cfg("screen.chunk", 10)))
+    workers = max(1, int(cfg("screen.workers", 3)))
+    chunks = [rows[i:i + chunk_n] for i in range(0, len(rows), chunk_n)]
+    print(f"    {len(rows)} roles as {len(chunks)} chunk(s) of <= {chunk_n}, {min(workers, len(chunks))} concurrent")
+    verdicts = {}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        results = list(ex.map(lambda c: _ask(cli, c, auto), chunks))
+    offset = 0
+    for chunk, (v, tail) in zip(chunks, results):
+        if not v:
+            print(f"    chunk of {len(chunk)}: could not parse verdicts; raw tail:\n{tail}")
+        else:
+            for i, vv in v.items():
+                verdicts[offset + i] = vv
+        offset += len(chunk)
     if not verdicts:
-        print(f"    could not parse verdicts; raw tail:\n{(p.stdout or p.stderr)[-300:]}")
         return 0
 
     kept = rejected = 0

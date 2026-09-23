@@ -30,6 +30,8 @@ import shutil
 import sqlite3
 import subprocess
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
                    RESUME, APPLICATIONS, TRACKERS, MEMORY)
@@ -40,6 +42,16 @@ DB = os.path.join(DATA, "state.db")
 # Tools the spawned session may use. Deliberately no Bash: the job is to edit
 # five text files, and anything else is out of scope for an unattended run.
 ALLOWED_TOOLS = "Read,Edit,Write,Glob,Grep"
+
+# Roles are prepared CONCURRENTLY (pipeline.tailor_workers). Everything per role
+# is independent — its own applications/<slug>/, its own claude -p processes,
+# its own DB row — except two things:
+#   FILL_LOCK  the browser. One real Chrome profile cannot be driven by two
+#              Playwright sessions at once, so filling stays one-at-a-time while
+#              tailoring for the other roles carries on in the background.
+#   LOG_LOCK   so interleaved lines from different roles stay whole.
+FILL_LOCK = threading.Lock()
+LOG_LOCK = threading.Lock()
 
 PROMPT = """Tailor Sunil Kumar Sharma's resume for one specific job. It has already been
 built untailored and scored against the JD; the score is below target, so this
@@ -147,12 +159,13 @@ except the "options" arrays. Then reply with the single word DONE.
 
 def log(m):
     line = f"{dt.datetime.now():%Y-%m-%d %H:%M:%S}  [autotailor] {m}"
-    print(line)
-    try:
-        with open(os.path.join(DATA, "daily.log"), "a") as f:
-            f.write(line + "\n")
-    except Exception:
-        pass
+    with LOG_LOCK:
+        print(line, flush=True)
+        try:
+            with open(os.path.join(DATA, "daily.log"), "a") as f:
+                f.write(line + "\n")
+        except Exception:
+            pass
 
 
 def llm_flags(step):
@@ -482,6 +495,92 @@ def draft_questions(company, qfile, cli):
         return False, "question drafting timed out"
 
 
+def process_role(p, cli, tag=""):
+    """Everything for ONE role: scaffold, build+score gate, tailoring rounds,
+    fill (serialised), question drafting, DB update. Runs on a worker thread;
+    opens its own sqlite connection because connections are not thread-safe."""
+    t0 = dt.datetime.now()
+    log(f"{tag}{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
+
+    ok, out = run([sys.executable, "-m", "jobpilot.tailor.apply",
+                   p["url"], "--company", p["slug"], "--market", p["market"]], timeout=300)
+    if not ok:
+        log(f"  {tag}scaffold FAILED: {out[-160:]}")
+        return
+
+    # Build and score FIRST. A role the untailored resume already matches
+    # costs zero LLM sessions. (POLICY: tailoring is a means to a score, and
+    # an honest resume that already scores does not need touching.)
+    ok, _ = run([sys.executable, "-m", "jobpilot.tailor.apply",
+                 "--build", p["slug"]], timeout=600)
+    if not ok:
+        log(f"  {tag}build FAILED"); return
+    target = cfg("pipeline.ats_target", 60)
+    rounds = cfg("pipeline.ats_rounds", 2)
+    best = ats_score(p["slug"])
+    log(f"  {tag}score: {best['match_rate']}% untailored (target {target})")
+    rnd = 0
+    while best["match_rate"] < target and rnd < rounds:
+        safe, unsafe = safe_unsafe(p["slug"])
+        if not safe:
+            log(f"  {tag}nothing SAFE left to add"
+                + (f" (only new claims: {', '.join(unsafe[:6])})" if unsafe else " — remaining gap is role language")
+                + "; not running a round")
+            break
+        rnd += 1
+        snap = snapshot_sections(p["slug"])
+        report = score_report(p["slug"], best)
+        ok, out = tailor(p["slug"], cli, report)
+        log(f"  {tag}tailor round {rnd}: {'ok' if ok else 'FAILED — ' + out[-120:]}")
+        if not ok:
+            restore_sections(p["slug"], snap); break
+        run([sys.executable, "-m", "jobpilot.tailor.optimize", p["slug"],
+             "--apply"], timeout=300)
+        ok, _ = run([sys.executable, "-m", "jobpilot.tailor.apply",
+                     "--build", p["slug"]], timeout=600)
+        if not ok:
+            log(f"  {tag}rebuild FAILED — reverting round"); restore_sections(p["slug"], snap)
+            run([sys.executable, "-m", "jobpilot.tailor.apply", "--build", p["slug"]], timeout=600)
+            break
+        cur = ats_score(p["slug"]); pages = pdf_pages(p["slug"])
+        log(f"  {tag}score: {cur['match_rate']}% after round {rnd}"
+            f" (stuffing {cur['stuffing_penalty']}, {pages} pages)")
+        why = ("stuffing penalty non-zero" if cur["stuffing_penalty"] > 0 else
+               f"{pages} pages — the resume must stay at two" if pages > 2 else
+               "no improvement" if cur["match_rate"] <= best["match_rate"] else None)
+        if why:
+            log(f"  {tag}{why} — reverting round {rnd}")
+            restore_sections(p["slug"], snap)
+            run([sys.executable, "-m", "jobpilot.tailor.apply", "--build", p["slug"]], timeout=600)
+            break
+        best = cur
+        added = new_claims(p["slug"])
+        if added:
+            log(f"  {tag}new words vs base ({len(added)}): {', '.join(added[:24])}")
+            with open(os.path.join(APPLICATIONS, p["slug"], "notes.md"), "a", encoding="utf-8") as nf:
+                nf.write(f"\n## Tailoring round {rnd} — words not in the base resume (check before approving)\n"
+                         + ", ".join(added) + "\n")
+    log(f"  {tag}final: {best['match_rate']}%"
+        + (" (below target — real gap, reported not chased)" if best["match_rate"] < target else ""))
+
+    with FILL_LOCK:                       # one browser session at a time
+        ok, out = run([sys.executable, "-m", "jobpilot.fill.autofill",
+                       "--fill", p["slug"]], timeout=900)
+    log(f"  {tag}fill: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
+
+    # A question with no drafted answers makes him type on a phone, which is
+    # exactly what this system exists to avoid (POLICY.md section 5).
+    qfile = newest_queue_file(p["slug"])
+    if qfile and open_question_count(qfile):
+        ok2, out2 = draft_questions(p["slug"], qfile, cli)
+        log(f"  {tag}questions: {'drafted' if ok2 else 'FAILED — ' + out2[-100:]}")
+    con = sqlite3.connect(DB, timeout=30)
+    con.execute("UPDATE jobs SET status='queued' WHERE key=?", (p["key"],))
+    con.commit(); con.close()
+    log(f"  {tag}done in {(dt.datetime.now() - t0).seconds}s")
+
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=cfg("pipeline.tailor_limit", 6),
@@ -510,87 +609,26 @@ def main():
         return 0
     log(f"{len(picks)} role(s) to prepare (floor {a.floor})")
 
-    con = sqlite3.connect(DB)
-    for p in picks:
-        log(f"{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
-        if a.dry_run:
+    if a.dry_run:
+        for p in picks:
+            log(f"{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
             log(f"  [dry-run] would scaffold {p['slug']}, build, score, tailor-if-needed, fill")
-            continue
+        return 0
 
-        ok, out = run([sys.executable, "-m", "jobpilot.tailor.apply",
-                       p["url"], "--company", p["slug"], "--market", p["market"]], timeout=300)
-        if not ok:
-            log(f"  scaffold FAILED: {out[-160:]}")
-            continue
-
-        # Build and score FIRST. A role the untailored resume already matches
-        # costs zero LLM sessions. (POLICY: tailoring is a means to a score, and
-        # an honest resume that already scores does not need touching.)
-        ok, _ = run([sys.executable, "-m", "jobpilot.tailor.apply",
-                     "--build", p["slug"]], timeout=600)
-        if not ok:
-            log("  build FAILED"); continue
-        target = cfg("pipeline.ats_target", 60)
-        rounds = cfg("pipeline.ats_rounds", 2)
-        best = ats_score(p["slug"])
-        log(f"  score: {best['match_rate']}% untailored (target {target})")
-        rnd = 0
-        while best["match_rate"] < target and rnd < rounds:
-            safe, unsafe = safe_unsafe(p["slug"])
-            if not safe:
-                log("  nothing SAFE left to add"
-                    + (f" (only new claims: {', '.join(unsafe[:6])})" if unsafe else " — remaining gap is role language")
-                    + "; not running a round")
-                break
-            rnd += 1
-            snap = snapshot_sections(p["slug"])
-            report = score_report(p["slug"], best)
-            ok, out = tailor(p["slug"], cli, report)
-            log(f"  tailor round {rnd}: {'ok' if ok else 'FAILED — ' + out[-120:]}")
-            if not ok:
-                restore_sections(p["slug"], snap); break
-            run([sys.executable, "-m", "jobpilot.tailor.optimize", p["slug"],
-                 "--apply"], timeout=300)
-            ok, _ = run([sys.executable, "-m", "jobpilot.tailor.apply",
-                         "--build", p["slug"]], timeout=600)
-            if not ok:
-                log("  rebuild FAILED — reverting round"); restore_sections(p["slug"], snap)
-                run([sys.executable, "-m", "jobpilot.tailor.apply", "--build", p["slug"]], timeout=600)
-                break
-            cur = ats_score(p["slug"]); pages = pdf_pages(p["slug"])
-            log(f"  score: {cur['match_rate']}% after round {rnd}"
-                f" (stuffing {cur['stuffing_penalty']}, {pages} pages)")
-            why = ("stuffing penalty non-zero" if cur["stuffing_penalty"] > 0 else
-                   f"{pages} pages — the resume must stay at two" if pages > 2 else
-                   "no improvement" if cur["match_rate"] <= best["match_rate"] else None)
-            if why:
-                log(f"  {why} — reverting round {rnd}")
-                restore_sections(p["slug"], snap)
-                run([sys.executable, "-m", "jobpilot.tailor.apply", "--build", p["slug"]], timeout=600)
-                break
-            best = cur
-            added = new_claims(p["slug"])
-            if added:
-                log(f"  new words vs base ({len(added)}): {', '.join(added[:24])}")
-                with open(os.path.join(APPLICATIONS, p["slug"], "notes.md"), "a", encoding="utf-8") as nf:
-                    nf.write(f"\n## Tailoring round {rnd} — words not in the base resume (check before approving)\n"
-                             + ", ".join(added) + "\n")
-        log(f"  final: {best['match_rate']}%"
-            + (" (below target — real gap, reported not chased)" if best["match_rate"] < target else ""))
-
-        ok, out = run([sys.executable, "-m", "jobpilot.fill.autofill",
-                       "--fill", p["slug"]], timeout=900)
-        log(f"  fill: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
-
-        # A question with no drafted answers makes him type on a phone, which is
-        # exactly what this system exists to avoid (POLICY.md section 5).
-        qfile = newest_queue_file(p["slug"])
-        if qfile and open_question_count(qfile):
-            ok2, out2 = draft_questions(p["slug"], qfile, cli)
-            log(f"  questions: {'drafted' if ok2 else 'FAILED — ' + out2[-100:]}")
-        con.execute("UPDATE jobs SET status='queued' WHERE key=?", (p["key"],))
-        con.commit()
-
+    # WAL lets worker threads write their own rows without blocking each other.
+    sqlite3.connect(DB).execute("PRAGMA journal_mode=WAL").close()
+    workers = max(1, min(int(cfg("pipeline.tailor_workers", 3)), len(picks)))
+    log(f"preparing {len(picks)} role(s) with {workers} worker(s); browser fills are serialised")
+    t0 = dt.datetime.now()
+    with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="tailor") as ex:
+        futs = {ex.submit(process_role, p, cli, f"[{i}] "): p for i, p in enumerate(picks, 1)}
+        for f in as_completed(futs):
+            p = futs[f]
+            try:
+                f.result()
+            except Exception as e:
+                log(f"  {p['slug']}: FAILED {type(e).__name__}: {e}")
+    log(f"all {len(picks)} done in {(dt.datetime.now() - t0).seconds}s")
     log("done — nothing submitted; approve on the phone")
     return 0
 

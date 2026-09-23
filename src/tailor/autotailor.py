@@ -608,18 +608,18 @@ def process_role(p, cli, tag=""):
 
 def notify_manual():
     """One Telegram note for the apply-by-hand items created this run."""
-if MANUAL:
-    try:
-        from jobpilot.core import daily
-        link = daily.form_link()
-        text = ("🖐 <b>Apply by hand</b> — the portal cannot be autofilled, but everything is ready to copy:\n\n"
-                + "\n".join(f"• {m['company']} — {str(m['title'])[:44]} ({m['market']})" for m in MANUAL)
-                + f"\n\nOpen the list, section \"Apply by hand\": {link}\n"
-                  "Each page has every field with a Copy button, the resume files, and drafted answers. "
-                  "Tap \"Mark as submitted\" when done.")
-        log("telegram (manual): " + ("sent" if daily.telegram(text) else "FAILED"))
-    except Exception as e:
-        log(f"telegram (manual) FAILED: {type(e).__name__}: {e}")
+    if MANUAL:
+        try:
+            from jobpilot.core import daily
+            link = daily.form_link()
+            text = ("🖐 <b>Apply by hand</b> — the portal cannot be autofilled, but everything is ready to copy:\n\n"
+                    + "\n".join(f"• {m['company']} — {str(m['title'])[:44]} ({m['market']})" for m in MANUAL)
+                    + f"\n\nOpen the list, section \"Apply by hand\": {link}\n"
+                      "Each page has every field with a Copy button, the resume files, and drafted answers. "
+                      "Tap \"Mark as submitted\" when done.")
+            log("telegram (manual): " + ("sent" if daily.telegram(text) else "FAILED"))
+        except Exception as e:
+            log(f"telegram (manual) FAILED: {type(e).__name__}: {e}")
 
 
 def main():

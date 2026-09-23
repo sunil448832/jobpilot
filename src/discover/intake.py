@@ -273,6 +273,45 @@ def from_smartrecruiters(slug):
                "title": j.get("name", ""), "location": where, "url": url, "jd": jd}
 
 
+def from_workday(entry):
+    """Workday tenant: POST /wday/cxs/<tenant>/<site>/jobs pages 20 at a time;
+    the description comes from one GET per posting, only for wanted titles."""
+    tenant, host, site = entry["slug"], entry["host"], entry["site"]
+    base = f"https://{host}/wday/cxs/{tenant}/{site}"
+    hdr = {"User-Agent": UA, "Accept": "application/json", "Content-Type": "application/json"}
+    posts, offset = [], 0
+    while offset < cfg("discovery.workday_max", 400):
+        r = requests.post(f"{base}/jobs", json={"appliedFacets": {}, "limit": 20, "offset": offset,
+                                                 "searchText": ""}, headers=hdr, timeout=25)
+        r.raise_for_status()
+        d = r.json()
+        items = d.get("jobPostings") or []
+        posts.extend(items)
+        offset += 20
+        if not items or offset >= (d.get("total") or 0):
+            break
+    company = entry.get("company") or tenant.replace("-", " ").title()
+
+    def url_of(j):
+        return f"https://{host}/{site}{j.get('externalPath') or ''}"
+
+    def detail(j):
+        url = url_of(j)
+        if url in KNOWN_JD:
+            return KNOWN_JD[url]
+        if not _want(j.get("title", "")):
+            return ""
+        try:
+            info = get(f"{base}{j.get('externalPath') or ''}").get("jobPostingInfo") or {}
+            return _html_to_text(info.get("jobDescription") or "")[:12000]
+        except Exception:
+            return ""
+    for j, jd in zip(posts, _detail_pool(posts, detail)):
+        yield {"source": "workday", "board": tenant, "company": company,
+               "title": j.get("title", ""), "location": j.get("locationsText") or "",
+               "url": url_of(j), "jd": jd}
+
+
 def from_workable(slug):
     d = get(f"https://apply.workable.com/api/v1/widget/accounts/{slug}?details=true")
     for j in d.get("jobs", []):
@@ -546,6 +585,8 @@ def pull(workers=None):
         fetchers.append((from_recruitee, slug))
     for entry in boards.get("phenom", []):
         fetchers.append((from_phenom, entry))
+    for entry in boards.get("workday", []):
+        fetchers.append((from_workday, entry))
 
     # Which boards belong to YC companies, so postings can be tagged and boosted.
     yc_of, size_of = {}, {}

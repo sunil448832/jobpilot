@@ -43,7 +43,7 @@ APPLICATIONS_DIR = APPLICATIONS
 QUEUE_DIR = os.path.join(DATA, "queue")
 PROFILE_DIR = os.path.expanduser("~/.config/jobbot/chrome-profile")
 
-SUPPORTED = {"greenhouse", "lever", "ashby"}
+SUPPORTED = {"greenhouse", "lever", "ashby", "workday"}
 
 
 # --------------------------------------------------------------------------

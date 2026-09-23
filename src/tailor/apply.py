@@ -42,8 +42,8 @@ TIMEOUT = 30
 
 # Portals whose forms are usable on a phone vs. ones batched for desktop.
 # Mirrors answers.yaml:portal_routing and automation-plan.md §1.
-MOBILE_OK = {"greenhouse", "lever", "ashby"}
-DESKTOP_ONLY = {"workday", "taleo", "icims", "successfactors"}
+MOBILE_OK = {"greenhouse", "lever", "ashby", "workday"}     # workday: fill/workday.py drives the wizard
+DESKTOP_ONLY = {"taleo", "icims", "successfactors"}
 
 
 # --------------------------------------------------------------------------

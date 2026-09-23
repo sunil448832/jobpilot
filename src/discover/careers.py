@@ -255,6 +255,24 @@ def detect_deep(url, timeout=25000):
     return None, {"note": "no ATS seen even after rendering"}
 
 
+def workday_entry(url):
+    """tenant / host / site from a Workday URL, e.g.
+    https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/... ->
+    {slug: nvidia, host: nvidia.wd5.myworkdayjobs.com, site: NVIDIAExternalCareerSite}"""
+    p = urllib.parse.urlparse(url)
+    m = re.match(r"^([^.]+)\.wd\d+\.myworkdayjobs\.com$", p.netloc.lower())
+    if not m:
+        return None
+    segs = [s for s in p.path.split("/") if s]
+    segs = [s for s in segs if not re.match(r"^[a-z]{2}-[A-Z]{2}$", s)]      # drop the locale
+    if not segs:
+        return None
+    site = segs[0]
+    if site in ("job", "jobs", "wday"):
+        return None
+    return {"slug": m.group(1), "host": p.netloc, "site": site}
+
+
 def add(url, deep=True):
     plat, cfg = detect(url)
     if not plat and deep:
@@ -276,6 +294,26 @@ def add(url, deep=True):
             print(f"    -> saved to boards.yaml ({len(jobs)} jobs)")
         else:
             print("    -> already in boards.yaml")
+        return True
+    if plat == "workday":
+        entry = workday_entry(url)
+        if not entry:
+            print("    -> Workday URL without a site path (need https://<tenant>.wdN.myworkdayjobs.com/<site>/...)")
+            return False
+        d = yaml.safe_load(open(BOARDS)) if os.path.isfile(BOARDS) else {}
+        d.setdefault("workday", [])
+        if any(b.get("slug") == entry["slug"] and b.get("site") == entry["site"] for b in d["workday"]):
+            print("    -> already in boards.yaml")
+            return True
+        from jobpilot.discover import intake
+        try:
+            n = len(list(intake.from_workday(entry)))
+        except Exception as e:
+            print(f"    -> {entry['host']}/{entry['site']} did not answer ({type(e).__name__}); not saved")
+            return False
+        d["workday"].append({**entry, "jobs": n})
+        yaml.safe_dump(d, open(BOARDS, "w"), sort_keys=False)
+        print(f"    -> saved to boards.yaml ({n} jobs)")
         return True
     if cfg.get("slug"):
         d = yaml.safe_load(open(BOARDS)) if os.path.isfile(BOARDS) else {}

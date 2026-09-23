@@ -168,6 +168,33 @@ EXTRACT_JS = r"""
       i++;
     }
   }
+
+  // --- third pass: custom dropdowns rendered as <button aria-haspopup="listbox">
+  // (Workday, MUI). The button's text is the current value; options render in
+  // a popup on click, so the fill opens it and reads them then.
+  for (const b of document.querySelectorAll('button[aria-haspopup="listbox"], [role="combobox"]:not(input):not(select)')) {
+    if (b.hasAttribute('data-jobbot-idx')) continue;
+    const st = window.getComputedStyle(b);
+    if (st.display === 'none' || st.visibility === 'hidden') continue;
+    let label = '';
+    if (b.id) { const l = document.querySelector(`label[for="${CSS.escape(b.id)}"]`); if (l) label = l.innerText; }
+    if (!label) {
+      const ref = b.getAttribute('aria-labelledby');
+      if (ref) label = ref.split(/\s+/).map(id => ((document.getElementById(id) || {}).innerText || '')).join(' ');
+    }
+    if (!label) label = b.getAttribute('aria-label') || '';
+    const ff = b.closest('[data-automation-id^="formField-"], .formField, fieldset');
+    if (!label && ff) { const l = ff.querySelector('label, legend'); if (l) label = l.innerText; }
+    label = (label || '').split('\n')[0].trim().slice(0, 160);
+    const cur = (b.innerText || '').trim();
+    b.setAttribute('data-jobbot-idx', String(i));
+    out.push({idx: i, type: 'listbox', name: b.getAttribute('name') || '', id: b.id || '',
+              label, tag: 'button', combobox: false, rs: false, placeholder: '',
+              required: b.getAttribute('aria-required') === 'true' || /\*\s*$/.test(label) ||
+                        !!(ff && ff.querySelector('abbr[title*="required" i], [aria-required="true"]')),
+              value: /^(select one|select\.{0,3}|choose|please select|--)/i.test(cur) ? '' : cur});
+    i++;
+  }
   return out;
 }
 """
@@ -457,7 +484,20 @@ def fill_fields(page, resolve, answers, ctx):
             continue
 
         try:
-            if ftype == "select-one" or ftype == "select":
+            if ftype == "listbox":
+                text = {YES: "Yes", NO: "No"}.get(val, str(val))
+                if f.get("value") and norm(f["value"]) == norm(text):
+                    filled[label] = f["value"]              # already showing it
+                else:
+                    ok, how = fill_listbox(page, sel, text)
+                    if ok:
+                        filled[label] = how
+                    else:
+                        warnings.append(f"NOT FILLED{' (REQUIRED)' if f['required'] else ''}: "
+                                        f"'{label[:60]}' — {how}. Needs a manual entry.")
+                        if f["required"]:
+                            miss(label, True, "dropdown", offered(how), how)
+            elif ftype == "select-one" or ftype == "select":
                 choice = pick_option(f.get("options", []), val)
                 if choice:
                     page.select_option(sel, label=choice)
@@ -670,12 +710,16 @@ def harvest_questions(target, resolve, warnings, max_questions=8):
         if key in seen_labels:
             continue
         seen_labels.add(key)
+        opts = f.get("options") or []
+        if f["type"] == "listbox":
+            # The menu is the option list; open it once so the phone shows real choices.
+            opts = listbox_options(target, f'[data-jobbot-idx="{f["idx"]}"]')
         qs.append({
             "qid": len(qs), "label": label[:400],
-            "kind": "choice" if f["type"].startswith("select") else "text",
+            "kind": "choice" if (f["type"].startswith("select") or f["type"] == "listbox") else "text",
             "required": bool(f["required"]), "form_group": f["name"],
-            "form_options": f.get("options") or [],
-            "options": (f.get("options") or [])[:6],
+            "form_options": opts,
+            "options": opts[:8],
             "selected": None, "feedback": None, "status": "open",
         })
 
@@ -895,6 +939,82 @@ def fill_react_select(frame, sel, text):
         return False, str(e)[:60]
 
 
+LISTBOX_OPTIONS = ('[role="option"], li[role="option"], [data-automation-id="promptOption"], '
+                   '[data-automation-id="menuItem"], [role="menuitem"]')
+
+
+def listbox_options(frame, sel):
+    """Open a listbox button, read its options, close it again."""
+    out = []
+    try:
+        click_field(frame, sel)
+        frame.wait_for_timeout(600)
+        loc = frame.locator(LISTBOX_OPTIONS)
+        for i in range(min(loc.count(), 40)):
+            o = loc.nth(i)
+            if o.is_visible(timeout=150):
+                out.append((o.inner_text() or "").strip())
+    except Exception:
+        pass
+    try:
+        frame.keyboard.press("Escape")
+    except Exception:
+        pass
+    return [o for o in out if o]
+
+
+def fill_listbox(frame, sel, text):
+    """Pick from a <button aria-haspopup=listbox> menu: exact > prefix > contains,
+    with the yes/no cascade; never an unmatched option."""
+    want_full = str(text).strip().lower()
+    cands = [want_full, want_full.split(",")[0].strip()]
+    m = re.match(r"^(yes|no)\b", want_full)
+    if m:
+        cands.append(m.group(1))
+    order = []
+    for c in cands:
+        if c and c not in order:
+            order.append(c)
+    try:
+        click_field(frame, sel)
+        frame.wait_for_timeout(600)
+        vis = []
+        loc = frame.locator(LISTBOX_OPTIONS)
+        for i in range(min(loc.count(), 60)):
+            o = loc.nth(i)
+            try:
+                if o.is_visible(timeout=150):
+                    vis.append((o, (o.inner_text() or "").strip().lower()))
+            except Exception:
+                continue
+        menu = {t for _, t in vis}
+        if menu and menu <= {"yes", "no", "n/a", "not applicable", "prefer not to say"} and not m:
+            frame.keyboard.press("Escape")
+            return False, "Yes/No dropdown, stored answer is not a yes/no — needs your answer"
+        for want in order:
+            ranked = ([o for o in vis if o[1] == want]
+                      + [o for o in vis if o[1].startswith(want) and o[1] != want]
+                      + [o for o in vis if want in o[1] and not o[1].startswith(want)])
+            for o, ot in ranked:
+                try:
+                    o.click(timeout=3000)
+                except Exception:
+                    continue
+                frame.wait_for_timeout(400)
+                shown = ""
+                try:
+                    shown = (frame.locator(sel).first.inner_text() or "").strip()
+                except Exception:
+                    pass
+                return True, shown or ot
+        frame.keyboard.press("Escape")
+        offered = [t for _, t in vis][:12]
+        return False, (f"listbox: no option matched {order[-1][:30]!r}"
+                       + (f"; menu offers: {offered}" if offered else ""))
+    except Exception as e:
+        return False, str(e)[:60]
+
+
 def click_choice(frame, idx):
     """Click a <button>-rendered choice and confirm it took."""
     sel = f'[data-jobbot-idx="{idx}"]'
@@ -978,22 +1098,38 @@ def fill_application(ctx, answers, resolve, pay, submit=False):
         page.goto(ctx["url"], wait_until="domcontentloaded", timeout=60000)
         page.wait_for_timeout(4000)          # let embedded ATS iframes load
 
-        target, how = pick_form_frame(page)
-        print(f"  [form] {how}")
-        # An uploaded resume triggers the portal's own autofill, which overwrites
-        # fields mid-run. Wait for that to finish before touching anything.
-        for _ in range(20):
-            try:
-                body = (target.inner_text("body") or "").lower()
-            except Exception:
-                break
-            if "parsing your resume" not in body and "autofilling" not in body:
-                break
-            page.wait_for_timeout(1000)
-        filled, warnings, _missing = fill_fields(target, resolve, answers, ctx)
-        if not filled:
-            warnings.append("no fields filled — form frame may not have rendered")
-        questions = harvest_questions(target, resolve, warnings)
+        if ctx.get("portal") == "workday":
+            # Multi-step wizard with its own account: fill/workday.py drives it to
+            # the Review page and stops there. Same queue item shape afterwards.
+            from jobpilot.fill import workday
+            res = workday.run(page, ctx, answers, resolve, stage="prep")
+            filled, warnings, questions = res["filled"], res["warnings"], res["questions"]
+            if not res["reached_review"]:
+                warnings.append("Workday: did not reach the Review step — see the screenshot "
+                                f"(steps seen: {', '.join(res['steps']) or 'none'})")
+            # Fields the wizard refused become questions, as after a failed submit.
+            questions, _ = questions_from_missing(res["missing"], questions)
+            for q in questions:
+                q.setdefault("qid", len(questions))
+            for i, q in enumerate(questions):
+                q["qid"] = i
+        else:
+            target, how = pick_form_frame(page)
+            print(f"  [form] {how}")
+            # An uploaded resume triggers the portal's own autofill, which overwrites
+            # fields mid-run. Wait for that to finish before touching anything.
+            for _ in range(20):
+                try:
+                    body = (target.inner_text("body") or "").lower()
+                except Exception:
+                    break
+                if "parsing your resume" not in body and "autofilling" not in body:
+                    break
+                page.wait_for_timeout(1000)
+            filled, warnings, _missing = fill_fields(target, resolve, answers, ctx)
+            if not filled:
+                warnings.append("no fields filled — form frame may not have rendered")
+            questions = harvest_questions(target, resolve, warnings)
         page.wait_for_timeout(500)
         try:
             page.screenshot(path=shot_abs, full_page=True)
@@ -1173,6 +1309,33 @@ def notify_outcome(it):
         pass
 
 
+
+def _submit_workday(it, ctx, answers, resolve):
+    """Pass 2 for Workday: sign in, walk the saved wizard to Review, press Submit."""
+    from jobpilot.fill import workday
+    with sync_playwright() as pw:
+        br = _browser(pw)
+        page = br.new_page()
+        page.goto(it["url"], wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(4000)
+        res = workday.run(page, ctx, answers, resolve, stage="submit")
+        it["submit_fill"] = {"filled": len(res["filled"]), "warnings": res["warnings"],
+                             "missing": res["missing"], "steps": res["steps"],
+                             "at": dt.datetime.now().isoformat(timespec="seconds")}
+        print(f"    filled {len(res['filled'])} fields, {len(res['warnings'])} warnings; "
+              f"steps: {' > '.join(res['steps'])}")
+        for wmsg in res["warnings"]:
+            print(f"      ! {wmsg[:160]}")
+        shot = os.path.join(DATA, "queue", f"{it['id']}-submitted.png")
+        try:
+            page.screenshot(path=shot, full_page=True)
+            it["submit_screenshot"] = os.path.relpath(shot, TOOL)
+        except Exception:
+            pass
+        br.close()
+    return res["submit_ok"], res["reached_review"], len(res["missing"])
+
+
 def submit_approved(answers, one=None, limit=None):
     """PASS 2. Re-fill deterministically, then submit — approved items only.
     `limit` caps how many are filed this call; the rest stay approved for later."""
@@ -1222,101 +1385,105 @@ def submit_approved(answers, one=None, limit=None):
             return _base(label)
         print(f"  [submit] {it['id']} — {it['company']} / {it['role']}")
         try:
-            with sync_playwright() as pw:
-                br = _browser(pw)
-                page = br.new_page()
-                page.goto(it["url"], wait_until="domcontentloaded", timeout=60000)
-                page.wait_for_timeout(4000)
-                target, _ = pick_form_frame(page)
-                # Keep this pass's own fill report: the pass-1 warnings on the
-                # item describe a different page load, and debugging a failed
-                # submit from them sent the fixes to the wrong place once.
-                s_filled, s_warn, s_missing = fill_fields(target, resolve, answers, ctx)
-                it["submit_fill"] = {"filled": len(s_filled), "warnings": s_warn,
-                                     "missing": s_missing,
-                                     "at": dt.datetime.now().isoformat(timespec="seconds")}
-                print(f"    filled {len(s_filled)} fields, {len(s_warn)} warnings")
-                for w in s_warn:
-                    print(f"      ! {w[:160]}")
-                page.wait_for_timeout(800)
+            if it.get("portal") == "workday":
+                # The wizard has its own driver; same outcome triple as below.
+                submit_ok, clicked, errs = _submit_workday(it, ctx, answers, resolve)
+            else:
+                with sync_playwright() as pw:
+                    br = _browser(pw)
+                    page = br.new_page()
+                    page.goto(it["url"], wait_until="domcontentloaded", timeout=60000)
+                    page.wait_for_timeout(4000)
+                    target, _ = pick_form_frame(page)
+                    # Keep this pass's own fill report: the pass-1 warnings on the
+                    # item describe a different page load, and debugging a failed
+                    # submit from them sent the fixes to the wrong place once.
+                    s_filled, s_warn, s_missing = fill_fields(target, resolve, answers, ctx)
+                    it["submit_fill"] = {"filled": len(s_filled), "warnings": s_warn,
+                                         "missing": s_missing,
+                                         "at": dt.datetime.now().isoformat(timespec="seconds")}
+                    print(f"    filled {len(s_filled)} fields, {len(s_warn)} warnings")
+                    for w in s_warn:
+                        print(f"      ! {w[:160]}")
+                    page.wait_for_timeout(800)
 
-                clicked = False
-                for sel in SUBMIT_SELECTORS:
-                    try:
-                        btn = target.locator(sel).first
-                        if not btn.count() or not btn.is_visible(timeout=1500):
-                            continue
-                        btn.scroll_into_view_if_needed(timeout=3000)
-                        page.wait_for_timeout(400)
-                        try:
-                            btn.click(timeout=5000)
-                        except Exception:
-                            btn.click(timeout=5000, force=True)
-                        clicked = True
-                        break
-                    except Exception:
-                        continue
-                # Greenhouse may now hold the submission behind an emailed
-                # 8-character code. Ask him for it and type it in.
-                page.wait_for_timeout(2500)
-                if enter_verification_code(page, target, it):
-                    clicked = True
-                # Submission can take a while — poll for the outcome instead of
-                # screenshotting a page that is still mid-request.
-                for _ in range(12):
-                    page.wait_for_timeout(1000)
-                    try:
-                        b = (target.inner_text("body") or "").lower()
-                    except Exception:
-                        break
-                    if any(w in b for w in ("thank you for applying", "application received",
-                                            "application submitted", "we have received",
-                                            "thanks for applying", "successfully submitted")):
-                        break
-
-                # Did it actually go through? A visible submit button or a
-                # validation error means it did not.
-                still_there = False
-                try:
+                    clicked = False
                     for sel in SUBMIT_SELECTORS:
-                        loc = target.locator(sel).first
-                        if loc.count() and loc.is_visible(timeout=800):
-                            still_there = True
+                        try:
+                            btn = target.locator(sel).first
+                            if not btn.count() or not btn.is_visible(timeout=1500):
+                                continue
+                            btn.scroll_into_view_if_needed(timeout=3000)
+                            page.wait_for_timeout(400)
+                            try:
+                                btn.click(timeout=5000)
+                            except Exception:
+                                btn.click(timeout=5000, force=True)
+                            clicked = True
                             break
-                except Exception:
-                    pass
-                errs = 0
-                try:
-                    errs = target.locator(
-                        '[aria-invalid="true"], .error:visible, [role="alert"]').count()
-                except Exception:
-                    pass
-                confirmed = False
-                try:
-                    body = (target.inner_text("body") or "").lower()
-                    confirmed = any(w in body for w in (
-                        "thank you for applying", "application received",
-                        "application submitted", "we have received",
-                        "thanks for applying", "successfully submitted"))
-                except Exception:
-                    pass
-                submit_ok = confirmed or (clicked and not still_there and errs == 0)
+                        except Exception:
+                            continue
+                    # Greenhouse may now hold the submission behind an emailed
+                    # 8-character code. Ask him for it and type it in.
+                    page.wait_for_timeout(2500)
+                    if enter_verification_code(page, target, it):
+                        clicked = True
+                    # Submission can take a while — poll for the outcome instead of
+                    # screenshotting a page that is still mid-request.
+                    for _ in range(12):
+                        page.wait_for_timeout(1000)
+                        try:
+                            b = (target.inner_text("body") or "").lower()
+                        except Exception:
+                            break
+                        if any(w in b for w in ("thank you for applying", "application received",
+                                                "application submitted", "we have received",
+                                                "thanks for applying", "successfully submitted")):
+                            break
 
-                shot = os.path.join(DATA, "queue", f"{it['id']}-submitted.png")
-                try:
-                    page.screenshot(path=shot, full_page=True)
-                    it["submit_screenshot"] = os.path.relpath(shot, TOOL)
-                except Exception:
-                    pass
-                br.close()
-            it["status"] = "submitted" if submit_ok else "failed"
-            if not clicked:
-                it.setdefault("warnings", []).append("no submit button matched")
-            elif not submit_ok:
-                it.setdefault("warnings", []).append(
-                    f"submit did NOT go through — form still present"
-                    f"{f' with {errs} invalid field(s)' if errs else ''}. "
-                    f"Check the screenshot; required fields are likely empty.")
+                    # Did it actually go through? A visible submit button or a
+                    # validation error means it did not.
+                    still_there = False
+                    try:
+                        for sel in SUBMIT_SELECTORS:
+                            loc = target.locator(sel).first
+                            if loc.count() and loc.is_visible(timeout=800):
+                                still_there = True
+                                break
+                    except Exception:
+                        pass
+                    errs = 0
+                    try:
+                        errs = target.locator(
+                            '[aria-invalid="true"], .error:visible, [role="alert"]').count()
+                    except Exception:
+                        pass
+                    confirmed = False
+                    try:
+                        body = (target.inner_text("body") or "").lower()
+                        confirmed = any(w in body for w in (
+                            "thank you for applying", "application received",
+                            "application submitted", "we have received",
+                            "thanks for applying", "successfully submitted"))
+                    except Exception:
+                        pass
+                    submit_ok = confirmed or (clicked and not still_there and errs == 0)
+
+                    shot = os.path.join(DATA, "queue", f"{it['id']}-submitted.png")
+                    try:
+                        page.screenshot(path=shot, full_page=True)
+                        it["submit_screenshot"] = os.path.relpath(shot, TOOL)
+                    except Exception:
+                        pass
+                    br.close()
+                it["status"] = "submitted" if submit_ok else "failed"
+                if not clicked:
+                    it.setdefault("warnings", []).append("no submit button matched")
+                elif not submit_ok:
+                    it.setdefault("warnings", []).append(
+                        f"submit did NOT go through — form still present"
+                        f"{f' with {errs} invalid field(s)' if errs else ''}. "
+                        f"Check the screenshot; required fields are likely empty.")
         except Exception as e:
             it["status"] = "failed"
             it.setdefault("warnings", []).append(f"submit error: {e}")

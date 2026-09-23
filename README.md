@@ -413,6 +413,21 @@ press Approve on the phone. The 07:00 / 19:00 review run then files whatever is 
 - ⚠️ anything else, or a third failed attempt → *Failed — needs a look*, with the reason and
   the screenshot, and a Retry button.
 
+**Workday** (added 2026-09-23, `src/fill/workday.py`). One account per employer tenant, credentials
+in `~/.config/jobbot/env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo): sign in, create
+the account if the tenant does not know the address, emailed verification code via Telegram. The
+driver walks the wizard — My Information and My Experience from `answers.yaml` (employment /
+education blocks, resume upload), every other step through the generic label-based filler — and
+stops at **Review** for prep; the submit pass walks it again and presses Submit. Workday quirks it
+handles: the progress bar lists every step name (only the bold one is current), forms paint
+seconds after the bar, "Something went wrong" pages (refresh, then re-enter from the posting),
+the "Personal Information" side panel that can pop over a step, virtualised 250-entry country
+menus (page through until the exact match renders), `aria-labelledby` that points at the button's
+own "Select One" text. Tenants are registered with `./jobpilot careers <tenant URL>` and pulled
+by intake through the tenant jobs API (`discovery.workday_max` postings per tenant).
+Conflict-of-interest / relationship declarations (Mastercard asks four) are hard-stopped in the
+resolver and always come to you as questions.
+
 The whole submit / retry path is LLM-free: the question is the portal's label, the options are
 the menu's own entries, the code prompt is a fixed template. One known gap, left on purpose
 (2026-09-23): a **free-text** field that appears only at submit time gets no drafted answers —

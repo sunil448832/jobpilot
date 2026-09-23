@@ -868,3 +868,40 @@ phenom:
 - slug: www.careers.philips.com
   base: https://www.careers.philips.com/in/en
   jobs: 100
+workday:
+- slug: nvidia
+  host: nvidia.wd5.myworkdayjobs.com
+  site: NVIDIAExternalCareerSite
+  jobs: 40
+- slug: salesforce
+  host: salesforce.wd12.myworkdayjobs.com
+  site: External_Career_Site
+  jobs: 40
+- slug: adobe
+  host: adobe.wd5.myworkdayjobs.com
+  site: external_experienced
+  jobs: 40
+- slug: intel
+  host: intel.wd1.myworkdayjobs.com
+  site: External
+  jobs: 40
+- slug: workday
+  host: workday.wd5.myworkdayjobs.com
+  site: Workday
+  jobs: 40
+- slug: philips
+  host: philips.wd3.myworkdayjobs.com
+  site: jobs-and-careers
+  jobs: 40
+- slug: roche
+  host: roche.wd3.myworkdayjobs.com
+  site: roche-ext
+  jobs: 400
+- slug: mastercard
+  host: mastercard.wd1.myworkdayjobs.com
+  site: CorporateCareers
+  jobs: 40
+- slug: autodesk
+  host: autodesk.wd1.myworkdayjobs.com
+  site: Ext
+  jobs: 40

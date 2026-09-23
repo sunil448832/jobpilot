@@ -24,7 +24,11 @@ STEP_NAMES = ("my information", "my experience", "application questions",
               "voluntary disclosures", "self identify", "review")
 OPTION_SEL = ('[role="option"], li[role="option"], [data-automation-id="promptOption"], '
               '[data-automation-id="menuItem"], [role="menuitem"]')
-NEXT_BTN = 'button[data-automation-id="bottom-navigation-next-button"]'
+NEXT_BTN = ('button[data-automation-id="bottom-navigation-next-button"], '
+            'button[data-automation-id="pageFooterNextButton"], '
+            'button:has-text("Save and Continue"), button:has-text("Next")')
+SUBMIT_BTN = ('button[data-automation-id="bottom-navigation-next-button"], '
+              'button[data-automation-id="pageFooterNextButton"], button:has-text("Submit")')
 ERR_SEL = '[data-automation-id="errorMessage"], [data-automation-id="fieldError"], [aria-invalid="true"]'
 
 
@@ -74,6 +78,80 @@ def _fill(page, sel, text, warnings, label=""):
         return False
 
 
+_TAGGED = [0]
+
+
+def by_label(page, pattern, want="input,textarea,button"):
+    """A selector for the control under the label matching `pattern` (regex, i),
+    or '' — the fallback when a tenant's data-automation-id is not the usual one."""
+    _TAGGED[0] += 1
+    n = _TAGGED[0]
+    try:
+        found = page.evaluate("""([pat, want, n]) => {
+          const re = new RegExp(pat, 'i');
+          const vis = el => !!el && (el.offsetParent !== null || el.getClientRects().length > 0);
+          for (const l of document.querySelectorAll('label, legend')) {
+            const t = (l.innerText || '').trim();
+            if (!t || !re.test(t)) continue;
+            let el = null;
+            const f = l.getAttribute('for');
+            if (f) { const c = document.getElementById(f); if (c && c.matches(want) && vis(c)) el = c; }
+            if (!el) {
+              // the label's own field box, else walk up a little until a control appears
+              let box = l.closest('[data-automation-id^="formField-"], fieldset') || l.parentElement;
+              for (let hops = 0; box && hops < 4 && !el; hops++) {
+                el = [...box.querySelectorAll(want)].find(vis) || null;
+                if (!el) box = box.parentElement;
+              }
+            }
+            if (!el) continue;
+            el.setAttribute('data-jobbot-wd', String(n));
+            return true;
+          }
+          return false;
+        }""", [pattern, want, n])
+    except Exception:
+        found = False
+    return f'[data-jobbot-wd="{n}"]' if found else ""
+
+
+def click_radio(page, question_pattern, want):
+    """Tick the radio whose own label is `want` inside the group whose question
+    matches `question_pattern`. Works on the label text, not on ids."""
+    try:
+        return bool(page.evaluate("""([qpat, want]) => {
+          const qre = new RegExp(qpat, 'i'), w = want.trim().toLowerCase();
+          const labelOf = r => {
+            let l = r.id ? document.querySelector(`label[for="${CSS.escape(r.id)}"]`) : null;
+            if (!l) l = r.closest('label');
+            if (!l) { const ref = r.getAttribute('aria-labelledby'); if (ref) l = document.getElementById(ref); }
+            return l;
+          };
+          for (const r of document.querySelectorAll('input[type="radio"], [role="radio"]')) {
+            // walk up until the question text is inside the box (legend, sibling label…)
+            let box = r.parentElement, ok = false;
+            for (let hops = 0; box && hops < 8; hops++) {
+              if (qre.test(box.innerText || '')) { ok = true; break; }
+              box = box.parentElement;
+            }
+            if (!ok || (box.innerText || '').length > 1500) continue;
+            const l = labelOf(r);
+            const t = ((l && l.innerText) || r.getAttribute('aria-label') || r.innerText || '').trim().toLowerCase();
+            if (t !== w && !t.startsWith(w + ' ') && !t.startsWith(w + ',')) continue;
+            if (l) l.click(); else r.click();
+            if (r.tagName === 'INPUT' && !r.checked) { r.click(); }
+            if (r.tagName === 'INPUT' && !r.checked) {
+              const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'checked').set;
+              set.call(r, true); r.dispatchEvent(new Event('change', {bubbles: true}));
+            }
+            return true;
+          }
+          return false;
+        }""", [question_pattern, want]))
+    except Exception:
+        return False
+
+
 def _body(page):
     try:
         return (page.inner_text("body") or "").lower()
@@ -88,16 +166,52 @@ def _rank(opts, want):
 
 
 def _options(page):
+    """Every visible option in the open menu as (locator, text) — read in ONE
+    JS pass so a 250-entry country list is ranked whole. Reading the first 60
+    one by one once made 'British Indian Ocean Territory' beat 'India'."""
     out = []
     try:
+        rows = page.evaluate("""(sel) => [...document.querySelectorAll(sel)].map((o, i) => {
+            const r = o.getBoundingClientRect(), cs = getComputedStyle(o);
+            const shown = r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
+            const noise = o.closest('header, nav, [data-automation-id="selectedItemList"], [data-automation-id="selectedItem"], [data-automation-id^="utility"]');
+            return [i, shown && !noise ? (o.innerText || '').trim() : null];
+          }).filter(x => x[1])""", OPTION_SEL) or []
         loc = page.locator(OPTION_SEL)
-        for i in range(min(loc.count(), 60)):
-            o = loc.nth(i)
-            if o.is_visible(timeout=150):
-                out.append((o, (o.inner_text() or "").strip().lower()))
+        out = [(loc.nth(i), t.lower()) for i, t in rows]
     except Exception:
         pass
     return out
+
+
+def _scroll_find(page, want, max_pages=25):
+    """A long menu is virtualised: only the visible window is in the DOM.
+    Page through it until an option matching `want` renders, or give up."""
+    for _ in range(max_pages):
+        for o, ot in _rank(_options(page), want):
+            return o, ot
+        moved = False
+        try:
+            moved = page.evaluate("""(sel) => {
+              const first = document.querySelector(sel);
+              if (!first) return false;
+              let box = first.parentElement;
+              while (box && box !== document.body) {
+                const cs = getComputedStyle(box);
+                if (/(auto|scroll)/.test(cs.overflowY) && box.scrollHeight > box.clientHeight + 4) break;
+                box = box.parentElement;
+              }
+              if (!box || box === document.body) return false;
+              const before = box.scrollTop;
+              box.scrollTop = before + Math.max(box.clientHeight - 40, 120);
+              return box.scrollTop !== before;
+            }""", OPTION_SEL)
+        except Exception:
+            moved = False
+        if not moved:
+            break
+        page.wait_for_timeout(350)
+    return None, ""
 
 
 def pick_listbox(page, sel, wants, warnings, label=""):
@@ -108,8 +222,14 @@ def pick_listbox(page, sel, wants, warnings, label=""):
     page.wait_for_timeout(600)
     opts = _options(page)
     for want in [w for w in wants if w]:
-        for o, ot in _rank(opts, want):
+        hit = next(iter(_rank(opts, want)), None)
+        if hit is None and len(opts) > 25:
+            o, ot = _scroll_find(page, want)
+            hit = (o, ot) if o is not None else None
+        if hit is not None:
+            o, ot = hit
             try:
+                o.scroll_into_view_if_needed(timeout=2000)
                 o.click(timeout=3000)
                 page.wait_for_timeout(400)
                 return ot
@@ -130,6 +250,26 @@ def type_prompt(page, sel, wants, warnings, label=""):
     country phone code): type, wait for suggestions, click the match."""
     if not _vis(page, sel, 500):
         return ""
+
+    def pills():
+        try:
+            return (page.locator(sel).first.evaluate(
+                "el => { const c = el.closest('[data-automation-id^=\"formField-\"]') || el.parentElement.parentElement;"
+                " return [...c.querySelectorAll('[data-automation-id=\"selectedItem\"], [data-automation-id=\"pill\"], [data-automation-id=\"selectedItemList\"] li')]"
+                ".map(p => p.innerText.trim()).filter(Boolean).join(' | '); }") or "").strip()
+        except Exception:
+            return ""
+
+    # A wrong pill from an earlier attempt must go first: Workday keeps it.
+    if pills() and not any(w.lower() in pills().lower() for w in wants if w):
+        try:
+            page.locator(sel).first.evaluate(
+                "el => { const c = el.closest('[data-automation-id^=\"formField-\"]') || el.parentElement.parentElement;"
+                " for (const b of c.querySelectorAll('[data-automation-id=\"DELETE_charm\"], button[aria-label*=\"emove\"], [data-automation-id=\"selectedItem\"] button')) b.click(); }")
+            page.wait_for_timeout(600)
+        except Exception:
+            pass
+
     for want in [w for w in wants if w]:
         try:
             loc = page.locator(sel).first
@@ -138,34 +278,51 @@ def type_prompt(page, sel, wants, warnings, label=""):
             loc.type(want[:40], delay=40)
         except Exception:
             continue
-        for _ in range(8):
+        # Workday prompts SEARCH on Enter; without it they just list everything.
+        try:
+            page.keyboard.press("Enter")
+        except Exception:
+            pass
+        opts = []
+        for _ in range(6):
             page.wait_for_timeout(500)
             opts = _options(page)
             if opts:
                 break
-        for o, ot in _rank(_options(page), want):
+        hit = next(iter(_rank(opts, want)), None)
+        if hit is None and len(opts) > 25:
+            hit = _scroll_find(page, want)
+            hit = hit if hit[0] is not None else None
+        if hit is not None:
+            o, ot = hit
             try:
+                o.scroll_into_view_if_needed(timeout=2000)
                 o.click(timeout=3000)
-                page.wait_for_timeout(400)
-                return ot
+                page.wait_for_timeout(500)
+                return pills() or ot
             except Exception:
-                continue
+                pass
+        # Category menus ("Social Media" > "LinkedIn"): open the first category
+        # that sounds right and look again.
+        cat = next((o for o, ot in opts if any(k in ot for k in ("social", "job board", "online", "internet"))), None)
+        if cat is not None:
+            try:
+                cat.click(timeout=3000)
+                page.wait_for_timeout(800)
+                for o, ot in _rank(_options(page), want):
+                    o.click(timeout=3000)
+                    page.wait_for_timeout(500)
+                    return pills() or ot
+            except Exception:
+                pass
         try:
-            page.keyboard.press("Enter")          # single-suggestion prompts accept Enter
-            page.wait_for_timeout(400)
+            page.keyboard.press("Escape")
         except Exception:
             pass
-        chosen = ""
-        try:
-            chosen = (page.locator(sel).first.evaluate(
-                "el => { const c = el.closest('[data-automation-id^=\"formField-\"]') || el.parentElement;"
-                " const p = c && c.querySelector('[data-automation-id=\"selectedItem\"], [data-automation-id=\"pill\"]');"
-                " return p ? p.innerText : ''; }") or "").strip()
-        except Exception:
-            pass
-        if chosen:
-            return chosen
-    warnings.append(f"Workday: typeahead {label or sel} took none of {wants[:2]}")
+        if pills() and want.lower() in pills().lower():
+            return pills()
+    warnings.append(f"Workday: typeahead {label or sel} took none of {wants[:2]}"
+                    + (f"; offered {[t for _, t in opts][:8]}" if opts else ""))
     return ""
 
 
@@ -194,22 +351,57 @@ def set_date(page, container_sel, ym, warnings, label="", day=None):
     return ok
 
 
+ALL_STEPS = STEP_NAMES + ("create account", "sign in")
+
+
 def current_step(page):
-    """Which wizard page is showing, by its heading."""
+    """Which wizard page is showing: the ACTIVE progress-bar step (the bold
+    one), else the step heading. Never the page text — the progress bar lists
+    every step's name, which once read as 'My Information' on the sign-in page."""
+    try:
+        t = page.evaluate("""() => {
+          const bar = document.querySelector('[data-automation-id="progressBar"]');
+          if (!bar) return '';
+          const cur = bar.querySelector('[aria-current="step"], [aria-current="true"], [data-automation-id="progressBarActiveStep"]');
+          if (cur) return cur.innerText;
+          let best = '', bw = 0;
+          for (const el of bar.querySelectorAll('li, div, span, p')) {
+            const txt = (el.innerText || '').trim();
+            if (!txt || txt.length > 60 || el.children.length > 3) continue;
+            const w = parseInt(getComputedStyle(el).fontWeight, 10) || 400;
+            if (w > bw) { bw = w; best = txt; }
+          }
+          return bw >= 600 ? best : '';
+        }""") or ""
+        t = re.sub(r"\s+", " ", t.strip().lower().replace("/", " "))
+        for s in ALL_STEPS:
+            if s in t:
+                return "create account" if s == "sign in" else t   # full text: "application questions 1 of 2"
+    except Exception:
+        pass
     try:
         heads = page.locator("h2, h3, [data-automation-id='pageHeaderTitle']")
         for i in range(min(heads.count(), 12)):
-            t = (heads.nth(i).inner_text() or "").strip().lower()
+            t = re.sub(r"\s+", " ", (heads.nth(i).inner_text() or "").strip().lower())
             for s in STEP_NAMES:
                 if t.startswith(s):
-                    return s
+                    return t
     except Exception:
         pass
-    body = _body(page)
-    for s in STEP_NAMES:
-        if re.search(rf"\b{s}\b", body[:4000]):
-            return s
     return ""
+
+
+def wait_step_content(page, max_s=20):
+    """Workday paints the progress bar first and the step's form a few seconds
+    later (a grey skeleton in between). Wait for something actionable."""
+    for _ in range(max_s * 2):
+        if (_vis(page, '[data-automation-id="email"]', 200) or _vis(page, NEXT_BTN, 200)
+                or _vis(page, '[data-automation-id="applyManually"]', 200)
+                or _vis(page, '[data-automation-id="applyButton"]', 200)
+                or _vis(page, 'input[data-automation-id="legalNameSection_firstName"]', 200)):
+            return True
+        page.wait_for_timeout(500)
+    return False
 
 
 # ------------------------------------------------------------- account
@@ -313,10 +505,26 @@ def _verify_email(page, ctx, warnings):
 def start_application(page, ctx, warnings):
     """From the posting page to the first wizard step. Handles the sign-in gate
     appearing before or after the Apply click, and the 'how to apply' modal."""
-    for attempt in range(3):
-        if _vis(page, NEXT_BTN, 800) or current_step(page):
+    glitches = 0
+    for attempt in range(6):
+        wait_step_content(page)
+        if "something went wrong" in _body(page)[:3000]:
+            # Workday's own transient error page. Refresh once as it asks; if it
+            # persists, leave the broken apply URL and re-enter from the posting
+            # (the saved draft is resumed from there).
+            glitches += 1
+            if glitches == 1:
+                warnings.append("Workday: 'something went wrong' page — refreshed")
+                page.reload(wait_until="domcontentloaded")
+            else:
+                warnings.append("Workday: error page persisted — re-entering from the job posting")
+                page.goto(ctx["url"], wait_until="domcontentloaded", timeout=60000)
+            page.wait_for_timeout(4000)
+            continue
+        step = current_step(page)
+        if step and not step.startswith("create account") and _vis(page, NEXT_BTN, 800):
             return True
-        if _vis(page, '[data-automation-id="email"]', 600):
+        if _vis(page, '[data-automation-id="email"]', 600) or step.startswith("create account"):
             if not login_or_create(page, ctx, warnings):
                 return False
             page.wait_for_timeout(2000)
@@ -334,7 +542,8 @@ def start_application(page, ctx, warnings):
             page.wait_for_timeout(3000)
             continue
         page.wait_for_timeout(2000)
-    ok = _vis(page, NEXT_BTN, 800) or bool(current_step(page))
+    step = current_step(page)
+    ok = _vis(page, NEXT_BTN, 800) and bool(step) and not step.startswith("create account")
     if not ok:
         warnings.append("Workday: application wizard did not open (no Apply button / step page found)")
     return ok
@@ -343,58 +552,102 @@ def start_application(page, ctx, warnings):
 def fill_my_information(page, answers, ctx, resolve, warnings, filled):
     from jobpilot.fill.browser import fill_fields, YES
     p, loc, links = answers["personal"], answers["location"], answers["links"]
-    # Generic first (labelled inputs, listboxes it recognises), specific after,
-    # so a known Workday id always wins over a guessed label match.
-    f, w, _m = fill_fields(page, resolve, answers, ctx)
-    filled.update(f)
-    warnings.extend(x for x in w if "REQUIRED" in x or "NOT FILLED (REQUIRED)" in x)
+
+    def first_visible(*sels):
+        return next((s for s in sels if s and _vis(page, s, 300)), "")
+
+    # Country FIRST: changing it re-renders the whole address/phone block and
+    # wipes anything typed before it.
+    c = first_visible('button[data-automation-id="countryDropdown"]', by_label(page, r"^country\s*\*?$", "button"))
+    if c:
+        try:
+            cur = (page.locator(c).first.inner_text() or "").strip().lower()
+        except Exception:
+            cur = ""
+        if loc["country"].lower() != cur.strip():
+            got = pick_listbox(page, c, [loc["country"]], warnings, "Country")
+            if got:
+                filled["Country"] = got
+                page.wait_for_timeout(2000)
+        else:
+            filled["Country"] = cur
 
     heard = answers.get("questions", {}).get("how_did_you_hear") or "LinkedIn"
-    if _vis(page, '[data-automation-id="source"] input, input[data-automation-id="source"], [data-automation-id="sourceSection"] input', 500):
-        got = type_prompt(page, '[data-automation-id="source"] input, input[data-automation-id="source"], [data-automation-id="sourceSection"] input',
-                          [heard, "LinkedIn", "Job Board"], warnings, "How did you hear about us")
+    src = first_visible('[data-automation-id="source"] input', 'input[data-automation-id="source"]',
+                        '[data-automation-id="sourceSection"] input', by_label(page, r"how did you hear", "input"))
+    if src:
+        got = type_prompt(page, src, [heard, "LinkedIn", "Job Board", "Job Boards"], warnings, "How did you hear about us")
         if got:
             filled["How did you hear about us?"] = got
-    elif _vis(page, 'button[data-automation-id="sourceDropdown"]', 400):
-        got = pick_listbox(page, 'button[data-automation-id="sourceDropdown"]', [heard, "LinkedIn"], warnings, "source")
-        if got:
-            filled["How did you hear about us?"] = got
+    else:
+        src = first_visible('button[data-automation-id="sourceDropdown"]', by_label(page, r"how did you hear", "button"))
+        if src:
+            got = pick_listbox(page, src, [heard, "LinkedIn", "Job Board"], warnings, "source")
+            if got:
+                filled["How did you hear about us?"] = got
 
     # Previous worker: the per-company rule in answers.yaml (Amazon = Yes).
     prev = resolve(f"Have you previously been employed by {ctx.get('company', '')}?")
     want = "Yes" if prev is YES else "No"
-    for sel in (f'[data-automation-id="previousWorker"] label:has-text("{want}")',
-                f'[data-automation-id="previousWorker"] [role="radio"]:has-text("{want}")'):
-        if _click(page, sel):
-            filled["Previously worked here?"] = want
-            break
-
-    if _vis(page, 'button[data-automation-id="countryDropdown"]', 400):
-        got = pick_listbox(page, 'button[data-automation-id="countryDropdown"]', [loc["country"]], warnings, "Country")
-        if got:
-            filled["Country"] = got
-            page.wait_for_timeout(1500)                # the address block re-renders per country
-
-    _fill(page, 'input[data-automation-id="legalNameSection_firstName"]', p["first_name"], warnings, "first name") and filled.update({"First name": p["first_name"]})
-    _fill(page, 'input[data-automation-id="legalNameSection_lastName"]', p["last_name"], warnings, "last name") and filled.update({"Last name": p["last_name"]})
-    _fill(page, 'input[data-automation-id="addressSection_addressLine1"]', loc.get("address_line_1") or loc["city"], warnings, "address")
-    _fill(page, 'input[data-automation-id="addressSection_city"]', loc["city"], warnings, "city")
-    _fill(page, 'input[data-automation-id="addressSection_postalCode"]', loc.get("postal_code"), warnings, "postal code")
-    if _vis(page, 'button[data-automation-id="addressSection_countryRegion"]', 400):
-        pick_listbox(page, 'button[data-automation-id="addressSection_countryRegion"]', [loc.get("state") or loc["city"]], warnings, "State / Region")
-    if _vis(page, 'button[data-automation-id="phone-device-type"]', 400):
-        pick_listbox(page, 'button[data-automation-id="phone-device-type"]', ["Mobile", "Home", "Telephone"], warnings, "Phone device type")
-    for sel in ('input[data-automation-id="countryPhoneCode"]', '[data-automation-id="country-phone-code"] input',
-                '[data-automation-id="phone-country-code"] input'):
-        if _vis(page, sel, 300):
-            type_prompt(page, sel, [f"{loc['country']} (+{p['phone_country_code'].lstrip('+')})", loc["country"]],
-                        warnings, "country phone code")
-            break
+    if click_radio(page, r"worked for .* as an employee|previously (been )?employed|contingent worker|former (employee|worker)", want):
+        filled["Previously worked here?"] = want
     else:
-        if _vis(page, 'button[data-automation-id="country-phone-code"]', 300):
-            pick_listbox(page, 'button[data-automation-id="country-phone-code"]',
-                         [f"{loc['country']} (+{p['phone_country_code'].lstrip('+')})", loc["country"]], warnings, "country phone code")
-    _fill(page, 'input[data-automation-id="phone-number"]', p["phone_national"], warnings, "phone") and filled.update({"Phone": p["phone_national"]})
+        warnings.append("Workday: 'have you worked here before' radio not found")
+
+    def put(sel_id, pattern, value, label):
+        s = first_visible(sel_id, by_label(page, pattern, "input"))
+        if s and _fill(page, s, value, warnings, label):
+            filled[label] = value
+
+    put('input[data-automation-id="legalNameSection_firstName"]', r"^(given name|first name|legal first)", p["first_name"], "Given name")
+    put('input[data-automation-id="legalNameSection_lastName"]', r"^(family name|last name|surname|legal last)", p["last_name"], "Family name")
+    put('input[data-automation-id="addressSection_addressLine1"]', r"^address line 1", loc.get("address_line_1") or loc["city"], "Address line 1")
+    put('input[data-automation-id="addressSection_city"]', r"^city", loc["city"], "City")
+    put('input[data-automation-id="addressSection_postalCode"]', r"^(postal|zip)", loc.get("postal_code"), "Postal code")
+    s = first_visible('button[data-automation-id="addressSection_countryRegion"]', by_label(page, r"^(state|province|region|county)", "button"))
+    if s:
+        pick_listbox(page, s, [loc.get("state") or loc["city"]], warnings, "State / Region")
+    # Generic pass here — before the phone block, which it gets wrong on Workday
+    # (full +91 number into a national-number box, and into the extension).
+    f, w, _m = fill_fields(page, resolve, answers, ctx)
+    for k, v in f.items():
+        filled.setdefault(k, v)
+    warnings.extend(x for x in w if "NOT FILLED (REQUIRED)" in x and "phone" not in x.lower())
+
+    s = first_visible('button[data-automation-id="phone-device-type"]', by_label(page, r"phone device type|^device type", "button"))
+    if s:
+        got = pick_listbox(page, s, ["Mobile", "Home", "Telephone"], warnings, "Phone device type")
+        if got:
+            filled["Phone device type"] = got
+    code = f"{loc['country']} (+{p['phone_country_code'].lstrip('+')})"
+    s = first_visible('input[data-automation-id="countryPhoneCode"]', '[data-automation-id="country-phone-code"] input',
+                      '[data-automation-id="phone-country-code"] input', by_label(page, r"country phone code|phone code", "input"))
+    if s:
+        already = ""
+        try:
+            already = page.locator(s).first.evaluate(
+                "el => (el.closest('[data-automation-id^=\"formField-\"]') || el.parentElement.parentElement).innerText") or ""
+        except Exception:
+            pass
+        if f"+{p['phone_country_code'].lstrip('+')}" not in already:
+            type_prompt(page, s, [code, loc["country"]], warnings, "country phone code")
+    else:
+        s = first_visible('button[data-automation-id="country-phone-code"]', by_label(page, r"country phone code|phone code", "button"))
+        if s:
+            pick_listbox(page, s, [code, loc["country"]], warnings, "country phone code")
+    s = first_visible('input[data-automation-id="phone-number"]', by_label(page, r"^phone number", "input"))
+    if s:
+        try:
+            page.locator(s).first.fill(p["phone_national"], timeout=4000)
+            filled["Phone number"] = p["phone_national"]
+        except Exception as e:
+            warnings.append(f"Workday: phone number: {str(e)[:60]}")
+    s = first_visible('input[data-automation-id="phone-extension"]', by_label(page, r"^phone extension|^extension", "input"))
+    if s:
+        try:
+            page.locator(s).first.fill("", timeout=3000)          # never an extension
+        except Exception:
+            pass
 
 
 def fill_my_experience(page, answers, ctx, resolve, warnings, filled):
@@ -521,7 +774,55 @@ def collect_errors(page):
     return out
 
 
-def next_step(page, before):
+DIALOG = '[role="dialog"], [data-automation-id="popUpDialog"], [data-automation-id="sidePanel"], [data-automation-id="panel"]'
+
+
+def handle_side_panel(page, answers, warnings):
+    """Workday sometimes slides in a 'Personal Information' panel (own Save /
+    Cancel) over the wizard — seen after Save and Continue on Mastercard, with
+    the phone-code menu already open. Close the menu, put the national phone
+    number in, Save the panel, and let the wizard carry on."""
+    if not _vis(page, DIALOG, 500):
+        return False
+    p = answers["personal"]
+    dlg = page.locator(DIALOG).last
+    try:
+        title = (dlg.locator("h2, h3, [data-automation-id='panelTitle']").first.inner_text() or "").strip()
+    except Exception:
+        title = "panel"
+    warnings.append(f"Workday: side panel '{title[:40]}' handled")
+    # An open prompt menu inside the panel swallows clicks: close it on the title.
+    try:
+        dlg.locator("h2, h3").first.click(timeout=2000)
+        page.wait_for_timeout(300)
+    except Exception:
+        pass
+    ph = by_label(page, r"^phone number", "input")
+    if ph and _vis(page, ph, 300):
+        try:
+            page.locator(ph).first.fill(p["phone_national"], timeout=3000)
+        except Exception:
+            pass
+    ext = by_label(page, r"^phone extension|^extension", "input")
+    if ext and _vis(page, ext, 300):
+        try:
+            page.locator(ext).first.fill("", timeout=2000)
+        except Exception:
+            pass
+    save = dlg.locator('button:has-text("Save"), button[data-automation-id*="Save" i]').last
+    try:
+        save.click(timeout=4000)
+    except Exception:
+        try:
+            save.click(timeout=3000, force=True)
+        except Exception as e:
+            warnings.append(f"Workday: side panel Save failed: {str(e)[:60]}")
+            return False
+    page.wait_for_timeout(2500)
+    return True
+
+
+def next_step(page, before, answers=None):
     """Click Save and Continue; report whether the wizard moved on."""
     from jobpilot.fill.browser import wait_dom_stable
     if not _click(page, NEXT_BTN):
@@ -531,6 +832,17 @@ def next_step(page, before):
     after = current_step(page)
     if after and after != before:
         return True, []
+    if answers is not None and handle_side_panel(page, answers, []):
+        wait_dom_stable(page, max_s=10, quiet=2)
+        after = current_step(page)
+        if after and after != before:
+            return True, []
+        if _click(page, NEXT_BTN):                   # the panel ate the first click
+            page.wait_for_timeout(2500)
+            wait_dom_stable(page, max_s=12, quiet=2)
+            after = current_step(page)
+            if after and after != before:
+                return True, []
     errs = collect_errors(page)
     if not errs and after == before:
         errs = [{"label": before, "kind": "text", "text": "step did not advance and showed no field error"}]
@@ -548,21 +860,32 @@ def run(page, ctx, answers, resolve, stage="prep"):
         return res
     last = ""
     for _ in range(10):
+        wait_step_content(page)
+        if "something went wrong" in _body(page)[:3000]:
+            warnings.append("Workday: 'something went wrong' mid-wizard — refreshed")
+            page.reload(wait_until="domcontentloaded")
+            page.wait_for_timeout(4000)
+            wait_step_content(page)
         step = current_step(page)
         res["steps"].append(step or "?")
-        if step == "review":
+        if step.startswith("review"):
             res["reached_review"] = True
             break
+        if step.startswith("create account"):
+            if not login_or_create(page, ctx, warnings):
+                break
+            page.wait_for_timeout(2500)
+            continue
         if step == last:
             break                                  # did not advance last time; errors already recorded
         last = step
         try:
-            if step == "my information":
+            if step.startswith("my information"):
                 fill_my_information(page, answers, ctx, resolve, warnings, filled)
-            elif step == "my experience":
+            elif step.startswith("my experience"):
                 fill_my_experience(page, answers, ctx, resolve, warnings, filled)
             else:
-                if step == "self identify":
+                if step.startswith("self identify"):
                     fill_self_identify(page, answers, warnings, filled)
                 f, w, m = fill_fields(page, resolve, answers, ctx)
                 filled.update(f)
@@ -573,7 +896,7 @@ def run(page, ctx, answers, resolve, stage="prep"):
                                      if q.get("required") or len(q.get("label", "")) > 60)
         except Exception as e:
             warnings.append(f"Workday: step '{step}' raised {type(e).__name__}: {str(e)[:80]}")
-        ok, errs = next_step(page, step)
+        ok, errs = next_step(page, step, answers)
         if not ok:
             for e in errs:
                 missing.append({"label": e.get("label", ""), "required": True, "kind": e.get("kind", "text"),
@@ -584,7 +907,7 @@ def run(page, ctx, answers, resolve, stage="prep"):
     if stage == "prep" or not res["reached_review"]:
         return res
     # Review -> Submit. Success is Workday's confirmation page.
-    if not _click(page, NEXT_BTN):
+    if not _click(page, SUBMIT_BTN):
         warnings.append("Workday: Submit button not found on Review")
         return res
     page.wait_for_timeout(4000)

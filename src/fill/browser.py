@@ -176,16 +176,31 @@ EXTRACT_JS = r"""
     if (b.hasAttribute('data-jobbot-idx')) continue;
     const st = window.getComputedStyle(b);
     if (st.display === 'none' || st.visibility === 'hidden') continue;
+    // Workday points aria-labelledby at the button's OWN text ("Select One" +
+    // "Required"), so the field box's <label> comes first, and any candidate
+    // that is just the placeholder is discarded.
+    const PLACEHOLDER = /^(select one|select\.{0,3}|choose|required|select one required)$/i;
+    const clean = s => { s = (s || '').split('\n')[0].trim(); return PLACEHOLDER.test(s) ? '' : s; };
+    const ff = b.closest('[data-automation-id^="formField-"], .formField, fieldset');
     let label = '';
-    if (b.id) { const l = document.querySelector(`label[for="${CSS.escape(b.id)}"]`); if (l) label = l.innerText; }
+    if (ff) { const l = ff.querySelector('label, legend'); if (l) label = clean(l.innerText); }
+    if (!label && b.id) { const l = document.querySelector(`label[for="${CSS.escape(b.id)}"]`); if (l) label = clean(l.innerText); }
     if (!label) {
       const ref = b.getAttribute('aria-labelledby');
-      if (ref) label = ref.split(/\s+/).map(id => ((document.getElementById(id) || {}).innerText || '')).join(' ');
+      if (ref) label = clean(ref.split(/\s+/).map(id => ((document.getElementById(id) || {}).innerText || ''))
+                              .filter(t => !PLACEHOLDER.test(t.trim())).join(' '));
     }
-    if (!label) label = b.getAttribute('aria-label') || '';
-    const ff = b.closest('[data-automation-id^="formField-"], .formField, fieldset');
-    if (!label && ff) { const l = ff.querySelector('label, legend'); if (l) label = l.innerText; }
-    label = (label || '').split('\n')[0].trim().slice(0, 160);
+    if (!label) label = clean(b.getAttribute('aria-label') || '');
+    if (!label) {
+      // nearest preceding text block above the button
+      let n = b.parentElement, hops = 0;
+      while (n && hops < 4 && !label) {
+        const t = clean((n.innerText || '').split('\n').map(x => x.trim()).filter(x => x && !PLACEHOLDER.test(x))[0] || '');
+        if (t && t.length > 3) label = t;
+        n = n.parentElement; hops++;
+      }
+    }
+    label = (label || '').slice(0, 160);
     const cur = (b.innerText || '').trim();
     b.setAttribute('data-jobbot-idx', String(i));
     out.push({idx: i, type: 'listbox', name: b.getAttribute('name') || '', id: b.id || '',
@@ -612,15 +627,17 @@ def questions_from_missing(missing, existing):
     than duplicated — its old answer was evidently not what the form takes."""
     import uuid
     out = list(existing or [])
-    by_label = {norm(q.get("label", "")): q for q in out}
+    by_label = {norm(q.get("label", ""))[:90]: q for q in out}   # harvest truncates labels; match on the head
     added = 0
     for m in missing:
         if not m.get("required") or not m.get("label"):
             continue
-        L = norm(m["label"])
+        L = norm(m["label"])[:90]
         opts = list(m.get("options") or [])
-        if m.get("kind") == "choice" and not opts:
-            opts = ["Yes", "No"]
+        if not opts and (m.get("kind") == "choice"
+                         or re.match(r"^(are|do|did|have|has|were|will|would|can|is)\b|, (do|are|have) you\b",
+                                     norm(m["label"]))):
+            opts = ["Yes", "No"]                    # a yes/no question shown as a menu we could not read
         q = by_label.get(L)
         if q:
             if q.get("status") == "answered" and q.get("selected") in opts:
@@ -714,6 +731,8 @@ def harvest_questions(target, resolve, warnings, max_questions=8):
         if f["type"] == "listbox":
             # The menu is the option list; open it once so the phone shows real choices.
             opts = listbox_options(target, f'[data-jobbot-idx="{f["idx"]}"]')
+            if not opts and re.match(r"^(are|do|did|have|has|were|will|would|can|is)\b|, (do|are|have) you\b", norm(label)):
+                opts = ["Yes", "No"]
         qs.append({
             "qid": len(qs), "label": label[:400],
             "kind": "choice" if (f["type"].startswith("select") or f["type"] == "listbox") else "text",
@@ -976,17 +995,51 @@ def fill_listbox(frame, sel, text):
         if c and c not in order:
             order.append(c)
     try:
-        click_field(frame, sel)
-        frame.wait_for_timeout(600)
-        vis = []
-        loc = frame.locator(LISTBOX_OPTIONS)
-        for i in range(min(loc.count(), 60)):
-            o = loc.nth(i)
+        # All options in one JS read: a country list has ~250 entries and the
+        # right one must compete, or a substring ("British INDIAn Ocean
+        # Territory") wins over the exact "India" further down.
+        def read():
             try:
-                if o.is_visible(timeout=150):
-                    vis.append((o, (o.inner_text() or "").strip().lower()))
+                rows = frame.evaluate("""(sel) => [...document.querySelectorAll(sel)].map((o, i) => {
+                    const r = o.getBoundingClientRect(), cs = getComputedStyle(o);
+                    const shown = r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
+                    // never the page header's account menu, nor already-picked pills
+                    const noise = o.closest('header, nav, [data-automation-id="selectedItemList"], [data-automation-id="selectedItem"], [data-automation-id^="utility"]');
+                    return [i, shown && !noise ? (o.innerText || '').trim() : null];
+                  }).filter(x => x[1])""", LISTBOX_OPTIONS) or []
+                loc = frame.locator(LISTBOX_OPTIONS)
+                return [(loc.nth(i), t.lower()) for i, t in rows]
             except Exception:
-                continue
+                return []
+
+        vis = []
+        for opening in range(2):
+            click_field(frame, sel)
+            for _ in range(5):                       # menus render late; a second click re-opens a toggled-shut one
+                frame.wait_for_timeout(500)
+                vis = read()
+                if vis:
+                    break
+            if vis:
+                break
+            frame.keyboard.press("Escape")
+            frame.wait_for_timeout(300)
+        if not vis:
+            # Keep the evidence: what the button says about itself and any popup
+            # in the DOM, so a menu that will not open can be diagnosed offline.
+            try:
+                info = frame.evaluate("""(sel) => {
+                  const b = document.querySelector(sel);
+                  const attrs = b ? [...b.attributes].map(a => a.name + '=' + a.value.slice(0, 80)).join(' ') : 'no button';
+                  const pops = [...document.querySelectorAll('[role="listbox"], [role="menu"], [data-automation-id*="menu" i], [data-automation-id*="popup" i], [data-automation-id*="List"]')]
+                    .map(e => e.outerHTML.slice(0, 1200));
+                  return {attrs, pops: pops.slice(0, 6), html: b ? (b.parentElement.parentElement.outerHTML.slice(0, 2500)) : ''};
+                }""", sel)
+                os.makedirs(os.path.join(DATA, "debug"), exist_ok=True)
+                fn = os.path.join(DATA, "debug", f"listbox-{dt.datetime.now():%m%d%H%M%S}.json")
+                json.dump(info, open(fn, "w"), indent=1)
+            except Exception:
+                pass
         menu = {t for _, t in vis}
         if menu and menu <= {"yes", "no", "n/a", "not applicable", "prefer not to say"} and not m:
             frame.keyboard.press("Escape")
@@ -997,6 +1050,7 @@ def fill_listbox(frame, sel, text):
                       + [o for o in vis if want in o[1] and not o[1].startswith(want)])
             for o, ot in ranked:
                 try:
+                    o.scroll_into_view_if_needed(timeout=2000)
                     o.click(timeout=3000)
                 except Exception:
                     continue

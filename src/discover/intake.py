@@ -279,16 +279,18 @@ def from_workday(entry):
     tenant, host, site = entry["slug"], entry["host"], entry["site"]
     base = f"https://{host}/wday/cxs/{tenant}/{site}"
     hdr = {"User-Agent": UA, "Accept": "application/json", "Content-Type": "application/json"}
-    posts, offset = [], 0
-    while offset < cfg("discovery.workday_max", 400):
+    posts, offset, total = [], 0, None
+    while offset < cfg("discovery.workday_max", 600):
         r = requests.post(f"{base}/jobs", json={"appliedFacets": {}, "limit": 20, "offset": offset,
                                                  "searchText": ""}, headers=hdr, timeout=25)
         r.raise_for_status()
         d = r.json()
         items = d.get("jobPostings") or []
         posts.extend(items)
+        if total is None:
+            total = d.get("total") or 0           # only the FIRST page carries the count
         offset += 20
-        if not items or offset >= (d.get("total") or 0):
+        if not items or offset >= total:
             break
     company = entry.get("company") or tenant.replace("-", " ").title()
 

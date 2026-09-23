@@ -152,11 +152,16 @@ def match_learned(label, learned):
         if not ans:
             continue
         m = norm(entry.get("match", ""))
-        if m and (m in L or L in m):
+        # A short label inside a long stored question is not the same question:
+        # "Country" sat inside "...citizen of a country under US export control"
+        # and inherited its "No". The stored phrase inside the label is fine.
+        if m and (m in L or (L in m and len(lt) >= 4)):
             return ans
         kws = [k.lower() for k in (entry.get("keywords") or [])]
         hits = sum(1 for k in kws if k in L)
-        if kws and hits >= max(2, len(kws) // 3):
+        # Two shared keywords ("current", "role") once turned a conflict-of-
+        # interest question into a stored "yes". Most of them must match.
+        if kws and hits >= max(3, (2 * len(kws)) // 3):
             return ans
         overlap = len(lt & _tokens(m)) / max(len(lt | _tokens(m)), 1)
         if overlap > best_score:
@@ -257,6 +262,8 @@ def build_resolver(answers, ctx, learned=None):
         (r"i (confirm|acknowledge|agree|certify|understand)\b.{0,60}"
          r"(read|understood|above|terms|privacy|policy|notice|statement)", YES),
         (r"\be-?mail", p["email"]),
+        (r"phone ext|\bextension\b", ""),                       # never an extension
+        (r"phone device type|device type", "Mobile"),
         (r"\bphone|\bmobile|\btelephone|\bcontact number", p["phone"]),
         (r"pronoun", p["pronouns"]),
 
@@ -304,6 +311,11 @@ def build_resolver(answers, ctx, learned=None):
 
         # --- always left to a human ---
         (r"cover letter|why (do you want|are you interested)|tell us", SKIP),
+        # Conflict-of-interest / relationship declarations are company-specific
+        # facts only Sunil can assert (Mastercard asks four of them).
+        (r"related to (anyone|someone|a)|personal relationship|conflict of interest|"
+         r"government (office|agency|official)|negotiate|influence.*contract|"
+         r"sign(ing)? .*contracts", SKIP),
     ]
 
     compiled = [(re.compile(pat), val) for pat, val in RULES]

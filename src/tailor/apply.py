@@ -179,11 +179,15 @@ def fetch_workday(url):
         return None
     tenant = m.group(1)
     segs = [s for s in p.path.split("/") if s]
+    # A link copied from LinkedIn ends in ".../apply?source=LinkedIn" and may
+    # carry a locale segment; the API wants <site>/job/<location>/<posting>.
+    while segs and segs[-1].lower() in ("apply", "applymanually", "autofillwithresume"):
+        segs.pop()
     if "job" not in segs:
         return None
     i = segs.index("job")
     site = segs[i - 1] if i >= 1 else None
-    if not site:
+    if not site or re.match(r"^[a-z]{2}-[A-Z]{2}$", site):
         return None
     api = f"https://{p.netloc}/wday/cxs/{tenant}/{site}/job/" + "/".join(segs[i + 1:])
     d = _get(api, as_json=True)

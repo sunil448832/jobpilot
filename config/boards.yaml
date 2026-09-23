@@ -203,6 +203,10 @@ greenhouse:
 - slug: yuma
   jobs: 1
   yc: Winter 2023
+- slug: flexport
+  jobs: 199
+- slug: toloka
+  jobs: 14
 lever:
 - slug: aldar
   jobs: 46
@@ -783,6 +787,8 @@ ashby:
   jobs: 1
 - slug: zapier
   jobs: 7
+- slug: super.com
+  jobs: 27
 smartrecruiters:
 - slug: alemhealth
   jobs: 1
@@ -808,6 +814,8 @@ smartrecruiters:
 - slug: together
   jobs: 23
 - slug: Eurofins
+  jobs: 100
+- slug: SopraSteria1
   jobs: 100
 workable:
 - slug: aerones
@@ -846,6 +854,10 @@ recruitee:
 - slug: weekday
   jobs: 1
   yc: Winter 2021
+- slug: helloprint
+  jobs: 5
+- slug: conflux
+  jobs: 10
 phenom:
 - slug: careers.g42.ai
   base: https://careers.g42.ai/global/en

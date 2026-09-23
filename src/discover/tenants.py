@@ -14,13 +14,14 @@ Sources, cheapest and safest first (each can be switched off):
   search    Brave Search API (BRAVE_API_KEY) or Google Custom Search
             (GOOGLE_CSE_KEY + GOOGLE_CSE_CX): site:myworkdayjobs.com "<title>" <hub>.
   adzuna    Adzuna API (ADZUNA_APP_ID + ADZUNA_APP_KEY): redirect URLs resolved.
-  (LinkedIn was tried as an account-free name source and removed on Sunil's
-   instruction, 2026-09-23: resolving names to careers sites by domain
-   guessing was too slow to be worth it. companies_to_urls() stays for any
-   source that yields employer names.)
+  linkedin  the account-free guest job search: employer NAMES only (guest pages
+            hide the apply link), resolved to careers pages by domain guessing —
+            existence-checked first, streamed, time-budgeted. Never Sunil's
+            account or session. First trial: 12 searches -> 64 names -> 24
+            careers pages, which is why it stays.
 
     python -m jobpilot.discover.tenants                 # all sources, weekly defaults
-    python -m jobpilot.discover.tenants --sources sweep,search
+    python -m jobpilot.discover.tenants --sources linkedin --budget 300
 """
 import argparse
 import datetime as dt
@@ -170,15 +171,60 @@ def src_adzuna(markets, titles, log):
     return out
 
 
+def src_linkedin(markets, titles, log, max_searches=40, delay=2.0):
+    """LinkedIn's guest job search, no account and no session cookie — LinkedIn
+    is the channel that converts and the account must never be put at risk.
+    Guest pages do not expose the external apply link, so this yields COMPANY
+    NAMES only, which is the goal; companies_to_urls() resolves each. Polite
+    delay; stops on the first 429."""
+    s = requests.Session()
+    s.headers.update({"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
+    names, searches = {}, 0
+    for m in markets:
+        loc = m.get("country") or ""
+        for title in titles[:4]:
+            if searches >= max_searches:
+                break
+            try:
+                r = s.get("https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search",
+                          params={"keywords": title, "location": loc, "start": 0}, timeout=20)
+            except Exception as ex:
+                log(f"linkedin: {type(ex).__name__} on search — stopping")
+                return names
+            searches += 1
+            if r.status_code in (429, 999):
+                log(f"linkedin: HTTP {r.status_code} — stopping for this run")
+                return names
+            time.sleep(delay)
+            for co in re.findall(r'base-search-card__subtitle[^>]*>\s*(?:<a[^>]*>)?\s*([^<]+?)\s*<', r.text):
+                co = co.strip()
+                if co and len(co) < 60:
+                    names.setdefault(co, m["id"])
+    log(f"linkedin: {searches} searches, {len(names)} employer names")
+    return names
+
+
 COMPANY_NOISE = re.compile(r"\b(inc\.?|ltd\.?|limited|llc|gmbh|ag|plc|b\.?v\.?|s\.?a\.?|pty|co\.?|corp\.?|corporation|group|technologies|technology|labs?)\b\.?$", re.I)
 MARKET_TLD = {"ireland": "ie", "netherlands": "nl", "germany": "de", "switzerland": "ch",
               "australia": "com.au", "uae": "ae", "luxembourg": "lu", "usa": "com", "saudi": "sa"}
 
 
-def companies_to_urls(names, log, workers=8):
-    """Employer name -> careers page, by probing the domains a company of that
-    name is likely to own. Names already tried are remembered in tenants_seen."""
-    from concurrent.futures import ThreadPoolExecutor, as_completed
+def domain_exists(domain):
+    """One cheap request per candidate domain, before any careers-page probing."""
+    try:
+        r = requests.head(f"https://{domain}", allow_redirects=True, timeout=6,
+                          headers={"User-Agent": UA})
+        return r.status_code < 500
+    except Exception:
+        return False
+
+
+def companies_to_urls(names, log, workers=8, budget=420, on_url=None):
+    """Employer name -> careers page. Domain guesses are checked for existence
+    first (one HEAD each) so the 11 careers-page patterns are only probed on
+    real domains; results stream to `on_url` as they arrive; `budget` seconds
+    caps the whole step so a weekly run always ends."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError as _TO
     from jobpilot.discover import find_careers
     seen = load_seen()
     todo = []
@@ -191,7 +237,7 @@ def companies_to_urls(names, log, workers=8):
         if key in seen:
             continue
         seen[key] = {"first_seen": dt.datetime.now().isoformat(timespec="seconds"), "name": name}
-        tlds = ["com", "ai", "io", "co"] + ([MARKET_TLD[market]] if market in MARKET_TLD and MARKET_TLD[market] != "com" else [])
+        tlds = ["com", "ai", "io"] + ([MARKET_TLD[market]] if market in MARKET_TLD and MARKET_TLD[market] != "com" else [])
         todo.append((name, slug, [f"{slug}.{t}" for t in tlds]))
     save_seen(seen)
     if not todo:
@@ -201,23 +247,52 @@ def companies_to_urls(names, log, workers=8):
     def resolve(item):
         name, slug, domains = item
         for d in domains:
+            if not domain_exists(d):
+                continue
             _, url = find_careers.find_for(d)
             if url:
                 return name, url
         return name, None
 
-    out = []
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        for fut in as_completed([ex.submit(resolve, t) for t in todo]):
+    out, started = [], time.time()
+    ex = ThreadPoolExecutor(max_workers=workers)
+    futs = [ex.submit(resolve, t) for t in todo]
+    try:
+        for fut in as_completed(futs, timeout=budget):
             name, url = fut.result()
             if url:
                 out.append(url)
                 log(f"  {name[:28]:<28} -> {url[:60]}")
-    log(f"companies: {len(out)}/{len(todo)} careers pages found")
+                if on_url:
+                    on_url(url)
+    except _TO:
+        log(f"companies: time budget ({budget}s) reached — {len(out)} resolved so far")
+    finally:
+        ex.shutdown(wait=False, cancel_futures=True)
+    log(f"companies: {len(out)}/{len(todo)} careers pages found in {int(time.time() - started)}s")
     return out
 
 
 # ----------------------------------------------------------------- register
+
+def register_one(u, log, seen=None, dry=False):
+    """careers.add() for one URL, remembered in tenants_seen. Returns key or None."""
+    from jobpilot.discover import careers
+    seen = load_seen() if seen is None else seen
+    k = board_key(u)
+    if k in seen:
+        return None
+    seen[k] = {"first_seen": dt.datetime.now().isoformat(timespec="seconds"), "url": u[:200]}
+    ok = False
+    if not dry:
+        try:
+            ok = bool(careers.add(u))
+        except Exception as ex:
+            log(f"  {k}: {type(ex).__name__}")
+    seen[k]["registered"] = ok
+    save_seen(seen)
+    return k if ok else None
+
 
 def register(urls, log, dry=False):
     from jobpilot.discover import careers
@@ -250,7 +325,10 @@ def register(urls, log, dry=False):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--sources", default=cfg("discovery.tenant_sources", "sweep,search,adzuna"))
+    ap.add_argument("--sources", default=cfg("discovery.tenant_sources", "sweep,search,adzuna,linkedin"))
+    ap.add_argument("--max-searches", type=int, default=cfg("discovery.linkedin_max_searches", 40))
+    ap.add_argument("--budget", type=int, default=cfg("discovery.tenant_budget_s", 420),
+                    help="seconds allowed for resolving employer names to careers pages")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args()
@@ -274,6 +352,17 @@ def main():
         urls += src_adzuna(markets, titles, log)
     urls = list(dict.fromkeys(u for u in urls if u))
     added, tried = register(urls, log, dry=a.dry_run)
+    if "linkedin" in srcs:
+        # names -> careers pages, each registered the moment it resolves
+        streamed = []
+        def on_url(u):
+            k = register_one(u, log, dry=a.dry_run)
+            if k:
+                streamed.append(k)
+        names = src_linkedin(markets, titles, log, max_searches=a.max_searches)
+        companies_to_urls(names, log, budget=a.budget, on_url=on_url)
+        added += streamed
+        tried += len(streamed)
     print(f"  tenants: {len(urls)} urls seen, {tried} new boards tried, {len(added)} registered"
           + (": " + ", ".join(added) if added else ""))
 

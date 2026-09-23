@@ -68,7 +68,7 @@ usage() { cat <<'TXT'
     ./jobpilot startups        sweep YC for AI companies with live boards
     ./jobpilot boards          how many boards, by platform
     ./jobpilot tenants         grow boards.yaml: find employers' ATS boards (Workday etc.)
-                               --sources sweep,search,adzuna  --dry-run
+                               --sources sweep,search,adzuna,linkedin  --budget 420
 
   REFERRALS  (sending is always manual — never automated)
     ./jobpilot who <company>   who to contact there, scoped to the hiring office

@@ -158,9 +158,12 @@ followups:
 discovery:
   # Weekly tenant discovery (Sunday digest): which sources may add boards.
   # search needs BRAVE_API_KEY or GOOGLE_CSE_KEY+GOOGLE_CSE_CX, adzuna needs
-  # ADZUNA_APP_ID+KEY (all in ~/.config/jobbot/env). LinkedIn is deliberately
-  # not a source.
-  tenant_sources: sweep,search,adzuna
+  # ADZUNA_APP_ID+KEY (all in ~/.config/jobbot/env). linkedin = guest search
+  # for employer NAMES only, never Sunil's account; names resolve to careers
+  # pages under tenant_budget_s seconds, registered as they resolve.
+  tenant_sources: sweep,search,adzuna,linkedin
+  linkedin_max_searches: 40
+  tenant_budget_s: 420
   yc_min_size: 10       # smaller than this cannot sponsor anyone
   yc_limit: 600
   workers: 14           # parallel probes; higher risks rate limits

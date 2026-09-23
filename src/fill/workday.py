@@ -374,6 +374,7 @@ def current_step(page):
           return bw >= 600 ? best : '';
         }""") or ""
         t = re.sub(r"\s+", " ", t.strip().lower().replace("/", " "))
+        t = re.sub(r"^current step \d+ of \d+\s*", "", t)      # screen-reader prefix on the active step
         for s in ALL_STEPS:
             if s in t:
                 return "create account" if s == "sign in" else t   # full text: "application questions 1 of 2"
@@ -856,6 +857,15 @@ def run(page, ctx, answers, resolve, stage="prep"):
     res = {"filled": filled, "warnings": warnings, "missing": missing, "questions": questions,
            "reached_review": False, "submit_ok": False, "steps": []}
 
+    body = _body(page)[:4000]
+    if "already applied for this job" in body or "you've already applied" in body:
+        # Workday remembers. On the submit leg this is the confirmation we need;
+        # on prep it means a duplicate that must not be queued again.
+        warnings.append("Workday: 'You've already applied for this job'")
+        res["reached_review"] = True
+        res["submit_ok"] = stage == "submit"
+        res["already_applied"] = True
+        return res
     if not start_application(page, ctx, warnings):
         return res
     last = ""

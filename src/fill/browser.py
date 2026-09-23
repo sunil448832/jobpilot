@@ -43,6 +43,7 @@ EXTRACT_JS = r"""
     if (['hidden', 'submit', 'button', 'reset', 'image'].includes(type)) continue;
     const st = window.getComputedStyle(el);
     if (st.display === 'none' || st.visibility === 'hidden') continue;
+    if (el.closest('header, nav, [data-automation-id^="utility"]')) continue;   // page chrome, never the form
 
     let label = '';
     if (el.id) {
@@ -139,6 +140,7 @@ EXTRACT_JS = r"""
     if (!txt || txt.length > 24 || !CHOICE.test(txt)) continue;
     const st = window.getComputedStyle(b);
     if (st.display === 'none' || st.visibility === 'hidden') continue;
+    if (b.closest('header, nav, [data-automation-id^="utility"]')) continue;
     const box = b.closest('fieldset,[role="group"],[role="radiogroup"]') || b.parentElement;
     if (!box) continue;
     if (!groups.has(box)) groups.set(box, []);
@@ -176,6 +178,8 @@ EXTRACT_JS = r"""
     if (b.hasAttribute('data-jobbot-idx')) continue;
     const st = window.getComputedStyle(b);
     if (st.display === 'none' || st.visibility === 'hidden') continue;
+    // The header's settings gear is a listbox button too; a re-find once landed on it.
+    if (b.closest('header, nav, [data-automation-id^="utility"]')) continue;
     // Workday points aria-labelledby at the button's OWN text ("Select One" +
     // "Required"), so the field box's <label> comes first, and any candidate
     // that is just the placeholder is discarded.
@@ -377,6 +381,8 @@ def _refind(page, f, everyone=None):
             by_id.setdefault(g["id"], g)
 
     def match(x):
+        if not norm(x.get("label") or "") and not norm(x.get("group_label") or ""):
+            return by_id.get(x["id"]) if x.get("id") else None     # never match two nameless controls
         return by_key.get(_key(x)) or (by_id.get(x["id"]) if x.get("id") else None)
 
     for x in (everyone or []):

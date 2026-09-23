@@ -211,6 +211,8 @@ greenhouse:
   jobs: 37
 - slug: hasbro
   jobs: 131
+- slug: robinhood
+  jobs: 163
 lever:
 - slug: aldar
   jobs: 46
@@ -1142,3 +1144,31 @@ workday:
   host: motorolasolutions.wd5.myworkdayjobs.com
   site: Careers
   jobs: 600
+- slug: nasdaq
+  host: nasdaq.wd1.myworkdayjobs.com
+  site: Global_External_Site
+  jobs: 176
+- slug: pfizer
+  host: pfizer.wd1.myworkdayjobs.com
+  site: PfizerCareers
+  jobs: 555
+- slug: otis
+  host: otis.wd504.myworkdayjobs.com
+  site: REC_Ext_Gateway
+  jobs: 600
+- slug: paloaltonetworks
+  host: paloaltonetworks.wd5.myworkdayjobs.com
+  site: panwexternalcareers
+  jobs: 600
+- slug: pultegroup
+  host: pultegroup.wd1.myworkdayjobs.com
+  site: PGI
+  jobs: 176
+- slug: ptc
+  host: ptc.wd1.myworkdayjobs.com
+  site: PTC
+  jobs: 172
+- slug: resmed
+  host: resmed.wd3.myworkdayjobs.com
+  site: Resmed_External_Careers
+  jobs: 236

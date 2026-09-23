@@ -413,6 +413,15 @@ press Approve on the phone. The 07:00 / 19:00 review run then files whatever is 
 - ⚠️ anything else, or a third failed attempt → *Failed — needs a look*, with the reason and
   the screenshot, and a Retry button.
 
+**Links you found yourself** (`/add` on the review page, `./jobpilot add <url>…`, 2026-09-23).
+Paste the company-site apply links (Greenhouse / Lever / Ashby / Workday / employer page — not
+LinkedIn URLs) — the JD is fetched from the ATS, the row is filed as `source=inbox` with a keep
+verdict and full fit, and autotailor takes those before anything the scanner found: no rank, no
+screen, no per-company cap (they are your picks). "Start tailoring now" on the page runs
+`autotailor --inbox` immediately; otherwise the next pipeline run picks them up. From there it
+is the normal flow — build, score, tailor if needed, fill, review on the phone, submit after
+Approve. `./jobpilot inbox` shows where each one stands.
+
 **Workday** (added 2026-09-23, `src/fill/workday.py`). One account per employer tenant, credentials
 in `~/.config/jobbot/env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo): sign in, create
 the account if the tenant does not know the address, emailed verification code via Telegram. The

@@ -182,6 +182,9 @@ class H(BaseHTTPRequestHandler):
                     f'<div class="wrap"><h1>Applications to review</h1>'
                     f'<p class="m">{counts or "Queue is empty."}</p>'
                     + sections
+                    + f'<a class="card" href="/add{t}">'
+                      f'<div class="r">Add job links →</div>'
+                      f'<div class="m">Paste company-site apply links you found; they go straight to tailoring</div></a>'
                     + f'<a class="card" href="/referrals{t}">'
                       f'<div class="r">Referral queue →</div>'
                       f'<div class="m">People to contact, messages ready to copy</div></a>'
@@ -224,6 +227,36 @@ class H(BaseHTTPRequestHandler):
         if parts[0] == "keywords" and len(parts) == 1:
             from jobpilot.review import keyword_form
             return self._ok(keyword_form.build())
+
+        # links Sunil found himself: paste, fetch the JD, straight to tailoring
+        if parts[0] == "add" and len(parts) == 1:
+            from jobpilot.discover import inbox
+            t = f"?t={TOKEN}" if TOKEN else ""
+            recent = "".join(
+                f'<div class="fld"><dt>{st}</dt><dd>{co} — {ti[:60]}</dd></div>'
+                for co, ti, loc, st, seen in inbox.pending()[:12])
+            body = (f"<title>Add job links</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
+                    f"<style>{INDEX_CSS} textarea{{width:100%;box-sizing:border-box;min-height:160px;font-size:15px;"
+                    f"padding:10px;border:1px solid #bbb;border-radius:8px}} button.go{{margin-top:10px;padding:14px;"
+                    f"width:100%;font-size:18px;border:0;border-radius:8px;background:#2a7;color:#fff}} "
+                    f".fld{{display:flex;gap:10px;font-size:14px;padding:4px 0}} .fld dt{{color:#6C7E90;min-width:70px}} "
+                    f"label.ck{{display:block;margin-top:10px;font-size:15px}} #out{{white-space:pre-wrap;font-size:14px}}</style>"
+                    f'<div class="wrap"><h1>Add job links</h1>'
+                    f'<p class="m">One company-site apply link per line (Greenhouse, Lever, Ashby, Workday or the '
+                    f'employer\'s own page — not LinkedIn). Each is fetched, marked reviewed and queued for tailoring '
+                    f'ahead of everything the scanner found.</p>'
+                    f'<textarea id="urls" placeholder="https://…"></textarea>'
+                    f'<label class="ck"><input type="checkbox" id="now" checked> Start tailoring now (otherwise the next pipeline run picks them up)</label>'
+                    f'<button class="go" onclick="go()">Add</button><p id="out" class="m"></p>'
+                    f'<h2>Recent</h2>{recent or "<p class=m>none yet</p>"}'
+                    f'<a href="/{t}">← Back to the list</a></div>'
+                    f"<script>async function go(){{const u=document.getElementById('urls').value.split('\\n').map(s=>s.trim()).filter(Boolean);"
+                    f"if(!u.length)return;const o=document.getElementById('out');o.textContent='Fetching…';"
+                    f"const r=await fetch('/add/save{t}',{{method:'POST',headers:{{'Content-Type':'application/json'}},"
+                    f"body:JSON.stringify({{urls:u,now:document.getElementById('now').checked}})}});"
+                    f"const j=await r.json();o.textContent=(j.results||[]).map(x=>x.ok?('✅ '+x.company+' — '+x.title+' ('+x.portal+', '+x.market+')'+(x.note?'  ⚠ '+x.note:'')):('❌ '+x.url.slice(0,60)+': '+x.why)).join('\\n')"
+                    f"+(j.started?'\\n\\nTailoring started — items appear in the list as they are ready.':'');}}</script>")
+            return self._ok(body)
 
         # a mid-run question from the submitter (e.g. an emailed verification code)
         if parts[0] == "ask" and len(parts) == 2:
@@ -294,6 +327,36 @@ class H(BaseHTTPRequestHandler):
                 ask_mod.answer(parts[1], payload.get("answer", ""))
             print(f"  [ask] {parts[1]} answered")
             return self._ok(json.dumps({"ok": True}), "application/json")
+
+        if parts[:2] == ["add", "save"]:
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                payload = json.loads(self.rfile.read(n) or b"{}")
+            except json.JSONDecodeError:
+                return self._err(400, "bad json")
+            from jobpilot.discover import inbox
+            results = []
+            with LOCK:
+                for u in (payload.get("urls") or [])[:30]:
+                    try:
+                        results.append(inbox.add(u))
+                    except Exception as e:
+                        results.append({"url": u, "ok": False, "why": f"{type(e).__name__}: {e}"[:120]})
+            started = False
+            if payload.get("now") and any(r.get("ok") for r in results):
+                # Detached: the tailor run outlives this request; results arrive
+                # as review items (and Telegram) exactly like a scheduled run.
+                try:
+                    subprocess.Popen([sys.executable, "-m", "jobpilot.tailor.autotailor", "--inbox",
+                                      "--limit", str(len([r for r in results if r.get("ok")]))],
+                                     cwd=TOOL, stdout=open(os.path.join(DATA, "inbox-tailor.log"), "a"),
+                                     stderr=subprocess.STDOUT, start_new_session=True)
+                    started = True
+                except Exception as e:
+                    print(f"  [inbox] could not start autotailor: {e}")
+            print(f"  [inbox] {len([r for r in results if r.get('ok')])}/{len(results)} added"
+                  + (", tailoring started" if started else ""))
+            return self._ok(json.dumps({"results": results, "started": started}), "application/json")
 
         # referral status updates write straight into the tracker sheet
         if parts[:2] == ["referrals", "status"]:

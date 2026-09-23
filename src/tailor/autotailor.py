@@ -286,25 +286,31 @@ def candidates(limit, floor, per_company=3, require_screen=None):
     handled, handled_titles = already_handled()
     w = float(cfg("pipeline.fit_weight", 0.5))
     con = sqlite3.connect(DB)
+    # source='inbox' = a link Sunil pasted himself (discover/inbox.py): already
+    # reviewed, so no floor, no screen verdict, no fit gate — and always first.
+    gates = "score >= ? "
+    if require_screen:
+        gates += ("AND screen LIKE 'keep%' "
+                  # The screener's fit score (0-100, resume vs the role's REAL requirements,
+                  # abstract ones and "one of" lists included) gates entry. Keyword scores
+                  # cannot read a JD like Adyen's (5 hard keywords in 87 terms); this can.
+                  f"AND fit >= {int(cfg('pipeline.fit_min', 45))} ")
     rows = con.execute(
-        "SELECT key, company, title, location, url, market, score, fit FROM jobs "
-        "WHERE status='new' AND score >= ? AND url != '' "
-        + ("AND screen LIKE 'keep%' " if require_screen else "")
-        # The screener's fit score (0-100, resume vs the role's REAL requirements,
-        # abstract ones and "one of" lists included) gates entry. Keyword scores
-        # cannot read a JD like Adyen's (5 hard keywords in 87 terms); this can.
-        + (f"AND fit >= {int(cfg('pipeline.fit_min', 45))} " if require_screen else "")
+        "SELECT key, company, title, location, url, market, score, fit, source FROM jobs "
+        "WHERE status='new' AND url != '' AND (source='inbox' OR (" + gates + ")) "
         # Blend: fit says how well he matches the role, rank says how worth
         # pursuing it is (market, sponsorship, pay). Non-US markets still come
         # first — that ordering is Sunil's stated priority, not a score.
-        + "ORDER BY CASE market WHEN 'usa' THEN 1 ELSE 0 END, "
+        + "ORDER BY CASE WHEN source='inbox' THEN 0 ELSE 1 END, "
+          "CASE market WHEN 'usa' THEN 1 ELSE 0 END, "
           f"(COALESCE(fit, 0) * {w} + score * {1 - w}) DESC LIMIT ?",
         (floor, max(limit * 8, 60))).fetchall()
     held = {_cokey(c) for c in (cfg("apply.hold_companies", []) or [])}
     quota = quota_state()
     out, seen, roles = [], {}, set()
-    for k, co, title, loc, url, mk, sc, fit in rows:
+    for k, co, title, loc, url, mk, sc, fit, src in rows:
         ck = _cokey(co)
+        inbox = src == "inbox"
         # One role, several cities = several rows. Two workers scaffolding the same
         # folder collided on Culture Amp; pick a role once.
         role = (ck, title.strip().lower()[:40])
@@ -326,11 +332,12 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         # Cap per company so one employer cannot own the queue — Anthropic and
         # OpenAI alone account for 38 of the 43 roles above the floor. A cap of 1
         # was throttling the whole pipeline down to ~5 candidates.
-        if seen.get(co, 0) >= per_company:
+        if seen.get(co, 0) >= per_company and not inbox:   # his own picks are never capped per company
             continue
         seen[co] = seen.get(co, 0) + 1
         out.append({"key": k, "company": co, "title": title, "location": loc,
                     "url": url, "market": mk, "score": sc, "fit": fit, "slug": slug,
+                    "source": src,
                     "pick": round((fit or 0) * w + sc * (1 - w), 1)})
         if len(out) >= limit:
             break
@@ -632,6 +639,8 @@ def main():
     ap.add_argument("--per-company", type=int, default=cfg("pipeline.per_company", 3),
                     help="max roles from one employer per run")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--inbox", action="store_true",
+                    help="only the links Sunil pasted himself (source=inbox); nothing from the scanner")
     a = ap.parse_args()
     try:
         sys.stdout.reconfigure(line_buffering=True)
@@ -645,6 +654,8 @@ def main():
 
     picks = candidates(a.limit, a.floor, a.per_company,
                        require_screen=not a.unscreened)
+    if a.inbox:
+        picks = [p for p in picks if p.get("source") == "inbox"]
     if not picks:
         log(f"nothing new above {a.floor}")
         return 0

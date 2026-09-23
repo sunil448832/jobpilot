@@ -58,7 +58,10 @@ usage() { cat <<'TXT'
     ./jobpilot screenus        screen, counting only non-US roles
     ./jobpilot screened        what the screen rejected, and why
     ./jobpilot llm-eval <m>    re-screen labelled roles on model <m>, compare, write nothing
-    ./jobpilot apply <url>     scaffold ONE job you found yourself
+    ./jobpilot add <url>...    links you found (company-site apply URLs): fetched, marked
+                               reviewed, tailored FIRST — no rank, no screen. Also on the phone: /add
+    ./jobpilot inbox           what you have added and where each one stands
+    ./jobpilot apply <url>     scaffold ONE job by hand (no queueing)
     ./jobpilot fill <slug>     fill an application that is already built
     ./jobpilot keywords        what applied JDs ask for vs targets.yaml (--dry-run / --promote)
 
@@ -184,6 +187,9 @@ case "$cmd" in
               if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py tailor.autotailor --limit "$1" "${@:2}"
               else py tailor.autotailor "$@"; fi ;;
   apply)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot apply <url>"; exit 1; }; py tailor.apply "$1" ;;
+  add)        [ $# -ge 1 ] || { echo "  usage: ./jobpilot add <url> [url...]   (company-site apply links you found; skips rank+screen)"; exit 1; }
+              py discover.inbox "$@" ;;
+  inbox)      py discover.inbox --list ;;
   fill)       [ $# -ge 1 ] || { echo "  usage: ./jobpilot fill <slug>"; exit 1; }; py fill.autofill --fill "$1" ;;
   dedupe)     py core.dedupe "$@" ;;
   keywords)   py rank.keyword_learn "$@" ;;

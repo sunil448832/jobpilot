@@ -305,6 +305,13 @@ async function send(decision) {
       rejected: "Dropped from the queue. It will not be shown again.",
     }[decision];
     h.className = "hint good"; h.textContent = "Saved";
+    // Back to the list by a fresh GET (cache-busting param), never by history —
+    // the back button restored a stale list on the phone.
+    const back = document.createElement("a");
+    back.href = "/" + location.search + (location.search ? "&" : "?") + "_=" + Date.now();
+    back.textContent = "← Back to the list";
+    back.style.cssText = "display:inline-block;margin-top:12px;font-weight:700";
+    $("#result").appendChild(back);
     $("#result").scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (e) {
     h.className = "hint bad";

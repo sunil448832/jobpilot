@@ -97,6 +97,13 @@ padding:15px 17px;text-decoration:none;color:#131A23}
 .r{font-weight:700;font-size:16px}.m{color:#6C7E90;font-size:14px;margin-top:3px}
 .b{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
 padding:2px 8px;border-radius:99px;background:#E7EFF8;color:#1D4E89;margin-top:8px}
+h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:14px 0 0;color:#6C7E90}
+h2 span{background:#DCE3EA;color:#131A23;border-radius:99px;padding:0 8px;font-size:12px;margin-left:6px}
+a.card{border-left:5px solid #DCE3EA}
+a.card.amber{border-left-color:#E0A526} .b.amber{background:#FBF1D6;color:#7A5A06} h2.amber{color:#9A6F0B}
+a.card.blue{border-left-color:#3B82C4}  .b.blue{background:#E7EFF8;color:#1D4E89}
+a.card.green{border-left-color:#2E9E5B} .b.green{background:#DDF3E5;color:#1B6B3A} h2.green{color:#237A46}
+a.card.grey{border-left-color:#B9C2CB;opacity:.6} .b.grey{background:#EEF1F4;color:#5A6B7C}
 """
 
 
@@ -134,25 +141,48 @@ class H(BaseHTTPRequestHandler):
         parts = [p for p in u.path.split("/") if p]
 
         if not parts:
-            rows = []
-            for i in items():
-                if i.get("status") == "rejected":
-                    continue
-                nq = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
-                t = f"?t={TOKEN}" if TOKEN else ""
-                rows.append(
-                    f'<a class="card" href="/a/{i["id"]}{t}">'
-                    f'<div class="r">{i.get("role","?")}</div>'
-                    f'<div class="m">{i.get("company","?")} · {i.get("location","")}</div>'
-                    f'<div class="b">{i.get("status","?")} · {nq} question(s)</div></a>')
+            # Three things made the list hard to read on the phone: every card wore
+            # the same blue pill whatever its state, approved items sat mixed in
+            # with the rest, and going "back" from a card restored the page from
+            # the browser's back-forward cache — so a role tapped Approve a second
+            # ago still read "pending". Sections + colour + a reload on pageshow.
             t = f"?t={TOKEN}" if TOKEN else ""
-            body = (f"<title>Applications</title><style>{INDEX_CSS}</style>"
+            SECT = [("needs_input", "Need your answers", "amber"),
+                    ("pending", "Ready to review", "blue"),
+                    ("approved", "Approved — waiting for submit", "green"),
+                    ("submitted", "Submitted", "grey")]
+            groups = {k: [] for k, _, _ in SECT}
+            for i in items():
+                st = i.get("status")
+                if st in groups:
+                    groups[st].append(i)
+            def card(i, colour):
+                nq = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
+                label = {"needs_input": f"{nq} to answer", "pending": "pending",
+                         "approved": "✅ approved", "submitted": "submitted"}[i["status"]]
+                return (f'<a class="card {colour}" href="/a/{i["id"]}{t}">'
+                        f'<div class="r">{i.get("role","?")}</div>'
+                        f'<div class="m">{i.get("company","?")} · {i.get("location","")}</div>'
+                        f'<div class="b {colour}">{label}</div></a>')
+            counts = " · ".join(f"{len(groups[k])} {title.split(' —')[0].lower()}"
+                                for k, title, _ in SECT if groups[k])
+            sections = ""
+            for k, title, colour in SECT:
+                if not groups[k]:
+                    continue
+                sections += (f'<h2 class="{colour}">{title} <span>{len(groups[k])}</span></h2>'
+                             + "".join(card(i, colour) for i in groups[k]))
+            body = (f"<title>Applications</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
+                    f"<style>{INDEX_CSS}</style>"
                     f'<div class="wrap"><h1>Applications to review</h1>'
-                    + ("".join(rows) or '<p class="m">Queue is empty.</p>')
+                    f'<p class="m">{counts or "Queue is empty."}</p>'
+                    + sections
                     + f'<a class="card" href="/referrals{t}">'
                       f'<div class="r">Referral queue →</div>'
                       f'<div class="m">People to contact, messages ready to copy</div></a>'
-                    + "</div>")
+                    + "</div>"
+                    # bfcache: a page restored by the back button never re-fetched.
+                    + "<script>addEventListener('pageshow',e=>{if(e.persisted)location.reload()});</script>")
             return self._ok(body)
 
         if parts[0] == "a" and len(parts) == 2:

@@ -333,3 +333,143 @@ answers:
 
     Hugging Face: https://huggingface.co/sunil448832'
   source: answered by Sunil on the Adaptyv form, 2026-09-23
+- match: do you have professional experience reading cutting-edge ai research papers and successfully
+    implementing them into production-quality code?
+  keywords:
+  - professional
+  - experience
+  - reading
+  - cutting-edge
+  - research
+  - papers
+  - successfully
+  - implementing
+  answer: Yes. I post-trained Qwen3-4B with GRPO and verifiable rewards, taking a research-level
+    RL technique and turning it into a production QLoRA (r=16) training pipeline, lifting
+    pass rate from 38.6% to 41.0% over 280 steps on 500 held-out problems.
+  source: answered by Sunil on the Adyen form, 2026-09-23
+- match: do you have experience operating with a high degree of autonomy to solve complex,
+    cross-team ai problems and mentor other engineers?
+  keywords:
+  - experience
+  - operating
+  - high
+  - degree
+  - autonomy
+  - solve
+  - complex
+  - cross-team
+  answer: Yes. As Senior Data Scientist at Aria Intelligent Solutions I own GenAI initiatives
+    end-to-end with high autonomy, from research to production, including a face-recognition
+    system reaching 99% precision on a 1,000-person gallery.
+  source: answered by Sunil on the Adyen form, 2026-09-23
+- match: 'for dutch citizens: which culture was alongside the dutch significant in your upbringing?'
+  keywords:
+  - dutch
+  - citizens
+  - culture
+  - was
+  - alongside
+  - significant
+  - upbringing
+  answer: Not applicable — I am an Indian citizen, not a Dutch citizen.
+  source: answered by Sunil on the Adyen form, 2026-09-23
+- match: do you identify as having a mental or physical health condition?
+  keywords:
+  - identify
+  - having
+  - mental
+  - physical
+  - health
+  - condition
+  answer: No.
+  source: answered by Sunil on the Adyen form, 2026-09-23
+- match: do you identify as neurodiverse (eg attention deficit disorder, dyslexia, autism
+    spectrum disorder)?
+  keywords:
+  - identify
+  - neurodiverse
+  - attention
+  - deficit
+  - disorder
+  - dyslexia
+  - autism
+  - spectrum
+  answer: No.
+  source: answered by Sunil on the Adyen form, 2026-09-23
+- match: are you open to working in-person in one of our offices 25% of the time?
+  keywords:
+  - open
+  - working
+  - in-person
+  - one
+  - our
+  - offices
+  - time
+  answer: Yes, I'm open to being in the Zurich office at least 25% of the time.
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: ai policy for application
+  keywords:
+  - policy
+  - application
+  answer: N/A
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: why anthropic?
+  keywords:
+  - why
+  - anthropic
+  answer: I want to work on post-training where the engineering directly shapes model behavior.
+    At Amazon and now at Aria I've built the pipeline side of ML systems (a low-latency inference
+    service, an eval harness that graded 28 tasks at 86% exact-pass), and most recently I
+    ran GRPO post-training on Qwen3-4B with verifiable rewards, lifting pass rate from 38.6%
+    to 41.0% over 280 steps. Anthropic is the place doing that at frontier scale with safety
+    as a first-class constraint, not an afterthought, and I want to bring that engineering
+    rigor to it.
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: have you ever interviewed at anthropic before?
+  keywords:
+  - ever
+  - interviewed
+  - anthropic
+  - before
+  answer: No, this is my first time applying/interviewing at Anthropic.
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: when is the earliest you would want to start working with us?
+  keywords:
+  - when
+  - earliest
+  - would
+  - want
+  - start
+  - working
+  answer: My notice period is 2 months, so I could start roughly 2 months after an offer.
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: do you have any deadlines or timeline considerations we should be aware of?
+  keywords:
+  - deadlines
+  - timeline
+  - considerations
+  - should
+  - aware
+  answer: No hard deadlines on my end — my notice period is 2 months, which is the main timeline
+    constraint.
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: what is the address from which you plan on working? if you would need to relocate,
+    please type "relocating".
+  keywords:
+  - address
+  - from
+  - plan
+  - working
+  - would
+  - need
+  - relocate
+  - type
+  answer: relocating
+  source: answered by Sunil on the Anthropic form, 2026-09-23
+- match: visa sponsorship
+  keywords:
+  - visa
+  - sponsorship
+  answer: 'Yes'
+  source: answered by Sunil on the Taktile form, 2026-09-23

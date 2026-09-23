@@ -779,8 +779,14 @@ def fill_react_select(frame, sel, text):
             frame.press(sel, "Control+A")
             frame.press(sel, "Backspace")
             frame.type(sel, want[:60], delay=40)
-            frame.wait_for_timeout(800)
-            vis = visible_options()
+            # A city typeahead fetches its suggestions (Culture Amp's
+            # "Location (City)" took ~2 s); a Yes/No menu is instant. Poll.
+            vis = []
+            for _ in range(8):
+                frame.wait_for_timeout(500)
+                vis = visible_options()
+                if vis and not all(t in ("loading...", "loading", "no options") for _, t in vis):
+                    break
             # Exact first, then prefix, then substring — "India" typed into the
             # phone-country picker once landed on "British Indian Ocean
             # Territory (+246)" because that sorts first.

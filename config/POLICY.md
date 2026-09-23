@@ -50,7 +50,9 @@ wording for, and only to check whether real evidence of it exists — if it does
 add it in the resume's register; if not, leave the gap and let the score be lower.
 Never use them to pad a resume that already matches. Files: `project-harmoniq.md`
 (Aria), `project-roche-content-tagging.md`, `project-roche-pipeline.md`,
-`project-grpo.md` (RL post-training), `project-uls-llm.md` (freelance VLM).
+`project-grpo.md` (RL post-training), `project-uls-llm.md` (freelance VLM),
+`open-source-contributions.md` (the complete public GitHub / Hub record — the ONLY
+source for any "open-source contributions" question; one merged PR, no HF code).
 
 **Attribution boundaries — these bind whether or not a note is opened:**
 - HarmonIQ **memory-orchestrator is a teammate's build**; never his.

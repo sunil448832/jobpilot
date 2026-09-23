@@ -52,6 +52,7 @@ ALLOWED_TOOLS = "Read,Edit,Write,Glob,Grep"
 #   LOG_LOCK   so interleaved lines from different roles stay whole.
 FILL_LOCK = threading.Lock()
 LOG_LOCK = threading.Lock()
+MANUAL = []                    # apply-by-hand items created this run, for the Telegram note
 
 PROMPT = """Tailor Sunil Kumar Sharma's resume for one specific job. It has already been
 built untailored and scored against the JD; the score is below target, so this
@@ -580,7 +581,17 @@ def process_role(p, cli, tag=""):
     with FILL_LOCK:                       # one browser session at a time
         ok, out = run([sys.executable, "-m", "jobpilot.fill.autofill",
                        "--fill", p["slug"]], timeout=900)
-    log(f"  {tag}fill: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
+    if not ok and "not supported for autofill" in out:
+        # Phenom / Workday / unknown: hand him the content instead of dropping it.
+        from jobpilot.fill import manual
+        m = re.search(r"Portal '([^']+)'", out)
+        qfile = manual.create(p, m.group(1) if m else "unknown")
+        ok2, out2 = draft_questions(p["slug"], qfile, cli)
+        log(f"  {tag}fill: not autofillable ({m.group(1) if m else 'unknown'}) — manual pack ready"
+            f"{', answers drafted' if ok2 else ', drafting FAILED — ' + out2[-80:]}")
+        MANUAL.append(p)
+    else:
+        log(f"  {tag}fill: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
 
     # A question with no drafted answers makes him type on a phone, which is
     # exactly what this system exists to avoid (POLICY.md section 5).
@@ -593,6 +604,22 @@ def process_role(p, cli, tag=""):
     con.commit(); con.close()
     log(f"  {tag}done in {(dt.datetime.now() - t0).seconds}s")
 
+
+
+def notify_manual():
+    """One Telegram note for the apply-by-hand items created this run."""
+if MANUAL:
+    try:
+        from jobpilot.core import daily
+        link = daily.form_link()
+        text = ("🖐 <b>Apply by hand</b> — the portal cannot be autofilled, but everything is ready to copy:\n\n"
+                + "\n".join(f"• {m['company']} — {str(m['title'])[:44]} ({m['market']})" for m in MANUAL)
+                + f"\n\nOpen the list, section \"Apply by hand\": {link}\n"
+                  "Each page has every field with a Copy button, the resume files, and drafted answers. "
+                  "Tap \"Mark as submitted\" when done.")
+        log("telegram (manual): " + ("sent" if daily.telegram(text) else "FAILED"))
+    except Exception as e:
+        log(f"telegram (manual) FAILED: {type(e).__name__}: {e}")
 
 
 def main():
@@ -643,6 +670,7 @@ def main():
             except Exception as e:
                 log(f"  {p['slug']}: FAILED {type(e).__name__}: {e}")
     log(f"all {len(picks)} done in {(dt.datetime.now() - t0).seconds}s")
+    notify_manual()
     log("done — nothing submitted; approve on the phone")
     return 0
 

@@ -104,6 +104,7 @@ a.card.amber{border-left-color:#E0A526} .b.amber{background:#FBF1D6;color:#7A5A0
 a.card.blue{border-left-color:#3B82C4}  .b.blue{background:#E7EFF8;color:#1D4E89}
 a.card.green{border-left-color:#2E9E5B} .b.green{background:#DDF3E5;color:#1B6B3A} h2.green{color:#237A46}
 a.card.grey{border-left-color:#B9C2CB;opacity:.6} .b.grey{background:#EEF1F4;color:#5A6B7C}
+a.card.purple{border-left-color:#7C4DBE} .b.purple{background:#EFE6FA;color:#4E2A86} h2.purple{color:#5E3A9E}
 """
 
 
@@ -148,6 +149,7 @@ class H(BaseHTTPRequestHandler):
             # ago still read "pending". Sections + colour + a reload on pageshow.
             t = f"?t={TOKEN}" if TOKEN else ""
             SECT = [("needs_input", "Need your answers", "amber"),
+                    ("manual", "Apply by hand — content ready to copy", "purple"),
                     ("pending", "Ready to review", "blue"),
                     ("approved", "Approved — waiting for submit", "green"),
                     ("submitted", "Submitted", "grey")]
@@ -158,7 +160,7 @@ class H(BaseHTTPRequestHandler):
                     groups[st].append(i)
             def card(i, colour):
                 nq = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
-                label = {"needs_input": f"{nq} to answer", "pending": "pending",
+                label = {"needs_input": f"{nq} to answer", "pending": "pending", "manual": "🖐 apply by hand",
                          "approved": "✅ approved", "submitted": "submitted"}[i["status"]]
                 return (f'<a class="card {colour}" href="/a/{i["id"]}{t}">'
                         f'<div class="r">{i.get("role","?")}</div>'
@@ -189,7 +191,27 @@ class H(BaseHTTPRequestHandler):
             p = item_path(parts[1])
             if not os.path.isfile(p):
                 return self._err(404, "no such application")
-            return self._ok(form_mod.build(json.load(open(p))))
+            item = json.load(open(p))
+            if item.get("manual"):
+                from jobpilot.review import manual_form
+                return self._ok(manual_form.build(item))
+            return self._ok(form_mod.build(item))
+
+        # resume files for an apply-by-hand item: /file/<id>/docx|pdf
+        if parts[0] == "file" and len(parts) == 3 and parts[2] in ("docx", "pdf"):
+            p = item_path(parts[1])
+            if not os.path.isfile(p):
+                return self._err(404, "no such application")
+            item = json.load(open(p))
+            fp = item.get("resume_pdf") if parts[2] == "pdf" else item.get("resume")
+            if not fp or not os.path.isfile(fp) or not os.path.abspath(fp).startswith(os.path.abspath(APPLICATIONS)):
+                return self._err(404, "file not built")
+            ctype = ("application/pdf" if parts[2] == "pdf"
+                     else "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            self.send_response(200); self.send_header("Content-Type", ctype)
+            self.send_header("Content-Disposition", f'attachment; filename="sunil_resume.{parts[2]}"')
+            body = open(fp, "rb").read(); self.send_header("Content-Length", str(len(body))); self.end_headers()
+            self.wfile.write(body); return
 
         if parts[0] == "referrals":
             from jobpilot.review import referral_form
@@ -268,7 +290,9 @@ class H(BaseHTTPRequestHandler):
         with LOCK:
             item = json.load(open(p))
             decision = payload.get("decision")
-            if decision not in ("approved", "deferred", "rejected"):
+            # "submitted" is only for apply-by-hand items: Sunil filed it himself.
+            allowed = ("approved", "deferred", "rejected") + (("submitted",) if item.get("manual") else ())
+            if decision not in allowed:
                 return self._err(400, "bad decision")
             # An application that has actually been filed is final. A tap on its
             # card once flipped it back to 'approved', which would have made
@@ -285,7 +309,12 @@ class H(BaseHTTPRequestHandler):
             # "deferred" goes back to pending on purpose: an unreviewed role must
             # survive to the next session. Only an explicit reject discards.
             item["status"] = {"approved": "approved", "deferred": "pending",
-                              "rejected": "rejected"}[decision]
+                              "rejected": "rejected", "submitted": "submitted"}[decision]
+            if decision == "submitted":
+                item["submitted_at"] = dt.datetime.now().isoformat(timespec="seconds")
+                item["submitted_via"] = "manual"
+            elif item.get("manual") and decision == "deferred":
+                item["status"] = "manual"          # stays in the apply-by-hand section
             item["decided_at"] = dt.datetime.now().isoformat(timespec="seconds")
             if decision == "deferred":
                 item["deferred_count"] = (item.get("deferred_count") or 0) + 1
@@ -304,8 +333,8 @@ class H(BaseHTTPRequestHandler):
         print(f"  [{decision}] {item_id}")
 
         n_ans = len([a for a in payload.get("answers", []) if (a.get("text") or "").strip()])
-        icon = {"approved": "✅", "deferred": "🕒", "rejected": "🚫"}[decision]
-        word = {"approved": "APPROVED", "deferred": "KEPT FOR LATER",
+        icon = {"approved": "✅", "deferred": "🕒", "rejected": "🚫", "submitted": "📨"}[decision]
+        word = {"approved": "APPROVED", "deferred": "KEPT FOR LATER", "submitted": "SUBMITTED BY HAND",
                 "rejected": "REJECTED"}[decision]
         body = (f"{icon} <b>{word}</b>\n\n"
                 f"<b>{item.get('role','?')}</b>\n"
@@ -314,7 +343,8 @@ class H(BaseHTTPRequestHandler):
                 f"{len(item.get('fields', {}))} fields"
                 + (f" · {n_ans} answers saved" if n_ans else "")
                 + f"\n\n<i>{item_id}</i>\n")
-        body += {"approved": "Nothing is sent yet — run submit-approved to file it.",
+        body += {"submitted": "Recorded. Tracker and follow-up date will update on the next sync.",
+                 "approved": "Nothing is sent yet — run submit-approved to file it.",
                  "deferred": "Still in the queue. It will be waiting next time.",
                  "rejected": "Dropped. It will not be shown again."}[decision]
         threading.Thread(target=telegram, args=(body,), daemon=True).start()

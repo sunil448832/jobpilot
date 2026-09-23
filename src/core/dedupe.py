@@ -37,7 +37,7 @@ QUEUE = os.path.join(DATA, "queue")
 BOARDS = os.path.join(CONFIG, "boards.yaml")
 
 # how far along a queue item is — never drop a further one for a fresher one
-RANK = {"submitted": 5, "approved": 4, "needs_input": 3, "pending": 2,
+RANK = {"submitted": 5, "approved": 4, "needs_input": 3, "manual": 3, "pending": 2,
         "failed": 1, "rejected": 0}
 
 JUNK_SLUGS = {"assets", "assets-aws", "static", "cdn", "media", "img", "www",

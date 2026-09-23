@@ -211,7 +211,7 @@ def main():
                 if os.path.basename(f).startswith("_"):
                     continue
                 st = json.load(open(f)).get("status")
-                if st in ("pending", "needs_input", "approved"):
+                if st in ("pending", "needs_input", "approved", "manual"):
                     pend += 1
         except Exception:
             pass

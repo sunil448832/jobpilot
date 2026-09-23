@@ -85,7 +85,7 @@ def submitted_items():
             d = json.load(open(p))
         except json.JSONDecodeError:
             continue
-        if d.get("status") in ("submitted", "approved", "skipped", "failed"):
+        if d.get("status") in ("submitted", "approved", "manual", "skipped", "failed"):
             out.append(d)
     return out
 
@@ -108,7 +108,7 @@ def sync(dry=False, top=8):
     # 1) applications the pipeline actually acted on
     for d in submitted_items():
         co, role = (d.get("company") or "?").strip(), (d.get("role") or "?").strip()
-        stage = {"submitted": "Applied", "approved": "To Apply",
+        stage = {"submitted": "Applied", "approved": "To Apply", "manual": "To Apply (by hand)",
                  "skipped": "Withdrawn", "failed": "To Apply"}[d["status"]]
         r = row_for(ws, idx, co, role)
         if r is None:

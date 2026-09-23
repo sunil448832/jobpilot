@@ -473,3 +473,55 @@ answers:
   - sponsorship
   answer: 'Yes'
   source: answered by Sunil on the Taktile form, 2026-09-23
+- match: what makes you excited to join deepjudge? what are the most interesting components
+    of the deepjudge product that you would be excited to work on?
+  keywords:
+  - makes
+  - excited
+  - join
+  - deepjudge
+  - most
+  - interesting
+  - components
+  - product
+  answer: 'DeepJudge sits exactly where my last two years of work have been: turning retrieval
+    and agentic systems from demos into things that hold up in production. At Aria I compressed
+    a Qdrant retrieval index 8x with 4-bit quantization while holding nDCG/recall parity across
+    8 BEIR datasets, and I root-caused a write-time OOM in that same index under load. Search
+    quality that has to survive real documents and real judgment calls, which is exactly the
+    problem legal knowledge search poses, is the component I''d want to own.'
+  source: answered by Sunil on the Deepjudge form, 2026-09-23
+- match: what did you own, what were you trying to improve, and what was the outcome? if you
+    used an ai assistant, what was your experience, what are underappreciated be
+  keywords:
+  - did
+  - own
+  - were
+  - trying
+  - improve
+  - was
+  - outcome
+  - used
+  answer: 'I owned an evaluation service meant to replace manual QA on our agent fleet: 28
+    graded tasks on real Kaggle datasets, a cell-level precision/recall/F1 grader (order-insensitive,
+    float/date tolerant), and an LLM-based root-cause analyzer that separates genuine errors
+    from acceptable variants. I used an AI assistant (Claude) heavily to draft the grading
+    logic and iterate on edge cases in the tolerance rules. The underappreciated part was
+    how much of the value was in the grader''s tolerance design, not the model calling it
+    — a strict-equality grader made a good agent look bad, and a sloppy one hid real regressions.
+    Outcome: the fleet benchmarked at 86% exact-pass, 0.86 mean F1, and every release now
+    gets automated regression visibility instead of manual spot-checks.'
+  source: answered by Sunil on the Deepjudge form, 2026-09-23
+- match: i am based in or within a reasonable commuting distance of zurich (able to be in-office
+    4+ days a week).
+  keywords:
+  - based
+  - within
+  - reasonable
+  - commuting
+  - distance
+  - zurich
+  - able
+  - in-office
+  answer: I live outside commuting distance and require remote work or relocation assistance.
+  source: answered by Sunil on the Deepjudge form, 2026-09-23

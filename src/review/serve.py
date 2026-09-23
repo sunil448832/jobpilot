@@ -222,6 +222,31 @@ class H(BaseHTTPRequestHandler):
             from jobpilot.review import keyword_form
             return self._ok(keyword_form.build())
 
+        # a mid-run question from the submitter (e.g. an emailed verification code)
+        if parts[0] == "ask" and len(parts) == 2:
+            from jobpilot.review import ask as ask_mod
+            qd = ask_mod.load(parts[1])
+            if not qd:
+                return self._err(404, "no such question")
+            t = f"?t={TOKEN}" if TOKEN else ""
+            done = qd.get("answer")
+            body = (f"<title>Question</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
+                    f"<style>{INDEX_CSS} input.ans{{font-size:22px;letter-spacing:2px;padding:12px;width:100%;"
+                    f"box-sizing:border-box;border:1px solid #bbb;border-radius:8px}} button.go{{margin-top:12px;"
+                    f"padding:14px;width:100%;font-size:18px;border:0;border-radius:8px;background:#2a7;color:#fff}}</style>"
+                    f'<div class="wrap"><h1>One thing needed</h1>'
+                    f'<p>{qd.get("question","")}</p><p class="m">{qd.get("hint","")}</p>'
+                    + (f'<p class="m">Already answered: <b>{done}</b></p>' if done else "")
+                    + f'<input class="ans" id="ans" autocomplete="one-time-code" autofocus placeholder="type here">'
+                    f'<button class="go" onclick="save()">Send</button><p id="st" class="m"></p>'
+                    f'<a href="/{t}">← Back to the list</a></div>'
+                    f"<script>async function save(){{const v=document.getElementById('ans').value.trim();"
+                    f"if(!v)return;const r=await fetch('/ask/{parts[1]}/save{t}',{{method:'POST',"
+                    f"headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{answer:v}})}});"
+                    f"document.getElementById('st').textContent=r.ok?'Sent — the browser will continue.':'Failed: '+r.status;}}"
+                    f"</script>")
+            return self._ok(body)
+
         if parts[0] == "shot" and len(parts) == 2:
             p = os.path.join(QUEUE_DIR, parts[1] + ".png")
             if not os.path.isfile(p):
@@ -254,6 +279,18 @@ class H(BaseHTTPRequestHandler):
                                             "dismissed": payload.get("dismiss") or []}), "application/json")
             except Exception as e:
                 return self._ok(json.dumps({"ok": False, "error": f"{type(e).__name__}: {e}"}), "application/json")
+
+        if len(parts) == 3 and parts[0] == "ask" and parts[2] == "save":
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                payload = json.loads(self.rfile.read(n) or b"{}")
+            except json.JSONDecodeError:
+                return self._err(400, "bad json")
+            from jobpilot.review import ask as ask_mod
+            with LOCK:
+                ask_mod.answer(parts[1], payload.get("answer", ""))
+            print(f"  [ask] {parts[1]} answered")
+            return self._ok(json.dumps({"ok": True}), "application/json")
 
         # referral status updates write straight into the tracker sheet
         if parts[:2] == ["referrals", "status"]:

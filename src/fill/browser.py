@@ -95,6 +95,12 @@ EXTRACT_JS = r"""
                  || el.getAttribute('aria-autocomplete') === 'list'
                  || el.getAttribute('aria-haspopup') === 'listbox'
                  || /start typing|search|select\.\.\./i.test(el.placeholder || '')),
+      // Greenhouse's 2025 job board renders every dropdown as react-select:
+      // the <input> is only the search box, the chosen value lives in a sibling
+      // .select__single-value, and el.value is EMPTY after a pick. Flag it so
+      // the fill reads back the right node.
+      rs: !!el.closest('.select__control'),
+      tag: el.tagName.toLowerCase(),
     };
     if (el.tagName.toLowerCase() === 'select') {
       rec.options = Array.from(el.options).map(o => o.text.trim());
@@ -291,6 +297,22 @@ def fill_fields(page, resolve, answers, ctx):
         if not rp:
             warnings.append(f"no resume file built for {ctx['company_slug']}")
             continue
+        # Only a resume field gets the resume. One DeepJudge form had three file
+        # inputs and all three received sunil_resume.docx — including
+        # "Transcripts of Records". A cover-letter slot gets it only when the
+        # portal insists (and says so in the warnings); anything else stays empty.
+        lab = norm(f["label"])
+        if lab and not re.search(r"resume|\bcv\b|curriculum|upload file|attach", lab):
+            if re.search(r"cover", lab):
+                if not f["required"]:
+                    continue
+                warnings.append(f"'{f['label'][:40]}' is required — no cover letter exists, "
+                                f"resume uploaded in its place")
+            else:
+                if f["required"]:
+                    warnings.append(f"REQUIRED file '{f['label'][:50]}' left empty — "
+                                    f"not a resume/cover-letter field")
+                continue
         try:
             page.set_input_files(f'[data-jobbot-idx="{f["idx"]}"]', rp)
             filled[f["label"] or "Resume"] = os.path.basename(rp)
@@ -352,7 +374,9 @@ def fill_fields(page, resolve, answers, ctx):
                         text = iso
                 if str(text).strip():
                     ok, how = fill_verified(page, f["idx"], text, is_date,
-                                            combobox=bool(f.get("combobox")))
+                                            combobox=bool(f.get("combobox")),
+                                            rs=bool(f.get("rs")),
+                                            textarea=f.get("tag") == "textarea")
                     if ok:
                         filled[label] = str(text)
                     else:
@@ -502,7 +526,43 @@ def harvest_questions(target, resolve, warnings, max_questions=8):
     return qs
 
 
-def fill_verified(frame, idx, text, is_date=False, combobox=False):
+def click_field(frame, sel):
+    """Click a control even when a sticky banner sits over it.
+
+    Ashby keeps its "Autofill from resume" panel sticky at the top; after
+    Playwright scrolls a field into view that panel covers it, the click is
+    "intercepted" and times out — which is how every Yes/No on Airwallex and
+    Taktile stayed blank. Escalate: normal click, then centre it and force,
+    then a plain JS focus."""
+    try:
+        frame.click(sel, timeout=4000)
+        return "click"
+    except Exception:
+        pass
+    try:
+        frame.eval_on_selector(sel, "el => el.scrollIntoView({block: 'center'})")
+        frame.wait_for_timeout(300)
+        frame.click(sel, timeout=3000, force=True)
+        return "force-click"
+    except Exception:
+        pass
+    frame.eval_on_selector(sel, "el => { el.focus(); el.click && el.click(); }")
+    return "js-focus"
+
+
+def rs_value(frame, sel):
+    """The text react-select is actually showing for this input, or ''."""
+    try:
+        return (frame.eval_on_selector(sel, """el => {
+            const c = el.closest('.select__control') || el.parentElement;
+            const v = c && c.querySelector('.select__single-value, [class*="single-value"]');
+            return v ? v.innerText : '';
+        }""") or "").strip()
+    except Exception:
+        return ""
+
+
+def fill_verified(frame, idx, text, is_date=False, combobox=False, rs=False, textarea=False):
     """Type a value and READ IT BACK. A fill that reports success on a hidden
     input while the visible combobox stays empty is how required fields ended up
     blank on a form the code called complete. Escalate until the value sticks."""
@@ -514,6 +574,9 @@ def fill_verified(frame, idx, text, is_date=False, combobox=False):
         except Exception:
             return ""
 
+    if rs:
+        return fill_react_select(frame, sel, text)
+
     # A React typeahead ignores a programmatic fill: el.value gets set, the
     # component never re-renders, and the field LOOKS empty while read-back
     # passes. So a combobox always goes straight to real typing.
@@ -521,12 +584,22 @@ def fill_verified(frame, idx, text, is_date=False, combobox=False):
         try:
             frame.fill(sel, str(text), timeout=4000)
             if value():
+                if textarea:
+                    # A controlled React textarea sometimes keeps the DOM text
+                    # but not the state (Ashby: "Missing entry" under a full
+                    # box). One real keystroke in and out commits it.
+                    try:
+                        frame.press(sel, "End", timeout=2000)
+                        frame.type(sel, " ", delay=30)
+                        frame.press(sel, "Backspace", timeout=2000)
+                    except Exception:
+                        pass
                 return True, "fill"
         except Exception:
             pass
     # Typeahead/date widgets ignore programmatic fill — type like a person.
     try:
-        frame.click(sel, timeout=5000)
+        click_field(frame, sel)
         frame.eval_on_selector(sel, "el => { el.value=''; }")
         frame.type(sel, str(text), delay=45)
         frame.wait_for_timeout(1000)
@@ -572,12 +645,54 @@ def fill_verified(frame, idx, text, is_date=False, combobox=False):
     return False, "value did not stick"
 
 
+def fill_react_select(frame, sel, text):
+    """Greenhouse (react-select): open, type to filter, pick the option, then
+    read the rendered single-value — el.value is always '' after a pick."""
+    want_full = str(text).strip().lower()
+    want = want_full.split(",")[0].strip()
+    try:
+        click_field(frame, sel)
+        frame.type(sel, str(text).split(",")[0].strip(), delay=45)
+        frame.wait_for_timeout(900)
+        picked = False
+        for osel in ('.select__option', '[role="option"]', '[class*="option"]'):
+            try:
+                opts = frame.locator(osel)
+                n = min(opts.count(), 15)
+                for i in range(n):
+                    o = opts.nth(i)
+                    if not o.is_visible(timeout=300):
+                        continue
+                    ot = (o.inner_text() or "").strip().lower()
+                    if ot == want_full or ot == want or want in ot:
+                        o.click(timeout=3000)
+                        picked = True
+                        break
+            except Exception:
+                continue
+            if picked:
+                break
+        if not picked:
+            frame.press(sel, "ArrowDown")
+            frame.wait_for_timeout(300)
+            frame.press(sel, "Enter")
+        frame.wait_for_timeout(500)
+        shown = rs_value(frame, sel)
+        if shown:
+            if shown.lower() == want or shown.lower() == want_full or want in shown.lower():
+                return True, "react-select"
+            return True, f"react-select (shows {shown[:30]!r})"
+        return False, "react-select: nothing selected"
+    except Exception as e:
+        return False, str(e)[:60]
+
+
 def click_choice(frame, idx):
     """Click a <button>-rendered choice and confirm it took."""
     sel = f'[data-jobbot-idx="{idx}"]'
     try:
-        frame.click(sel, timeout=3000)
-        return True, "click"
+        how = click_field(frame, sel)
+        return True, how
     except Exception as e:
         return False, str(e)[:60]
 
@@ -730,6 +845,62 @@ SUBMIT_SELECTORS = [
 ]
 
 
+CODE_INPUTS = ('input[autocomplete="one-time-code"], input[maxlength="1"], '
+               'input[name*="code" i], input[id*="code" i], input[aria-label*="code" i], '
+               'input[aria-label*="digit" i], input[aria-label*="character" i]')
+
+
+def enter_verification_code(page, target, it):
+    """If the portal is waiting on an emailed code, get it from Sunil and enter it.
+    Returns True when a code was typed (the caller re-checks the outcome)."""
+    try:
+        body = (target.inner_text("body") or "").lower()
+    except Exception:
+        return False
+    if not re.search(r"verification code|security code|code (was|has been) sent|enter the .{0,12}code", body):
+        return False
+    from jobpilot.review.ask import ask
+    code = ask(f"code-{it['id']}",
+               f"{it['company']} — {it['role']}: the portal emailed a verification code "
+               f"to sunil4832sharma@gmail.com. Paste it here.",
+               hint="8 characters, from the email that just arrived")
+    code = re.sub(r"\s+", "", code or "")
+    if not code:
+        it.setdefault("warnings", []).append("verification code not received in time — not submitted")
+        return False
+    try:
+        boxes = target.locator(CODE_INPUTS)
+        n = boxes.count()
+        if n == 0:
+            it.setdefault("warnings", []).append("verification code asked for but no input found")
+            return False
+        if n >= len(code):
+            # One box per character; typing into the first advances in every
+            # OTP widget seen so far, and the per-box fill is the fallback.
+            boxes.first.click(timeout=3000, force=True)
+            page.keyboard.type(code, delay=90)
+            page.wait_for_timeout(600)
+            if not (boxes.nth(1).input_value() or "").strip():
+                for i, ch in enumerate(code[:n]):
+                    boxes.nth(i).fill(ch)
+        else:
+            boxes.first.fill(code)
+        page.wait_for_timeout(1500)
+        for sel in SUBMIT_SELECTORS:
+            try:
+                btn = target.locator(sel).first
+                if btn.count() and btn.is_visible(timeout=800) and btn.is_enabled():
+                    btn.click(timeout=5000)
+                    break
+            except Exception:
+                continue
+        it.setdefault("warnings", []).append("verification code entered")
+        return True
+    except Exception as e:
+        it.setdefault("warnings", []).append(f"verification code entry failed: {str(e)[:80]}")
+        return False
+
+
 def submit_approved(answers, one=None, limit=None):
     """PASS 2. Re-fill deterministically, then submit — approved items only.
     `limit` caps how many are filed this call; the rest stay approved for later."""
@@ -757,7 +928,26 @@ def submit_approved(answers, one=None, limit=None):
         ctx = {"market": it["market"], "company": it["company"],
                "company_slug": it["company_slug"], "role": it["role"],
                "portal": it["portal"], "location": it["location"], "url": it["url"]}
-        resolve, pay = autofill.build_resolver(answers, ctx)
+        base_resolve, pay = autofill.build_resolver(answers, ctx)
+        # What he answered on the review page for THIS application beats every
+        # heuristic and even learned.yaml's fuzzy match: exact label first.
+        own = {}
+        for qq in it.get("questions") or []:
+            if qq.get("status") == "answered" and (qq.get("selected") or "").strip():
+                own[norm(qq.get("label", ""))] = qq["selected"]
+        for k, v in (it.get("fields") or {}).items():
+            if isinstance(v, str) and v.strip() and norm(k) not in own:
+                own.setdefault(norm(k), v)
+
+        def resolve(label, _own=own, _base=base_resolve):
+            L = norm(label)
+            if L in _own:
+                v = _own[L]
+                return {"yes": YES, "no": NO}.get(v.strip().lower(), v)
+            for k, v in _own.items():
+                if len(k) > 20 and (k in L or L in k):
+                    return {"yes": YES, "no": NO}.get(v.strip().lower(), v)
+            return _base(label)
         print(f"  [submit] {it['id']} — {it['company']} / {it['role']}")
         try:
             with sync_playwright() as pw:
@@ -785,6 +975,11 @@ def submit_approved(answers, one=None, limit=None):
                         break
                     except Exception:
                         continue
+                # Greenhouse may now hold the submission behind an emailed
+                # 8-character code. Ask him for it and type it in.
+                page.wait_for_timeout(2500)
+                if enter_verification_code(page, target, it):
+                    clicked = True
                 # Submission can take a while — poll for the outcome instead of
                 # screenshotting a page that is still mid-request.
                 for _ in range(12):
@@ -845,7 +1040,15 @@ def submit_approved(answers, one=None, limit=None):
             it["status"] = "failed"
             it.setdefault("warnings", []).append(f"submit error: {e}")
 
-        it["submitted_at"] = dt.datetime.now().isoformat(timespec="seconds")
+        # submitted_at is the "this is final" marker (409 on the form, skipped
+        # here). A failed attempt used to set it too, which made a failure
+        # impossible to retry. Failures now only record when they were tried.
+        now = dt.datetime.now().isoformat(timespec="seconds")
+        if it["status"] == "submitted":
+            it["submitted_at"] = now
+        else:
+            it["last_attempt_at"] = now
+            it["attempts"] = (it.get("attempts") or 0) + 1
         with open(os.path.join(QUEUE_DIR, f"{it['id']}.json"), "w") as f:
             json.dump(it, f, indent=2)
         print(f"    -> {it['status']}")

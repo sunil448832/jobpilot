@@ -1160,10 +1160,6 @@ workday:
   host: paloaltonetworks.wd5.myworkdayjobs.com
   site: panwexternalcareers
   jobs: 600
-- slug: pultegroup
-  host: pultegroup.wd1.myworkdayjobs.com
-  site: PGI
-  jobs: 176
 - slug: ptc
   host: ptc.wd1.myworkdayjobs.com
   site: PTC
@@ -1172,3 +1168,67 @@ workday:
   host: resmed.wd3.myworkdayjobs.com
   site: Resmed_External_Careers
   jobs: 236
+- slug: stryker
+  host: stryker.wd1.myworkdayjobs.com
+  site: StrykerCareers
+  jobs: 600
+- slug: troweprice
+  host: troweprice.wd5.myworkdayjobs.com
+  site: TRowePrice
+  jobs: 137
+- slug: travelers
+  host: travelers.wd5.myworkdayjobs.com
+  site: External
+  jobs: 362
+- slug: verizon
+  host: verizon.wd12.myworkdayjobs.com
+  site: verizon-careers
+  jobs: 600
+- slug: viatris
+  host: viatris.wd5.myworkdayjobs.com
+  site: External
+  jobs: 372
+- slug: airliquidehr
+  host: airliquidehr.wd3.myworkdayjobs.com
+  site: AirLiquideExternalCareer
+  jobs: 600
+- slug: zoetis
+  host: zoetis.wd5.myworkdayjobs.com
+  site: zoetis
+  jobs: 123
+- slug: zebra
+  host: zebra.wd501.myworkdayjobs.com
+  site: Zebra_careers
+  jobs: 247
+- slug: argenx
+  host: argenx.wd3.myworkdayjobs.com
+  site: External_Careers
+  jobs: 88
+- slug: wk
+  host: wk.wd3.myworkdayjobs.com
+  site: External
+  jobs: 431
+- slug: freseniusmedicalcare
+  host: freseniusmedicalcare.wd3.myworkdayjobs.com
+  site: fme
+  jobs: 600
+- slug: alcon
+  host: alcon.wd5.myworkdayjobs.com
+  site: careers_alcon
+  jobs: 379
+- slug: 3i
+  host: 3i.wd103.myworkdayjobs.com
+  site: Intern_Career
+  jobs: 5
+- slug: logitech
+  host: logitech.wd5.myworkdayjobs.com
+  site: Logitech
+  jobs: 227
+- slug: hiscox
+  host: hiscox.wd3.myworkdayjobs.com
+  site: Hiscox_External_Site
+  jobs: 85
+- slug: ig
+  host: ig.wd103.myworkdayjobs.com
+  site: EXT_IG
+  jobs: 55

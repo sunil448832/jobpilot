@@ -413,6 +413,15 @@ press Approve on the phone. The 07:00 / 19:00 review run then files whatever is 
 - ⚠️ anything else, or a third failed attempt → *Failed — needs a look*, with the reason and
   the screenshot, and a Retry button.
 
+The whole submit / retry path is LLM-free: the question is the portal's label, the options are
+the menu's own entries, the code prompt is a fixed template. One known gap, left on purpose
+(2026-09-23): a **free-text** field that appears only at submit time gets no drafted answers —
+just "Write my own answer". Prep already harvests the form's questions and drafts options for
+them (`draft_questions`, one Sonnet session), so this only bites when a portal changes its form
+between prep and submit. If it turns out to be common, route those cases through
+`draft_questions` behind a `pipeline.draft_on_retry` switch (dropdowns and Yes/No would stay
+LLM-free — nothing to draft).
+
 ### On demand — a normal terminal
 
 Nothing here needs Claude Code. Plain bash:

@@ -74,7 +74,8 @@ NAME_DENY = re.compile(r"accenture|cognizant|infosys|wipro|tata consultancy|hcl|
                        r"dollar|mcdonald|starbucks|yum|darden|chipotle|kroger|albertsons|tjx|ross|gap\b|macy|"
                        r"walgreens|cvs|rite aid|reit\b|realty|properties|utilities|utility|energy|oil|gas|"
                        r"mining|steel|cement|paper|packaging|waste|water\b|airlines?|airways|railway|shipping|"
-                       r"trucking|logistics|leasing|rental", re.I)
+                       r"trucking|logistics|leasing|rental|home depot|nike|deckers|live nation|lennar|loews|footwear|"
+                       r"homebuild|entertainment|hospitality|theme park|toys?\b|hasbro|mattel", re.I)
 # Industrials that do employ ML engineers at good pay — kept despite the sector.
 NAME_KEEP = re.compile(r"siemens|abb\b|schneider|honeywell|general electric|ge aerospace|ge vernova|rtx|raytheon|"
                        r"lockheed|northrop|boeing|airbus|deere|caterpillar|rockwell|emerson|uber|airbnb|booking|"
@@ -170,11 +171,48 @@ def main():
     ap.add_argument("--budget", type=int, default=cfg("discovery.listed_budget_s", 2400))
     ap.add_argument("--workers", type=int, default=16)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--deepen", action="store_true",
+                    help="second pass: for companies whose careers page gave no ATS, follow its job links one level")
     a = ap.parse_args()
     try:
         sys.stdout.reconfigure(line_buffering=True)
     except AttributeError:
         pass
+
+    if a.deepen:
+        from jobpilot.discover.tenants import deepen, register_one
+        prev = json.load(open(OUT)) if os.path.isfile(OUT) else {}
+        todo = [(n, r) for n, r in prev.items() if r.get("careers") and not r.get("registered") and not r.get("deepened")]
+        print(f"  {len(todo)} careers pages to follow one level")
+        got = []
+
+        def log(msg):
+            print(f"  {msg}")
+
+        ex = ThreadPoolExecutor(max_workers=a.workers)
+        futs = {ex.submit(deepen, r["careers"]): n for n, r in todo}
+        try:
+            for fut in as_completed(futs, timeout=a.budget):
+                n = futs[fut]
+                try:
+                    ats = fut.result()
+                except Exception:
+                    ats = None
+                prev[n]["deepened"] = dt.datetime.now().isoformat(timespec="seconds")
+                if ats:
+                    k = register_one(ats, log, force=True)
+                    prev[n]["ats_url"] = ats
+                    if k:
+                        prev[n]["registered"] = k
+                        got.append((n, k))
+                        print(f"    + {n[:30]:<30} {k}")
+        except _TO:
+            print(f"  budget {a.budget}s reached")
+        finally:
+            ex.shutdown(wait=False, cancel_futures=True)
+            json.dump(prev, open(OUT, "w"), indent=1)
+        print(f"\n  deepen: {len(got)} more boards registered")
+        return
 
     tld_of = {"dax": "de", "cac40": "fr", "aex": "nl", "smi": "ch", "ftse100": "co.uk", "ibex35": "es",
               "omxs30": "se", "bel20": "be", "iseq": "ie", "eurostoxx": "com", "gulf": "ae"}

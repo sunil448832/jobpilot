@@ -275,12 +275,60 @@ def companies_to_urls(names, log, workers=8, budget=420, on_url=None):
 
 # ----------------------------------------------------------------- register
 
-def register_one(u, log, seen=None, dry=False):
+JOB_LINK = re.compile(r"job|career|search|opening|position|vacanc|apply|join", re.I)
+
+
+def deepen(url, log=None, max_links=4):
+    """A careers LANDING page often links its ATS only one click deeper ("Search
+    jobs"). Fetch it, follow up to `max_links` same-site job links, and return
+    the first ATS URL found in any of them (the tenant/board link itself, so it
+    registers under its own key), else None."""
+    from jobpilot.discover import careers
+    try:
+        html = requests.get(url, headers={"User-Agent": UA}, timeout=15).text
+    except Exception:
+        return None
+    m = ATS_HOST.search(html)
+    if m:
+        return urllib.parse.unquote(m.group(0))
+    base = urllib.parse.urlparse(url)
+    links = []
+    for href, text in re.findall(r'<a[^>]+href="([^"#]+)"[^>]*>(.*?)</a>', html, re.I | re.S):
+        text = re.sub(r"<[^>]+>", " ", text)
+        if not (JOB_LINK.search(href) or JOB_LINK.search(text)):
+            continue
+        full = urllib.parse.urljoin(url, href)
+        p = urllib.parse.urlparse(full)
+        if p.scheme not in ("http", "https"):
+            continue
+        if ATS_HOST.search(full):
+            return full
+        if p.netloc.split(":")[0].split(".")[-2:] != base.netloc.split(":")[0].split(".")[-2:]:
+            continue                                  # stay on the company's own site
+        if full not in links and full.rstrip("/") != url.rstrip("/"):
+            links.append(full)
+        if len(links) >= max_links:
+            break
+    for sub in links:
+        try:
+            h2 = requests.get(sub, headers={"User-Agent": UA}, timeout=15).text
+        except Exception:
+            continue
+        m = ATS_HOST.search(h2)
+        if m:
+            return urllib.parse.unquote(m.group(0))
+        plat, c = careers.detect(sub)
+        if plat == "phenom" and c.get("base"):
+            return c["base"]
+    return None
+
+
+def register_one(u, log, seen=None, dry=False, force=False):
     """careers.add() for one URL, remembered in tenants_seen. Returns key or None."""
     from jobpilot.discover import careers
     seen = load_seen() if seen is None else seen
     k = board_key(u)
-    if k in seen:
+    if k in seen and not force:
         return None
     seen[k] = {"first_seen": dt.datetime.now().isoformat(timespec="seconds"), "url": u[:200]}
     ok = False

@@ -207,6 +207,10 @@ greenhouse:
   jobs: 199
 - slug: toloka
   jobs: 14
+- slug: applovin
+  jobs: 37
+- slug: hasbro
+  jobs: 131
 lever:
 - slug: aldar
   jobs: 46
@@ -257,6 +261,10 @@ lever:
 - slug: voltalabs
   jobs: 2
   yc: Winter 2019
+- slug: franklinai
+  jobs: 0
+- slug: palantir
+  jobs: 312
 ashby:
 - slug: abacum
   jobs: 12
@@ -789,6 +797,8 @@ ashby:
   jobs: 7
 - slug: super.com
   jobs: 27
+- slug: gen-digital
+  jobs: 122
 smartrecruiters:
 - slug: alemhealth
   jobs: 1
@@ -816,6 +826,14 @@ smartrecruiters:
 - slug: Eurofins
   jobs: 100
 - slug: SopraSteria1
+  jobs: 100
+- slug: Intuitive
+  jobs: 100
+- slug: Sandisk
+  jobs: 100
+- slug: WesternDigital
+  jobs: 100
+- slug: InformaGroupPlc
   jobs: 100
 workable:
 - slug: aerones
@@ -880,6 +898,93 @@ phenom:
 - slug: www.careers.philips.com
   base: https://www.careers.philips.com/in/en
   jobs: 100
+- slug: careers.cboe.com
+  base: https://careers.cboe.com/us/en
+  jobs: 59
+- slug: careers.cencora.com
+  base: https://careers.cencora.com/us/en
+  jobs: 100
+- slug: careers.cisco.com
+  base: https://careers.cisco.com/global/en
+  jobs: 100
+- slug: jobs.thecignagroup.com
+  base: https://jobs.thecignagroup.com/us/en
+  jobs: 100
+- slug: careers.davita.com
+  base: https://careers.davita.com
+  jobs: 100
+- slug: careers.fiserv.com
+  base: https://careers.fiserv.com/us/en
+  jobs: 100
+- slug: careers.geaerospace.com
+  base: https://careers.geaerospace.com/global/en
+  jobs: 100
+- slug: careers.gehealthcare.com
+  base: https://careers.gehealthcare.com/global/en
+  jobs: 100
+- slug: careers.labcorp.com
+  base: https://careers.labcorp.com/global/en
+  jobs: 100
+- slug: talent.lowes.com
+  base: https://talent.lowes.com/us/en
+  jobs: 100
+- slug: careers.mastercard.com
+  base: https://careers.mastercard.com/us/en
+  jobs: 100
+- slug: careers.marsh.com
+  base: https://careers.marsh.com/global/en
+  jobs: 100
+- slug: careers.rtx.com
+  base: https://careers.rtx.com/global/en
+  jobs: 100
+- slug: careers.regions.com
+  base: https://careers.regions.com/us/en
+  jobs: 100
+- slug: careers.statestreet.com
+  base: https://careers.statestreet.com/global/en
+  jobs: 100
+- slug: careers.steris.com
+  base: https://careers.steris.com/us/en
+  jobs: 100
+- slug: careers.tranetechnologies.com
+  base: https://careers.tranetechnologies.com/global/en/home
+  jobs: 100
+- slug: jobs.thermofisher.com
+  base: https://jobs.thermofisher.com/global/en
+  jobs: 100
+- slug: careers.truist.com
+  base: https://careers.truist.com/us/en
+  jobs: 100
+- slug: careers.allianz.com
+  base: https://careers.allianz.com/global/en
+  jobs: 100
+- slug: careers.zimmerbiomet.com
+  base: https://careers.zimmerbiomet.com/us/en
+  jobs: 100
+- slug: careers.wbd.com:443
+  base: https://careers.wbd.com:443/global/en
+  jobs: 100
+- slug: careers.abb
+  base: https://careers.abb/global/en
+  jobs: 100
+- slug: jobs.baesystems.com
+  base: https://jobs.baesystems.com/global/en
+  jobs: 100
+- slug: careers.convatec.com
+  base: https://careers.convatec.com/global/gb
+  jobs: 100
+- slug: careers.ucb.com
+  base: https://careers.ucb.com/global/en
+  jobs: 100
+- slug: careers.maaden.com
+  base: https://careers.maaden.com/gb/en
+  jobs: 21
+- slug: careers.pentair.com
+  base: https://careers.pentair.com/us/en
+  jobs: 100
+- slug: careers.idexx.com
+  base: https://careers.idexx.com/us/en
+  jobs: 100
 workday:
 - slug: nvidia
   host: nvidia.wd5.myworkdayjobs.com
@@ -917,3 +1022,123 @@ workday:
   host: autodesk.wd1.myworkdayjobs.com
   site: Ext
   jobs: 40
+- slug: ntrs
+  host: ntrs.wd1.myworkdayjobs.com
+  site: northerntrust
+  jobs: 600
+- slug: abbott
+  host: abbott.wd5.myworkdayjobs.com
+  site: abbottcareers
+  jobs: 600
+- slug: ameriprise
+  host: ameriprise.wd5.myworkdayjobs.com
+  site: Ameriprise
+  jobs: 273
+- slug: allstate
+  host: allstate.wd5.myworkdayjobs.com
+  site: allstate_careers
+  jobs: 462
+- slug: agilent
+  host: agilent.wd5.myworkdayjobs.com
+  site: Agilent_Student_Careers
+  jobs: 37
+- slug: amgen
+  host: amgen.wd1.myworkdayjobs.com
+  site: Careers
+  jobs: 600
+- slug: athene
+  host: athene.wd5.myworkdayjobs.com
+  site: Apollo_Careers
+  jobs: 67
+- slug: aresmgmt
+  host: aresmgmt.wd1.myworkdayjobs.com
+  site: External
+  jobs: 274
+- slug: assurant
+  host: assurant.wd1.myworkdayjobs.com
+  site: Assurant_Careers
+  jobs: 128
+- slug: biibhr
+  host: biibhr.wd3.myworkdayjobs.com
+  site: external
+  jobs: 234
+- slug: blackstone
+  host: blackstone.wd1.myworkdayjobs.com
+  site: Blackstone_Careers
+  jobs: 181
+- slug: baxter
+  host: baxter.wd1.myworkdayjobs.com
+  site: baxter
+  jobs: 493
+- slug: boeing
+  host: boeing.wd1.myworkdayjobs.com
+  site: EXTERNAL_CAREERS
+  jobs: 600
+- slug: citi
+  host: citi.wd5.myworkdayjobs.com
+  site: '2'
+  jobs: 600
+- slug: crowdstrike
+  host: crowdstrike.wd5.myworkdayjobs.com
+  site: crowdstrikecareers
+  jobs: 378
+- slug: centene
+  host: centene.wd5.myworkdayjobs.com
+  site: centene_external
+  jobs: 282
+- slug: corpay
+  host: corpay.wd103.myworkdayjobs.com
+  site: Ext_001
+  jobs: 107
+- slug: elevancehealth
+  host: elevancehealth.wd1.myworkdayjobs.com
+  site: ANT
+  jobs: 287
+- slug: ffive
+  host: ffive.wd5.myworkdayjobs.com
+  site: f5jobs
+  jobs: 215
+- slug: cadence
+  host: cadence.wd1.myworkdayjobs.com
+  site: External_Careers
+  jobs: 600
+- slug: flextronics
+  host: flextronics.wd1.myworkdayjobs.com
+  site: Careers
+  jobs: 600
+- slug: fico
+  host: fico.wd1.myworkdayjobs.com
+  site: External
+  jobs: 84
+- slug: gevernova
+  host: gevernova.wd5.myworkdayjobs.com
+  site: Vernova_ExternalSite
+  jobs: 600
+- slug: invesco
+  host: invesco.wd1.myworkdayjobs.com
+  site: IVZ
+  jobs: 246
+- slug: jabil
+  host: jabil.wd5.myworkdayjobs.com
+  site: Jabil_Careers
+  jobs: 600
+- slug: thisisglobal
+  host: thisisglobal.wd3.myworkdayjobs.com
+  site: Global
+  jobs: 40
+- slug: jci
+  host: jci.wd5.myworkdayjobs.com
+  site: JCI
+  jobs: 600
+- slug: lumentum
+  host: lumentum.wd5.myworkdayjobs.com
+  site: LITE
+  jobs: 245
+- slug: kla
+  host: kla.wd1.myworkdayjobs.com
+  site: Search
+  jobs: 600
+- slug: motorolasolutions
+  host: motorolasolutions.wd5.myworkdayjobs.com
+  site: Careers
+  jobs: 600

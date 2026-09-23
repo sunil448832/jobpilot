@@ -42,6 +42,12 @@ pipeline:
   # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
   # dial: 6 x 3 scans/day = up to 18/day.
   tailor_limit: 6
+  # Approved applications filed per review run (07:00 / 19:00). Approval on the
+  # phone is the only gate; this just caps how many go out per run.
+  submit_limit: 10
+  # A submit that fails this many times stays 'failed' (own section on the
+  # review page, with the reason) instead of being retried again.
+  submit_attempts: 3
   # Max roles from one employer per run. At 1 the whole pipeline throttled to
   # ~5 candidates, because Anthropic and OpenAI held 38 of 43 above the floor.
   per_company: 3

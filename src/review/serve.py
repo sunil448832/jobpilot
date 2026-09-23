@@ -105,6 +105,7 @@ a.card.blue{border-left-color:#3B82C4}  .b.blue{background:#E7EFF8;color:#1D4E89
 a.card.green{border-left-color:#2E9E5B} .b.green{background:#DDF3E5;color:#1B6B3A} h2.green{color:#237A46}
 a.card.grey{border-left-color:#B9C2CB;opacity:.6} .b.grey{background:#EEF1F4;color:#5A6B7C}
 a.card.purple{border-left-color:#7C4DBE} .b.purple{background:#EFE6FA;color:#4E2A86} h2.purple{color:#5E3A9E}
+a.card.red{border-left-color:#D2453B} .b.red{background:#FBE3E1;color:#8A2119} h2.red{color:#A32A20}
 """
 
 
@@ -148,10 +149,11 @@ class H(BaseHTTPRequestHandler):
             # the browser's back-forward cache — so a role tapped Approve a second
             # ago still read "pending". Sections + colour + a reload on pageshow.
             t = f"?t={TOKEN}" if TOKEN else ""
-            SECT = [("needs_input", "Need your answers", "amber"),
+            SECT = [("failed", "Failed — needs a look", "red"),
+                    ("needs_input", "Need your answers", "amber"),
                     ("manual", "Apply by hand — content ready to copy", "purple"),
                     ("pending", "Ready to review", "blue"),
-                    ("approved", "Approved — waiting for submit", "green"),
+                    ("approved", "Approved — files on the next run", "green"),
                     ("submitted", "Submitted", "grey")]
             groups = {k: [] for k, _, _ in SECT}
             for i in items():
@@ -161,7 +163,8 @@ class H(BaseHTTPRequestHandler):
             def card(i, colour):
                 nq = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
                 label = {"needs_input": f"{nq} to answer", "pending": "pending", "manual": "🖐 apply by hand",
-                         "approved": "✅ approved", "submitted": "submitted"}[i["status"]]
+                         "approved": "✅ approved", "submitted": "submitted",
+                         "failed": f"⚠ attempt {i.get('attempts', 1)} failed"}[i["status"]]
                 return (f'<a class="card {colour}" href="/a/{i["id"]}{t}">'
                         f'<div class="r">{i.get("role","?")}</div>'
                         f'<div class="m">{i.get("company","?")} · {i.get("location","")}</div>'

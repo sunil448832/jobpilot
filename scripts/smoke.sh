@@ -23,7 +23,22 @@ s=$(ls -d "$T"/applications/*/ | grep -v '/_' | head -1 | xargs basename); b=$("
 pg=$(pdfinfo "$T/applications/$s/sunil_resume.pdf" 2>/dev/null | awk '/Pages/{print $2}'); [ "${pg:-0}" -le 2 ] && ok "pages" "$pg" || bad "pages" "$pg (>2)"
 a=$("$PY" -m jobpilot.tailor.autotailor --limit 1 --dry-run 2>&1 | grep -c 'would scaffold'); [ "$a" -ge 0 ] && ok "autotailor --dry-run" "$a candidate(s)"
 sc=$("$PY" -m jobpilot.screen.screen --dry-run 2>&1 | head -1 | sed 's/^ *//'); ok "screen --dry-run" "$sc"
-dg=$("$PY" -m jobpilot.core.daily --digest-only --no-telegram 2>&1 | grep -oE 'digest-only: [0-9]+ pending'); [ -n "$dg" ] && ok "daily --digest-only" "$dg" || bad "daily --digest-only" "no digest line"
+dg=$("$PY" -m jobpilot.core.daily --digest-only --no-telegram --no-submit 2>&1 | grep -oE 'digest-only: [0-9]+ pending'); [ -n "$dg" ] && ok "daily --digest-only" "$dg" || bad "daily --digest-only" "no digest line"
+# a failed submit must turn its missing required fields into questions, without a browser or an LLM
+fq=$("$PY" - <<'PY' 2>&1
+from jobpilot.fill.browser import questions_from_missing
+miss=[{"label":"Current Location*","required":True,"kind":"dropdown","options":["Australia","India"],"reason":"x"},
+      {"label":"Willing to relocate","required":True,"kind":"choice","options":[],"reason":"y"},
+      {"label":"Website","required":False,"kind":"text","options":[],"reason":"z"},
+      {"label":"Why us?","required":True,"kind":"text","options":[],"reason":"w"}]
+old=[{"qid":"q1","label":"Current Location","status":"answered","selected":"Delhi","options":[]}]
+qs,added=questions_from_missing(miss,old)
+assert added==3 and len(qs)==3, (added,len(qs))
+assert qs[0]["status"]=="open" and qs[0]["previous"]=="Delhi" and qs[0]["options"]==["Australia","India"]
+assert qs[1]["options"]==["Yes","No"] and qs[2]["kind"]=="text"
+print("3 questions from 4 missing (1 optional skipped, 1 reopened)")
+PY
+); case "$fq" in *Error*|*assert*) bad "failed-submit -> questions" "$fq";; *) ok "failed-submit -> questions" "$fq";; esac
 if systemctl --user is-active jobpilot-form.service >/dev/null 2>&1; then
   tok=$(grep FORM_TOKEN ~/.config/jobbot/env 2>/dev/null | cut -d= -f2); codes=$(for u in "/" "/keywords" "/referrals"; do curl -s -m 5 -o /dev/null -w '%{http_code} ' "http://127.0.0.1:8765$u?t=$tok"; done)
   [ "$codes" = "200 200 200 " ] && ok "form routes" "$codes" || bad "form routes" "$codes"

@@ -197,6 +197,15 @@ if (DATA.url) $("#jd").href = DATA.url; else $("#jd").style.display = "none";
 /* flags -------------------------------------------------------------- */
 $("#flags").innerHTML = (DATA.flags || []).map(f =>
   `<div class="flag"><b>${esc(f.tag)}</b><span>${esc(f.text)}</span></div>`).join("");
+/* a submit attempt that did not go through: say why, show the page, offer Retry */
+if (DATA.fail) {
+  const f = DATA.fail, t = location.search;
+  const shot = f.shot ? ` <a href="${f.shot}${t}" target="_blank" rel="noopener">screenshot →</a>` : "";
+  $("#flags").innerHTML = `<div class="flag" style="border-left-color:#D2453B"><b>Submit attempt ${esc(f.attempts)}</b>` +
+    `<span>${esc(f.reason || "did not go through")}.${shot}` +
+    (f.status === "failed" ? " Fix what it needs, then Retry." : "") + `</span></div>` + $("#flags").innerHTML;
+  if (f.status === "failed") $("#approve").textContent = "Retry with these answers";
+}
 
 /* questions ---------------------------------------------------------- */
 const qs = DATA.questions || [];
@@ -345,7 +354,14 @@ def build(item):
     for note in item.get("manual_flags", []):
         flags.append({"tag": note.get("tag", "Note"), "text": note.get("text", "")})
 
+    fail = None
+    if item.get("attempts") and item.get("status") in ("failed", "needs_input", "approved"):
+        shot = item.get("submit_screenshot") or ""
+        fail = {"attempts": item.get("attempts"), "reason": item.get("fail_reason", ""),
+                "status": item.get("status"),
+                "shot": ("/shot/" + os.path.basename(shot)[:-4]) if shot.endswith(".png") else None}
     data = {
+        "fail": fail,
         "id": item["id"], "company": item.get("company"), "role": item.get("role"),
         "location": item.get("location"), "url": item.get("url"),
         "portal": item.get("portal"), "market": item.get("market"),

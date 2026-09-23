@@ -349,6 +349,26 @@ def fill_fields(page, resolve, answers, ctx):
     fields = page.evaluate(EXTRACT_JS)
     filled, warnings = {}, []
     radio_groups = {}
+    # Every field that stayed empty, as data: the label IS the question a
+    # human would be asked, and for a menu the options are what it offered.
+    # A failed submit turns the required ones into review-page questions.
+    missing = []
+
+    def miss(label, required, kind, options=None, reason=""):
+        missing.append({"label": (label or "").strip(), "required": bool(required),
+                        "kind": kind, "options": [o for o in (options or []) if o][:20],
+                        "reason": reason[:160]})
+
+    def offered(how):
+        # fill_react_select reports "menu offers: ['a', 'b']" when nothing matched
+        m = re.search(r"menu offers: (\[.*\])", how or "")
+        if not m:
+            return []
+        try:
+            import ast
+            return [str(x) for x in ast.literal_eval(m.group(1))]
+        except Exception:
+            return []
 
     # PHASE 1 — upload the resume FIRST, then let the portal's own parser finish.
     # Ashby (and others) autofill from the uploaded CV and REWRITE the form when
@@ -377,6 +397,7 @@ def fill_fields(page, resolve, answers, ctx):
                 if f["required"]:
                     warnings.append(f"REQUIRED file '{f['label'][:50]}' left empty — "
                                     f"not a resume/cover-letter field")
+                    miss(f["label"], True, "file", reason="needs a file that is not the resume")
                 continue
         try:
             page.set_input_files(f'[data-jobbot-idx="{f["idx"]}"]', rp)
@@ -422,6 +443,8 @@ def fill_fields(page, resolve, answers, ctx):
             g = _refind(page, f, everyone=fields)
             if not g:
                 warnings.append(f"'{label[:60]}' vanished after a re-render — not filled")
+                if f["required"]:
+                    miss(label, True, "text", reason="field vanished after a re-render")
                 continue
             sel = f'[data-jobbot-idx="{f["idx"]}"]'
 
@@ -429,6 +452,8 @@ def fill_fields(page, resolve, answers, ctx):
         if val is None:
             if f["required"] and not f["value"]:
                 warnings.append(f"REQUIRED and unmapped: '{label}'")
+                miss(label, True, "dropdown" if f.get("options") else "text",
+                     f.get("options"), "no stored answer")
             continue
 
         try:
@@ -440,6 +465,9 @@ def fill_fields(page, resolve, answers, ctx):
                 else:
                     warnings.append(f"no option matched on '{label}' "
                                     f"(wanted {val!r}, options: {f.get('options', [])[:6]})")
+                    if f["required"]:
+                        miss(label, True, "dropdown", f.get("options"),
+                             f"stored answer {str(val)[:30]!r} is not one of the options")
             else:
                 text = {YES: "Yes", NO: "No"}.get(val, val)
                 # A date control cannot take "2 months from offer acceptance".
@@ -463,6 +491,11 @@ def fill_fields(page, resolve, answers, ctx):
                         warnings.append(
                             f"NOT FILLED{' (REQUIRED)' if f['required'] else ''}: "
                             f"'{label[:60]}' — {how}. Needs a manual entry.")
+                        if f["required"]:
+                            opts = offered(how)
+                            miss(label, True,
+                                 "dropdown" if (opts or f.get("rs") or "Yes/No dropdown" in how) else "text",
+                                 opts or (["Yes", "No"] if "Yes/No dropdown" in how else []), how)
                     time.sleep(0.08)
         except Exception as e:
             warnings.append(f"could not fill '{label}': {e}")
@@ -482,6 +515,8 @@ def fill_fields(page, resolve, answers, ctx):
             # required or not. Silent skips are how a half-filled form gets sent.
             req = " REQUIRED" if any(o["required"] for o in opts) else ""
             warnings.append(f"radio group unmapped{req}: '{question}'")
+            if req:
+                miss(question, True, "choice", [o["label"] for o in opts], "no stored answer")
             continue
         # A single-option checkbox group is an acknowledgement: YES means tick
         # the one box, whose label is the statement rather than the word "yes".
@@ -516,11 +551,55 @@ def fill_fields(page, resolve, answers, ctx):
                     warnings.append(
                         f"COULD NOT TICK '{o['label'][:60]}' for "
                         f"'{question[:60]}' ({how}) — needs a manual click")
+                    if any(x["required"] for x in opts):
+                        miss(question, True, "choice", [x["label"] for x in opts], how)
                 break
         else:
             warnings.append(f"no radio matched '{question}' (wanted {want!r})")
+            if any(x["required"] for x in opts):
+                miss(question, True, "choice", [x["label"] for x in opts],
+                     f"stored answer {want[:30]!r} is not one of the choices")
 
-    return filled, warnings
+    return filled, warnings, missing
+
+
+def questions_from_missing(missing, existing):
+    """Turn the fill's `missing` records into review-page questions.
+
+    Pure: no browser, no LLM. The portal's label is the question and its menu
+    is the option list; a free-text field gets no options (the form offers
+    "write my own answer"). A question already on the item is re-opened rather
+    than duplicated — its old answer was evidently not what the form takes."""
+    import uuid
+    out = list(existing or [])
+    by_label = {norm(q.get("label", "")): q for q in out}
+    added = 0
+    for m in missing:
+        if not m.get("required") or not m.get("label"):
+            continue
+        L = norm(m["label"])
+        opts = list(m.get("options") or [])
+        if m.get("kind") == "choice" and not opts:
+            opts = ["Yes", "No"]
+        q = by_label.get(L)
+        if q:
+            if q.get("status") == "answered" and q.get("selected") in opts:
+                continue                     # answered correctly; the failure was elsewhere
+            q["status"] = "open"
+            q["previous"] = q.get("selected")
+            q["selected"] = None
+            q["options"] = opts or q.get("options") or []
+            q["note"] = m.get("reason", "")
+            added += 1
+            continue
+        out.append({"qid": "q-" + uuid.uuid4().hex[:8], "label": m["label"].rstrip("*").strip(),
+                    "options": opts, "kind": "select" if opts else "text",
+                    "required": True, "status": "open", "selected": None,
+                    "answered_via": None, "feedback": None, "form_group": None,
+                    "form_options": opts, "note": m.get("reason", "")})
+        by_label[L] = out[-1]
+        added += 1
+    return out, added
 
 
 # ARIA live-region and combobox helper text gets read as a label when a widget
@@ -911,7 +990,7 @@ def fill_application(ctx, answers, resolve, pay, submit=False):
             if "parsing your resume" not in body and "autofilling" not in body:
                 break
             page.wait_for_timeout(1000)
-        filled, warnings = fill_fields(target, resolve, answers, ctx)
+        filled, warnings, _missing = fill_fields(target, resolve, answers, ctx)
         if not filled:
             warnings.append("no fields filled — form frame may not have rendered")
         questions = harvest_questions(target, resolve, warnings)
@@ -1039,6 +1118,61 @@ def enter_verification_code(page, target, it):
         return False
 
 
+def park_after_failure(it):
+    """A submit that did not go through decides its own next step — no operator.
+
+    - required fields the form would not take  -> the item goes back to the
+      phone as `needs_input`, those fields as questions (label + menu options);
+    - no verification code arrived in time     -> stays `approved`, retried
+      on the next run;
+    - anything else, or the 3rd failed attempt -> `failed`, shown in its own
+      section on the review page with the reason and screenshot, where a tap
+      on "Retry" re-approves it."""
+    max_attempts = cfg("pipeline.submit_attempts", 3)
+    warns = it.get("submit_fill", {}).get("warnings", []) + it.get("warnings", [])[-3:]
+    if any("verification code not received" in w for w in warns) and it["attempts"] < max_attempts:
+        it["status"] = "approved"
+        it["fail_reason"] = "no verification code arrived in time — will retry next run"
+        return
+    missing = it.get("submit_fill", {}).get("missing") or []
+    qs, added = questions_from_missing(missing, it.get("questions") or [])
+    if added and it["attempts"] < max_attempts:
+        it["questions"] = qs
+        it["status"] = "needs_input"
+        it["fail_reason"] = f"{added} required field(s) the form would not take"
+        return
+    it["status"] = "failed"
+    last = next((w for w in reversed(it.get("warnings", []))
+                 if w.startswith(("submit did NOT", "submit error", "no submit button"))), "")
+    it["fail_reason"] = (f"attempt {it['attempts']}/{max_attempts}: " + (last or "unknown")).strip()[:300]
+
+
+def notify_outcome(it):
+    """One Telegram line per attempt, so nothing needs watching from a terminal."""
+    try:
+        from jobpilot.core.daily import telegram, form_link
+    except Exception:
+        return
+    link = form_link().replace("/?", f"/a/{it['id']}?")
+    head = f"<b>{it.get('company', '?')}</b> · {str(it.get('role', ''))[:60]}"
+    st = it.get("status")
+    if st == "submitted":
+        text = f"✅ <b>Filed</b> — {head}"
+    elif st == "needs_input":
+        n = len([q for q in it.get("questions", []) if q.get("status") != "answered"])
+        text = (f"❓ <b>Needs {n} answer{'s' if n != 1 else ''}</b> — {head}\n"
+                f"The form would not take what was stored. Answer + Approve:\n{link}")
+    elif st == "approved":
+        text = f"⏳ <b>Not filed yet</b> — {head}\n{it.get('fail_reason', '')}"
+    else:
+        text = (f"⚠️ <b>Failed</b> — {head}\n{it.get('fail_reason', '')}\n"
+                f"Screenshot + Retry:\n{link}")
+    try:
+        telegram(text)
+    except Exception:
+        pass
+
+
 def submit_approved(answers, one=None, limit=None):
     """PASS 2. Re-fill deterministically, then submit — approved items only.
     `limit` caps how many are filed this call; the rest stay approved for later."""
@@ -1097,8 +1231,9 @@ def submit_approved(answers, one=None, limit=None):
                 # Keep this pass's own fill report: the pass-1 warnings on the
                 # item describe a different page load, and debugging a failed
                 # submit from them sent the fixes to the wrong place once.
-                s_filled, s_warn = fill_fields(target, resolve, answers, ctx)
+                s_filled, s_warn, s_missing = fill_fields(target, resolve, answers, ctx)
                 it["submit_fill"] = {"filled": len(s_filled), "warnings": s_warn,
+                                     "missing": s_missing,
                                      "at": dt.datetime.now().isoformat(timespec="seconds")}
                 print(f"    filled {len(s_filled)} fields, {len(s_warn)} warnings")
                 for w in s_warn:
@@ -1195,9 +1330,11 @@ def submit_approved(answers, one=None, limit=None):
         else:
             it["last_attempt_at"] = now
             it["attempts"] = (it.get("attempts") or 0) + 1
+            park_after_failure(it)
         with open(os.path.join(QUEUE_DIR, f"{it['id']}.json"), "w") as f:
             json.dump(it, f, indent=2)
         print(f"    -> {it['status']}")
+        notify_outcome(it)
 
         # An application sitting in an ATS queue is the weakest form of applying.
         # On a real submit, immediately line up people to ask for a referral.

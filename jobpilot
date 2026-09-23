@@ -38,7 +38,8 @@ usage() { cat <<'TXT'
   EVERY DAY
     ./jobpilot link            review-form URL (open on your phone)
     ./jobpilot queue           what is waiting for your approval
-    ./jobpilot submit [N]      file what you approved (N = at most N today, oldest first)
+    ./jobpilot submit [N]      file what you approved now (N = at most N, oldest first)
+                               the 07:00/19:00 review run also files approved items itself
     ./jobpilot log [N]         follow the run log
 
   EACH STAGE ON ITS OWN  (same order as the pipeline)
@@ -49,7 +50,7 @@ usage() { cat <<'TXT'
     ./jobpilot prep [N]        tailor + build + fill the top N (= tailor)
     ./jobpilot tracker         sync tracking/job-tracker.xlsx
     ./jobpilot referrals       open referral list
-    ./jobpilot digest          send the Telegram review prompt only
+    ./jobpilot digest          review prompt + file approved items (--no-submit to only prompt)
 
   FINDING WORK
     ./jobpilot scan            intake + re-rank in one go

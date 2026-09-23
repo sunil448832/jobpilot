@@ -182,6 +182,10 @@ def main():
                     help="roles to tailor per run (2 Claude sessions each)")
     ap.add_argument("--digest-only", action="store_true",
                     help="just send the approval prompt; scan nothing")
+    ap.add_argument("--no-submit", action="store_true",
+                    help="with --digest-only: do not file approved applications")
+    ap.add_argument("--submit-limit", type=int, default=cfg("pipeline.submit_limit", 10),
+                    help="approved applications to file per review run")
     ap.add_argument("--only", metavar="STAGES",
                     help="run only these stages, comma-separated, in pipeline order: "
                          + ",".join(STAGES))
@@ -260,6 +264,14 @@ def main():
             log("telegram: " + ("sent" if telegram(text) else "FAILED"))
         run("referral_tracker.py", "--digest",
             *(["--no-telegram"] if a.no_telegram else []), timeout=300)
+        # File what he has APPROVED since the last run. Approval on the phone is
+        # the only human gate; pending / needs_input / manual are never touched.
+        # Each outcome (filed / needs answers / failed) is its own Telegram line.
+        if not a.no_submit and not a.dry_run:
+            if not run("autofill.py", "--submit-approved", "--limit", str(a.submit_limit),
+                       timeout=3600):
+                log("   !! submit-approved failed — see data/queue/*.json fail_reason")
+            run("tracker.py", "--sync", timeout=300)
         return
 
     # Dedupe BEFORE intake so new rows are compared against a clean store, and

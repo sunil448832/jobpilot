@@ -401,7 +401,17 @@ jobpilot-daily.timer
 its transcripts stay out of `claude --resume` and it can only edit the application files.
 It is the CLI binary, not an interactive session — it runs at 04:00 with nobody logged in.
 
-**It never submits.** Every chain stops at "filled and queued". Submitting needs a tap.
+**It never submits without your tap.** Every chain stops at "filled and queued" until you
+press Approve on the phone. The 07:00 / 19:00 review run then files whatever is approved
+(`pipeline.submit_limit` per run) and sends one Telegram line per outcome:
+
+- ✅ filed;
+- ❓ the form wanted something the stored answers could not give → the item comes back
+  as *Need your answers* with those exact fields as questions (label + the menu's own
+  options — no LLM involved); answer + Approve and the next run files it;
+- ⏳ an emailed verification code did not arrive in time → stays approved, retried next run;
+- ⚠️ anything else, or a third failed attempt → *Failed — needs a look*, with the reason and
+  the screenshot, and a Retry button.
 
 ### On demand — a normal terminal
 
@@ -428,7 +438,7 @@ Each stage on its own:
 ./jobpilot screen          # Claude screens until 10 are usable
 ./jobpilot prep 3          # tailor + build + fill the top 3   (alias: tailor)
 ./jobpilot tracker         # sync the xlsx tracker
-./jobpilot digest          # Telegram review prompt only
+./jobpilot digest          # review prompt + file approved items (--no-submit: prompt only)
 ./jobpilot apply <url>     # one job you found yourself
 ./jobpilot fill <slug>     # re-fill an application that is already built
 ./jobpilot submit 4        # file at most 4 of the approved items (oldest first); bare `submit` files all

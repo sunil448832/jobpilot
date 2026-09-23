@@ -259,7 +259,7 @@ def build_resolver(answers, ctx, learned=None):
         # "I confirm I have read the above" — an acknowledgement of something
         # shown on the page. Scoped to read/understand/acknowledge wording so it
         # can never blanket-yes a substantive declaration.
-        (r"i (confirm|acknowledge|agree|certify|understand|consent)\b.{0,60}"
+        (r"i (have read and )?(confirm|acknowledge|agree|certify|understand|consent)\b.{0,60}"
          r"(read|understood|above|terms|privacy|policy|notice|statement)", YES),
         (r"\be-?mail", p["email"]),
         (r"phone ext|\bextension\b", ""),                       # never an extension

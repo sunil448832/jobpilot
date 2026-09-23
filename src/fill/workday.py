@@ -81,16 +81,19 @@ def _fill(page, sel, text, warnings, label=""):
 _TAGGED = [0]
 
 
-def by_label(page, pattern, want="input,textarea,button"):
+def by_label(page, pattern, want="input,textarea,button", within=None):
     """A selector for the control under the label matching `pattern` (regex, i),
-    or '' — the fallback when a tenant's data-automation-id is not the usual one."""
+    or '' — the fallback when a tenant's data-automation-id is not the usual one.
+    `within` scopes the search to one block (a work-experience entry)."""
     _TAGGED[0] += 1
     n = _TAGGED[0]
     try:
-        found = page.evaluate("""([pat, want, n]) => {
+        found = page.evaluate("""([pat, want, n, within]) => {
           const re = new RegExp(pat, 'i');
           const vis = el => !!el && (el.offsetParent !== null || el.getClientRects().length > 0);
-          for (const l of document.querySelectorAll('label, legend')) {
+          const root = within ? document.querySelector(within) : document;
+          if (!root) return false;
+          for (const l of root.querySelectorAll('label, legend')) {
             const t = (l.innerText || '').trim();
             if (!t || !re.test(t)) continue;
             let el = null;
@@ -109,7 +112,7 @@ def by_label(page, pattern, want="input,textarea,button"):
             return true;
           }
           return false;
-        }""", [pattern, want, n])
+        }""", [pattern, want, n, within])
     except Exception:
         found = False
     return f'[data-jobbot-wd="{n}"]' if found else ""
@@ -245,7 +248,7 @@ def pick_listbox(page, sel, wants, warnings, label=""):
     return ""
 
 
-def type_prompt(page, sel, wants, warnings, label=""):
+def type_prompt(page, sel, wants, warnings, label="", exact=False):
     """A Workday multiselect/typeahead ("How did you hear", "Field of study",
     country phone code): type, wait for suggestions, click the match."""
     if not _vis(page, sel, 500):
@@ -261,7 +264,9 @@ def type_prompt(page, sel, wants, warnings, label=""):
             return ""
 
     # A wrong pill from an earlier attempt must go first: Workday keeps it.
-    if pills() and not any(w.lower() in pills().lower() for w in wants if w):
+    cur = pills().lower()
+    keep_pill = any((w.lower() == cur) if exact else (w.lower() in cur) for w in wants if w)
+    if cur and not keep_pill:
         try:
             page.locator(sel).first.evaluate(
                 "el => { const c = el.closest('[data-automation-id^=\"formField-\"]') || el.parentElement.parentElement;"
@@ -289,10 +294,13 @@ def type_prompt(page, sel, wants, warnings, label=""):
             opts = _options(page)
             if opts:
                 break
-        hit = next(iter(_rank(opts, want)), None)
+        ranked = _rank(opts, want)
+        if exact:
+            ranked = [x for x in ranked if x[1] == want.strip().lower()]
+        hit = next(iter(ranked), None)
         if hit is None and len(opts) > 25:
             hit = _scroll_find(page, want)
-            hit = hit if hit[0] is not None else None
+            hit = hit if hit[0] is not None and (not exact or hit[1] == want.strip().lower()) else None
         if hit is not None:
             o, ot = hit
             try:
@@ -304,7 +312,7 @@ def type_prompt(page, sel, wants, warnings, label=""):
                 pass
         # Category menus ("Social Media" > "LinkedIn"): open the first category
         # that sounds right and look again.
-        cat = next((o for o, ot in opts if any(k in ot for k in ("social", "job board", "online", "internet"))), None)
+        cat = None if exact else next((o for o, ot in opts if any(k in ot for k in ("social", "job board", "online", "internet"))), None)
         if cat is not None:
             try:
                 cat.click(timeout=3000)
@@ -395,12 +403,26 @@ def current_step(page):
 def wait_step_content(page, max_s=20):
     """Workday paints the progress bar first and the step's form a few seconds
     later (a grey skeleton in between). Wait for something actionable."""
+    def inputs():
+        try:
+            return page.evaluate("() => [...document.querySelectorAll('input:not([type=hidden]),textarea,button[aria-haspopup=\"listbox\"]')]"
+                                 ".filter(e => e.offsetParent !== null).length")
+        except Exception:
+            return 0
     for _ in range(max_s * 2):
-        if (_vis(page, '[data-automation-id="email"]', 200) or _vis(page, NEXT_BTN, 200)
+        if (_vis(page, '[data-automation-id="email"]', 200)
                 or _vis(page, '[data-automation-id="applyManually"]', 200)
                 or _vis(page, '[data-automation-id="applyButton"]', 200)
-                or _vis(page, 'input[data-automation-id="legalNameSection_firstName"]', 200)):
+                or _vis(page, 'button:has-text("with email")', 200)):
             return True
+        # The footer button paints before the form does; a step page is ready
+        # only once its controls are there and stop changing.
+        if _vis(page, NEXT_BTN, 200):
+            n1 = inputs()
+            if n1 >= 3:
+                page.wait_for_timeout(700)
+                if inputs() == n1:
+                    return True
         page.wait_for_timeout(500)
     return False
 
@@ -582,6 +604,16 @@ def start_application(page, ctx, warnings):
 
 
 def fill_my_information(page, answers, ctx, resolve, warnings, filled):
+    """Two passes: Workday paints and re-paints this page (country change,
+    late address block), and a field missed by the first pass is caught by
+    the second, which only touches what is still empty."""
+    from jobpilot.fill.browser import wait_dom_stable
+    _fill_my_information(page, answers, ctx, resolve, warnings, filled)
+    wait_dom_stable(page, max_s=8, quiet=2)
+    _fill_my_information(page, answers, ctx, resolve, warnings, filled, second=True)
+
+
+def _fill_my_information(page, answers, ctx, resolve, warnings, filled, second=False):
     from jobpilot.fill.browser import fill_fields, YES
     p, loc, links = answers["personal"], answers["location"], answers["links"]
 
@@ -621,14 +653,23 @@ def fill_my_information(page, answers, ctx, resolve, warnings, filled):
     # Previous worker: the per-company rule in answers.yaml (Amazon = Yes).
     prev = resolve(f"Have you previously been employed by {ctx.get('company', '')}?")
     want = "Yes" if prev is YES else "No"
-    if click_radio(page, r"worked for .* as an employee|previously (been )?employed|contingent worker|former (employee|worker)", want):
+    if click_radio(page, r"worked for .* as an employee|previously (been )?(employed|worked)|worked for this organi[sz]ation|"
+                   r"worked here before|contingent worker|former (employee|worker)", want):
         filled["Previously worked here?"] = want
     else:
         warnings.append("Workday: 'have you worked here before' radio not found")
 
     def put(sel_id, pattern, value, label):
         s = first_visible(sel_id, by_label(page, pattern, "input"))
-        if s and _fill(page, s, value, warnings, label):
+        if not s:
+            return
+        if second:
+            try:
+                if (page.locator(s).first.input_value() or "").strip():
+                    return                          # already has a value; leave it
+            except Exception:
+                pass
+        if _fill(page, s, value, warnings, label):
             filled[label] = value
 
     put('input[data-automation-id="legalNameSection_firstName"]', r"^(given name|first name|legal first)", p["first_name"], "Given name")
@@ -682,81 +723,242 @@ def fill_my_information(page, answers, ctx, resolve, warnings, filled):
             pass
 
 
+_SEC = [0]
+
+
+def container_by_heading(page, heading_re, min_controls=2, max_text=6000):
+    """Selector for the smallest block under a heading ("Work Experience 1")
+    that holds at least `min_controls` form controls — the tenant-independent
+    way to find a repeating entry when the data-automation-ids differ."""
+    _SEC[0] += 1
+    n = _SEC[0]
+    try:
+        ok = page.evaluate("""([re_, minC, maxT, n]) => {
+          const re = new RegExp(re_, 'i');
+          const vis = el => el.offsetParent !== null;
+          const heads = [...document.querySelectorAll('h1,h2,h3,h4,h5,h6,[role="heading"],legend,strong,b,div,span,p')]
+            .filter(h => vis(h) && h.children.length <= 2 && re.test((h.innerText || '').trim()) && (h.innerText || '').trim().length < 60);
+          for (const h of heads) {
+            let box = h.parentElement;
+            for (let hops = 0; box && hops < 8; hops++) {
+              const ctrls = [...box.querySelectorAll('input:not([type=hidden]),textarea,select,button[aria-haspopup="listbox"]')].filter(vis);
+              const txt = (box.innerText || '');
+              if (ctrls.length >= minC && !/save and continue/i.test(txt)) {
+                if (txt.length > maxT) break;
+                box.setAttribute('data-jobbot-sec', String(n));
+                return true;
+              }
+              box = box.parentElement;
+            }
+          }
+          return false;
+        }""", [heading_re, min_controls, max_text, n])
+    except Exception:
+        ok = False
+    return f'[data-jobbot-sec="{n}"]' if ok else ""
+
+
+def _val(page, sel):
+    try:
+        return (page.locator(sel).first.input_value() or "").strip()
+    except Exception:
+        return ""
+
+
+def set_date_any(page, blk, label_pattern, ym, warnings, label=""):
+    """A Workday date field is either a month box + year box (Mastercard) or one
+    MM/YYYY (or YYYY) box (Palo Alto). Find it by its label inside the block."""
+    if not ym:
+        return False
+    y, m = ym.split("-")[0], ym.split("-")[1]
+    box = by_label(page, label_pattern, "input", within=blk)
+    if not box:
+        return False
+    try:
+        info = page.locator(box).first.evaluate(
+            "el => { const ff = el.closest('[data-automation-id^=\"formField-\"]') || el.parentElement.parentElement;"
+            " const ins = [...ff.querySelectorAll('input')].filter(i => i.offsetParent !== null);"
+            " return {n: ins.length, ph: ins.map(i => i.placeholder || i.getAttribute('aria-label') || ''),"
+            "         ids: ins.map(i => i.getAttribute('data-automation-id') || '')}; }")
+    except Exception:
+        info = {"n": 1, "ph": [""], "ids": [""]}
+    try:
+        has_month = any("dateSectionMonth" in i for i in info["ids"])
+        has_year = any("dateSectionYear" in i for i in info["ids"])
+        if has_month or has_year:
+            ff = page.locator(box).first
+            cont = ff.locator("xpath=ancestor::*[starts-with(@data-automation-id,'formField-')][1]")
+            # a year-only box (education) takes just the year; typing MM/YYYY into it gave "7201"
+            for part, val in ((("Month", m),) if has_month else ()) + (("Year", y),):
+                inp = cont.locator(f'input[data-automation-id="dateSection{part}-input"]').first
+                try:
+                    inp.click(timeout=1500)
+                except Exception:
+                    try:
+                        inp.click(timeout=1500, force=True)
+                    except Exception:
+                        inp.evaluate("el => el.focus()")
+                page.keyboard.press("Control+A")
+                page.keyboard.type(val, delay=80)
+                page.wait_for_timeout(200)
+                if (inp.input_value() or "").strip().lstrip("0") != val.lstrip("0"):
+                    inp.evaluate("(el, v) => { const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;"
+                                 " set.call(el, v); el.dispatchEvent(new Event('input', {bubbles: true}));"
+                                 " el.dispatchEvent(new Event('change', {bubbles: true})); }", val)
+            page.keyboard.press("Tab")
+            return True
+        ph = (info["ph"][0] or "").upper()
+        text = y if ("YYYY" in ph and "MM" not in ph) else f"{m}/{y}"
+        loc = page.locator(box).first
+        try:
+            loc.click(timeout=2500)
+        except Exception:
+            try:
+                loc.click(timeout=2500, force=True)
+            except Exception:
+                loc.evaluate("el => el.focus()")
+        page.keyboard.press("Control+A")
+        page.keyboard.type(text, delay=70)
+        page.keyboard.press("Tab")
+        page.wait_for_timeout(300)
+        if not (loc.input_value() or "").strip():
+            # a masked widget that ignores typing: set it and fire the events
+            loc.evaluate("(el, v) => { const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;"
+                         " set.call(el, v); el.dispatchEvent(new Event('input', {bubbles: true}));"
+                         " el.dispatchEvent(new Event('change', {bubbles: true})); el.blur(); }", text)
+        return True
+    except Exception as e:
+        warnings.append(f"Workday: {label or label_pattern} date: {str(e)[:60]}")
+        return False
+
+
 def fill_my_experience(page, answers, ctx, resolve, warnings, filled):
     from jobpilot.fill.browser import resume_path, fill_fields
     emp, edu = answers.get("employment") or [], answers.get("education") or []
 
-    # Work experience blocks. If the account already carries them (a previous
-    # application on this tenant), leave them — they are ours from last time.
-    sec = '[data-automation-id="workExperienceSection"]'
-    if _vis(page, sec, 500):
-        have = page.locator(f'{sec} [data-automation-id^="workExperience-"]').count()
-        if have:
-            warnings.append(f"Workday: {have} work-experience block(s) already on the account; left as they are")
-        else:
-            for i, e in enumerate(emp):
-                add = f'{sec} button[data-automation-id="Add"]' if i == 0 else f'{sec} button[data-automation-id="Add Another"]'
-                if not _click(page, add):
-                    warnings.append(f"Workday: could not add work-experience block {i + 1}")
-                    break
+    def block(sec, prefix, i):
+        by_id = f'{sec} [data-automation-id="{prefix}-{i + 1}"]'
+        if _vis(page, by_id, 250):
+            return by_id
+        title = "work experience" if prefix == "workExperience" else "education"
+        return container_by_heading(page, rf"^{title}\s*{i + 1}$", 2, 4000) or by_id
+
+    def ensure_block(sec, prefix, i):
+        """Block i exists? else press Add / Add Another and wait for it."""
+        if _vis(page, block(sec, prefix, i), 400):
+            return True
+        for add in (f'{sec} button[data-automation-id="Add Another"]', f'{sec} button[data-automation-id="Add"]',
+                    f'{sec} button:has-text("Add Another")', f'{sec} button:has-text("Add")'):
+            if _click(page, add):
                 page.wait_for_timeout(1200)
-                blk = f'{sec} [data-automation-id="workExperience-{i + 1}"]'
-                _fill(page, f'{blk} input[data-automation-id="jobTitle"]', e["title"], warnings, "job title")
-                _fill(page, f'{blk} input[data-automation-id="company"]', e["employer"], warnings, "company")
-                _fill(page, f'{blk} input[data-automation-id="location"]', e.get("location", ""), warnings, "location")
-                if e.get("current"):
+                if _vis(page, block(sec, prefix, i), 800):
+                    return True
+        return False
+
+    def put(blk, ids, pattern, value, label):
+        if value is None or str(value) == "":
+            return
+        sel = next((x for x in [f'{blk} input[data-automation-id="{i}"]' for i in ids] if _vis(page, x, 250)), "") \
+            or by_label(page, pattern, "input,textarea", within=blk)
+        if not sel:
+            warnings.append(f"Workday: no '{label}' field in {blk.split('\"')[-2] if '\"' in blk else blk}")
+            return
+        if _val(page, sel):
+            return                                    # already carries a value (previous application)
+        try:
+            page.locator(sel).first.fill(str(value), timeout=4000)
+            filled[f"{label}"] = str(value)[:60]
+        except Exception as e:
+            warnings.append(f"Workday: {label}: {str(e)[:60]}")
+
+    sec = '[data-automation-id="workExperienceSection"]'
+    if not _vis(page, sec, 400):
+        sec = container_by_heading(page, r"^work experience$", 2, 12000)
+    if not sec:
+        warnings.append("Workday: no Work Experience section found on My Experience")
+    else:
+        for i, e in enumerate(emp):
+            if not ensure_block(sec, "workExperience", i):
+                warnings.append(f"Workday: could not add work-experience block {i + 1}")
+                break
+            blk = block(sec, "workExperience", i)
+            put(blk, ["jobTitle"], r"^job title", e["title"], f"Job title {i + 1}")
+            put(blk, ["company"], r"^company", e["employer"], f"Company {i + 1}")
+            put(blk, ["location"], r"^location", e.get("location", ""), f"Location {i + 1}")
+            if e.get("current"):
+                cb = f'{blk} input[data-automation-id="currentlyWorkHere"]'
+                cb = cb if _vis(page, cb, 250) else by_label(page, r"currently work here", "input", within=blk)
+                if cb:
                     try:
-                        page.locator(f'{blk} input[data-automation-id="currentlyWorkHere"]').first.check(timeout=3000, force=True)
+                        page.locator(cb).first.check(timeout=3000, force=True)
                     except Exception:
-                        _click(page, f'{blk} [data-automation-id="currentlyWorkHere"]')
-                set_date(page, f'{blk} [data-automation-id="formField-startDate"]', e.get("start_date"), warnings, "start date")
-                if not e.get("current") and e.get("end_date"):
-                    set_date(page, f'{blk} [data-automation-id="formField-endDate"]', e["end_date"], warnings, "end date")
-                _fill(page, f'{blk} textarea[data-automation-id="description"]', e.get("summary", ""), warnings, "description")
-                filled[f"Experience {i + 1}"] = f"{e['title']} @ {e['employer']}"
+                        pass
+            set_date_any(page, blk, r"^from", e.get("start_date"), warnings, f"from {i + 1}")
+            if not e.get("current") and e.get("end_date"):
+                set_date_any(page, blk, r"^to\b", e["end_date"], warnings, f"to {i + 1}")
+            w0 = len(warnings)
+            put(blk, ["description"], r"^(role )?description|responsibilities", e.get("summary", ""), f"Description {i + 1}")
+            del warnings[w0:]                               # optional on most tenants
 
     sec = '[data-automation-id="educationSection"]'
-    if _vis(page, sec, 500):
-        have = page.locator(f'{sec} [data-automation-id^="education-"]').count()
-        if have:
-            warnings.append(f"Workday: {have} education block(s) already on the account; left as they are")
-        else:
-            for i, e in enumerate(edu):
-                add = f'{sec} button[data-automation-id="Add"]' if i == 0 else f'{sec} button[data-automation-id="Add Another"]'
-                if not _click(page, add):
-                    warnings.append(f"Workday: could not add education block {i + 1}")
-                    break
-                page.wait_for_timeout(1200)
-                blk = f'{sec} [data-automation-id="education-{i + 1}"]'
-                school = f'{blk} input[data-automation-id="school"], {blk} [data-automation-id="schoolItem"] input'
-                if _vis(page, school, 400):
-                    got = type_prompt(page, school, [e["institution"], e["institution"].split(",")[0]], warnings, "school")
-                    if not got:
-                        _fill(page, school, e["institution"], warnings, "school")
-                deg = e.get("degree", "")
-                short = re.search(r"\(([^)]+)\)", deg)
-                pick_listbox(page, f'{blk} button[data-automation-id="degree"]',
-                             [deg, short.group(1) if short else "", deg.split(" of ")[0]], warnings, "degree")
-                fos = f'{blk} [data-automation-id="field-of-study"] input, {blk} input[data-automation-id="field-of-study"], {blk} [data-automation-id="fieldOfStudy"] input'
-                if _vis(page, fos, 300):
-                    type_prompt(page, fos, [e.get("field_of_study", ""), e.get("field_of_study", "").split(" and ")[0]], warnings, "field of study")
-                if e.get("gpa") and str(e["gpa"]).upper() != "TODO":
-                    _fill(page, f'{blk} input[data-automation-id="gpa"]', e["gpa"], warnings, "gpa")
-                set_date(page, f'{blk} [data-automation-id="formField-startDate"]', e.get("start_date"), warnings, "edu start")
-                set_date(page, f'{blk} [data-automation-id="formField-endDate"]', e.get("end_date"), warnings, "edu end")
-                filled[f"Education {i + 1}"] = f"{deg} — {e['institution']}"
+    if not _vis(page, sec, 400):
+        sec = container_by_heading(page, r"^education$", 1, 12000)
+    if not sec:
+        warnings.append("Workday: no Education section found on My Experience")
+    else:
+        for i, e in enumerate(edu):
+            if not ensure_block(sec, "education", i):
+                warnings.append(f"Workday: could not add education block {i + 1}")
+                break
+            blk = block(sec, "education", i)
+            school = next((x for x in (f'{blk} input[data-automation-id="school"]', f'{blk} [data-automation-id="schoolItem"] input')
+                           if _vis(page, x, 250)), "") or by_label(page, r"school|university|institution", "input", within=blk)
+            if school and not _val(page, school):
+                inst = e["institution"]
+                names = [inst, inst.replace(",", ""), re.sub(r"\s*\(.*?\)", "", inst).replace(",", "").strip()]
+                # A prefix match once turned "Indian Institute of Technology, Jodhpur" into
+                # "... Delhi": a school is a fact, exact names only, else the plain "Other".
+                got = type_prompt(page, school, names, warnings, "school", exact=True)
+                if not got:
+                    # Tenants without the school list a plain "Other" or "Other - <country>".
+                    country = (answers.get("location") or {}).get("country", "India")
+                    got = type_prompt(page, school, [f"Other - {country}", "Other"], warnings, "school (Other)", exact=True)
+                if not got:
+                    warnings.append(f"Workday: school '{inst}' not in this tenant's list and no plain 'Other' — left for Sunil")
+            deg = e.get("degree", "")
+            short = re.search(r"\(([^)]+)\)", deg)
+            dsel = next((x for x in (f'{blk} button[data-automation-id="degree"]',) if _vis(page, x, 250)), "") \
+                or by_label(page, r"^degree", "button", within=blk)
+            if dsel:
+                pick_listbox(page, dsel, [deg, short.group(1) if short else "", deg.split(" of ")[0],
+                                          "Master" if "master" in deg.lower() else "Bachelor"], warnings, "degree")
+            fos = next((x for x in (f'{blk} [data-automation-id="field-of-study"] input', f'{blk} input[data-automation-id="field-of-study"]')
+                        if _vis(page, x, 250)), "") or by_label(page, r"field of study|major", "input", within=blk)
+            if fos and not _val(page, fos):
+                w0 = len(warnings)
+                type_prompt(page, fos, [e.get("field_of_study", "")], warnings, "field of study", exact=True)
+                del warnings[w0:]                       # optional field: silence a miss
+            if e.get("gpa") and str(e["gpa"]).upper() != "TODO":
+                put(blk, ["gpa"], r"^(gpa|grade)", e["gpa"], f"GPA {i + 1}")
+            set_date_any(page, blk, r"^from", e.get("start_date"), warnings, f"edu from {i + 1}")
+            set_date_any(page, blk, r"^to\b", e.get("end_date"), warnings, f"edu to {i + 1}")
+            filled[f"Education {i + 1}"] = f"{deg} — {e['institution']}"
 
     # Resume (.docx parses best), LinkedIn, websites.
     rp = resume_path(answers, ctx["company_slug"], ctx["portal"])
-    up = 'input[data-automation-id="file-upload-input-ref"]'
-    if rp and page.locator(up).count():
+    up = 'input[data-automation-id="file-upload-input-ref"], input[type="file"]'
+    already = "successfully uploaded" in _body(page) or _vis(page, '[data-automation-id="file-upload-successful"]', 300)
+    if rp and page.locator(up).count() and not already:
         try:
             page.locator(up).first.set_input_files(rp)
             page.wait_for_timeout(3500)
             filled["Resume"] = os.path.basename(rp)
         except Exception as e:
             warnings.append(f"Workday: resume upload failed: {str(e)[:60]}")
-    _fill(page, 'input[data-automation-id="linkedinQuestion"]', answers["links"].get("linkedin"), warnings, "linkedin") and filled.update({"LinkedIn": answers["links"].get("linkedin")})
+    li = 'input[data-automation-id="linkedinQuestion"]'
+    li = li if _vis(page, li, 250) else by_label(page, r"linkedin", "input")
+    if li and not _val(page, li):
+        _fill(page, li, answers["links"].get("linkedin"), warnings, "linkedin") and filled.update({"LinkedIn": answers["links"].get("linkedin")})
     # Anything else labelled on this page (languages, skills stay empty on purpose).
     f, w, _m = fill_fields(page, resolve, answers, ctx)
     for k, v in f.items():

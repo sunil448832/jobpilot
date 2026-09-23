@@ -18,3 +18,6 @@
 - **Expected salary:**
 - **Recruiter / contact:**
 - **Follow-up date:**
+
+## Tailoring round 1 — words not in the base resume (check before approving)
+apis, architecture, backend, building, ci/cd, cross-functional, delivery, devops, docker, inference, integration, performance, pipeline, principal, product, python, real-time, reliability, rest, restful, running, scalability, training, validation

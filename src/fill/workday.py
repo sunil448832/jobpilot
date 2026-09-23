@@ -428,14 +428,23 @@ def login_or_create(page, ctx, warnings):
     _fill(page, '[data-automation-id="password"]', pw, warnings, "password")
     _click(page, 'button[data-automation-id="signInSubmitButton"], div[data-automation-id="click_filter"] button')
     page.wait_for_timeout(3500)
-    if not on_gate():
+
+    def err_text():
+        try:
+            loc = page.locator('[data-automation-id="errorMessage"], [data-automation-id="alertMessage"], [role="alert"]')
+            return " | ".join((loc.nth(i).inner_text() or "").strip() for i in range(min(loc.count(), 3))).strip(" |")
+        except Exception:
+            return ""
+
+    def on_chooser():
+        return _vis(page, 'button:has-text("Sign in with email"), button:has-text("with email")', 400)
+
+    if not on_gate() and not on_chooser():
         warnings.append("Workday: signed in")
         return True
-    err = ""
-    try:
-        err = (page.locator('[data-automation-id="errorMessage"]').first.inner_text() or "").strip()
-    except Exception:
-        pass
+    err = err_text()
+    if err:
+        warnings.append(f"Workday: sign-in said: {err[:140]}")
     # Unknown address -> create the account with the same credentials.
     if _click(page, 'button[data-automation-id="createAccountLink"], a[data-automation-id="createAccountLink"]'):
         page.wait_for_timeout(1500)
@@ -453,15 +462,28 @@ def login_or_create(page, ctx, warnings):
         _click(page, 'button[data-automation-id="createAccountSubmitButton"], div[data-automation-id="click_filter"] button')
         page.wait_for_timeout(4000)
         body = _body(page)
+        cerr = err_text()
+        if cerr:
+            warnings.append(f"Workday: create-account said: {cerr[:140]}")
         if "verif" in body and "email" in body:
             _verify_email(page, ctx, warnings)
-        if not on_gate():
+        if not on_gate() and not on_chooser():
             warnings.append("Workday: account created for this tenant")
             return True
-        try:
-            err = (page.locator('[data-automation-id="errorMessage"]').first.inner_text() or "").strip()
-        except Exception:
-            pass
+        if on_chooser() and not cerr:
+            # Created, then bounced to the sign-in chooser: this tenant wants the
+            # address verified by email before the account signs in.
+            from jobpilot.review.ask import ask
+            warnings.append("Workday: account created but the tenant bounced to sign-in — email verification needed")
+            ans = ask(f"wd-verify-{ctx.get('company_slug', 'x')}",
+                      f"{ctx.get('company', 'Workday')}: the new Workday account needs your email verified. "
+                      f"Open the mail from them, click the link, then type 'done' here.", timeout=900)
+            if ans:
+                page.goto(ctx["url"], wait_until="domcontentloaded", timeout=60000)
+                page.wait_for_timeout(3000)
+                return login_or_create(page, ctx, warnings)
+            return False
+        err = cerr or err
     warnings.append(f"Workday: could not sign in or create an account ({err[:120] or 'no message'})")
     return False
 
@@ -525,6 +547,15 @@ def start_application(page, ctx, warnings):
         step = current_step(page)
         if step and not step.startswith("create account") and _vis(page, NEXT_BTN, 800):
             return True
+        # Some tenants (Palo Alto Networks) offer Apple / Google / LinkedIn sign-in
+        # first; the email form is behind "Sign in with email".
+        if not _vis(page, '[data-automation-id="email"]', 400):
+            for sel in ('button:has-text("Sign in with email")', 'button:has-text("Sign In with email")',
+                        'button:has-text("Continue with email")', '[data-automation-id="signInWithEmail"]',
+                        'button:has-text("with email")'):
+                if _click(page, sel):
+                    page.wait_for_timeout(2000)
+                    break
         if _vis(page, '[data-automation-id="email"]', 600) or step.startswith("create account"):
             if not login_or_create(page, ctx, warnings):
                 return False

@@ -26,7 +26,7 @@
 
 \subsection{Agent Evaluation Service -- Automated Grading \& Root-Cause Analysis}
 \begin{zitemize}
-\item Built an end-to-end \textbf{evaluation framework} (FastAPI \texttt{/evaluate}) that runs a registry of \textbf{28 graded tasks} --- real-world \textbf{Kaggle} datasets with ground truth from published reference notebooks --- against the \textbf{Orchestrator Agent} or any individual \textbf{A2A agent}, replacing manual QA with \textbf{regression visibility} on every release.
+\item Built an end-to-end \textbf{evaluation framework} --- a \textbf{RESTful API} (FastAPI \texttt{/evaluate}) --- running a registry of \textbf{28 graded tasks} --- real-world \textbf{Kaggle} datasets with ground truth from published reference notebooks --- against the \textbf{Orchestrator Agent} or any individual \textbf{A2A agent}, replacing manual QA with \textbf{regression visibility} on every release.
 \item Designed a \textbf{cell-level precision / recall / F1 grader} (order-insensitive, float/date tolerant) plus an \textbf{LLM root-cause analyzer} (Claude on AWS Bedrock) adjudicating genuine errors vs.\ acceptable spec-variants; benchmarked the fleet at \textbf{86\% exact-pass} (24/28) and \textbf{0.86 mean F1}.
 \item Engineered an \textbf{LLM auto-responder} driving the agent's \textbf{human-in-the-loop} flow over WebSocket for fully unattended runs, over \textbf{file- and database-backed} datasets (TPC-H, M5, Olist, Favorita) with a \textbf{Redis-snapshotted run store}.
 \item \textbf{Stack:} Python, FastAPI, WebSockets, CrewAI, Claude (AWS Bedrock), Pandas, Redis, AWS S3 \& Athena.

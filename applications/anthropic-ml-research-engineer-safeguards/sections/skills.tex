@@ -1,0 +1,24 @@
+%====================
+% SKILLS
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+% Parsers read wide multi-column tables column-wise and scramble the
+% label/value pairing, which destroys keyword association.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Misuse Detection \& Classifiers:} Multimodal Harmful-Content Classification (FLAVA), Policy-Violation / Ad-Moderation Classifiers, LLM Taxonomy Classification at Scale, Token-Probability-Gated Decoding, Active Learning on Hard Samples, Precision / Recall / F1 Tuning, Cross-Taxonomy Label Mapping, Multimodal Models\par\vspace{2pt}
+
+\skills{AI Safety \& Adversarial Robustness:} Prompt-Injection \& Jailbreak Mitigation, Sandboxed Code Execution (bubblewrap, Python AST allow-list, read-only DB gate), Deny-by-Default Egress Control (IMDS / link-local blocking), Session-Scoped STS Credentials, Subprocess Isolation, Hallucination / Fabrication Guardrails, Output Verification, Human-in-the-Loop Review\par\vspace{2pt}
+
+\skills{Evaluation \& Automated Testing:} Automated Evaluation Harnesses, Registry of 28 Graded Tasks, Cell-level Precision / Recall / F1 Grading, LLM-as-Judge Adjudication, Faithfulness \& Hallucination-Rate Rubrics, LLM Root-Cause Analysis, Regression Benchmarking, A/B Testing, Experiment Tracking\par\vspace{2pt}
+
+\skills{Language Modeling \& Transformers:} Transformer LLMs (Claude, GPT, LLaMA, Mistral), Vision-Language Models (FLAVA, CLIP, LLaVA, BLIP, Phi-3 Vision), PEFT / LoRA Fine-tuning, DeepSpeed ZeRO-3, Distributed Training, Model Quantization (FP8, 4-bit), Contextual Bandits (UCB1 policy learning), Deep Learning, NLP, Computer Vision\par\vspace{2pt}
+
+\skills{Programming \& ML Systems:} Python (asyncio, threading, ThreadPoolExecutor, subprocess isolation), SQL, C++, Bash, PyTorch, TensorFlow, HuggingFace Transformers, CrewAI, PydanticAI, LangChain, LlamaIndex, FastAPI, Multi-Agent Orchestration (A2A Protocol)\par\vspace{2pt}
+
+\skills{Large-Scale Serving \& Infrastructure:} vLLM (FP8 serving, 20\,ms median latency), Docker, Kubernetes, AWS (EC2, ECS, S3, Bedrock, Athena), Redis, Celery, PostgreSQL, DuckDB, Vector Databases (Qdrant, FAISS, Pinecone), Hybrid Retrieval / RAG, BM25, CI/CD (GitHub Actions, Jenkins), Latency Benchmarking (p50 / p95 / p99)
+
+\end{document}

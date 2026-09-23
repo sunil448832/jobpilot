@@ -1,0 +1,870 @@
+greenhouse:
+- slug: adahealth
+  jobs: 0
+- slug: adyen
+  jobs: 231
+- slug: agency
+  jobs: 829
+  yc: Winter 2022
+- slug: aha
+  jobs: 1
+- slug: airtable
+  jobs: 16
+- slug: akidolabs
+  jobs: 12
+  yc: Winter 2015
+- slug: anthropic
+  jobs: 595
+- slug: aon3d
+  jobs: 2
+  yc: Winter 2017
+- slug: assemblyai
+  jobs: 18
+- slug: axle
+  jobs: 54
+  yc: Summer 2022
+- slug: baubap
+  jobs: 2
+  yc: Summer 2021
+- slug: bird
+  jobs: 32
+- slug: careem
+  jobs: 19
+- slug: catawiki
+  jobs: 49
+- slug: checkr
+  jobs: 45
+  yc: Summer 2014
+- slug: cloudflare
+  jobs: 331
+- slug: coast
+  jobs: 17
+  yc: Summer 2021
+- slug: colabsoftware
+  jobs: 25
+  yc: Summer 2019
+- slug: cultureamp
+  jobs: 34
+- slug: databricks
+  jobs: 870
+- slug: datadog
+  jobs: 441
+- slug: elastic
+  jobs: 365
+- slug: eucalyptus
+  jobs: 104
+- slug: extend
+  jobs: 18
+  yc: Winter 2023
+- slug: faire
+  jobs: 60
+  yc: Winter 2017
+- slug: figma
+  jobs: 157
+- slug: flipdish
+  jobs: 8
+- slug: flowtraders
+  jobs: 43
+- slug: focalsystems
+  jobs: 18
+  yc: Winter 2016
+- slug: general
+  jobs: 1
+  yc: Winter 2026
+- slug: gigs
+  jobs: 45
+  yc: Winter 2021
+- slug: gitlab
+  jobs: 227
+- slug: glide
+  jobs: 1
+  yc: Winter 2019
+- slug: gocardless
+  jobs: 0
+- slug: hackerrank
+  jobs: 29
+  yc: Summer 2011
+- slug: hala
+  jobs: 13
+- slug: hightouch
+  jobs: 82
+  yc: Summer 2019
+- slug: imc
+  jobs: 175
+- slug: imt
+  jobs: 2
+  yc: Winter 2022
+- slug: intercom
+  jobs: 0
+- slug: invisible
+  jobs: 5
+- slug: kernalbio
+  jobs: 2
+  yc: Summer 2020
+- slug: konux
+  jobs: 0
+- slug: lucidbots
+  jobs: 2
+  yc: Summer 2019
+- slug: lucidmotors
+  jobs: 332
+- slug: marqvision
+  jobs: 19
+  yc: Summer 2021
+- slug: maymobility
+  jobs: 47
+  yc: Summer 2017
+- slug: momentic
+  jobs: 24
+  yc: Winter 2024
+- slug: mongodb
+  jobs: 415
+- slug: monzo
+  jobs: 0
+- slug: n26
+  jobs: 62
+- slug: netlify
+  jobs: 1
+- slug: novacredit
+  jobs: 11
+  yc: Summer 2016
+- slug: observeai
+  jobs: 17
+  yc: Winter 2018
+- slug: octopusdeploy
+  jobs: 4
+- slug: onrunning
+  jobs: 0
+- slug: pairteam
+  jobs: 19
+  yc: Summer 2019
+- slug: parallel
+  jobs: 19
+  yc: Summer 2021
+- slug: prodigal
+  jobs: 13
+  yc: Summer 2018
+- slug: prolific
+  jobs: 27
+  yc: Summer 2019
+- slug: pulse
+  jobs: 2648
+  yc: Summer 2024
+- slug: qventus
+  jobs: 13
+  yc: Winter 2015
+- slug: radar
+  jobs: 13
+  yc: Winter 2013
+- slug: recall
+  jobs: 2
+  yc: Winter 2020
+- slug: remotecom
+  jobs: 201
+- slug: route
+  jobs: 2
+- slug: saltsecurity
+  jobs: 11
+  yc: Winter 2016
+- slug: scaleai
+  jobs: 216
+- slug: sendbird
+  jobs: 10
+  yc: Winter 2016
+- slug: squarespace
+  jobs: 0
+- slug: stripe
+  jobs: 615
+- slug: swayable
+  jobs: 15
+  yc: Winter 2018
+- slug: tamara
+  jobs: 33
+- slug: tempo
+  jobs: 8
+  yc: Winter 2015
+- slug: turing
+  jobs: 26
+- slug: twilio
+  jobs: 147
+- slug: usergems
+  jobs: 4
+  yc: Summer 2014
+- slug: vercel
+  jobs: 86
+- slug: veriff
+  jobs: 10
+  yc: Winter 2018
+- slug: warp
+  jobs: 5
+  yc: Winter 2023
+- slug: wise
+  jobs: 22
+- slug: yuma
+  jobs: 1
+  yc: Winter 2023
+lever:
+- slug: aldar
+  jobs: 46
+- slug: emilabs
+  jobs: 10
+  yc: Winter 2019
+- slug: getzuma
+  jobs: 6
+  yc: Summer 2021
+- slug: handoff
+  jobs: 8
+  yc: Winter 2020
+- slug: immutable
+  jobs: 7
+- slug: kinter
+  jobs: 2
+  yc: Winter 2020
+- slug: mashgin
+  jobs: 15
+  yc: Winter 2015
+- slug: multiplylabs
+  jobs: 7
+  yc: Summer 2016
+- slug: mytos
+  jobs: 10
+  yc: Summer 2018
+- slug: postera
+  jobs: 1
+  yc: Winter 2020
+- slug: skyways
+  jobs: 18
+  yc: Summer 2017
+- slug: sonarsource
+  jobs: 128
+- slug: spotify
+  jobs: 78
+- slug: superside
+  jobs: 15
+  yc: Winter 2016
+- slug: synapticure
+  jobs: 3
+  yc: Summer 2020
+- slug: toptal
+  jobs: 18
+- slug: twodots
+  jobs: 4
+  yc: Summer 2022
+- slug: voltalabs
+  jobs: 2
+  yc: Winter 2019
+ashby:
+- slug: abacum
+  jobs: 12
+  yc: Winter 2021
+- slug: abridge
+  jobs: 40
+- slug: accord
+  jobs: 4
+  yc: Winter 2020
+- slug: adaptyv
+  jobs: 36
+  yc: Summer 2021
+- slug: afterquery
+  jobs: 34
+  yc: Winter 2025
+- slug: agave
+  jobs: 8
+  yc: Winter 2022
+- slug: aios
+  jobs: 15
+  yc: Winter 2020
+- slug: aiprise
+  jobs: 14
+  yc: Summer 2022
+- slug: airbyte
+  jobs: 13
+  yc: Winter 2020
+- slug: airwallex
+  jobs: 585
+- slug: alchemy
+  jobs: 21
+  yc: Summer 2014
+- slug: alephalpha
+  jobs: 0
+- slug: andela
+  jobs: 17
+- slug: anima
+  jobs: 7
+  yc: Winter 2021
+- slug: arini
+  jobs: 3
+  yc: Winter 2024
+- slug: artisan
+  jobs: 4
+  yc: Winter 2024
+- slug: assembly
+  jobs: 4
+  yc: Winter 2018
+- slug: atlas
+  jobs: 8
+  yc: Winter 2022
+- slug: atomic
+  jobs: 9
+  yc: Winter 2021
+- slug: auctor
+  jobs: 12
+  yc: Spring 2025
+- slug: aurelian
+  jobs: 11
+  yc: Summer 2022
+- slug: authzed
+  jobs: 2
+  yc: Winter 2021
+- slug: avoca
+  jobs: 25
+  yc: Winter 2023
+- slug: bankjoy
+  jobs: 9
+  yc: Winter 2015
+- slug: beparallel
+  jobs: 8
+  yc: Winter 2024
+- slug: bland
+  jobs: 19
+  yc: Summer 2023
+- slug: blee
+  jobs: 4
+  yc: Summer 2022
+- slug: blissway
+  jobs: 8
+  yc: Summer 2020
+- slug: bolna
+  jobs: 8
+  yc: Fall 2025
+- slug: boostly
+  jobs: 2
+  yc: Summer 2022
+- slug: brettonai
+  jobs: 8
+  yc: Summer 2023
+- slug: broccoli
+  jobs: 38
+  yc: Winter 2022
+- slug: buffer
+  jobs: 3
+- slug: bunkerhillhealth
+  jobs: 4
+  yc: Winter 2019
+- slug: bynder
+  jobs: 22
+- slug: cambio
+  jobs: 8
+  yc: Summer 2022
+- slug: campfire
+  jobs: 31
+  yc: Summer 2023
+- slug: caremessage
+  jobs: 5
+  yc: Winter 2014
+- slug: casca
+  jobs: 5
+  yc: Summer 2023
+- slug: cinder
+  jobs: 8
+  yc: Winter 2022
+- slug: circuithub
+  jobs: 9
+  yc: Winter 2012
+- slug: claimsorted
+  jobs: 16
+  yc: Summer 2024
+- slug: clarion
+  jobs: 11
+  yc: Winter 2024
+- slug: clueso
+  jobs: 1
+  yc: Winter 2023
+- slug: cohere
+  jobs: 143
+- slug: conduit
+  jobs: 1
+  yc: Winter 2023
+- slug: confido
+  jobs: 35
+  yc: Summer 2021
+- slug: confluent
+  jobs: 22
+- slug: conveo
+  jobs: 17
+  yc: Summer 2024
+- slug: corgi
+  jobs: 7
+  yc: Summer 2024
+- slug: credal
+  jobs: 5
+  yc: Winter 2023
+- slug: datafold
+  jobs: 1
+  yc: Summer 2020
+- slug: decodahealth
+  jobs: 7
+  yc: Summer 2023
+- slug: deepgram
+  jobs: 92
+- slug: deepjudge
+  jobs: 20
+- slug: deepl
+  jobs: 65
+- slug: deepsetai
+  jobs: 5
+- slug: depot
+  jobs: 1
+  yc: Winter 2023
+- slug: domu
+  jobs: 2
+  yc: Summer 2024
+- slug: elevenlabs
+  jobs: 252
+- slug: ello
+  jobs: 5
+  yc: Winter 2020
+- slug: elyos
+  jobs: 6
+  yc: Summer 2023
+- slug: encord
+  jobs: 35
+  yc: Winter 2021
+- slug: escape
+  jobs: 3
+  yc: Winter 2023
+- slug: eventual
+  jobs: 5
+  yc: Winter 2022
+- slug: exa
+  jobs: 55
+  yc: Summer 2021
+- slug: fieldguide
+  jobs: 44
+  yc: Summer 2020
+- slug: finny
+  jobs: 6
+  yc: Summer 2024
+- slug: flai
+  jobs: 4
+  yc: Summer 2025
+- slug: fleetworks
+  jobs: 9
+  yc: Summer 2023
+- slug: flint
+  jobs: 9
+  yc: Summer 2023
+- slug: focal
+  jobs: 2
+  yc: Winter 2016
+- slug: frontify
+  jobs: 11
+- slug: furtherai
+  jobs: 13
+  yc: Winter 2024
+- slug: garage
+  jobs: 15
+  yc: Winter 2024
+- slug: glimpse
+  jobs: 9
+  yc: Summer 2020
+- slug: golinks
+  jobs: 5
+  yc: Winter 2019
+- slug: goteleport
+  jobs: 24
+  yc: Summer 2015
+- slug: govdash
+  jobs: 4
+  yc: Winter 2022
+- slug: goveagle
+  jobs: 2
+  yc: Winter 2023
+- slug: greenboard
+  jobs: 4
+  yc: Winter 2024
+- slug: greptile
+  jobs: 16
+  yc: Winter 2024
+- slug: gumloop
+  jobs: 10
+  yc: Winter 2024
+- slug: harperinsure
+  jobs: 27
+  yc: Winter 2025
+- slug: harvey
+  jobs: 348
+- slug: herondata
+  jobs: 5
+  yc: Summer 2020
+- slug: hud
+  jobs: 13
+  yc: Winter 2025
+- slug: humaans
+  jobs: 19
+  yc: Winter 2021
+- slug: humanarchive
+  jobs: 20
+  yc: Winter 2026
+- slug: hyperbound
+  jobs: 7
+  yc: Summer 2023
+- slug: inkeep
+  jobs: 3
+  yc: Winter 2023
+- slug: invert
+  jobs: 6
+  yc: Winter 2022
+- slug: juicebox
+  jobs: 25
+  yc: Summer 2022
+- slug: kernel
+  jobs: 3
+  yc: Summer 2025
+- slug: kingdom
+  jobs: 3
+  yc: Summer 2020
+- slug: kodex
+  jobs: 5
+  yc: Summer 2021
+- slug: lago
+  jobs: 1
+  yc: Summer 2021
+- slug: lancedb
+  jobs: 12
+  yc: Winter 2022
+- slug: langchain
+  jobs: 105
+- slug: langdock
+  jobs: 19
+  yc: Summer 2023
+- slug: latent
+  jobs: 19
+  yc: Winter 2023
+- slug: legora
+  jobs: 283
+  yc: Winter 2024
+- slug: linear
+  jobs: 29
+- slug: lio
+  jobs: 20
+  yc: Summer 2023
+- slug: liveflow
+  jobs: 4
+  yc: Winter 2021
+- slug: llamaindex
+  jobs: 14
+- slug: lucis
+  jobs: 9
+  yc: Spring 2025
+- slug: luminai
+  jobs: 15
+  yc: Summer 2020
+- slug: mach9
+  jobs: 12
+  yc: Summer 2021
+- slug: mastra
+  jobs: 3
+  yc: Winter 2025
+- slug: mednet
+  jobs: 5
+  yc: Winter 2017
+- slug: mercura
+  jobs: 13
+  yc: Winter 2025
+- slug: metriport
+  jobs: 14
+  yc: Summer 2022
+- slug: middesk
+  jobs: 20
+  yc: Winter 2019
+- slug: mintlify
+  jobs: 19
+  yc: Winter 2022
+- slug: miro
+  jobs: 38
+- slug: modal
+  jobs: 30
+- slug: mollie
+  jobs: 45
+- slug: mutiny
+  jobs: 10
+  yc: Summer 2018
+- slug: nanonets
+  jobs: 9
+  yc: Winter 2017
+- slug: notion
+  jobs: 133
+- slug: numeral
+  jobs: 22
+  yc: Winter 2023
+- slug: offdeal
+  jobs: 5
+  yc: Winter 2024
+- slug: onechronos
+  jobs: 1
+  yc: Summer 2016
+- slug: oneleet
+  jobs: 16
+  yc: Summer 2022
+- slug: oneschema
+  jobs: 2
+  yc: Summer 2021
+- slug: openai
+  jobs: 779
+- slug: outrival
+  jobs: 2
+  yc: Winter 2019
+- slug: outset
+  jobs: 16
+  yc: Summer 2023
+- slug: overview
+  jobs: 36
+  yc: Winter 2019
+- slug: oyster
+  jobs: 25
+- slug: permitflow
+  jobs: 40
+  yc: Winter 2022
+- slug: photoroom
+  jobs: 17
+  yc: Summer 2020
+- slug: pinecone
+  jobs: 6
+- slug: pirros
+  jobs: 4
+  yc: Winter 2023
+- slug: pointone
+  jobs: 13
+  yc: Winter 2024
+- slug: popl
+  jobs: 6
+  yc: Winter 2021
+- slug: posthog
+  jobs: 9
+  yc: Winter 2020
+- slug: probablygenetic
+  jobs: 5
+  yc: Winter 2019
+- slug: promise
+  jobs: 10
+  yc: Winter 2018
+- slug: pylon
+  jobs: 12
+  yc: Winter 2023
+- slug: realitydefender
+  jobs: 4
+  yc: Winter 2022
+- slug: reducto
+  jobs: 40
+  yc: Winter 2024
+- slug: render
+  jobs: 35
+- slug: replo
+  jobs: 2
+  yc: Summer 2021
+- slug: rescale
+  jobs: 17
+  yc: Winter 2012
+- slug: roboflow
+  jobs: 28
+  yc: Summer 2020
+- slug: rollstack
+  jobs: 3
+  yc: Winter 2023
+- slug: salespatriot
+  jobs: 5
+  yc: Winter 2025
+- slug: salient
+  jobs: 12
+  yc: Winter 2023
+- slug: saturn
+  jobs: 7
+  yc: Summer 2024
+- slug: shasqi
+  jobs: 1
+  yc: Winter 2015
+- slug: shortstory
+  jobs: 19
+  yc: Summer 2019
+- slug: sierra
+  jobs: 207
+- slug: sieve
+  jobs: 11
+  yc: Winter 2022
+- slug: skydropx
+  jobs: 32
+  yc: Summer 2018
+- slug: slope
+  jobs: 1
+  yc: Summer 2021
+- slug: snapmagic
+  jobs: 5
+  yc: Summer 2015
+- slug: snowflake
+  jobs: 376
+- slug: solva
+  jobs: 2
+  yc: Summer 2025
+- slug: solveintelligence
+  jobs: 15
+  yc: Summer 2023
+- slug: spade
+  jobs: 7
+  yc: Winter 2022
+- slug: speak
+  jobs: 38
+  yc: Winter 2017
+- slug: spellbrush
+  jobs: 11
+  yc: Winter 2018
+- slug: stream
+  jobs: 5
+  yc: Summer 2022
+- slug: supabase
+  jobs: 60
+- slug: tailor
+  jobs: 54
+  yc: Summer 2022
+- slug: taktile
+  jobs: 46
+  yc: Summer 2020
+- slug: tamarindbio
+  jobs: 7
+  yc: Winter 2024
+- slug: tavus
+  jobs: 14
+  yc: Summer 2021
+- slug: telli
+  jobs: 19
+  yc: Fall 2024
+- slug: thera
+  jobs: 6
+  yc: Summer 2022
+- slug: tilt
+  jobs: 8
+  yc: Winter 2018
+- slug: titan
+  jobs: 10
+  yc: Summer 2018
+- slug: triomics
+  jobs: 18
+  yc: Winter 2021
+- slug: upcodes
+  jobs: 2
+  yc: Summer 2017
+- slug: upflow
+  jobs: 2
+  yc: Winter 2020
+- slug: uplane
+  jobs: 7
+  yc: Fall 2025
+- slug: usul
+  jobs: 6
+  yc: Summer 2024
+- slug: vanta
+  jobs: 111
+  yc: Winter 2018
+- slug: vapi
+  jobs: 35
+  yc: Winter 2021
+- slug: vector
+  jobs: 6
+  yc: Winter 2023
+- slug: voize
+  jobs: 42
+  yc: Winter 2022
+- slug: vooma
+  jobs: 11
+  yc: Winter 2023
+- slug: wayflyer
+  jobs: 13
+- slug: weaviate
+  jobs: 1
+- slug: zapier
+  jobs: 7
+smartrecruiters:
+- slug: alemhealth
+  jobs: 1
+  yc: Winter 2017
+- slug: atlas2
+  jobs: 2
+  yc: Winter 2022
+- slug: canva
+  jobs: 100
+- slug: deliveryhero
+  jobs: 100
+- slug: finku
+  jobs: 1
+  yc: Winter 2022
+- slug: navattic
+  jobs: 1
+  yc: Winter 2021
+- slug: picnic
+  jobs: 2
+- slug: shaped
+  jobs: 9
+  yc: Winter 2022
+- slug: together
+  jobs: 23
+- slug: Eurofins
+  jobs: 100
+workable:
+- slug: aerones
+  jobs: 42
+  yc: Winter 2018
+- slug: fenergocareers
+  jobs: 13
+- slug: huggingface
+  jobs: 6
+- slug: jasper
+  jobs: 1
+  yc: Winter 2018
+- slug: visium
+  jobs: 56
+recruitee:
+- slug: alex
+  jobs: 5
+  yc: Winter 2024
+- slug: ambient
+  jobs: 1
+  yc: Winter 2017
+- slug: bego
+  jobs: 11
+  yc: Winter 2020
+- slug: channable
+  jobs: 13
+- slug: ember
+  jobs: 25
+  yc: Fall 2024
+- slug: nimble
+  jobs: 5
+  yc: Summer 2017
+- slug: standard
+  jobs: 2
+  yc: Summer 2017
+- slug: weekday
+  jobs: 1
+  yc: Winter 2021
+phenom:
+- slug: careers.g42.ai
+  base: https://careers.g42.ai/global/en
+  jobs: 31
+- slug: careers.justeattakeaway.com
+  base: https://careers.justeattakeaway.com/global/en
+  jobs: 100
+- slug: careers.majidalfuttaim.com
+  base: https://careers.majidalfuttaim.com/global/en
+  jobs: 100
+- slug: careers.roche.com
+  base: https://careers.roche.com/global/en
+  jobs: 100
+- slug: careers.tii.ae
+  base: https://careers.tii.ae
+  jobs: 16
+- slug: jobs.adnoc.ae
+  base: https://jobs.adnoc.ae/us/en
+  jobs: 62
+- slug: www.careers.philips.com
+  base: https://www.careers.philips.com/in/en
+  jobs: 100

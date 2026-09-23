@@ -1,0 +1,24 @@
+%====================
+% SKILLS
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+% Parsers read wide multi-column tables column-wise and scramble the
+% label/value pairing, which destroys keyword association.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Software Engineering \& Python:} Python (asyncio, threading, ThreadPoolExecutor, subprocess isolation), Async / Concurrent Programming, C++, SQL, Bash, FastAPI, Testing \& Code Quality (pytest, ruff, mypy), CI/CD (GitHub Actions, Jenkins), End-to-End System Ownership, Cross-Stack Debugging\par\vspace{2pt}
+
+\skills{Code Execution, Sandboxing \& Developer Tooling:} Sandboxed Code Execution (bubblewrap mount namespaces, deny-by-default egress broker, session-scoped STS credentials, read-only DB gate), Python AST Allow-list Static Analysis, Subprocess Isolation \& Cancellation, Docker, Kubernetes\par\vspace{2pt}
+
+\skills{Evaluation, Verifiers \& Reward Signals:} Graded Task Environments (28-task registry), Automated Evaluation Harnesses, Cell-level Precision / Recall / F1 Grading, LLM-as-Judge Adjudication (error vs.\ acceptable variant), Output Verification Guardrails, Regression Benchmarking, Contextual Bandits (UCB1 policy learning, exploration vs.\ exploitation), Active Learning, A/B Testing\par\vspace{2pt}
+
+\skills{Coding Agents \& LLM Systems:} Planner / Executor Agents, LLM-authored Code Execution (Python / DuckDB), LLM Tool Use, Task Decomposition, Multi-Agent Orchestration (A2A Protocol), CrewAI, PydanticAI, LangChain, LlamaIndex, Human-in-the-Loop, RAG, Prompt-Injection Hardening\par\vspace{2pt}
+
+\skills{Model Training \& Fine-tuning:} PyTorch, HuggingFace Transformers, DeepSpeed ZeRO-3, PEFT / LoRA Fine-tuning, Distributed GPU Training, Model Quantization (FP8, 4-bit), Weights \& Biases, MLflow, Experiment Tracking, Model Versioning, TensorFlow\par\vspace{2pt}
+
+\skills{Performance, Serving \& Infrastructure:} Profiling \& Latency Benchmarking (p50 / p95 / p99), OOM Root-Cause Debugging, vLLM, TorchServe, Prompt \& Content-Addressed Caching, Redis, Celery, PostgreSQL, AWS (EC2, ECS, S3, Bedrock, Athena), Transformer LLMs (Claude, GPT, LLaMA, Mistral), Vision-Language Models (CLIP, LLaVA, FLAVA, Phi-3 Vision), Vector Databases (Qdrant, FAISS, Pinecone)
+
+\end{document}

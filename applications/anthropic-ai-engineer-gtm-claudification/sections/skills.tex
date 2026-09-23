@@ -1,0 +1,28 @@
+%====================
+% SKILLS -- TAILORED to Anthropic "AI Engineer, GTM Claudification".
+% Buckets ordered by the JD's priorities: agents -> evals -> oversight/safety
+% -> Python/SQL -> LLMs & retrieval -> production services -> ML/CV.
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+% Parsers read wide multi-column tables column-wise and scramble the
+% label/value pairing, which destroys keyword association.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Agentic Systems:} Autonomous Agents, Multi-Agent Systems, Agent Orchestration (A2A Protocol), Agent Development (CrewAI, PydanticAI), Tool Use (A2A agent tools), Context Engineering (RAG, knowledge-base retrieval, prompt caching), LLM-driven Task Decomposition, Text-to-SQL (LLM-authored DuckDB / Python), Agentic AI Workflows\par\vspace{2pt}
+
+\skills{AI Evaluation:} Agent Evaluation Frameworks, Graded Task Registries (regression runs on every release), Precision / Recall / F1 Graders, LLM-as-Judge, LLM Root-Cause Analysis of Agent Failures, Unattended Evaluation Runs (LLM auto-responder), Retrieval Benchmarks (BEIR, nDCG / Recall), Experiment Tracking (Weights \& Biases, MLflow), A/B Testing\par\vspace{2pt}
+
+\skills{Human Oversight \& Guardrails:} Human-in-the-Loop Clarification and Pause / Resume Gates, Agent Handoffs (A2A), Validator-gated Execution, Prompt-Injection / Jailbreak Hardening, OS-level Sandboxing (bubblewrap), Egress Broker, Session-scoped STS Credentials, Read-only DB Gate, Python AST Allow-list, Output Verification / Fabrication Guards\par\vspace{2pt}
+
+\skills{Programming \& Data:} Python, SQL, C++, DuckDB, PostgreSQL, AWS Athena, Pandas, Parquet / S3 Streaming\par\vspace{2pt}
+
+\skills{LLMs \& Retrieval:} Claude (Sonnet 4.6, AWS Bedrock), LLaMA, Mistral, GPT, Generative AI, RAG, Hybrid Retrieval (Qdrant, BGE-M3, ColBERT, bm42, FAISS, BM25), Semantic Search, Vector Databases, PEFT / LoRA Fine-tuning, Model Quantization (FP8, 4-bit), vLLM, LangChain, LlamaIndex, HuggingFace Transformers, PyTorch, TensorFlow\par\vspace{2pt}
+
+\skills{Production Services \& MLOps:} FastAPI, WebSockets, Redis, Celery, Docker, AWS (ECS, EC2, S3, Athena, Bedrock), CI/CD (GitHub Actions, Jenkins), Model Versioning, TorchServe\par\vspace{2pt}
+
+\skills{ML \& Computer Vision:} Deep Learning, NLP, Multimodal / Vision-Language Models (CLIP, LLaVA, FLAVA, Phi-3 Vision), Active Learning, Statistical Modeling, Feature Engineering, Distributed Training (DeepSpeed ZeRO-3), CNN, LSTM, Seq2Seq
+
+\end{document}

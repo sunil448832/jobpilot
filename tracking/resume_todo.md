@@ -1,0 +1,1 @@
+- [ ] **experimentation** — confirmed done 2026-09-23; asked for by 8 JDs (e.g. mercura-senior-ai-llm-engineer, catawiki-data-scientist-machine-learning, stripe-data-scientist-payments, catawiki-senior-data-scientist-machine-learn). Add it to resume/sections/ and project-memory-backup/ with the concrete evidence.

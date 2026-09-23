@@ -1,0 +1,25 @@
+%====================
+% SELECTED PROJECTS
+% TAILORED for IMC Machine Learning Engineer: lead with the distributed
+% training / GPU fine-tuning work, then the inference-serving project.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\subsection{Vision-Language Model Fine-tuning – Distributed Training (Freelance) \hfill \href{https://huggingface.co/sunil448832/blip-model}{HuggingFace Model}}
+\begin{zitemize}
+\item Fine-tuned \textbf{LLaVA 1.6 (Mistral-7B)} with \textbf{LoRA} (r=128, $\alpha$=256) under \textbf{DeepSpeed ZeRO-3} distributed training on \textbf{GPU} (bf16/tf32, gradient checkpointing), then benchmarked it against \textbf{CLIP} similarity and a fine-tuned \textbf{BLIP} baseline to select the best-performing approach.
+\item Built end-to-end \textbf{data preparation, training, and evaluation} pipelines with \textbf{Weights \& Biases} experiment tracking; published the fine-tuned \textbf{BLIP} model open-source to the \textbf{HuggingFace Hub}.
+\item \textbf{Stack:} PyTorch, HuggingFace Transformers, LLaVA, DeepSpeed, LoRA, CLIP, BLIP, W\&B.
+\end{zitemize}
+
+\subsection{QA Bot for PAN Card Queries (RAG) \hfill \href{https://github.com/sunil448832/Natural-Language-Processing/tree/master/RAG(Retrieval\%20Augment\%20Generation)}{GitHub Repository}}
+\begin{zitemize}
+\item Developed a \textbf{RAG} inference pipeline for PAN card query answering over a custom document corpus, using \textbf{Sentence Transformers} (MiniLM-L6-v2) embeddings with \textbf{FAISS} vector retrieval.
+\item Served a \textbf{quantized Mistral-7B} for contextual response generation behind a \textbf{FastAPI} endpoint.
+\item \textbf{Stack:} PyTorch, FAISS, HuggingFace, FastAPI.
+\end{zitemize}
+
+\end{document}

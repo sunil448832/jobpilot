@@ -1,0 +1,366 @@
+# ============================================================================
+# answers.yaml — canonical answers for every job-application form field.
+#
+# Written ONCE, reused by autofill.py on every external portal (Greenhouse,
+# Lever, Ashby, Workday). This file is the single source of truth: if a portal
+# asks it, the answer belongs here, not in your head.
+#
+# Fields marked TODO must be filled by Sunil before autofill runs.
+# Keep it truthful — same golden rule as the resume.
+#
+# NOT IN GIT-SAFE TERRITORY: contains personal data. Do not publish this file.
+# ============================================================================
+
+personal:
+  first_name: "Sunil"
+  middle_name: "Kumar"
+  last_name: "Sharma"
+  # Resume header stays the full "Sunil Kumar Sharma" — only the form split differs.
+  full_name: "Sunil Kumar Sharma"
+  preferred_name: "Sunil"
+  email: "sunil4832sharma@gmail.com"
+  phone: "+91-9641298471"
+  phone_country_code: "+91"
+  phone_national: "9641298471"
+  pronouns: ""                        # optional; leave blank to skip
+
+location:
+  city: "Delhi"
+  state: "Delhi"
+  country: "India"
+  postal_code: "110019"
+  # Strict portals (Workday especially) validate this against a street-like value.
+  # If one rejects it, a real street line is needed.
+  address_line_1: "Delhi"
+  willing_to_relocate: true
+  preferred_locations: "UAE, Saudi Arabia, Singapore, US, Remote"
+
+links:
+  linkedin: "https://www.linkedin.com/in/sunil4832sharma"
+  github: "https://github.com/sunil448832"
+  portfolio: ""
+  huggingface: "https://huggingface.co/sunil448832"
+
+work_authorization:
+  citizenship: "India"
+  current_work_country: "India"
+  # Per-country: are you legally authorized to work there WITHOUT sponsorship,
+  # and will you require sponsorship now or in the future?
+  us:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  uk:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  eu:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  uae:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  saudi_arabia:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  australia:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  netherlands:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
+  india:
+    authorized_without_sponsorship: true
+    requires_sponsorship: false
+  visa_status_note: >-
+    Indian citizen, currently in India. Require employment visa sponsorship to work
+    onsite outside India. Available immediately for fully-remote roles, engaged as a
+    contractor or through an Employer of Record.
+  remote_from_india_note: >-
+    For fully-remote roles I work from India as a contractor or via an EOR
+    (Deel / Remote.com / Oyster), invoiced in the company's currency.
+
+availability:
+  notice_period: "2 months"
+  notice_period_days: "60"            # for numeric-only fields
+  earliest_start_date: "2 months from offer acceptance"
+  # Date pickers need a real date, not a sentence. Refresh if stale.
+  earliest_start_iso: "2026-11-04"
+  currently_employed: true
+  # Sponsorship adds lead time on top of notice. Realistic total start lag:
+  #   Netherlands (HSM via recognised sponsor)  ~2 months notice + 3-6 weeks
+  #   UAE / Saudi (employment visa)             ~2 months notice + 4-8 weeks
+  #   Australia (subclass 482)                  ~2 months notice + 6-12 weeks
+  #   USA (H-1B lottery)                        tied to the March lottery / Oct start
+  #   Remote contractor / EOR                   ~2 months notice, no visa lag
+
+compensation:
+  # NEVER quote INR to a foreign employer — it anchors you to an Indian band.
+  # autofill.py picks the block matching the job's country; `default` is the
+  # fallback when the country is unknown.
+  current_ctc: "Prefer to discuss — targeting the local market rate for the role"
+  never_quote_inr: true
+  salary_flexible_note: >-
+    Open to discussing based on total package and level. Prioritising role scope,
+    team, and the sponsorship/remote arrangement over base alone.
+
+  default:
+    currency: "USD"
+    expected_annual: "200000"
+    expected_text: "USD 200,000 base"
+
+  by_market:
+    usa:
+      currency: "USD"
+      expected_annual: "200000"
+      expected_text: "USD 200,000 base (open on total comp / equity mix)"
+      note: "Base ask. US total comp usually adds equity on top."
+    uae:
+      currency: "AED"
+      expected_monthly: "40000"
+      expected_annual: "480000"
+      expected_text: "AED 40,000 per month all-inclusive (tax-free)"
+      note: "Gulf negotiates monthly at offer. ~USD 131k/yr tax-free."
+    saudi:
+      currency: "SAR"
+      expected_monthly: "41000"
+      expected_annual: "492000"
+      expected_text: "SAR 41,000 per month all-inclusive (tax-free)"
+      note: "Equivalent of the AED 40k/month anchor (~1 AED = 1.02 SAR)."
+    australia:
+      currency: "AUD"
+      expected_annual: "185000"
+      expected_text: "AUD 185,000 base plus superannuation"
+      note: >-
+        ESTIMATE — senior MLE Sydney/Melbourne with 5 yrs sits ~AUD 165-200k base
+        + 12% super. 185k is a confident mid-ask. Always say "plus super";
+        quoting a package number reads as a lower base.
+    netherlands:
+      currency: "EUR"
+      expected_annual: "85000"
+      expected_text: "EUR 85,000 gross per year plus 8% holiday allowance"
+      note: >-
+        ESTIMATE — senior MLE Amsterdam with 5 yrs sits ~EUR 75-95k gross.
+        Clears the Highly Skilled Migrant salary threshold comfortably. Ask about
+        the 30% ruling: it was cut back in 2024-25 and becomes a flat 27% in 2027,
+        so confirm the current rate rather than assuming 30%.
+    ireland:
+      currency: "EUR"
+      expected_annual: "90000"
+      expected_text: "EUR 90,000 gross per year"
+      note: >-
+        ESTIMATE — senior MLE Dublin with 5 yrs sits ~EUR 80-105k. The US
+        companies with EMEA bases there (Stripe, Datadog, HubSpot, Intercom) pay
+        at the top of that; Irish-owned firms at the bottom. Far above the EUR
+        38,000 Critical Skills permit threshold, so pay is never the visa
+        blocker here. Dublin rent is the thing to negotiate against.
+    germany:
+      currency: "EUR"
+      expected_annual: "88000"
+      expected_text: "EUR 88,000 gross per year"
+      note: >-
+        ESTIMATE — senior MLE Berlin ~EUR 75-95k, Munich ~EUR 85-105k. Clears the
+        EU Blue Card IT-shortage floor (~EUR 43,760) roughly twice over. German
+        offers quote gross annual with no equity at most non-startups; ask
+        whether the number includes the 13th-month payment before comparing.
+    luxembourg:
+      currency: "EUR"
+      expected_annual: "98000"
+      expected_text: "EUR 98,000 gross per year"
+      note: >-
+        ESTIMATE — senior MLE Luxembourg ~EUR 85-115k. Wages run above Germany
+        because the finance sector sets the market. Two local specifics to check
+        at offer: salaries are indexed to inflation and adjust automatically, and
+        most contracts state 13 monthly payments — so confirm whether a quoted
+        annual figure already includes the 13th month before comparing it to a
+        German or Dutch offer.
+    switzerland:
+      currency: "CHF"
+      expected_annual: "155000"
+      expected_text: "CHF 155,000 gross per year"
+      note: >-
+        ESTIMATE — senior MLE Zurich ~CHF 135-180k; Google Zurich and the trading
+        firms exceed it. Highest real take-home of any market here because tax is
+        low, but Zurich costs are extreme, so compare net-of-rent. Do not lower
+        this ask to seem easier to hire: a below-band salary can undermine the
+        Permit B case, which requires showing local-market-rate pay.
+    remote_india:
+      currency: "USD"
+      expected_annual: "120000"
+      expected_text: "USD 120,000 per year, contracting from India via EOR"
+      note: >-
+        Fully-remote roles paid in foreign currency. Typically 40-60% below the
+        onsite US band, but tax-efficient from India and no visa lag. Adjust up
+        toward USD 150k for US-headquartered companies with global-rate policies.
+
+experience_summary:
+  total_years: "5"                    # keep as digits — ATS regex reads this
+  total_years_phrase: "5+ years"
+  current_title: "Senior Data Scientist"
+  target_title: "Senior Machine Learning Engineer"
+  highest_degree: "Master's Degree"
+  employment_gap_explanation: >-
+    Took a planned break between roles in 2023 to focus full-time on generative-AI
+    and LLM upskilling, including freelance vision-language model work (LLaVA/BLIP
+    fine-tuning) before joining Aria Intelligent Solutions in December 2023.
+
+# Portals ask "years of experience with X?" as a hard screening filter. These are
+# the answers autofill.py gives. Grounded in the real timeline:
+#   career start Jul 2021 = 5.2 yrs; Aria (GenAI/agentic) Dec 2023 = 2.8 yrs.
+skill_years:
+  default: "5"
+  python: "5"
+  machine_learning: "5"
+  deep_learning: "5"
+  pytorch: "5"
+  computer_vision: "5"
+  nlp: "5"
+  aws: "5"
+  sql: "5"
+  docker: "4"
+  generative_ai: "3"
+  llm: "3"
+  agentic_ai: "3"
+  rag: "3"
+  langchain: "3"
+  vector_databases: "3"
+  vllm: "2"
+  kubernetes: "2"
+  # RL post-training is one personal project (Sept 2026); fine-tuning (LoRA on
+  # LLaVA/BLIP) dates from the 2023 freelance work. Honest answers, not padding.
+  fine_tuning: "3"
+  lora: "3"
+  reinforcement_learning: "1"
+  rlhf: "1"
+  post_training: "1"
+
+# Work history, most recent first. Used by portals (Workday especially) that
+# make you re-enter the whole employment record by hand.
+employment:
+  - employer: "Aria Intelligent Solutions"
+    title: "Senior Data Scientist"
+    location: "India"
+    start_date: "2023-12"
+    end_date: ""                      # blank = current
+    current: true
+    summary: >-
+      Architected an Orchestrator Agent on the A2A protocol with LLM-driven task
+      decomposition and human-in-the-loop routing to specialized sub-agents (98%
+      end-to-end success across 500 concurrent sessions). Built IngestIQ,
+      autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running
+      end-to-end ETL from a natural-language task. Built an automated evaluation
+      framework benchmarking the agent fleet at 86% exact-pass and 0.86 mean F1.
+
+  - employer: "Amazon Development Centre (India) Pvt. Ltd."
+    title: "Applied Scientist I"
+    location: "India"
+    start_date: "2022-10"
+    end_date: "2023-06"
+    current: false
+    summary: >-
+      Developed a FLAVA-based multimodal classifier for inappropriate ad-content
+      detection at 72% precision and 90% recall; introduced active-learning loops
+      targeting hard samples to lift edge-case recall.
+
+  - employer: "Beltech AI Pvt. Ltd."
+    title: "Computer Vision Engineer"
+    location: "India"
+    start_date: "2021-07"
+    end_date: "2022-09"
+    current: false
+    summary: >-
+      Built and deployed a face-recognition system (fine-tuned ArcFace) at 99%
+      precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's
+      feature extractor with ResNet-34 under ArcFace metric-learning loss for
+      multi-camera re-identification.
+
+education:
+  - institution: "Indian Institute of Technology, Jodhpur"
+    degree: "Master of Technology (M.Tech)"
+    field_of_study: "Artificial Intelligence"
+    start_date: "2019-07"
+    end_date: "2021-06"
+    gpa: "TODO"                       # optional; leave TODO to skip
+  - institution: "Sikkim Manipal Institute of Technology"
+    degree: "Bachelor of Technology (B.Tech)"
+    field_of_study: "Electronics and Communication Engineering"
+    start_date: "2015-07"
+    end_date: "2019-06"
+    gpa: "TODO"
+
+certifications:
+  - "DeepLearning.AI — Generative AI with Large Language Models"
+
+# Free-text answers portals ask for. Keep them reusable; apply.py can suggest a
+# company-specific override in the application folder when one is worth writing.
+questions:
+  why_this_company: "PER_COMPANY"     # apply.py drafts this into the app folder
+  why_this_role: "PER_COMPANY"
+  cover_letter: "PER_COMPANY"
+
+  how_did_you_hear: "LinkedIn"
+
+  greatest_strength: >-
+    Taking research-stage models to low-latency production. I have shipped LLM and
+    vision systems end to end — Phi-3 Vision via vLLM at 20 ms median latency, a
+    Qdrant hybrid-retrieval index compressed 8x at nDCG/Recall parity — so I
+    optimise for what survives contact with production traffic, not just benchmarks.
+
+  # CONFIRM/EDIT — this is your framing, not a fact I can look up.
+  reason_for_leaving: >-
+    Looking for a role with international scope and deeper ownership of
+    generative-AI systems at scale.
+
+  referred_by: ""
+
+  additional_information: ""
+
+# Equal-opportunity questions (US/UK portals). "Decline to self-identify" is
+# always a valid answer and is never held against a candidate.
+eeo:
+  gender: "Male"
+  race_ethnicity: "Decline to self-identify"
+  hispanic_latino: "Decline to self-identify"
+  veteran_status: "I am not a protected veteran"
+  disability_status: "No, I do not have a disability"
+  requires_accommodation: false
+
+# Standard yes/no screeners.
+screening:
+  over_18: true
+  can_perform_essential_functions: true
+  # Default for companies he has never worked at.
+  previously_employed_here: false
+  related_to_current_employee: false
+  # Per-company overrides. autofill.py matches the application's company against
+  # these keys before falling back to the defaults above. Answering "no" on an
+  # Amazon form would be a false statement — they check it against their records.
+  previously_employed_overrides:
+    amazon: true
+    "amazon web services": true
+    aws: true
+    "amazon development centre": true
+  previously_employed_detail:
+    amazon: "Applied Scientist I, Amazon Development Centre (India), Oct 2022 - Jun 2023"
+  non_compete_restrictions: false
+  agree_to_background_check: true
+  agree_to_drug_test: true
+  willing_to_travel: true
+  travel_percentage_ok: "up to 25%"
+  remote_or_onsite_preference: "Open — onsite, hybrid, or remote"
+
+files:
+  # Built by apply.py into the tool's applications/<company>/ (paths relative to
+  # jobpilot/); default_fallback_pdf is relative to the resume repo's resume/.
+  # Always the same filename — a recruiter sees it, and a company-suffixed
+  # name reads as machine-generated. The folder keeps them apart.
+  resume_pdf_pattern: "applications/{company}/sunil_resume.pdf"
+  resume_docx_pattern: "applications/{company}/sunil_resume.docx"
+  # Which one to upload where. ATS portals parse .docx far better than LaTeX PDF.
+  upload_for_ats_portal: "docx"
+  upload_for_human_review: "pdf"
+  default_fallback_pdf: "sunil_resume.pdf"
+
+# Portals routed to the phone vs. batched for desktop. See automation-plan.md §1.
+portal_routing:
+  mobile_ok: ["greenhouse", "lever", "ashby"]
+  desktop_only: ["workday", "taleo", "icims", "successfactors"]
+  manual: ["linkedin"]

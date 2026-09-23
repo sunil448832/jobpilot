@@ -1,0 +1,24 @@
+%====================
+% SKILLS
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+% Parsers read wide multi-column tables column-wise and scramble the
+% label/value pairing, which destroys keyword association.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Evaluations, Task Environments \& Reward Signals:} Graded Task Environments (28-task registry over Kaggle, TPC-H, M5, Olist and Favorita datasets), Automated Evaluation Harnesses, Cell-level Precision / Recall / F1 Grading, Verifiers \& Output-Verification Guardrails, LLM-as-Judge Adjudication (error vs.\ acceptable variant), Regression Benchmarking, Contextual Bandits (UCB1 policy learning, exploration vs.\ exploitation), Active Learning, A/B Testing\par\vspace{2pt}
+
+\skills{ML Framework Programming \& Model Training:} PyTorch, HuggingFace Transformers, DeepSpeed ZeRO-3, Distributed GPU Training, PEFT / LoRA Fine-tuning, Mixed Precision (bf16 / tf32), Flash-Attention, Gradient Checkpointing, Weights \& Biases, MLflow, Experiment Tracking, Model Versioning, TensorFlow\par\vspace{2pt}
+
+\skills{GPU Performance \& Inference Optimisation:} Model Quantization (FP8, 4-bit / 8-bit NF4 via bitsandbytes, TurboQuant 4-bit), vLLM (GPU-memory-utilisation tuning), Latency Benchmarking (p50 / p95 / p99), OOM Root-Cause Debugging, Dynamic Micro-batching Servers, Prompt \& Content-Addressed Caching, TorchServe, Vector Index Compression (8$\times$ at nDCG / Recall parity)\par\vspace{2pt}
+
+\skills{Systems, Sandboxing \& Distributed Services:} Python (asyncio, threading, subprocess isolation), C++, SQL, Bash, Sandboxed Code Execution (bubblewrap, deny-by-default egress broker, session-scoped STS credentials, read-only DB gate), Python AST Allow-list, Distributed Systems (multi-pod ownership routing, Redis pub/sub), FastAPI, Redis, Celery, PostgreSQL, Docker, Kubernetes, CI/CD (GitHub Actions, Jenkins)\par\vspace{2pt}
+
+\skills{LLM Agents \& Retrieval:} Planner / Executor Agents, LLM-authored Code Execution (Python / DuckDB), Multi-Agent Orchestration (A2A Protocol), CrewAI, PydanticAI, LangChain, LlamaIndex, Human-in-the-Loop, RAG, Prompt-Injection Hardening, Vector Databases (Qdrant, FAISS, Pinecone), Semantic Search\par\vspace{2pt}
+
+\skills{Models \& Cloud:} Transformer LLMs (Anthropic Claude, GPT, LLaMA, Mistral), Vision-Language Models (CLIP, LLaVA, FLAVA, Phi-3 Vision), CNN, LSTM, Seq2Seq, AWS (EC2, ECS, S3, Bedrock, Athena)
+
+\end{document}

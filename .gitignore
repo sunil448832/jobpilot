@@ -1,0 +1,14 @@
+# machine-written state: never versioned
+data/
+jobpilot.egg-info/
+__pycache__/
+*.pyc
+# built artefacts inside applications (sources are tracked)
+applications/*/sunil_resume.pdf
+applications/*/sunil_resume.docx
+applications/*/ats.md
+applications/*/resume.pdf
+*.aux
+*.log
+*.out
+.auto/

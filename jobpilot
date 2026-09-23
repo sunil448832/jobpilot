@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+# ============================================================================
+# jobpilot — one entry point for the whole pipeline.
+#
+#   ./jobpilot              this list
+#   ./jobpilot <command>    run one
+#
+# Layout (see paths.py for how the two trees are found):
+#   src/<stage>/   code: core discover rank screen tailor fill review outreach  (imported as jobpilot.<stage>)
+#   config/   what you edit      data/  machine-written      applications/  per-role output
+#   tracking repo: resume/ applications/ tracking/ target-companies/  (config.yaml paths.tracking_repo)
+# ============================================================================
+set -uo pipefail
+TOOL="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+SRC="$TOOL/src"; DATA="$TOOL/data"
+PY="${JOBPILOT_PYTHON:-/home/sunil/miniconda3/bin/python3}"   # has playwright; /usr/bin/python3 does not
+py() { "$PY" -m "jobpilot.$1" "${@:2}"; }                      # every stage is a module: jobpilot.<stage>.<mod> (pip install -e .)
+TIMERS="jobpilot-daily.timer jobpilot-review.timer"
+
+usage() { cat <<'TXT'
+
+  JOBPILOT — command reference
+  ────────────────────────────────────────────────────────────────────────
+
+  RUN / PAUSE
+    ./jobpilot start           scheduler ON  (scans 04/12/20, asks 07/19)
+    ./jobpilot stop            scheduler OFF + kill anything mid-run
+    ./jobpilot pipeline        one full end-to-end run, now, in front of you
+    ./jobpilot status          ON/OFF, services, counts
+
+    `stop` is the Claude-usage control: autotailor spends 2 sessions per role,
+    6 roles a scan, 3 scans a day. It leaves the review form up, so approving
+    what is already queued keeps working while the scheduler is off.
+
+  EVERY DAY
+    ./jobpilot link            review-form URL (open on your phone)
+    ./jobpilot queue           what is waiting for your approval
+    ./jobpilot submit          submit everything you approved
+    ./jobpilot log [N]         follow the run log
+
+  FINDING WORK
+    ./jobpilot scan            pull all boards + re-rank
+    ./jobpilot top [N]         best roles in your sponsorship markets
+    ./jobpilot screen          Claude reviews batches until 10 are usable
+    ./jobpilot screenus        same, counting only non-US roles
+    ./jobpilot screened        what the screen rejected, and why
+    ./jobpilot llm-eval <m>    re-screen labelled roles on model <m>, compare, write nothing
+    ./jobpilot prep [N]        tailor + build + fill the top N (default 2)
+    ./jobpilot apply <url>     scaffold ONE job you found yourself
+    ./jobpilot fill <slug>     fill an application that is already built
+    ./jobpilot dedupe          remove duplicates from every store
+    ./jobpilot keywords        what applied JDs ask for vs targets.yaml (--dry-run / --promote)
+
+  ADDING SOURCES
+    ./jobpilot careers <url>   add a company careers site (auto-detects its ATS)
+    ./jobpilot markets         sweep a country's employer list: markets <name> [--add]
+    ./jobpilot startups        sweep YC for AI companies with live boards
+    ./jobpilot boards          how many boards, by platform
+
+  REFERRALS  (sending is always manual — never automated)
+    ./jobpilot who <company>   who to contact there, scoped to the hiring office
+    ./jobpilot known           who you already know (needs data/Connections.csv)
+    ./jobpilot connections     install the LinkedIn export from ~/Downloads
+    ./jobpilot refer <slug>    referral targets for a submitted application
+    ./jobpilot referrals       open list + link to the referral page
+    ./jobpilot chase           referral follow-ups due
+
+  TRACKING  (lives in the resume repo, tracking/)
+    ./jobpilot follow          follow-ups due (5 business days after applying)
+    ./jobpilot tracker         sync tracking/job-tracker.xlsx
+    ./jobpilot paths           where everything is, and whether it exists
+    ./jobpilot check           smoke test: imports, config, build, form — no LLM
+
+  ONE-OFF SETUP
+    ./jobpilot setup-telegram  create/verify the Telegram bot
+    ./jobpilot setup-tailscale install Tailscale (needs your password)
+    ./jobpilot services        (re)install + enable the systemd units
+
+  EDIT THESE, NOT CODE          config/config.yaml   how the pipeline runs
+                                config/targets.yaml  which jobs are worth it
+                                config/answers.yaml  what to type into forms
+                                config/POLICY.md     how to tailor, what is true
+
+TXT
+}
+
+sched_stop() {
+  echo "  stopping the scheduler ..."
+  systemctl --user stop $TIMERS 2>/dev/null
+  systemctl --user disable $TIMERS 2>/dev/null   # and stay off across reboots
+  # Kill in-flight work innermost first, so autotailor cannot start another
+  # claude session between the parent dying and the child being reaped.
+  #
+  # Two guards, both learned the hard way:
+  #  * patterns are ANCHORED to the start of the command line, so only a real
+  #    "python3 .../daily.py" or "claude -p" process matches. An unanchored
+  #    "daily[.]py" also matched a `bash -c "... jobpilot.core.daily ..."` wrapper —
+  #    i.e. the shell that had just invoked ./jobpilot stop — and killed it.
+  #  * the whole ancestor chain of this process is excluded, not just $$.
+  local anc="" p=$$
+  while [ "$p" -gt 1 ]; do anc="$anc $p"; p=$(ps -o ppid= -p "$p" 2>/dev/null | tr -d ' '); [ -n "$p" ] || break; done
+  local killed=0 pat pids pid
+  for pat in '^[^ ]*claude -p ' \
+             '^[^ ]*python[0-9.]* -m jobpilot\.(tailor\.autotailor|screen\.screen|rank\.rank|discover\.intake|core\.daily)( |$)'; do
+    pids="$(pgrep -f "$pat" 2>/dev/null)" || true
+    for pid in $pids; do
+      case " $anc " in *" $pid "*) continue;; esac
+      kill "$pid" 2>/dev/null && killed=$((killed + 1))
+    done
+  done
+  sleep 1
+  for pat in '^[^ ]*claude -p ' '^[^ ]*python[0-9.]* -m jobpilot\.(tailor\.autotailor|core\.daily)( |$)'; do
+    for pid in $(pgrep -f "$pat" 2>/dev/null); do
+      case " $anc " in *" $pid "*) continue;; esac
+      kill -9 "$pid" 2>/dev/null
+    done
+  done
+  echo "  scheduler off; $killed in-flight process(es) stopped"
+  echo "  review form left running — ./jobpilot link still works"
+}
+
+sched_start() {
+  systemctl --user daemon-reload 2>/dev/null
+  systemctl --user enable --now $TIMERS 2>&1 | sed 's/^/  /'
+  systemctl --user start jobpilot-form.service 2>/dev/null
+  echo "  scheduler on:"
+  systemctl --user list-timers --all 2>/dev/null | awk 'NR==1 || /jobbot/' | sed 's/^/  /'
+}
+
+cmd="${1:-help}"; shift || true
+case "$cmd" in
+  start)      sched_start ;;
+  stop)       sched_stop ;;
+  pipeline|now) py core.daily "$@" ;;
+  status)     en=$(systemctl --user is-enabled jobpilot-daily.timer 2>/dev/null)
+              ac=$(systemctl --user is-active  jobpilot-daily.timer 2>/dev/null)
+              if [ "$en" = "enabled" ] && [ "$ac" = "active" ]; then echo "  scheduler    : ON"
+              else echo "  scheduler    : OFF (paused — ./jobpilot start to resume)"; fi
+              echo "  form service : $(systemctl --user is-active jobpilot-form)"
+              echo "  nightly timer: $ac / $en"
+              echo "  review timer : $(systemctl --user is-active jobpilot-review.timer) / $(systemctl --user is-enabled jobpilot-review.timer 2>/dev/null)"
+              systemctl --user list-timers jobpilot-daily.timer --no-pager 2>/dev/null | sed -n 2p | sed 's/^/  next: /'
+              py discover.intake --stats 2>/dev/null | sed 's/^/  /'
+              echo "  claude cli   : $("$PY" -c 'from jobpilot.tailor import autotailor;print(autotailor.claude_bin() or "MISSING")' 2>/dev/null)" ;;
+  paths)      py core.paths ;;
+  check)      bash "$TOOL/scripts/smoke.sh" ;;
+  link)       tok=$(grep FORM_TOKEN ~/.config/jobbot/env 2>/dev/null | cut -d= -f2)
+              ts=$(tailscale status --json 2>/dev/null | "$PY" -c "import json,sys;print(json.load(sys.stdin)['Self']['DNSName'].rstrip('.'))" 2>/dev/null)
+              [ -n "${ts:-}" ] && echo "  anywhere:  http://$ts:8765/?t=$tok"
+              echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok" ;;
+  queue)      py review.bot --status ;;
+  submit)     py fill.autofill --submit-approved ;;
+  log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
+  scan)       py discover.intake && py rank.rank --all --top 12 ;;
+  top)        py rank.rank --top "${1:-12}" ;;
+  screen)     py screen.screen --loop ;;
+  screenus)   py screen.screen --loop --want-market non-usa ;;
+  screened)   py screen.screen --report ;;
+  llm-eval)   [ $# -ge 1 ] || { echo "  usage: ./jobpilot llm-eval <model> [model...] [--limit N]   (re-screens labelled roles, writes nothing)"; exit 1; }
+              py screen.llm_eval "$@" ;;
+  prep)       py tailor.autotailor --limit "${1:-2}" ;;
+  apply)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot apply <url>"; exit 1; }; py tailor.apply "$1" ;;
+  fill)       [ $# -ge 1 ] || { echo "  usage: ./jobpilot fill <slug>"; exit 1; }; py fill.autofill --fill "$1" ;;
+  dedupe)     py core.dedupe "$@" ;;
+  keywords)   py rank.keyword_learn "$@" ;;
+  careers)    [ $# -ge 1 ] || { echo "  usage: ./jobpilot careers <url>"; exit 1; }; py discover.careers --add "$1" ;;
+  markets)    [ $# -ge 1 ] || { echo "  usage: ./jobpilot markets <gulf|netherlands|ireland|germany|luxembourg|switzerland|australia> [--add]"; exit 1; }
+              py discover.find_careers --market "$@" ;;
+  startups)   py discover.startups --scan --min-size "${1:-10}" ;;
+  boards)     "$PY" -c "import yaml;d=yaml.safe_load(open('$TOOL/config/boards.yaml'));[print(f'  {k:<16}{len(v)}') for k,v in d.items()];print(f'  {\"total\":<16}{sum(len(v) for v in d.values())}')" ;;
+  who)        [ $# -ge 1 ] || { echo "  usage: ./jobpilot who <company>"; exit 1; }; py outreach.prospects "$@" ;;
+  known)      py outreach.referrals ;;
+  connections) bash "$TOOL/scripts/install_connections.sh" ;;
+  refer)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot refer <slug>"; exit 1; }; py outreach.referral_tracker --for "$1" ;;
+  referrals)  py outreach.referral_tracker --list ;;
+  chase)      py outreach.referral_tracker --due ;;
+  follow)     py core.tracker --followups ;;
+  tracker)    py core.tracker --sync ;;
+  setup-telegram)  py review.telegram_setup "$@" ;;
+  setup-tailscale) bash "$TOOL/scripts/setup_tailscale.sh" ;;
+  services)   systemctl --user daemon-reload && systemctl --user enable --now jobpilot-form.service
+              echo "  form service enabled. Timers are NOT enabled here — ./jobpilot start does that." ;;
+  help|*)     usage ;;
+esac

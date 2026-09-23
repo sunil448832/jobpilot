@@ -1,0 +1,381 @@
+# ============================================================================
+# targets.yaml — what counts as a job worth applying to.
+#
+# Read by intake.py (Phase 4) to filter discovery, and by rank.py to score and
+# route. Separate from answers.yaml on purpose: this is "which jobs", that is
+# "what to type into the form".
+#
+# HARD RULE: a role qualifies only if it EITHER sponsors a visa OR is fully
+# remote and pays in a foreign currency. Anything paying INR is out — it anchors
+# the whole search to an Indian band.
+# ============================================================================
+
+hard_requirements:
+  must_be_one_of:
+    - "visa sponsorship offered"
+    - "fully remote, hiring internationally / from India"
+  # Currency is NEVER a reason to reject. salary.py converts whatever the posting
+  # states into annual USD and compares it to the ask for that market — an INR or
+  # SGD or PLN role that clears the number is a good role. Only value decides.
+  judge_pay_by: "converted annual USD vs compensation.by_market expectation"
+  reject_if_below_ask_ratio: 0.70    # only a posting well UNDER the ask is dropped
+  reject_if_jd_says:
+    - "no visa sponsorship"
+    - "must be currently authorized to work"
+    - "we are unable to sponsor"
+    - "citizens only"
+    - "security clearance required"
+    - "remote (US only)"
+    - "must reside in"
+    # Caught on the real Databricks Amsterdam posting: a "remote" role that is
+    # actually remote-within-one-country. Reads as open until you look closely.
+    - "not remote from any other country"
+    - "candidates to be based in"
+    - "must be based in"
+    - "based in the .* region only"
+    - "local candidates only"
+
+# Ordered by how realistically sponsorship happens, NOT by salary.
+# Effort should follow this order — see the note on the USA.
+markets:
+  - id: netherlands
+    priority: 1
+    country: "Netherlands"
+    hubs: ["Amsterdam", "Eindhoven", "Utrecht", "Rotterdam"]
+    visa_route: "Highly Skilled Migrant (kennismigrant) via an IND recognised sponsor"
+    sponsorship_reality: >-
+      Best odds of the five. Recognised sponsors hire non-EU routinely and the
+      permit lands in roughly 2-4 weeks. Salary threshold is well below the ask.
+    resume_location_line: "Open to relocation to the Netherlands | EU Blue Card / Highly Skilled Migrant sponsorship required"
+
+  - id: uae
+    priority: 2
+    country: "United Arab Emirates"
+    hubs: ["Dubai", "Abu Dhabi"]
+    visa_route: "Employer-sponsored employment visa"
+    sponsorship_reality: >-
+      Sponsorship is the norm, not an exception — nearly every hire is an expat.
+      Large Indian talent pipeline already established. Fast processing.
+    resume_location_line: "Open to relocation to the UAE | Employment visa sponsorship required"
+
+  - id: saudi
+    priority: 2
+    country: "Saudi Arabia"
+    hubs: ["Riyadh", "NEOM", "Dhahran", "Jeddah"]
+    visa_route: "Employer-sponsored work visa (Iqama)"
+    sponsorship_reality: >-
+      Same as UAE — sponsorship is standard. Heavy AI hiring push (NEOM, Aramco,
+      SDAIA, stc). Often pays above UAE for the same level.
+    resume_location_line: "Open to relocation to Saudi Arabia | Employment visa sponsorship required"
+
+  - id: australia
+    priority: 3
+    country: "Australia"
+    hubs: ["Sydney", "Melbourne", "Brisbane", "Canberra"]
+    visa_route: "Skills in Demand visa (subclass 482), Core Skills stream"
+    sponsorship_reality: >-
+      Real but slower. Employer must be an approved sponsor, so it skews toward
+      larger companies. ML/software roles are on the skills list. 6-12 weeks.
+    resume_location_line: "Open to relocation to Australia | Subclass 482 sponsorship required"
+
+  - id: ireland
+    priority: 1
+    country: "Ireland"
+    hubs: ["Dublin", "Cork", "Galway", "Limerick"]
+    visa_route: "Critical Skills Employment Permit"
+    sponsorship_reality: >-
+      As good as the Netherlands and arguably easier. "Machine learning
+      engineer" and "data scientist" sit on the Critical Skills Occupations
+      List, which means no labour-market test at all — the employer does not
+      have to advertise the role in the EU first. Threshold for a CSOL role is
+      EUR 38,000, far below the ask. English-speaking, EU, and Dublin holds the
+      EMEA engineering base for Google, Meta, Microsoft, Stripe, Intercom,
+      Workday, HubSpot, Datadog and Amazon. Permit typically 4-8 weeks, and it
+      carries immediate family reunification.
+    resume_location_line: "Open to relocation to Ireland | Critical Skills Employment Permit sponsorship required"
+
+  - id: germany
+    priority: 1
+    country: "Germany"
+    hubs: ["Berlin", "Munich", "Hamburg", "Karlsruhe", "Heidelberg"]
+    visa_route: "EU Blue Card"
+    sponsorship_reality: >-
+      Routine, and the 2024 reform cut the Blue Card salary floor to roughly EUR
+      43,760 for IT shortage occupations, which every real ML offer clears. No
+      labour-market test for shortage roles. Berlin and Munich carry the
+      European end of the AI market — Helsing, Aleph Alpha, Black Forest Labs,
+      DeepL, Celonis, Merantix, plus SAP and Bosch research. English is the
+      working language in most engineering teams; German is not a blocker for
+      the job, only for daily life.
+    resume_location_line: "Open to relocation to Germany | EU Blue Card sponsorship required"
+
+  - id: luxembourg
+    priority: 1
+    country: "Luxembourg"
+    hubs: ["Luxembourg City", "Esch-sur-Alzette", "Belval"]
+    visa_route: "EU Blue Card"
+    sponsorship_reality: >-
+      Easy route, tiny market — judge it on volume, not difficulty. Roughly half
+      the resident population is foreign and the Blue Card is ordinary
+      administrative work for employers there, so nobody blinks at sponsoring.
+      The salary threshold is the highest of the Blue Card countries (well above
+      Germany's) but still far under the ask, and ICT shortage occupations get a
+      reduced floor — confirm the current year's figure at application time
+      rather than trusting a cached number. English is the working language in
+      finance and tech despite the country being trilingual. Expect only a
+      handful of relevant openings a month: Talkwalker (NLP/social analytics) is
+      the one genuine ML employer at scale, alongside SES, the Goodyear
+      innovation centre, the LIST research institute and the SnT centre at the
+      University of Luxembourg. Worth including precisely because it costs
+      nothing to watch a small board.
+    resume_location_line: "Open to relocation to Luxembourg | EU Blue Card sponsorship required"
+
+  - id: switzerland
+    priority: 3
+    country: "Switzerland"
+    hubs: ["Zurich", "Lausanne", "Basel", "Geneva", "Zug"]
+    visa_route: "Permit B, third-country national quota"
+    sponsorship_reality: >-
+      Highest pay in the world for this work and the hardest European permit to
+      get. Non-EU hires come out of a federal quota of roughly 8,500 permits a
+      year for the entire country, and the employer must first prove no Swiss or
+      EU/EFTA candidate could do the job. That combination means only companies
+      that already run the process regularly will engage — Google Zurich, Meta,
+      Apple, Oracle Labs, Nvidia, IBM Research, ETH and EPFL spin-offs, and the
+      Basel pharma research groups at Roche and Novartis. Roche is worth noting:
+      Sunil has shipped production work on Roche projects already, which is a
+      genuine door rather than a cold application. Treat Switzerland as a
+      high-value, low-volume target: apply where the fit is exceptional, do not
+      let it consume the calendar.
+    resume_location_line: "Open to relocation to Switzerland | Permit B sponsorship required"
+
+  - id: usa
+    priority: 4
+    country: "United States"
+    hubs: ["San Francisco", "Seattle", "New York", "Austin", "Boston"]
+    visa_route: "H-1B (lottery), O-1, L-1, or cap-exempt employer"
+    sponsorship_reality: >-
+      HARDEST of the five, and the pay is why it is tempting. A company hiring
+      someone already abroad must win the March H-1B lottery for an October start,
+      so most decline outright regardless of fit. Do NOT let US applications eat
+      the calendar. Better US routes:
+        - cap-exempt employers (universities, research institutes, some nonprofits)
+        - O-1 (needs a documented case: publications, patents, press, awards)
+        - L-1 after a year at a company with a US entity
+        - fully-remote contractor via EOR  <- the realistic near-term path
+    resume_location_line: "Open to relocation to the US | Visa sponsorship required"
+
+  - id: remote_india
+    priority: 1
+    country: "Remote (from India)"
+    hubs: ["Remote"]
+    visa_route: "None — contractor or Employer of Record (Deel / Remote.com / Oyster)"
+    sponsorship_reality: >-
+      No visa, no lottery, no relocation. Pays in USD/EUR rather than INR. Equal
+      top priority with the Netherlands because there is nothing to wait for.
+      Screen hard for "remote (US only)" style restrictions.
+    resume_location_line: "India | Available for fully-remote roles | Open to relocation with sponsorship"
+
+# Titles to search for. Matched loosely; rank.py scores the real fit.
+titles:
+  primary:
+    - "Machine Learning Engineer"
+    - "Senior Machine Learning Engineer"
+    - "AI Engineer"
+    - "Senior AI Engineer"
+    - "Generative AI Engineer"
+    - "LLM Engineer"
+    - "Applied Scientist"
+    - "Research Engineer"
+  also_consider:
+    - "MLOps Engineer"
+    - "Data Scientist"          # only if the JD is genuinely ML-heavy
+    - "Forward Deployed Engineer"
+    - "AI Solutions Engineer"
+    - "Computer Vision Engineer"
+  avoid:
+    # Frontend is out entirely, per Sunil.
+    - "Frontend"
+    - "Front End"
+    - "React"
+    - "Angular"
+    - "Vue"
+    - "UI Engineer"
+    - "UX"
+    - "Web Designer"
+    - "Data Analyst"
+    - "Business Intelligence"
+    - "Sales Engineer"
+    - "Data Engineer"           # unless the JD leads with ML/LLM
+
+# Weighted against the JD by rank.py. These reflect what is genuinely on the
+# resume — never add a keyword here that isn't true.
+keywords:
+  strong:                       # 5 yrs — lead with these
+    - "Python"
+    - "PyTorch"
+    - "Machine Learning"
+    - "Deep Learning"
+    - "Computer Vision"
+    - "NLP"
+    - "AWS"
+    - "Production ML"
+    # Backend + infra, added 2026-09-06. All evidenced in resume/sections or
+    # project-memory-backup. Frontend is explicitly excluded — see titles.avoid.
+    - "FastAPI"
+    - "Redis"
+    - "PostgreSQL"
+    - "database"
+    - "data pipeline"
+    - "Docker"
+    - "Kubernetes"
+    - "CI/CD"
+    - "cloud infrastructure"
+    - "Terraform"
+    - "sandboxing"
+  strong_recent:                # 3 yrs — the differentiator right now
+    - "Generative AI"
+    - "Large Language Models"
+    - "LLM"
+    - "Agentic AI"
+    - "Multi-Agent Systems"
+    - "RAG"
+    - "Vector Database"
+    - "vLLM"
+    - "LLM Inference Optimization"
+    - "Model Evaluation"
+    - "Guardrails"
+    - "Prompt Injection"
+    - "Quantization"
+    # Added from project-memory-backup — all true, none previously matched on.
+    - "Qdrant"
+    - "hybrid retrieval"
+    - "BM25"
+    - "semantic search"
+    - "reranking"
+    - "LoRA"
+    - "fine-tuning"
+    - "DeepSpeed"
+    - "distributed training"
+    - "Text2SQL"
+    - "vision language model"
+    - "document AI"
+    - "multilingual"
+    - "observability"
+    # "customer-facing": confirmed by Sunil 2026-09-06.
+    # RL post-training: on the resume since 2026-09-22 (GRPO + verifiable rewards
+    # on Qwen3-4B, QLoRA) — claimable like anything else.
+    - "customer-facing"
+    - "RLHF"
+    - "post-training"
+    - "GRPO"
+    - "RLVR"
+    - "verifiable rewards"
+    - "QLoRA"
+    - "Qwen"
+    - "model compression"
+
+  # Promoted weekly by keyword_learn.py from applied JDs — hard skills the
+  # base resume already evidences, in the market's wording. Scored by rank.py
+  # at keywords_learn.learned_weight. Remove a line to un-learn it.
+  learned:
+    - "claude"   # learned 2026-W39, 18 JDs
+    - "sql"   # learned 2026-W39, 14 JDs
+    - "distributed systems"   # learned 2026-W39, 9 JDs
+
+  # Ticked DONE by Sunil on the keyword page: work he has actually done that the
+  # resume does not mention yet. Counts as TRUE (optimize.py includes it in the
+  # truth vocabulary; rank.py scores it with the learned bucket). Each one is
+  # also listed in data/resume_todo.md until it is written into the base resume.
+  confirmed:
+    - "experimentation"   # confirmed DONE 2026-09-23, 8 JDs — write it into the resume
+
+seniority:
+  target: ["Senior", "Mid-Senior", "L4", "L5", "IC3", "IC4"]
+  # 5 yrs of experience. Roles demanding 8+ score low but are not auto-rejected —
+  # JD year requirements are frequently aspirational.
+  max_years_required_soft_cap: 8
+  avoid: ["Intern", "Graduate", "Junior", "Principal", "Staff", "Director", "Head of"]
+
+routing:
+  # Mirrors answers.yaml:portal_routing. Phone-friendly portals reach Telegram;
+  # Workday-class ones batch for desktop. See automation-plan.md §1.
+  mobile_ok: ["greenhouse", "lever", "ashby"]
+  desktop_only: ["workday", "taleo", "icims", "successfactors"]
+  manual: ["linkedin", "wellfound", "instahyre"]
+
+scoring:
+  # Points by market priority. Widened 2026-09-05: US postings state the highest
+  # salaries and were collecting the pay boost every time, pushing them to the top
+  # of a list ranked for someone the H-1B lottery mostly gates out. A salary you
+  # cannot access is worth little, so sponsorship reality now outweighs headline pay.
+  # Points are keyed on the market's `priority` above, so adding a market needs
+  # no change here — only an honest priority. Ranked by how often sponsorship
+  # actually happens, never by headline pay.
+  market_bonus:
+    1: 22        # Netherlands, Ireland, Germany, Luxembourg, remote-from-India
+                 #   — no labour-market test, no lottery, weeks not months
+    2: 18        # UAE, Saudi
+                 #   — routine: nearly every hire there is an expat
+    3: 12        # Australia, Switzerland
+                 #   — real but rationed: approved-sponsor list / Permit B quota
+    4: 2         # USA — H-1B lottery gates most of it regardless of fit
+
+  # Calibrated 2026-09-05 against 8,804 real postings (183 matches):
+  #   >=60: 5    >=55: 25    >=50: 39    top score 63.0
+  # The original 65/80 guesses queued nothing at all.
+  min_score_to_queue: 50        # below this, do not build a resume
+  auto_queue_above: 60          # above this, tailor and fill without asking
+  boost:
+    sponsorship_explicit: 15    # JD explicitly says it sponsors
+    fully_remote_global: 12
+    genai_agentic_focus: 10
+    referral_available: 20      # referrals.py found a connection there
+    pay_above_ask: 12           # posted pay converts to at or above the ask
+    # Y Combinator company. Set to +5 on 2026-09-07, level with preferred_companies:
+    # every YC match so far has been US-based (where early-stage firms rarely
+    # sponsor), so this is a tiebreaker rather than a driver. Its real value is the
+    # remote-from-India subset.
+    yc_startup: 5
+
+  # Company scale. Larger employers matter for a specific reason, not prestige:
+  # they have immigration counsel, sponsorship budget and an existing visa
+  # process. A 15-person startup usually cannot sponsor at all, whatever it says.
+  # Signal is open-req count (median across boards is 12) or YC headcount.
+  # NOTE this partly opposes yc_startup above — deliberately. A big company wins
+  # on sponsorship reality, a YC startup on remote-hiring willingness.
+  company_scale:
+    enterprise: 10        # 400+ open reqs, or 1000+ staff
+    large: 7              # 150-400 reqs, or 250-1000 staff
+    mid: 4                # 40-150 reqs, or 60-250 staff
+    small: 0              # below that
+  # Employers worth extra weight regardless of size — edit freely. Deliberately
+  # ADDITIVE with company_scale: scale answers "can they sponsor", preferred
+  # answers "do you want to work there". Kept at 5 so the two together (+15 max)
+  # cannot outrun the market weighting, which reflects who can actually hire him.
+  preferred_companies: 5
+  preferred_list:
+    - OpenAI
+    - Anthropic
+    - Databricks
+    - Google DeepMind
+    - Cohere
+    - Hugging Face
+    - Scale AI
+    - TII
+    - G42
+    - MBZUAI
+    - Adyen
+    - Booking
+    - ASML
+    - Philips
+    - Canva
+    - Atlassian
+    - Stripe
+    - Snowflake
+    - Elastic
+    - NVIDIA
+  penalty:
+    years_required_over_8: -10
+    pay_below_ask: -12          # posted pay converts to clearly under the ask
+    no_sponsorship_language: -100   # effectively a reject

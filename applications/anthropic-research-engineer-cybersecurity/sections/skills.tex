@@ -1,0 +1,26 @@
+%====================
+% SKILLS
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+% Parsers read wide multi-column tables column-wise and scramble the
+% label/value pairing, which destroys keyword association.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Security \& Defensive Hardening:} Prompt-Injection \& Jailbreak Hardening, Secure Execution of LLM-Authored Code, OS-Level Sandboxing (bubblewrap, mount/namespace isolation), Deny-by-Default Egress Brokering, Least-Privilege Session-Scoped STS Credentials, Python AST Allow-Listing, Read-Only Database Gating, Subprocess Isolation, HMAC-SHA256 Service-to-Service Signing, Content Moderation \& Inappropriate-Content Detection\par\vspace{2pt}
+
+\skills{AI Evaluation \& Experimentation:} Automated Evaluation Harnesses, Graded Task Registries, Cell-Level Precision / Recall / F1 Grading, LLM-as-Judge Root-Cause Analysis, Regression Benchmarking, Ground-Truth Dataset Curation, A/B Testing, Experiment Tracking (Weights \& Biases, MLflow), Model Versioning\par\vspace{2pt}
+
+\skills{ML \& AI:} Deep Learning, LLMs, Generative AI, Multi-Agent Systems, Agentic AI Workflows, RAG, PEFT / LoRA Fine-tuning, Distributed Training (DeepSpeed ZeRO-3), Model Quantization, NLP, Computer Vision, Multimodal Models, Supervised \& Unsupervised Learning\par\vspace{2pt}
+
+\skills{Programming:} Python, SQL, C++\par\vspace{2pt}
+
+\skills{Frameworks \& Tools:} PyTorch, HuggingFace Transformers, CrewAI, PydanticAI, LangChain, LlamaIndex, DuckDB, TensorFlow, FAISS, Qdrant, Pinecone, BM25, Airflow, MLflow\par\vspace{2pt}
+
+\skills{Deployment \& MLOps:} vLLM, FastAPI, AWS (EC2, ECS, S3, Athena, Bedrock), Docker, Kubernetes, TorchServe, CI/CD (GitHub Actions, Jenkins), Redis, PostgreSQL\par\vspace{2pt}
+
+\skills{Model Architectures:} Transformer (GPT, LLaMA, Mistral), Vision-Language (CLIP, LLaVA, FLAVA, Phi-3 Vision), CNN, LSTM, Seq2Seq
+
+\end{document}

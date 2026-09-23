@@ -1,0 +1,26 @@
+# Terms keyword_learn.py must never promote or offer, however often JDs use them.
+# Generic tokens that would nudge every JD's score equally, and words the
+# extractor mistakes for skills. Company names are excluded automatically (from
+# state.db), so they do not need listing here. Edit freely.
+- api
+- apis
+- agents
+- agent
+- go            # the verb, counted as the language
+- accelerate
+- latency
+- models
+- model
+- data
+- systems
+- tools
+- pipeline
+- pipelines
+- production
+- platform
+- infrastructure
+- research
+- engineering
+- software
+- code
+- testing

@@ -1,0 +1,32 @@
+%====================
+% SKILLS -- TAILORED for OpenAI "Applied AI Engineer, Cyber"
+% Ordered to the JD's own checklist: the safe-deployment patterns it names
+% verbatim (tool and function calling, structured outputs, retrieval,
+% sandboxing, data handling, guardrails, approval-gated side effects) first,
+% then AI workflow design, then evaluation, then the build surface it lists
+% (APIs, Python, agents, scripts, CI/CD). Every entry is true on the base
+% resume. Cybersecurity domain skills (AppSec, SOC/IR, detection engineering,
+% threat intel, red teaming, GRC) are deliberately ABSENT -- he does not have
+% them. JavaScript is absent for the same reason.
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Security \& Safe Deployment:} Prompt-Injection \& Jailbreak Hardening, OS-Level Sandboxing (bubblewrap), Untrusted-Code Isolation, Deny-by-Default Egress Brokering, IMDS / Link-Local Egress Blocking, Session-Scoped Credentials (AWS STS), Least-Privilege Credential Scoping, Read-Only Data Gates, Python AST Allow-Lists, Guardrails, Human-in-the-Loop Approval Gates\par\vspace{2pt}
+
+\skills{AI Workflow Design:} Retrieval-Augmented Generation (RAG), Hybrid Retrieval, Structured Outputs (PydanticAI), Tool Use \& Function Calling, Multi-Agent Systems, Agentic AI Workflows, Agent-to-Agent (A2A) Protocol, Task Decomposition, Human-in-the-Loop Review, Semantic Search\par\vspace{2pt}
+
+\skills{Evaluation \& Validation:} Evaluation Harnesses, Automated Graders (precision / recall / F1), Ground-Truth Task Registries, LLM-as-Judge, Root-Cause Analysis, Failure Adjudication (genuine error vs.\ acceptable variant), Regression Testing, Benchmarking, A/B Testing, Experiment Tracking\par\vspace{2pt}
+
+\skills{Prototyping \& Engineering:} Python, SQL, C++, FastAPI, REST APIs, WebSockets, Bash Scripting, CI/CD (GitHub Actions, Jenkins), pandas, DuckDB, Redis, Celery\par\vspace{2pt}
+
+\skills{LLM \& Model Stack:} Large Language Models, Generative AI, PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, CrewAI, PydanticAI, Claude (AWS Bedrock), vLLM Serving, Model Quantization (FP8 / 4-bit), PEFT / LoRA Fine-tuning\par\vspace{2pt}
+
+\skills{Cloud \& Data:} AWS (EC2, ECS, S3, Athena, Bedrock, STS), Docker, Kubernetes, Vector Databases (Qdrant, FAISS, Pinecone), PostgreSQL, Parquet\par\vspace{2pt}
+
+\skills{Core ML:} Deep Learning, NLP, Computer Vision, Vision-Language Models (CLIP, LLaVA, FLAVA, Phi-3 Vision), Multimodal Models, Distributed Training, Feature Engineering
+
+\end{document}

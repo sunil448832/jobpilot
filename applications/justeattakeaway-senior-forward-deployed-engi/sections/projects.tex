@@ -1,0 +1,27 @@
+%====================
+% SELECTED PROJECTS -- TAILORED to Just Eat Takeaway.com
+% "Senior Forward Deployed Engineer" (Amsterdam).
+% Lead with the RAG QA bot: it is an LLM workflow over an unstructured document
+% corpus, shipped as a deployable API -- the JD's "LLM workflows, APIs,
+% deployable apps" and "structure unstructured data". VLM fine-tuning second.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\subsection{QA Bot over a Document Corpus (RAG) \hfill \href{https://github.com/sunil448832/Natural-Language-Processing/tree/master/RAG(Retrieval\%20Augment\%20Generation)}{GitHub Repository}}
+\begin{zitemize}
+\item Developed a \textbf{RAG} pipeline answering PAN card queries over a custom \textbf{unstructured document corpus}, using \textbf{Sentence Transformers} (MiniLM-L6-v2) embeddings with \textbf{FAISS} vector retrieval.
+\item Queried a \textbf{quantized Mistral-7B} for contextual response generation; \textbf{deployed via FastAPI} as a callable API.
+\item \textbf{Stack:} PyTorch, FAISS, HuggingFace, FastAPI.
+\end{zitemize}
+
+\subsection{Vision-Language Model Fine-tuning – Image Captioning (Freelance) \hfill \href{https://huggingface.co/sunil448832/blip-model}{HuggingFace Model}}
+\begin{zitemize}
+\item Fine-tuned \textbf{LLaVA 1.6 (Mistral-7B)} with \textbf{LoRA} (r=128, $\alpha$=256) via \textbf{DeepSpeed ZeRO-3} for domain-specific image captioning, then benchmarked it against \textbf{CLIP} similarity and a fine-tuned \textbf{BLIP} baseline to select the best-performing approach.
+\item Built end-to-end \textbf{data preparation, training, and evaluation} pipelines with \textbf{Weights \& Biases} tracking; published the fine-tuned \textbf{BLIP} model to the \textbf{HuggingFace Hub}.
+\item \textbf{Stack:} PyTorch, HuggingFace Transformers, LLaVA, DeepSpeed, LoRA, CLIP, BLIP, W\&B.
+\end{zitemize}
+
+\end{document}

@@ -1,0 +1,169 @@
+# ============================================================================
+# config.yaml — every operational knob in the pipeline, in one place.
+#
+# Change behaviour HERE, not in code. Nothing below is hardcoded in a script;
+# each value is read through config.py, which falls back to these defaults if a
+# key is missing, so removing a line never breaks a run.
+#
+# Related files, each answering a different question:
+#   config.yaml    HOW the pipeline runs   (limits, thresholds, schedule, ports)
+#   targets.yaml   WHICH jobs are worth it (markets, titles, keywords, scoring)
+#   answers.yaml   WHAT to type into forms (profile, salary, EEO)
+#   learned.yaml   answers already given
+#   POLICY.md      how to tailor and what may be claimed (in this folder)
+# ============================================================================
+
+paths:
+  # The resume repo — the RECORD. jobpilot reads resume/ and project-memory-backup/,
+  # and writes only applications/ and tracking/. It used to be inferred from where
+  # the code lived; now that the tool is a separate checkout it must be stated.
+  # Override per-shell with $JOBPILOT_TRACKING.
+  tracking_repo: ~/work/docs/sunil_resume_v2
+
+llm:
+  # Which Claude model each `claude -p` step runs on, and at what effort.
+  # Until 2026-09-22 nothing here existed and every session inherited the CLI
+  # default from ~/.claude/settings.json — which was Fable 5.1, the most
+  # expensive model (5x Sonnet 5 per token). Aliases: haiku, sonnet, opus, fable.
+  # Effort: low | medium | high | xhigh | max (Haiku ignores it).
+  #
+  # screen    one call per 30 roles, ~6K tokens in / ~1K out. Cost is negligible
+  #           on any model, so this is chosen for verdict quality, not price.
+  # tailor    the expensive step: reads ~15K tokens of POLICY + resume + memory,
+  #           then multi-turn edits 5 LaTeX files under a never-fabricate rule.
+  #           A wrong claim here is the worst failure in the system and is not
+  #           machine-checkable, so this stays on Sonnet 5 at minimum.
+  # questions drafts 2-3 tappable answers per open form question.
+  screen:    {model: sonnet, effort: low}
+  tailor:    {model: sonnet, effort: medium}
+  questions: {model: sonnet, effort: low}
+
+pipeline:
+  # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
+  # dial: 6 x 3 scans/day = up to 18/day.
+  tailor_limit: 6
+  # Max roles from one employer per run. At 1 the whole pipeline throttled to
+  # ~5 candidates, because Anthropic and OpenAI held 38 of 43 above the floor.
+  per_company: 3
+  # Below this score a role is not worth a tailoring session. Lowered 55 -> 45
+  # on Sunil's instruction to widen the funnel. MUST stay >= screen.floor: with
+  # require_screen on, a role below the screening floor never gets a verdict and
+  # so can never be tailored, which would make lowering this a no-op.
+  tailor_floor: 45.0
+  # Only tailor roles screen.py has returned a `keep` verdict on. Without this,
+  # score alone decided, and 45 of 78 roles above the floor had never been
+  # screened — the top-scoring one included. Turning it off means unvetted roles
+  # can consume tailoring sessions; leave it on unless screening is broken.
+  require_screen: true
+  # Score gate. Every application is first built UNTAILORED (a copy of the base
+  # sections + the market's location line) and scored. Only if the ATS match is
+  # below ats_target does an LLM session edit sections/{objective,skills,
+  # experience,projects}.tex; it is rebuilt and rescored after each round, up to
+  # ats_rounds, and stops early if the score does not improve or the stuffing
+  # penalty leaves zero. A role that already scores well costs zero LLM sessions.
+  ats_target: 60
+  ats_rounds: 2
+  # The screener's fit score (0-100): Sunil's profile vs the role's real
+  # requirements as a hiring manager reads them — abstract must-haves, domain,
+  # "at least one of" lists. Gates entry to tailoring. Set because keyword
+  # scores misjudge abstract JDs (Adyen: fit high, ATS 17.6%) and "one of"
+  # lists (DeepJudge: PyTorch OR JAX). Set to 45 on 2026-09-23 — level with
+  # tailor_floor — after the screener scored Adyen (a role Sunil judged a fit)
+  # at 50; the screener is conservative on abstract research JDs.
+  fit_min: 45
+  # Selection order for tailoring = fit_weight * fit + (1 - fit_weight) * rank
+  # score, non-US markets first. Rank measures "worth pursuing" (market,
+  # sponsorship, keywords); fit measures "matches the role as a human reads it".
+  fit_weight: 0.7
+
+screen:
+  # Claude reviews this many before anything is tailored. One call over 30 costs
+  # far less than tailoring even one role that was never viable.
+  top: 30
+  per_company: 3
+  # Kept at or below pipeline.tailor_floor — see the note there. Lowered with it
+  # 50 -> 45. This widens the screened pool from 18 companies to 31.
+  floor: 45.0
+  # When looping, keep screening deeper batches until this many usable roles
+  # exist, or max_rounds is spent. Guards against a batch that is mostly
+  # ineligible leaving the tailoring queue empty.
+  want_usable: 10
+  max_rounds: 3
+  # Count only this market toward want_usable. "non-usa" is useful because the
+  # US pool is large but H-1B-gated; blank counts every market. When set, that
+  # market is also drawn FIRST — otherwise global score order spends every round
+  # on US roles that do not count.
+  want_market: ""
+  # A round is capped at per_company x (companies still holding an unscreened
+  # role), so it collapses well below `top` once each company's top 3 are done.
+  # When looping, a short round drops the floor by this much and re-draws, down
+  # to floor_min. At 50 the pool is 88 roles / 18 companies; at 40 it is 139/37.
+  floor_step: 5.0
+  floor_min: 40.0
+
+scale_tiers:
+  # Company size, as a sponsorship-capability proxy. Signal is open-req count
+  # (median across boards is 12) or YC headcount where known.
+  enterprise: {reqs: 400, staff: 1000}
+  large:      {reqs: 150, staff: 250}
+  mid:        {reqs: 40,  staff: 60}
+
+apply:
+  # Portals that cap how often you may apply. OpenAI's shows "6 applications per
+  # 180 days" — a scarce, non-renewable resource, and the pipeline holds ~50
+  # OpenAI roles, so without this it would spend all six on whatever ranked
+  # highest that week. Counted from submitted queue items in the window.
+  quotas:
+    openai: {max: 6, window_days: 180}
+  # Companies to skip tailoring entirely. OpenAI was held from 2026-09-07 until
+  # the RL post-training project reached the resume; it landed 2026-09-22 and the
+  # hold was lifted the same day. Its 6-per-180-days quota still applies above.
+  hold_companies: []
+
+keywords_learn:
+  # Weekly, from the JDs you actually applied to (applications/*/JD.md): the top
+  # hard-skill keywords targets.yaml does not cover yet. Promoted ONLY if the base
+  # resume already evidences the fact (optimize.is_safe); otherwise recorded as a
+  # gap in data/keyword_gaps.md and mentioned in the Sunday digest. No LLM.
+  top_n: 5
+  min_docs: 3
+  period_days: 7
+  learned_weight: 0.1     # rank.py weight for the learned bucket (strong 0.4, recent 0.6)
+  interest_weight: 0.15   # rank.py weight for gaps Sunil ticked — ranking only, never a claim
+
+followups:
+  # Business days after applying before chasing. From job-tracker-guide.md.
+  job_days: 5
+  # Calendar days after a LinkedIn invite or message. Sooner reads as pushy,
+  # later and they have forgotten the context.
+  referral_days: 7
+
+discovery:
+  yc_min_size: 10       # smaller than this cannot sponsor anyone
+  yc_limit: 600
+  workers: 14           # parallel probes; higher risks rate limits
+  # Slugs that resolve but are not employers. `agency` is a freelance AI-trainer
+  # marketplace whose 829 gig listings cleared the enterprise scale tier, so each
+  # one collected the biggest company-scale bonus rank.py gives. `pulse` stopped
+  # returning JSON. Filtered in intake.load_boards, so they never reach state.db.
+  deny_boards: [agency, pulse]
+  board_timeout: 25
+
+server:
+  port: 8765
+  # Left blank = detected from `tailscale status` at runtime.
+  tailscale_host: ""
+
+browser:
+  # Embedded ATS iframes attach late and at variable speed; a fixed sleep here
+  # silently fell back to the site nav and filled nothing.
+  form_frame_timeout_ms: 20000
+  resume_parse_wait_s: 30
+  submit_poll_s: 12
+  headless: false       # never headless: portals treat it differently
+
+schedule:
+  # Documentation of the systemd timers. Editing this does NOT move them —
+  # change the .timer files and `systemctl --user daemon-reload`.
+  scans: "04:00, 12:00, 20:00 IST"
+  reviews: "07:00, 19:00 IST"

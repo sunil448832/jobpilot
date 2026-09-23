@@ -1,0 +1,31 @@
+%====================
+% SKILLS
+% ATS NOTE: plain labelled paragraphs -- NOT a tabular.
+% Parsers read wide multi-column tables column-wise and scramble the
+% label/value pairing, which destroys keyword association.
+%
+% KONUX ordering: the JD asks first for Python + dataframe-centric data
+% manipulation and SQL, then for built-and-tested statistical / ML models, then
+% for production deployment, testing, Git and CI/CD. GenAI / LLM work moves
+% below those, and model architectures last.
+% NOT LISTED because untrue: PySpark, Polars, Databricks, statsmodels, PyMC,
+% Stan, survival modeling, digital signal processing.
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\skills{Programming \& Data Manipulation:} Python, SQL, C++, Pandas, DuckDB, Parquet, ETL Pipelines, PostgreSQL, AWS Athena\par\vspace{2pt}
+
+\skills{Statistical \& ML Modeling:} Supervised \& Unsupervised Learning, Statistical Modeling, Deep Learning, Feature Engineering, Model Evaluation \& Benchmarking (Precision / Recall / F1, nDCG), A/B Testing, Kalman Filtering, Clustering (DBSCAN), Computer Vision, NLP, Multimodal Models\par\vspace{2pt}
+
+\skills{Production ML, Testing \& MLOps:} Model Deployment to Live Systems, Software Testing (pytest), Automated Evaluation \& Regression Harnesses, Git, CI/CD (GitHub Actions, Jenkins), Docker, FastAPI, vLLM, AWS (EC2, ECS, S3, Athena, Bedrock), Experiment Tracking, Model Versioning, Kubernetes, TorchServe\par\vspace{2pt}
+
+\skills{Generative AI \& LLM Systems:} Generative AI, LLMs, RAG, Multi-Agent Systems, Agentic AI Workflows, PEFT / LoRA Fine-tuning, Model Quantization\par\vspace{2pt}
+
+\skills{Frameworks \& Tools:} PyTorch, TensorFlow, HuggingFace Transformers, CrewAI, PydanticAI, LangChain, LlamaIndex, FAISS, Qdrant, Pinecone, BM25, Airflow, MLflow, Weights \& Biases\par\vspace{2pt}
+
+\skills{Model Architectures:} Transformer (GPT, LLaMA, Mistral), Vision-Language (CLIP, LLaVA, FLAVA, Phi-3 Vision), CNN, LSTM, Seq2Seq
+
+\end{document}

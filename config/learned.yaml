@@ -1,0 +1,335 @@
+# ============================================================================
+# learned.yaml — answers Sunil has given once, reused forever.
+# Grown automatically by learn.py from submitted review forms.
+# Edit freely — these are Sunil's own words and must stay true.
+# ============================================================================
+
+answers:
+- match: confirm whether any of the below applies to you sanctions cuba iran north korea syria
+    russia belarus
+  keywords:
+  - sanction
+  - cuba
+  - iran
+  - north korea
+  - syria
+  - russia
+  - belarus
+  - crimea
+  - donetsk
+  answer: None of the above
+  source: confirmed by Sunil 2026-09-05
+- match: us person status citizen permanent resident asylum refugee
+  keywords:
+  - u.s. citizen
+  - permanent resident
+  - green card
+  - asylum
+  - refugee
+  - non-citizen national
+  answer: Not applicable (I selected “none of the above” for the prior question)
+  source: confirmed by Sunil 2026-09-05
+- match: export control restrictions
+  keywords:
+  - export control
+  - ofac
+  - denied party
+  - embargo
+  - restricted party
+  answer: 'No'
+  source: Indian citizen resident in India; no restrictions
+- match: which of the following core spark and production engineering concepts do you have
+    hands-on experience with
+  keywords:
+  - spark
+  - etl
+  - elt
+  - batch
+  - streaming
+  - runtime internals
+  - performance tuning
+  answer: Production ETL/ELT pipelines (Batch & Streaming) — this one only
+  source: confirmed by Sunil 2026-09-05
+- match: do you have hands-on experience owning end-to-end data and ai architectures in production
+  keywords:
+  - end-to-end
+  - architectures
+  - ingestion
+  - orchestration
+  - cloud storage
+  answer: 'Yes. I own end-to-end data and AI architectures in production: IngestIQ agents
+    run full ETL from ingestion through transformation to Parquet streamed to S3, orchestrated
+    on AWS (ECS, Celery, Airflow), scaling to millions of rows never materialised locally.
+    My distributed transformation engine is DuckDB rather than Spark.'
+  source: drafted by Claude, pending Sunil's confirmation
+- match: have you ever been convicted of a crime
+  keywords:
+  - convicted
+  - criminal record
+  - felony
+  answer: 'No'
+  source: default
+- match: do you have a valid passport
+  keywords:
+  - passport
+  answer: 'Yes'
+  source: default
+- match: by checking this box, i agree to allow catawiki to store and process my data for
+    the purpose of considering my eligibility regarding my current application for
+  keywords:
+  - checking
+  - box
+  - agree
+  - allow
+  - catawiki
+  - store
+  - process
+  - data
+  answer: By checking this box, I agree to allow Catawiki to store and process my data for
+    the purpose of considering my eligibility regarding my current application for
+  source: answered by Sunil on the Catawiki form, 2026-09-06
+- match: briefly describe a project where you had to deploy ml models serving real-time responses
+    on large scale
+  keywords:
+  - briefly
+  - describe
+  - project
+  - where
+  - had
+  - deploy
+  - models
+  - serving
+  answer: 'At Aria I deployed Phi-3 Vision behind vLLM for a document-understanding pipeline
+    serving real-time requests at 20 ms median latency, parsing millions of scientific PDFs.
+    The work was in batching and quantisation: FP8 weights, tuned concurrency, and a Qdrant
+    hybrid-retrieval backbone (BGE-M3 dense, ColBERT, bm42 sparse) so retrieval stayed inside
+    the latency budget.'
+  source: answered by Sunil on the Catawiki form, 2026-09-06
+- match: could you please list the standard and widespread ml techniques you're most comfortable
+    with
+  keywords:
+  - could
+  - list
+  - standard
+  - widespread
+  - techniques
+  - most
+  - comfortable
+  answer: 'Supervised and unsupervised learning, deep learning, and transformers day to day:
+    classification, metric learning, and sequence models in PyTorch. On the LLM side, retrieval-augmented
+    generation, PEFT/LoRA fine-tuning, quantisation (FP8, 4-bit) and systematic evaluation.
+    Also computer vision (CNNs, vision-language models) and NLP, plus feature engineering,
+    A/B testing and statistical modelling on the analysis side.'
+  source: answered by Sunil on the Catawiki form, 2026-09-06
+- match: at remote, we are committed to transparency, innovation, and care for our employees
+    and candidates. to support this and ensure we are able to focus on you, not
+  keywords:
+  - remote
+  - committed
+  - transparency
+  - innovation
+  - care
+  - our
+  - employees
+  - candidates.
+  answer: 'Yes'
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: have you ever been hired through remote as a third party?
+  keywords:
+  - ever
+  - been
+  - hired
+  - through
+  - remote
+  - third
+  - party
+  answer: No. I have never been engaged through Remote as a third party — all three of my
+    roles (Beltech AI, Amazon Development Centre India, and Aria Intelligent Solutions) have
+    been direct employment.
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: do you have experience working with multiple programming languages?
+  keywords:
+  - experience
+  - working
+  - multiple
+  - programming
+  - languages
+  answer: Yes — Python, SQL and C++. Python is my primary production language (FastAPI services,
+    PyTorch, vLLM), and I use SQL daily, including a production system where the LLM authors
+    per-step DuckDB SQL that joins database tables with S3 files at millions-of-rows scale.
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: have you implemented ai workflows or ai-powered solutions in production or at customer
+    sites?
+  keywords:
+  - implemented
+  - workflows
+  - ai-powered
+  - solutions
+  - production
+  - customer
+  - sites
+  answer: 'Yes, in production. I built IngestIQ, a suite of autonomous data-engineering agents
+    (CrewAI + PydanticAI + Claude) that plan and run end-to-end ETL over databases and files
+    from a single natural-language task, cutting manual data-engineering effort by 90%. It
+    is hardened for real use: all LLM-authored code runs in a bubblewrap sandbox with an egress
+    broker to scoped S3 only, session-scoped STS credentials, a read-only database gate and
+    a Python AST allow-list.'
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: have you held a customer-facing technical role (solutions engineer, post-sales engineering,
+    consultant, or similar) where you owned the customer relationship?
+  keywords:
+  - held
+  - customer-facing
+  - technical
+  - role
+  - solutions
+  - engineer
+  - post-sales
+  - engineering
+  answer: No. I have not held a formal customer-facing technical role — solutions engineer,
+    post-sales engineering or consulting — where I owned the customer relationship. My five
+    years have been as an engineer and applied scientist owning production AI systems, and
+    moving into field-facing delivery is exactly the step I am looking for.
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: are you able to travel approximately ~10% for customer engagement and in-person meetings?
+  keywords:
+  - able
+  - travel
+  - approximately
+  - customer
+  - engagement
+  - in-person
+  - meetings
+  answer: Yes. I am comfortable with approximately 10% travel for customer engagements and
+    in-person meetings, and I can stretch to around 25% in a quarter that needs it. I hold
+    a valid passport.
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: why are you interested in the forward deployed engineer role, and what about remote's
+    platform and use cases excites you?
+  keywords:
+  - why
+  - interested
+  - forward
+  - deployed
+  - engineer
+  - role
+  - about
+  - remote
+  answer: 'The half of my work I want more of is the front half — taking an open-ended problem
+    and deciding what the system should actually be. At Aria I architected an Orchestrator
+    Agent on the A2A protocol with LLM-driven task decomposition, knowledge-base retrieval
+    and human-in-the-loop clarification, routing to specialised sub-agents at 98% end-to-end
+    success across 500 concurrent sessions, with new agents onboarded without any system-level
+    refactoring. That is the same shape as this role: messy real-world inputs, real integrations,
+    and a design that has to hold once other people depend on it. Remote''s platform interests
+    me because global employment is precisely the domain where agentic automation earns its
+    keep — high-volume, rule-dense workflows spanning many countries, where an agent that
+    gets it right removes genuine operational load and one that guesses is unacceptable. I
+    would like to build somewhere with that much structure to respect.'
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: do you identify as part of the lesbian, bisexual, gay, transgender, queer, intersex,
+    and asexual (lbgtqia+) community?
+  keywords:
+  - identify
+  - part
+  - lesbian
+  - bisexual
+  - gay
+  - transgender
+  - queer
+  - intersex
+  answer: 'No'
+  source: answered by Sunil on the Remote form, 2026-09-06
+- match: do you have any relatives currently working for airwallex?
+  keywords:
+  - relatives
+  - currently
+  - working
+  - airwallex
+  answer: 'No'
+  source: answered by Sunil on the Airwallex form, 2026-09-07
+- match: how did you first hear about airwallex?
+  keywords:
+  - how
+  - did
+  - first
+  - hear
+  - about
+  - airwallex
+  answer: LinkedIn
+  source: answered by Sunil on the Airwallex form, 2026-09-07
+- match: are you based in melbourne, australia?
+  keywords:
+  - based
+  - melbourne
+  - australia
+  answer: No — I'm currently based in India. This would be a relocation to Melbourne and I
+    would need visa sponsorship (Subclass 482); my notice period is 2 months. Once I'm there
+    I'm happy to work from the Melbourne office the two days a week you ask for.
+  source: answered by Sunil on the Culture Amp form, 2026-09-07
+- match: point of data transfer
+  keywords:
+  - point
+  - data
+  - transfer
+  answer: Acknowledge
+  source: answered by Sunil on the Fin form, 2026-09-07
+- match: current or most recent company?
+  keywords:
+  - current
+  - most
+  - recent
+  - company
+  answer: Aria Intelligent Solutions
+  source: answered by Sunil on the Fin form, 2026-09-07
+- match: would you like to stay up to date with mongodb culture and careers content?
+  keywords:
+  - would
+  - like
+  - stay
+  - date
+  - mongodb
+  - culture
+  - careers
+  - content
+  answer: No, thank you. Please use my details for this application only.
+  source: answered by Sunil on the MongoDB form, 2026-09-07
+- match: 'if you answered mongodb employee, mongodb event, or other, please specify here:'
+  keywords:
+  - answered
+  - mongodb
+  - employee
+  - event
+  - other
+  - specify
+  - here
+  answer: Other - I found this role through the job posting on LinkedIn.
+  source: answered by Sunil on the MongoDB form, 2026-09-07
+- match: tell us about yourself
+  keywords:
+  - tell
+  - about
+  - yourself
+  answer: 'I am a Senior Data Scientist at Aria Intelligent Solutions with about 5 years in
+    production ML, previously an Applied Scientist at Amazon, with an M.Tech in AI from IIT
+    Jodhpur. The work I am proudest of is the data-quality side: I built an evaluation service
+    that runs 28 graded tasks on real Kaggle datasets against our agent fleet, with a cell-level
+    precision/recall/F1 grader (order-insensitive, float and date tolerant) and an LLM root-cause
+    analyzer that separates genuine errors from acceptable variants. It benchmarked the fleet
+    at 86% exact-pass and 0.86 mean F1 and replaced manual QA with regression visibility on
+    every release. Before that I built a pipeline that parsed millions of noisy scientific
+    PDFs, and I root-caused and fixed a production write-time OOM in a Qdrant index while
+    compressing it 8x with 4-bit quantization at nDCG/recall parity across 8 BEIR datasets.
+    I do not come from a biology lab, but deciding whether a number is real or an artifact,
+    and turning that judgment into automated checks, is what I do every day. I am open to
+    relocating to Lausanne and would need a Swiss work permit.'
+  source: answered by Sunil on the Adaptyv form, 2026-09-23
+- match: links
+  keywords:
+  - links
+  answer: 'LinkedIn: https://www.linkedin.com/in/sunil4832sharma
+
+    GitHub: https://github.com/sunil448832
+
+    Hugging Face: https://huggingface.co/sunil448832'
+  source: answered by Sunil on the Adaptyv form, 2026-09-23

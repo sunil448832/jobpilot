@@ -407,6 +407,8 @@ def main():
     ap.add_argument("--url", help="override the apply URL")
     ap.add_argument("--submit", metavar="QUEUE_ID")
     ap.add_argument("--submit-approved", action="store_true")
+    ap.add_argument("--limit", type=int, metavar="N",
+                    help="with --submit-approved: file at most N (oldest approved first)")
     args = ap.parse_args()
 
     if args.selftest:
@@ -439,7 +441,7 @@ def main():
 
     if args.submit or args.submit_approved:
         from jobpilot.fill.browser import submit_approved
-        submit_approved(answers, one=args.submit)
+        submit_approved(answers, one=args.submit, limit=args.limit)
         return
 
     ap.print_help()

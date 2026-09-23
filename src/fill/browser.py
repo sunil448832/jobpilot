@@ -730,8 +730,9 @@ SUBMIT_SELECTORS = [
 ]
 
 
-def submit_approved(answers, one=None):
-    """PASS 2. Re-fill deterministically, then submit — approved items only."""
+def submit_approved(answers, one=None, limit=None):
+    """PASS 2. Re-fill deterministically, then submit — approved items only.
+    `limit` caps how many are filed this call; the rest stay approved for later."""
     from jobpilot.fill import autofill                                   # circular by design; late import
 
     items = []
@@ -748,6 +749,9 @@ def submit_approved(answers, one=None):
     if not items:
         print("  nothing approved to submit")
         return
+    if limit is not None and limit < len(items):
+        print(f"  {len(items)} approved; filing {limit} now, {len(items) - limit} stay approved")
+        items = items[:limit]
 
     for it in items:
         ctx = {"market": it["market"], "company": it["company"],

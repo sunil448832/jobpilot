@@ -164,6 +164,11 @@ def digest(since_iso):
     return "\n".join(lines)
 
 
+# Every stage of the unattended run, in order. `--only` picks a subset so a
+# stage can be re-run on demand without paying for the ones before it.
+STAGES = ("dedupe", "intake", "rank", "screen", "tailor", "tracker", "referrals", "digest")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-telegram", action="store_true")
@@ -177,7 +182,18 @@ def main():
                     help="roles to tailor per run (2 Claude sessions each)")
     ap.add_argument("--digest-only", action="store_true",
                     help="just send the approval prompt; scan nothing")
+    ap.add_argument("--only", metavar="STAGES",
+                    help="run only these stages, comma-separated, in pipeline order: "
+                         + ",".join(STAGES))
     a = ap.parse_args()
+    if a.only:
+        bad = [x for x in a.only.split(",") if x.strip() not in STAGES]
+        if bad:
+            sys.exit(f"unknown stage(s) {bad}; choose from {', '.join(STAGES)}")
+        only = {x.strip() for x in a.only.split(",")}
+    else:
+        only = set(STAGES)
+    want = only.__contains__
     try:
         sys.stdout.reconfigure(line_buffering=True)
     except AttributeError:
@@ -248,37 +264,44 @@ def main():
 
     # Dedupe BEFORE intake so new rows are compared against a clean store, and
     # again at the end because queue/tracker writes happen throughout.
-    run("dedupe.py", timeout=600)
+    if want("dedupe"):
+        run("dedupe.py", timeout=600)
 
-    if run("intake.py", timeout=1800):
+    if want("intake"):
+        if not run("intake.py", timeout=1800):
+            failures.append("intake.py")
+    if want("rank") and "intake.py" not in failures:
         if not run("rank.py", "--all", "--top", "1", timeout=900):
             failures.append("rank.py")
-    else:
-        failures.append("intake.py")
     # Screen BEFORE tailoring: one Claude call over 30 candidates is far cheaper
     # than tailoring even one role that was never viable (no sponsorship, wrong
     # discipline, 10+ years). Rejects are marked and never reach autotailor.
-    if not a.no_tailor and not a.no_screen:
+    if want("screen") and not a.no_tailor and not a.no_screen:
         if not run("screen.py", "--loop", "--per-company", str(a.per_company),
                    timeout=2400):
             failures.append("screen.py")
 
     # Tailor + fill what survived. Never submits — approval stays a human decision.
-    if not a.no_tailor:
+    if want("tailor") and not a.no_tailor:
         if not run("autotailor.py", "--limit", str(a.tailor_limit),
                    "--per-company", str(a.per_company),
                    *(["--dry-run"] if a.dry_run else []), timeout=2400):
             failures.append("autotailor.py")
-    if not run("tracker.py", "--sync" if not a.dry_run else "--dry-run", timeout=300):
+    if want("tracker") and not run("tracker.py", "--sync" if not a.dry_run else "--dry-run",
+                                   timeout=300):
         failures.append("tracker.py")
     # Referral follow-ups are the highest-converting thing he does, so they get
     # their own line in the evening digest rather than living only in a sheet.
-    if not run("referral_tracker.py", "--digest",
+    if want("referrals") and not run("referral_tracker.py", "--digest",
                *(["--no-telegram"] if a.dry_run or a.no_telegram else []), timeout=300):
         failures.append("referral_tracker.py")
 
-    run("dedupe.py", timeout=600)      # queue + trackers were written above
+    if want("dedupe"):
+        run("dedupe.py", timeout=600)      # queue + trackers were written above
 
+    if not want("digest"):
+        log("daily run complete (stages: " + ",".join(x for x in STAGES if want(x)) + ")")
+        return
     text = digest(since)
     if failures:
         # Silence is indistinguishable from success, so say when a stage broke.

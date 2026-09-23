@@ -25,7 +25,10 @@ usage() { cat <<'TXT'
   RUN / PAUSE
     ./jobpilot start           scheduler ON  (scans 04/12/20, asks 07/19)
     ./jobpilot stop            scheduler OFF + kill anything mid-run
-    ./jobpilot pipeline        one full end-to-end run, now, in front of you
+    ./jobpilot pipeline [N]    one full end-to-end run now; N = roles to tailor (default 6)
+                               --only screen,tailor   re-run just those stages
+                               --dry-run              build nothing, fill nothing
+    ./jobpilot stages          the stage names --only accepts, in order
     ./jobpilot status          ON/OFF, services, counts
 
     `stop` is the Claude-usage control: autotailor spends 2 sessions per role,
@@ -35,20 +38,27 @@ usage() { cat <<'TXT'
   EVERY DAY
     ./jobpilot link            review-form URL (open on your phone)
     ./jobpilot queue           what is waiting for your approval
-    ./jobpilot submit          submit everything you approved
+    ./jobpilot submit [N]      file what you approved (N = at most N today, oldest first)
     ./jobpilot log [N]         follow the run log
 
-  FINDING WORK
-    ./jobpilot scan            pull all boards + re-rank
-    ./jobpilot top [N]         best roles in your sponsorship markets
+  EACH STAGE ON ITS OWN  (same order as the pipeline)
+    ./jobpilot dedupe          remove duplicates from every store
+    ./jobpilot intake          pull all boards (no re-rank)
+    ./jobpilot rank [N]        re-score everything, show the top N
     ./jobpilot screen          Claude reviews batches until 10 are usable
-    ./jobpilot screenus        same, counting only non-US roles
+    ./jobpilot prep [N]        tailor + build + fill the top N (= tailor)
+    ./jobpilot tracker         sync tracking/job-tracker.xlsx
+    ./jobpilot referrals       open referral list
+    ./jobpilot digest          send the Telegram review prompt only
+
+  FINDING WORK
+    ./jobpilot scan            intake + re-rank in one go
+    ./jobpilot top [N]         best roles in your sponsorship markets
+    ./jobpilot screenus        screen, counting only non-US roles
     ./jobpilot screened        what the screen rejected, and why
     ./jobpilot llm-eval <m>    re-screen labelled roles on model <m>, compare, write nothing
-    ./jobpilot prep [N]        tailor + build + fill the top N (default 2)
     ./jobpilot apply <url>     scaffold ONE job you found yourself
     ./jobpilot fill <slug>     fill an application that is already built
-    ./jobpilot dedupe          remove duplicates from every store
     ./jobpilot keywords        what applied JDs ask for vs targets.yaml (--dry-run / --promote)
 
   ADDING SOURCES
@@ -67,7 +77,6 @@ usage() { cat <<'TXT'
 
   TRACKING  (lives in the resume repo, tracking/)
     ./jobpilot follow          follow-ups due (5 business days after applying)
-    ./jobpilot tracker         sync tracking/job-tracker.xlsx
     ./jobpilot paths           where everything is, and whether it exists
     ./jobpilot check           smoke test: imports, config, build, form — no LLM
 
@@ -131,7 +140,11 @@ cmd="${1:-help}"; shift || true
 case "$cmd" in
   start)      sched_start ;;
   stop)       sched_stop ;;
-  pipeline|now) py core.daily "$@" ;;
+  pipeline|now) # ./jobpilot pipeline [N] [--only stage,stage] [--dry-run]  — N = roles to tailor today
+              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then n="$1"; shift; py core.daily --tailor-limit "$n" "$@"
+              else py core.daily "$@"; fi ;;
+  stages)     echo "  dedupe intake rank screen tailor tracker referrals digest"
+              echo "  e.g.  ./jobpilot pipeline 5 --only screen,tailor" ;;
   status)     en=$(systemctl --user is-enabled jobpilot-daily.timer 2>/dev/null)
               ac=$(systemctl --user is-active  jobpilot-daily.timer 2>/dev/null)
               if [ "$en" = "enabled" ] && [ "$ac" = "active" ]; then echo "  scheduler    : ON"
@@ -149,16 +162,23 @@ case "$cmd" in
               [ -n "${ts:-}" ] && echo "  anywhere:  http://$ts:8765/?t=$tok"
               echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok" ;;
   queue)      py review.bot --status ;;
-  submit)     py fill.autofill --submit-approved ;;
+  submit)     # ./jobpilot submit [N]  — file the approved items (oldest first); N caps how many today
+              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py fill.autofill --submit-approved --limit "$1"
+              else py fill.autofill --submit-approved; fi ;;
   log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
+  intake)     py discover.intake "$@" ;;
+  rank)       py rank.rank --all --top "${1:-12}" ;;
+  digest)     py core.daily --digest-only "$@" ;;
   top)        py rank.rank --top "${1:-12}" ;;
   screen)     py screen.screen --loop ;;
   screenus)   py screen.screen --loop --want-market non-usa ;;
   screened)   py screen.screen --report ;;
   llm-eval)   [ $# -ge 1 ] || { echo "  usage: ./jobpilot llm-eval <model> [model...] [--limit N]   (re-screens labelled roles, writes nothing)"; exit 1; }
               py screen.llm_eval "$@" ;;
-  prep)       py tailor.autotailor --limit "${1:-2}" ;;
+  prep|tailor) # ./jobpilot prep [N]  — tailor+build+fill the top N screened roles (default config tailor_limit)
+              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py tailor.autotailor --limit "$1" "${@:2}"
+              else py tailor.autotailor "$@"; fi ;;
   apply)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot apply <url>"; exit 1; }; py tailor.apply "$1" ;;
   fill)       [ $# -ge 1 ] || { echo "  usage: ./jobpilot fill <slug>"; exit 1; }; py fill.autofill --fill "$1" ;;
   dedupe)     py core.dedupe "$@" ;;

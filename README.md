@@ -408,22 +408,30 @@ It is the CLI binary, not an interactive session — it runs at 04:00 with nobod
 Nothing here needs Claude Code. Plain bash:
 
 ```bash
-cd ~/work/docs/sunil_resume_v2
-./jobpilot pipeline  # everything a scheduled scan does, right now, in the foreground
-./jobpilot log       # follow it live
+cd ~/work/projects/jobpilot
+./jobpilot pipeline 10                     # full run now; tailor 10 roles today (default 6)
+./jobpilot pipeline 5 --only screen,tailor # re-run just those stages on what is already in the store
+./jobpilot pipeline --dry-run              # walk every stage, build/fill nothing
+./jobpilot log                             # follow it live
 ```
 
-`now` starts the same systemd service the timer uses, so it runs in the **background** —
-`./jobpilot pipeline` runs it in the foreground; the timer runs the same thing silently — use `./jobpilot log`.
+`./jobpilot pipeline` runs in the foreground; the timer runs the same thing silently — use `./jobpilot log`.
+`./jobpilot stages` prints the stage names `--only` accepts (dedupe, intake, rank, screen,
+tailor, tracker, referrals, digest — always executed in that order, whichever subset you pick).
 
-Smaller pieces when you do not want the whole run:
+Each stage on its own:
 
 ```bash
-./jobpilot scan            # discovery only (no Claude, no cost)
-./jobpilot prep 3          # tailor + fill the top 3
+./jobpilot intake          # pull all boards (no Claude, no cost)
+./jobpilot rank 20         # re-score, show the top 20
+./jobpilot scan            # intake + rank in one go
+./jobpilot screen          # Claude screens until 10 are usable
+./jobpilot prep 3          # tailor + build + fill the top 3   (alias: tailor)
+./jobpilot tracker         # sync the xlsx tracker
+./jobpilot digest          # Telegram review prompt only
 ./jobpilot apply <url>     # one job you found yourself
 ./jobpilot fill <slug>     # re-fill an application that is already built
-./jobpilot submit          # submit whatever you approved
+./jobpilot submit 4        # file at most 4 of the approved items (oldest first); bare `submit` files all
 ./jobpilot queue           # what is waiting
 ./jobpilot link            # the review URL
 ./jobpilot refer <slug>    # referral targets for a submitted application

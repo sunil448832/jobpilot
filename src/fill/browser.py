@@ -500,8 +500,10 @@ def fill_fields(page, resolve, answers, ctx):
         if val is None:
             if f["required"] and not f["value"]:
                 warnings.append(f"REQUIRED and unmapped: '{label}'")
-                miss(label, True, "dropdown" if f.get("options") else "text",
-                     f.get("options"), "no stored answer")
+                opts = f.get("options") or []
+                if ftype == "listbox" and not opts:
+                    opts = listbox_options(page, sel)          # so the phone shows the real choices
+                miss(label, True, "dropdown" if opts else "text", opts, "no stored answer")
             continue
 
         try:
@@ -985,7 +987,7 @@ def listbox_options(frame, sel):
         frame.keyboard.press("Escape")
     except Exception:
         pass
-    return [o for o in out if o]
+    return [o for o in out if o and not re.match(r"^(select one|select\.{0,3}|choose|please select|--+)$", o.strip(), re.I)]
 
 
 def fill_listbox(frame, sel, text):

@@ -1,0 +1,29 @@
+%====================
+% SELECTED PROJECTS
+%====================
+\documentclass[letter,10pt]{article}
+\usepackage{TLCresume}
+\usepackage{hyperref}
+\begin{document}
+
+\subsection{RL Post-Training of Qwen3-4B for Competition Math (GRPO + Verifiable Rewards, Personal) \hfill \href{https://github.com/sunil448832/preference-alignment-grpo}{GitHub Repository}}
+\begin{zitemize}
+\item Implemented \textbf{GRPO} with verifiable rewards from scratch in \textbf{PyTorch} (group-relative advantages, clipped policy gradient, tempered log-probs); \textbf{QLoRA} (NF4, r=16) on \textbf{Qwen3-4B-Instruct}, \textbf{math-verify} reward over 5K competition problems.
+\item RL systems layer: \textbf{colocated vLLM} rollouts with per-step \textbf{LoRA hot-swap} and sleep mode on a single 48\,GB GPU, adaptive resampling of zero-signal prompts (gradient-carrying groups 17\% to 42\%), token-budget micro-batching, checkpoint resume.
+\item On 500 held-out problems after 280 steps (\textasciitilde1 GPU-day): pass rate \textbf{38.6\% to 41.0\%}, solutions \textbf{16\% shorter}, truncations 33\% to 21\%. \textbf{Stack:} PyTorch, vLLM, PEFT, bitsandbytes, HuggingFace Transformers, AWS SageMaker.
+\end{zitemize}
+
+\subsection{QA Bot for PAN Card Queries (RAG) \hfill \href{https://github.com/sunil448832/Natural-Language-Processing/tree/master/RAG(Retrieval\%20Augment\%20Generation)}{GitHub Repository}}
+\begin{zitemize}
+\item \textbf{RAG} pipeline over a PAN-card corpus: \textbf{MiniLM-L6-v2} embeddings, \textbf{FAISS} neural retrieval, a \textbf{quantized Mistral-7B} for answers.
+\item Served as a \textbf{FastAPI} service. \textbf{Stack:} PyTorch, FAISS, HuggingFace, FastAPI.
+\end{zitemize}
+
+\subsection{Vision-Language Model Fine-tuning – Image Captioning (Freelance) \hfill \href{https://huggingface.co/sunil448832/blip-model}{HuggingFace Model}}
+\begin{zitemize}
+\item Fine-tuned \textbf{LLaVA 1.6 (Mistral-7B)} with \textbf{LoRA} (r=128, alpha=256) via \textbf{DeepSpeed ZeRO-3} on a single 24\,GB GPU for domain-specific image captioning, then benchmarked against \textbf{CLIP} similarity and a fine-tuned \textbf{BLIP} baseline.
+\item Built \textbf{data-prep, training and eval} pipelines with \textbf{W\&B} tracking; published the fine-tuned \textbf{BLIP} to the \textbf{HuggingFace Hub}.
+\item \textbf{Stack:} PyTorch, HuggingFace Transformers, LLaVA, DeepSpeed, LoRA, CLIP, BLIP, W\&B.
+\end{zitemize}
+
+\end{document}

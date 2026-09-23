@@ -70,6 +70,8 @@ def detect_portal(url):
 
 def _get(url, as_json=False):
     r = requests.get(url, headers={"User-Agent": UA, "Accept": "*/*"}, timeout=TIMEOUT)
+    if r.status_code in (404, 410):
+        raise SystemExit(f"EXPIRED: HTTP {r.status_code} — {url}")
     r.raise_for_status()
     return r.json() if as_json else r.text
 
@@ -238,6 +240,14 @@ def fetch_jd(url):
         print(f"  [fetch] HTML scrape -> {len(jd['text'])} chars")
     jd["portal"] = portal
     jd["url"] = url
+    # A closed posting must not become a resume. TII's page said "the job you are
+    # trying to apply for has been filled" and was scaffolded, built and scored
+    # (6.6%) before anyone noticed.
+    dead = re.search(r"has been filled|no longer accepting applications|no longer available|"
+                     r"position (has been|is) closed|this job is closed|job (has )?expired|"
+                     r"posting (has been )?removed|page not found", jd["text"][:3000], re.I)
+    if dead and len(jd["text"]) < 1500:
+        raise SystemExit(f"EXPIRED: posting is closed ({dead.group(0)!r}) — {url}")
     if len(jd["text"]) < 400:
         print("  [warn] JD text looks short — the page may be JS-rendered.")
         print("         Paste the full JD into JD.md by hand for an accurate score.")

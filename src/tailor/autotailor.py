@@ -301,9 +301,15 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         (floor, max(limit * 8, 60))).fetchall()
     held = {_cokey(c) for c in (cfg("apply.hold_companies", []) or [])}
     quota = quota_state()
-    out, seen = [], {}
+    out, seen, roles = [], {}, set()
     for k, co, title, loc, url, mk, sc, fit in rows:
         ck = _cokey(co)
+        # One role, several cities = several rows. Two workers scaffolding the same
+        # folder collided on Culture Amp; pick a role once.
+        role = (ck, title.strip().lower()[:40])
+        if role in roles:
+            continue
+        roles.add(role)
         if ck in held:
             continue                       # deliberately paused, see config.yaml
         u, mx = quota.get(ck, (0, 0))
@@ -505,7 +511,15 @@ def process_role(p, cli, tag=""):
     ok, out = run([sys.executable, "-m", "jobpilot.tailor.apply",
                    p["url"], "--company", p["slug"], "--market", p["market"]], timeout=300)
     if not ok:
-        log(f"  {tag}scaffold FAILED: {out[-160:]}")
+        if "EXPIRED:" in out:
+            con = sqlite3.connect(DB, timeout=30)
+            con.execute("UPDATE jobs SET status='expired' WHERE company=? AND lower(title)=lower(?)",
+                        (p["company"], p["title"]))
+            con.commit(); con.close()
+            shutil.rmtree(os.path.join(APPLICATIONS, p["slug"]), ignore_errors=True)
+            log(f"  {tag}expired — {out[out.index('EXPIRED:'):][:120].strip()}")
+        else:
+            log(f"  {tag}scaffold FAILED: {out[-160:]}")
         return
 
     # Build and score FIRST. A role the untailored resume already matches

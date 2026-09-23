@@ -244,28 +244,33 @@ def from_ashby(slug):
 
 def from_smartrecruiters(slug):
     d = get(f"https://api.smartrecruiters.com/v1/companies/{slug}/postings?limit=100")
+    posts = []
     for j in d.get("content", []):
         loc = j.get("location") or {}
         where = ", ".join(x for x in (loc.get("city"), loc.get("country")) if x)
         if loc.get("remote"):
             where += " Remote"
-        detail = ""
+        url = ((j.get("ref") or "").replace("api.smartrecruiters.com/v1", "jobs.smartrecruiters.com")
+               or f"https://jobs.smartrecruiters.com/{slug}/{j['id']}")
+        posts.append((j, where, url))
+
+    def detail(item):
+        j, where, url = item
+        if url in KNOWN_JD:                       # fetched on an earlier scan
+            return KNOWN_JD[url]
+        if not _want(j.get("name", "")):          # never going to be kept: no request
+            return ""
         try:
-            full = get(f"https://api.smartrecruiters.com/v1/companies/{slug}"
-                       f"/postings/{j['id']}")
+            full = get(f"https://api.smartrecruiters.com/v1/companies/{slug}/postings/{j['id']}")
             secs = (full.get("jobAd") or {}).get("sections") or {}
-            detail = " ".join((secs.get(k) or {}).get("text", "")
-                              for k in ("companyDescription", "jobDescription",
-                                        "qualifications"))
+            return _html_to_text(" ".join((secs.get(k) or {}).get("text", "")
+                                          for k in ("companyDescription", "jobDescription", "qualifications")))[:12000]
         except Exception:
-            pass
+            return ""
+    for (j, where, url), jd in zip(posts, _detail_pool(posts, detail)):
         yield {"source": "smartrecruiters", "board": slug,
                "company": (j.get("company") or {}).get("name") or slug.title(),
-               "title": j.get("name", ""), "location": where,
-               "url": (j.get("ref") or "").replace("api.smartrecruiters.com/v1",
-                                                   "jobs.smartrecruiters.com")
-                      or f"https://jobs.smartrecruiters.com/{slug}/{j['id']}",
-               "jd": _html_to_text(detail)[:12000]}
+               "title": j.get("name", ""), "location": where, "url": url, "jd": jd}
 
 
 def from_workable(slug):
@@ -297,6 +302,32 @@ def _html_to_text(markup):
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(_h.unescape(markup or ""), "html.parser")
     return re.sub(r"\n{3,}", "\n\n", soup.get_text("\n")).strip()
+
+
+# Populated by pull() before fetching: url -> stored JD. The two fetchers that
+# need one extra request PER posting (SmartRecruiters, Phenom) consult this so a
+# description is fetched once, ever, not every eight hours.
+KNOWN_JD = {}
+_TARGETS = None
+
+
+def _want(title):
+    """Title gate applied BEFORE any per-posting detail request. The pipeline
+    keeps ~2% of postings by title; fetching descriptions for the other 98% was
+    the entire cost of intake (Philips: 200 pages, 311 s, for zero matches)."""
+    global _TARGETS
+    if _TARGETS is None:
+        _TARGETS = load_targets()
+    return title_ok(title or "", _TARGETS)
+
+
+def _detail_pool(items, fn, workers=6):
+    """Run the remaining detail fetches for one board concurrently."""
+    from concurrent.futures import ThreadPoolExecutor
+    if not items:
+        return []
+    with ThreadPoolExecutor(max_workers=min(workers, len(items))) as ex:
+        return list(ex.map(fn, items))
 
 
 def phenom_full_jd(url):
@@ -333,6 +364,7 @@ def from_phenom(entry):
             break
         if not jobs:
             break
+        entries = []
         for j in jobs:
             # Phenom sites differ: some key job pages off jobId under the site's
             # own locale path (TII: /us/en/job/5398/Title), others off jobSeqNo
@@ -347,22 +379,32 @@ def from_phenom(entry):
             if j.get("jobSeqNo"):
                 cands.append(f"{b}/global/en/job/{j['jobSeqNo']}/{slug}")
             url = next((c for c in cands if c), "")
-            # The search API returns only a ~300-char teaser, which systematically
-            # under-scores these roles against boards that return the full text.
-            # The job page carries the whole description in JSON-LD, so take that.
-            jd = (j.get("descriptionTeaser") or "")
+            entries.append((j, cands, url))
+        # The search API returns only a ~300-char teaser, which systematically
+        # under-scores these roles against boards that return the full text. The
+        # job page carries the whole description in JSON-LD — but only fetch it
+        # for postings the title gate would keep, and never twice for one URL.
+        def detail(item):
+            j, cands, url = item
+            teaser = (j.get("descriptionTeaser") or "")
+            for c in cands:
+                if c in KNOWN_JD:
+                    return KNOWN_JD[c], c
+            if not _want(j.get("title", "")):
+                return teaser, url
             for cand in [c for c in cands if c]:
                 full = phenom_full_jd(cand)
-                if len(full) > len(jd):
-                    jd, url = full, cand
-                    break
+                if len(full) > len(teaser):
+                    return full, cand
+            return teaser, url
+        for (j, cands, url), (jd, url2) in zip(entries, _detail_pool(entries, detail)):
             yield {"source": "phenom", "board": company,
                    "company": (j.get("brand") or company).title(),
                    "title": j.get("title", ""),
                    "location": j.get("location") or j.get("cityStateCountry")
                                or j.get("cityState") or j.get("country", ""),
-                   "url": url,
-                   "jd": jd[:12000]}
+                   "url": url2 or url,
+                   "jd": (jd or "")[:12000]}
         if len(jobs) < 100:
             break
 
@@ -487,6 +529,8 @@ def pull(workers=None):
     boards = load_boards()
     con = db()
     seen_before = {r[0] for r in con.execute("SELECT key FROM jobs")}
+    KNOWN_JD.clear()
+    KNOWN_JD.update({u: j for u, j in con.execute("SELECT url, jd FROM jobs WHERE jd IS NOT NULL AND url != ''")})
     fetchers = []
     for slug in [b["slug"] for b in boards.get("greenhouse", [])]:
         fetchers.append((from_greenhouse, slug))
@@ -555,6 +599,22 @@ def pull(workers=None):
         raw += 1
         rows.append(job)
 
+    # EXPIRY. A posting that has left its board is filled or withdrawn. Until now
+    # it stayed 'new' forever: a TII role from 7 Sep was picked first on 23 Sep
+    # and scaffolded from a page saying "the job you are trying to apply for has
+    # been filled". Only boards that answered with postings expire anything —
+    # a failed or empty fetch must not wipe a board.
+    live_by_board = {}
+    for job in rows:
+        live_by_board.setdefault(job["board"], set()).add(job["url"])
+    expired = 0
+    for board, urls in live_by_board.items():
+        for (key, url) in con.execute("SELECT key, url FROM jobs WHERE board=? AND status='new'", (board,)).fetchall():
+            if url and url not in urls:
+                con.execute("UPDATE jobs SET status='expired' WHERE key=?", (key,)); expired += 1
+    if expired:
+        print(f"    expired {expired} posting(s) no longer on their board")
+
     for job in rows:
         if not title_ok(job["title"], t):
             continue
@@ -594,7 +654,8 @@ def pull(workers=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--discover", action="store_true")
-    ap.add_argument("--workers", type=int, default=12)
+    ap.add_argument("--workers", type=int, default=None,
+                    help=f"parallel board fetches (default discovery.workers = {cfg('discovery.workers', 12)})")
     ap.add_argument("--new", action="store_true")
     ap.add_argument("--stats", action="store_true")
     a = ap.parse_args()

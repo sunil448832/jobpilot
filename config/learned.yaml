@@ -538,16 +538,6 @@ answers:
   - code
   answer: 'Yes'
   source: answered by Sunil on the Adyen form, 2026-09-23
-- match: do you have at least 3 years of product or gtm analytics experience?
-  keywords:
-  - least
-  - years
-  - product
-  - gtm
-  - analytics
-  - experience
-  answer: 'No'
-  source: answered by Sunil on the Fin form, 2026-09-23
 - match: please email me about future job openings
   keywords:
   - email

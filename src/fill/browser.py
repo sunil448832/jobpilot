@@ -279,6 +279,71 @@ def resume_path(answers, company_slug, portal):
     return fallback if os.path.isfile(fallback) else None
 
 
+def wait_dom_stable(page, max_s=30, quiet=3):
+    """Block until the form has stopped re-rendering for `quiet` seconds.
+
+    Both Ashby and Greenhouse rebuild the form after a resume upload, a few
+    seconds after their "parsing" text disappears. Every control tagged before
+    that rebuild is gone afterwards, which is how one run filled 16 fields and
+    then could not find a single one of the rest."""
+    sig = None
+    still = 0
+    for _ in range(max_s):
+        page.wait_for_timeout(1000)
+        try:
+            cur = page.evaluate("() => document.querySelectorAll('[data-jobbot-idx]').length"
+                                " + '/' + document.querySelectorAll('input,textarea,select,button').length"
+                                " + '/' + (document.body.innerText.length)")
+        except Exception:
+            return
+        if cur == sig:
+            still += 1
+            if still >= quiet:
+                return
+        else:
+            sig, still = cur, 0
+
+
+def _alive(page, idx):
+    try:
+        return page.locator(f'[data-jobbot-idx="{idx}"]').count() > 0
+    except Exception:
+        return False
+
+
+def _key(f):
+    return (f["type"], norm(f.get("label") or ""), norm(f.get("group_label") or ""),
+            (f.get("value") or "") if f["type"] in ("radio", "checkbox", "buttongroup") else "")
+
+
+def _refind(page, f, everyone=None):
+    """Re-tag the (rebuilt) form and return the control that matches `f`.
+
+    Re-tagging renumbers EVERY control, so when `everyone` (the list the caller
+    is still walking) is given, all of them get their new index at once — a
+    single re-found field next to a list of stale ones is how a LinkedIn box
+    once received "Yes"."""
+    try:
+        fresh = page.evaluate(EXTRACT_JS)
+    except Exception:
+        return None
+    by_key = {}
+    by_id = {}
+    for g in fresh:
+        by_key.setdefault(_key(g), g)
+        if g.get("id"):
+            by_id.setdefault(g["id"], g)
+
+    def match(x):
+        return by_key.get(_key(x)) or (by_id.get(x["id"]) if x.get("id") else None)
+
+    for x in (everyone or []):
+        g = match(x)
+        if g:
+            x["idx"] = g["idx"]
+    return match(f)
+
+
 def fill_fields(page, resolve, answers, ctx):
     """Fill everything mappable. `page` may be a Page or a Frame."""
     fields = page.evaluate(EXTRACT_JS)
@@ -328,7 +393,10 @@ def fill_fields(page, resolve, answers, ctx):
             if "parsing your resume" not in body and "autofilling" not in body:
                 break
             page.wait_for_timeout(1000)
-        page.wait_for_timeout(1500)             # let the rewrite settle
+        # Ashby announces the rewrite ("Autofill completed!") a few seconds
+        # AFTER the parsing text goes away; Greenhouse re-renders silently.
+        # Wait for the tagged controls to stop changing before touching any.
+        wait_dom_stable(page)
         # The DOM was rewritten, so the old indices are stale — re-extract.
         fields = page.evaluate(EXTRACT_JS)
 
@@ -340,11 +408,22 @@ def fill_fields(page, resolve, answers, ctx):
 
         if ftype == "file":
             continue                            # handled in phase 1
+        if ftype == "search" and not f["required"]:
+            continue                            # a widget's own filter box (phone country picker)
 
         if ftype in ("radio", "checkbox", "buttongroup"):
             radio_groups.setdefault(f["name"] or f.get("group_label") or label,
                                     []).append(f)
             continue
+
+        # A re-render between two fields drops every tag; find this one again
+        # by what it IS rather than giving up on the rest of the form.
+        if not _alive(page, f["idx"]):
+            g = _refind(page, f, everyone=fields)
+            if not g:
+                warnings.append(f"'{label[:60]}' vanished after a re-render — not filled")
+                continue
+            sel = f'[data-jobbot-idx="{f["idx"]}"]'
 
         val = resolve(label)
         if val is None:
@@ -376,7 +455,8 @@ def fill_fields(page, resolve, answers, ctx):
                     ok, how = fill_verified(page, f["idx"], text, is_date,
                                             combobox=bool(f.get("combobox")),
                                             rs=bool(f.get("rs")),
-                                            textarea=f.get("tag") == "textarea")
+                                            textarea=f.get("tag") == "textarea",
+                                            stable_id=f.get("id") or "")
                     if ok:
                         filled[label] = str(text)
                     else:
@@ -421,6 +501,11 @@ def fill_fields(page, resolve, answers, ctx):
             if (want in ol or ol in want or want_core in ol
                     or (want_core and ol.startswith(want_core[:40]))
                     or want == (o["value"] or "").lower()):
+                if not _alive(page, o["idx"]):
+                    g = _refind(page, o, everyone=[x for grp in radio_groups.values() for x in grp])
+                    if not g:
+                        warnings.append(f"'{question[:60]}' vanished after a re-render — not ticked")
+                        break
                 if o["type"] == "buttongroup":
                     ok, how = click_choice(page, o["idx"])
                 else:
@@ -562,7 +647,8 @@ def rs_value(frame, sel):
         return ""
 
 
-def fill_verified(frame, idx, text, is_date=False, combobox=False, rs=False, textarea=False):
+def fill_verified(frame, idx, text, is_date=False, combobox=False, rs=False, textarea=False,
+                  stable_id=""):
     """Type a value and READ IT BACK. A fill that reports success on a hidden
     input while the visible combobox stays empty is how required fields ended up
     blank on a form the code called complete. Escalate until the value sticks."""
@@ -575,6 +661,11 @@ def fill_verified(frame, idx, text, is_date=False, combobox=False, rs=False, tex
             return ""
 
     if rs:
+        # react-select swaps its <input> node on focus, taking our tag with it
+        # ("Failed to find element matching selector" half-way through). The
+        # id survives the swap, so address the field by that.
+        if stable_id:
+            sel = f'[id="{stable_id}"]'
         return fill_react_select(frame, sel, text)
 
     # A React typeahead ignores a programmatic fill: el.value gets set, the
@@ -649,40 +740,68 @@ def fill_react_select(frame, sel, text):
     """Greenhouse (react-select): open, type to filter, pick the option, then
     read the rendered single-value — el.value is always '' after a pick."""
     want_full = str(text).strip().lower()
-    want = want_full.split(",")[0].strip()
-    try:
-        click_field(frame, sel)
-        frame.type(sel, str(text).split(",")[0].strip(), delay=45)
-        frame.wait_for_timeout(900)
-        picked = False
-        for osel in ('.select__option', '[role="option"]', '[class*="option"]'):
+    # A stored answer is often a sentence ("Yes. I post-trained Qwen3-4B …")
+    # for what is a Yes/No dropdown. Try the full text, the first clause,
+    # then the bare yes/no it opens with.
+    cands = [want_full, want_full.split(",")[0].strip()]
+    m = re.match(r"^(yes|no)\b", want_full)
+    if m:
+        cands.append(m.group(1))
+    seen, order = set(), []
+    for c in cands:
+        if c and c not in seen:
+            seen.add(c); order.append(c)
+    def visible_options():
+        found = []
+        for osel in ('.select__option', '[role="option"]'):
             try:
                 opts = frame.locator(osel)
-                n = min(opts.count(), 15)
-                for i in range(n):
+                for i in range(min(opts.count(), 20)):
                     o = opts.nth(i)
-                    if not o.is_visible(timeout=300):
-                        continue
-                    ot = (o.inner_text() or "").strip().lower()
-                    if ot == want_full or ot == want or want in ot:
-                        o.click(timeout=3000)
-                        picked = True
-                        break
+                    if o.is_visible(timeout=200):
+                        found.append((o, (o.inner_text() or "").strip().lower()))
             except Exception:
                 continue
-            if picked:
+            if found:
                 break
-        if not picked:
-            frame.press(sel, "ArrowDown")
-            frame.wait_for_timeout(300)
-            frame.press(sel, "Enter")
+        return found
+
+    try:
+        click_field(frame, sel)
         frame.wait_for_timeout(500)
-        shown = rs_value(frame, sel)
-        if shown:
-            if shown.lower() == want or shown.lower() == want_full or want in shown.lower():
-                return True, "react-select"
-            return True, f"react-select (shows {shown[:30]!r})"
-        return False, "react-select: nothing selected"
+        # A Yes/No dropdown given a sentence that does not start with yes/no is
+        # a question nobody has answered yet. Never guess it.
+        menu = {t for _, t in visible_options()}
+        if menu and menu <= {"yes", "no", "n/a", "not applicable", "prefer not to say"} and not m:
+            frame.press(sel, "Escape")
+            return False, "Yes/No dropdown, stored answer is not a yes/no — needs your answer"
+        for want in order:
+            frame.press(sel, "Control+A")
+            frame.press(sel, "Backspace")
+            frame.type(sel, want[:60], delay=40)
+            frame.wait_for_timeout(800)
+            vis = visible_options()
+            # Exact first, then prefix, then substring — "India" typed into the
+            # phone-country picker once landed on "British Indian Ocean
+            # Territory (+246)" because that sorts first.
+            ranked = ([o for o in vis if o[1] == want]
+                      + [o for o in vis if o[1].startswith(want) and o[1] != want]
+                      + [o for o in vis if want in o[1] and not o[1].startswith(want)])
+            for o, ot in ranked:
+                try:
+                    o.click(timeout=3000)
+                except Exception:
+                    continue
+                frame.wait_for_timeout(400)
+                shown = rs_value(frame, sel)
+                if shown:
+                    return True, f"react-select ({shown[:30]})"
+        # Nothing matched by text. Taking whatever the menu highlights would be
+        # a guess on a form that goes out under his name, so leave it empty.
+        frame.press(sel, "Control+A")
+        frame.press(sel, "Backspace")
+        frame.press(sel, "Escape")
+        return False, f"react-select: no option matched {order[-1][:30]!r}"
     except Exception as e:
         return False, str(e)[:60]
 
@@ -722,8 +841,17 @@ def robust_check(frame, idx):
             return True, "label-click"
     except Exception:
         pass
+    # A styled overlay that swallows the normal click still takes a forced one.
+    try:
+        frame.eval_on_selector(sel, "el => el.scrollIntoView({block: 'center'})")
+        frame.click(sel, timeout=3000, force=True)
+        if frame.eval_on_selector(sel, "el => !!(el.checked || el.getAttribute('aria-checked') === 'true')"):
+            return True, "force-click"
+    except Exception:
+        pass
     try:
         frame.eval_on_selector(sel, """el => {
+            if (!(el instanceof HTMLInputElement)) { el.click(); return; }
             const set = Object.getOwnPropertyDescriptor(
                 HTMLInputElement.prototype, 'checked').set;
             set.call(el, true);
@@ -908,10 +1036,10 @@ def submit_approved(answers, one=None, limit=None):
 
     items = []
     for fn in sorted(os.listdir(QUEUE_DIR)):
-        if not fn.endswith(".json"):
+        if not fn.endswith(".json") or fn.startswith("_"):   # _submission-*.json are form payloads
             continue
         it = json.load(open(os.path.join(QUEUE_DIR, fn)))
-        if one and it["id"] != one:
+        if one and it.get("id") != one:
             continue
         if it.get("status") != "approved" or it.get("submitted_at"):
             continue
@@ -956,7 +1084,15 @@ def submit_approved(answers, one=None, limit=None):
                 page.goto(it["url"], wait_until="domcontentloaded", timeout=60000)
                 page.wait_for_timeout(4000)
                 target, _ = pick_form_frame(page)
-                fill_fields(target, resolve, answers, ctx)
+                # Keep this pass's own fill report: the pass-1 warnings on the
+                # item describe a different page load, and debugging a failed
+                # submit from them sent the fixes to the wrong place once.
+                s_filled, s_warn = fill_fields(target, resolve, answers, ctx)
+                it["submit_fill"] = {"filled": len(s_filled), "warnings": s_warn,
+                                     "at": dt.datetime.now().isoformat(timespec="seconds")}
+                print(f"    filled {len(s_filled)} fields, {len(s_warn)} warnings")
+                for w in s_warn:
+                    print(f"      ! {w[:160]}")
                 page.wait_for_timeout(800)
 
                 clicked = False

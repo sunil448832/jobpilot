@@ -180,6 +180,12 @@ def llm_flags(step):
     return out
 
 
+def turn_limit():
+    """--max-turns for the Claude sessions in exploration and submit (platform
+    learning, hooks refine, submit resolve, answer drafting): llm.max_turns."""
+    return ["--max-turns", str(int(cfg("llm.max_turns", 20)))]
+
+
 def claude_bin():
     # systemd user services get a minimal PATH, so an npm --prefix install in
     # the home directory is invisible to shutil.which(). Check the real locations.
@@ -484,6 +490,15 @@ def newest_queue_file(slug):
     return fs[-1] if fs else None
 
 
+def set_status(qfile, status):
+    try:
+        d = json.load(open(qfile))
+        d["status"] = status
+        json.dump(d, open(qfile, "w"), indent=2)
+    except (OSError, ValueError):
+        pass
+
+
 def open_question_count(qfile):
     import json
     try:
@@ -498,7 +513,7 @@ def draft_questions(company, qfile, cli):
     rel = os.path.abspath(qfile)
     cmd = [cli, "-p", Q_PROMPT.format(company=company, qfile=rel, appdir=os.path.join(APPLICATIONS, company),
                                       policy=policy_sections([1, 5, 6, 8]), jd=jd_text(company)),
-           *llm_flags("questions"),
+           *llm_flags("questions"), *turn_limit(),
            "--add-dir", TRACKING, "--add-dir", TOOL,
            "--allowedTools", ALLOWED_TOOLS,
            "--output-format", "text"]
@@ -589,7 +604,8 @@ def process_role(p, cli, tag=""):
         ok, out = run([sys.executable, "-m", "jobpilot.fill.autofill",
                        "--fill", p["slug"]], timeout=900)
     if not ok and "not supported for autofill" in out:
-        # Phenom / Workday / unknown: hand him the content instead of dropping it.
+        # No form the walker could find (LinkedIn, an account wall, a JS shell):
+        # hand him the content instead of dropping it.
         from jobpilot.fill import manual
         m = re.search(r"Portal '([^']+)'", out)
         qfile = manual.create(p, m.group(1) if m else "unknown")
@@ -601,11 +617,22 @@ def process_role(p, cli, tag=""):
         log(f"  {tag}fill: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
 
     # A question with no drafted answers makes him type on a phone, which is
-    # exactly what this system exists to avoid (POLICY.md section 5).
+    # exactly what this system exists to avoid (POLICY.md section 5). The item
+    # is `preparing` while the answers are drafted: the review page does not
+    # list it, so it never shows up half-ready (Berkadia was opened in the two
+    # minutes between the item and its drafts).
     qfile = newest_queue_file(p["slug"])
     if qfile and open_question_count(qfile):
-        ok2, out2 = draft_questions(p["slug"], qfile, cli)
-        log(f"  {tag}questions: {'drafted' if ok2 else 'FAILED — ' + out2[-100:]}")
+        try:
+            before = json.load(open(qfile)).get("status") or "needs_input"
+        except (OSError, ValueError):
+            before = "needs_input"
+        set_status(qfile, "preparing")
+        try:
+            ok2, out2 = draft_questions(p["slug"], qfile, cli)
+            log(f"  {tag}questions: {'drafted' if ok2 else 'FAILED — ' + out2[-100:]}")
+        finally:
+            set_status(qfile, before)           # a failed exploration stays failed
     con = sqlite3.connect(DB, timeout=30)
     con.execute("UPDATE jobs SET status='queued' WHERE key=?", (p["key"],))
     con.commit(); con.close()

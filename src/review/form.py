@@ -95,6 +95,7 @@ h1,h2,h3{font-family:"Bricolage Grotesque","Source Sans 3",sans-serif;margin:0;t
 .q-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--sunk);color:var(--muted);font-size:11.5px;font-weight:700;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;margin-top:1px}
 .q.done .q-n{background:var(--ok);color:#fff}
 .q-label{font-size:14.5px;font-weight:600;line-height:1.42}
+.q-note{font-size:12.5px;font-weight:400;color:var(--muted);margin-top:3px}
 .req{color:var(--warn);font-weight:700}
 .opts{display:flex;flex-direction:column}
 .opt{display:flex;gap:11px;align-items:flex-start;padding:13px 17px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .12s}
@@ -219,7 +220,7 @@ $("#questions").innerHTML += qs.map((q, i) => `
   <section class="q" id="q${i}">
     <div class="q-head">
       <span class="q-n">${i + 1}</span>
-      <span class="q-label">${esc(q.label)}${q.required ? ' <span class="req">*</span>' : ""}</span>
+      <span class="q-label">${esc(q.label)}${q.required ? ' <span class="req">*</span>' : ""}${q.note ? `<div class="q-note">${esc(q.note)}</div>` : ""}</span>
     </div>
     <div class="opts">
       ${(q.options || []).map((o, j) => `
@@ -369,7 +370,7 @@ def build(item):
         "resume": item.get("resume"), "fields": item.get("fields", {}),
         "questions": [
             {"qid": q["qid"], "label": q["label"], "required": q.get("required", False),
-             "options": q.get("options", [])}
+             "options": q.get("options", []), "note": q.get("note") or ""}
             for q in item.get("questions", []) if q.get("status") != "answered"
         ],
         "flags": flags,

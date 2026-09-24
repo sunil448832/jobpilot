@@ -50,6 +50,36 @@ EQUIV = [
 ]
 
 
+def _scalars(o):
+    """Every scalar VALUE in a YAML tree (keys skipped)."""
+    if isinstance(o, dict):
+        for v in o.values():
+            yield from _scalars(v)
+    elif isinstance(o, list):
+        for v in o:
+            yield from _scalars(v)
+    elif o is not None and str(o).strip():
+        yield str(o)
+
+
+def base_resume_text():
+    """The base resume's own sections — the only place a skill is proven."""
+    out = []
+    d = os.path.join(RESUME, "sections")
+    for fn in sorted(os.listdir(d)):
+        if fn.endswith(".tex"):
+            try:
+                out.append(open(os.path.join(d, fn), encoding="utf-8").read())
+            except OSError:
+                pass
+    return A.normalize(A.strip_markup("\n".join(out)))
+
+
+def employer_of(jd_text):
+    m = re.search(r"\*\*Company:\*\*\s*(.+)", jd_text or "")
+    return (m.group(1).strip() if m else "").lower()
+
+
 def truth_vocabulary():
     """Everything Sunil can truthfully claim, from his own base resume."""
     text = []
@@ -60,10 +90,23 @@ def truth_vocabulary():
                     text.append(open(os.path.join(d, fn), encoding="utf-8").read())
                 except Exception:
                     pass
-    for extra in ("answers.yaml", "learned.yaml"):
-        p = os.path.join(CONFIG, extra)
-        if os.path.isfile(p):
-            text.append(open(p, encoding="utf-8").read())
+    # answers.yaml and learned.yaml: his ANSWERS only. Reading the raw files
+    # also took in the questions they answer — "stay up to date with MongoDB
+    # culture?" — and a keyword list, so an employer's name became a "true"
+    # skill and "Mongodb" was written onto a resume. Keys, questions, keywords
+    # and source notes are not facts about him.
+    import yaml
+    try:
+        a = yaml.safe_load(open(os.path.join(CONFIG, "answers.yaml"))) or {}
+        text.append("\n".join(_scalars(a)))
+    except Exception:
+        pass
+    try:
+        l = yaml.safe_load(open(os.path.join(CONFIG, "learned.yaml"))) or []
+        rows = l if isinstance(l, list) else (l.get("answers") or l.get("learned") or [])
+        text.append("\n".join(str(r.get("answer")) for r in rows if isinstance(r, dict) and r.get("answer")))
+    except Exception:
+        pass
     # targets.yaml: only the buckets that are vetted TRUE. The `interest` bucket
     # (gaps Sunil ticked to rank for) is deliberately excluded — reading the raw
     # file would make a ticked keyword look "already on the resume" and SAFE to
@@ -164,12 +207,20 @@ def analyse(company):
     truth = truth_vocabulary()
     resume_norm = A.normalize(A.strip_markup(resume))
     title = r.get("title") or ""
+    # The employer's own name (MongoDB, Databricks, Snowflake…) is also a
+    # product the JD repeats. It is his skill only if the base resume says so.
+    employer = employer_of(jd)
+    base = base_resume_text()
 
     safe, unsafe = [], []
     for item in r.get("missing", []):
         term = item[0] if isinstance(item, (list, tuple)) else item
         cat = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else ""
         if not worth_adding(term, cat):
+            continue
+        tl = (term or "").lower().strip()
+        if employer and tl and (tl in employer or employer in tl) and tl not in base:
+            unsafe.append((term, cat, "the employer's name — his skill only if the base resume says so"))
             continue
         ok, why = is_safe(term, truth, resume_norm, title)
         (safe if ok else unsafe).append((term, cat, why))

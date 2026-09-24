@@ -37,6 +37,25 @@ llm:
   screen:    {model: sonnet, effort: low}
   tailor:    {model: sonnet, effort: medium}
   questions: {model: sonnet, effort: low}
+  # platform  writes fill code when an exploration did not reach the last page:
+  #           fill/platforms/<id>.py for a platform nobody has described, or
+  #           applications/<slug>/hooks.py for one form on a known platform.
+  #           Tested against the real form (pass 1 only: the browser guard makes
+  #           submit-looking buttons inert). Rare, so quality over price.
+  platform:  {model: sonnet, effort: medium}
+  # submit    only when an approved application's automatic submit did not go
+  #           through: drives a live submit session to fix and file it, with
+  #           approved values only and a capped number of Submit presses.
+  submit:    {model: sonnet, effort: medium}
+  # explore   EVERY exploration (fill.llm_explore): walks the live form with the
+  #           existing driver + the company's hooks; edits hooks only when a page
+  #           is stuck. Mostly status/next/finish, so a smooth form is a few turns.
+  explore:   {model: sonnet, effort: low}
+  # Turn cap (claude --max-turns) for every Claude session in exploration and
+  # submit: platform learning, application-hooks refine, submit resolve, answer
+  # drafting. One turn is one tool call; a session that hits the cap stops, and
+  # its work is verified (or parked) exactly as if it had finished.
+  max_turns: 20
 
 pipeline:
   # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
@@ -179,13 +198,50 @@ server:
   # Left blank = detected from `tailscale status` at runtime.
   tailscale_host: ""
 
+fill:
+  # A platform with no module under src/fill/platforms/ is explored generically.
+  # If that walk reaches the last page, the observed route is written as the
+  # platform's module. If not — or if a KNOWN platform's form gets stuck — a
+  # Claude session writes and tests the code (llm.platform): the platform module
+  # for a new platform, this application's hooks.py for a known one. Kept
+  # only when the tool's own re-exploration reaches the last page. Off: a stuck
+  # exploration is queued as it is, with its warnings.
+  # Every exploration runs as a Claude session on the live form (llm.explore).
+  # false = explore by code alone, and use Claude only when that gets stuck.
+  llm_explore: true
+  session_start_s: 600   # sign-in + page 1 can take minutes on Workday
+  explore_timeout_s: 2400
+  learn_platforms: true
+  learn_timeout_s: 1800
+  # Submit is two parts: the code replay files it; only if that did not go
+  # through does a Claude session (llm.submit) take the live form, fix it and
+  # file it. It may press Submit at most resolve_presses times, and can only
+  # put values into the form that are already approved for the application.
+  resolve_submit: true
+  resolve_presses: 2
+  resolve_timeout_s: 1500
+
 browser:
+  # A multi-page form is walked page by page; this caps how far.
+  max_pages: 12
   # Embedded ATS iframes attach late and at variable speed; a fixed sleep here
   # silently fell back to the site nav and filled nothing.
   form_frame_timeout_ms: 20000
   resume_parse_wait_s: 30
-  submit_poll_s: 12
+  submit_poll_s: 30      # how long to wait for the portal's confirmation after Submit
   headless: false       # never headless: portals treat it differently
+  # One-off pauses of 1.2 s or more are multiplied by this (1.0 = the old
+  # timings). Polling waits are not: they end as soon as the page is ready.
+  pace: 0.5
+  type_delay_ms: 25     # per key when typing into typeaheads / date boxes (was 45)
+  # Where the (real, headed) Chrome window goes. It used to open on the desktop
+  # and cover whatever was being read.
+  #   auto       Xvfb virtual display when installed (apt install xvfb), else offscreen
+  #   virtual    Xvfb only (invisible; screenshots still work)
+  #   offscreen  a real window parked far outside the screen
+  #   own        on the desktop, to watch it work
+  display: auto
+  virtual_display: 99   # the Xvfb display number
 
 schedule:
   # Documentation of the systemd timers. Editing this does NOT move them —

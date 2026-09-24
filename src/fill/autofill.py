@@ -43,7 +43,8 @@ APPLICATIONS_DIR = APPLICATIONS
 QUEUE_DIR = os.path.join(DATA, "queue")
 PROFILE_DIR = os.path.expanduser("~/.config/jobbot/chrome-profile")
 
-SUPPORTED = {"greenhouse", "lever", "ashby", "workday"}
+from jobpilot.core.config import cfg  # noqa: E402
+from jobpilot.fill import platforms  # noqa: E402   what is known per platform; unknown ones are learned
 
 
 # --------------------------------------------------------------------------
@@ -86,10 +87,33 @@ MARKET_HINTS = [
 ]
 
 
+def market_hints():
+    """MARKET_HINTS plus every market's country and hubs from targets.yaml, so a
+    city the research already lists (Munich, Dublin, Zurich) finds its salary
+    block. Munich once fell through to the USD default on a German form."""
+    out = [(m, list(h)) for m, h in MARKET_HINTS]
+    try:
+        t = yaml.safe_load(open(os.path.join(CONFIG, "targets.yaml"))) or {}
+        for m in t.get("markets") or []:
+            if m.get("id") == "remote_india":
+                continue
+            hints = [str(m.get("country") or "").lower()] + [str(h).lower() for h in (m.get("hubs") or [])]
+            hints = [h for h in hints if len(h) > 3]
+            row = next((r for r in out if r[0] == m["id"]), None)
+            if row:
+                row[1].extend(h for h in hints if h not in row[1])
+            else:
+                out.append((m["id"], hints))
+    except Exception:
+        pass
+    return out
+
+
 def detect_market(location, jd_text=""):
     """Which salary block applies. The LOCATION decides; the JD is a fallback only."""
     loc = (location or "").lower()
-    for market, hints in MARKET_HINTS:
+    hints_by_market = market_hints()
+    for market, hints in hints_by_market:
         if any(h in loc for h in hints):
             return market
     if "remote" in loc:
@@ -97,7 +121,7 @@ def detect_market(location, jd_text=""):
     # Only if the location said nothing useful, and only on the opening lines
     # where a real posting states where the role sits.
     head = (jd_text or "")[:1200].lower()
-    for market, hints in MARKET_HINTS:
+    for market, hints in hints_by_market:
         if any(h in head for h in hints):
             return market
     return "default"
@@ -155,6 +179,14 @@ def match_learned(label, learned):
         # A short label inside a long stored question is not the same question:
         # "Country" sat inside "...citizen of a country under US export control"
         # and inherited its "No". The stored phrase inside the label is fine.
+        # A one-word stored phrase ("to", "from", "city") is a label, not a
+        # question: it matches only that exact label. Inside longer labels it
+        # matched everything — a stored "to" -> "Nvidia" answered "a link to
+        # your LinkedIn profile".
+        if m and len(_tokens(m)) < 2:
+            if m == L:
+                return ans
+            continue
         if m and (m in L or (L in m and len(lt) >= 4)):
             return ans
         kws = [k.lower() for k in (entry.get("keywords") or [])]
@@ -234,7 +266,7 @@ def build_resolver(answers, ctx, learned=None):
         (r"visa status|immigration status", answers["work_authorization"]["visa_status_note"]),
 
         # --- yes/no screeners ---
-        (rf"(previously|ever|formerly).*(employed|worked)|former employee"
+        (rf"(previously|ever|formerly|in the past).*(employed|worked)|former employee"
          rf"|worked (at|for) {company_rx}", YES if prev_employed else NO),
         (r"relat(ed|ive).*(employee|work here)", NO),
         (r"(18 years|age of 18|over 18)", YES),
@@ -248,6 +280,9 @@ def build_resolver(answers, ctx, learned=None):
         (r"willing to relocate|open to relocation", YES),
         (r"willing to travel", YES),
         (r"non-?compete|restrictive covenant", NO),
+        # "Able to perform the essential functions, with or without accommodation?"
+        # is a YES; it read as "do you need an accommodation" (No) — Capital One.
+        (r"(able|ability) to perform .{0,30}essential functions", YES),
         (r"accommodation", NO),
 
         # --- identity ---
@@ -284,7 +319,7 @@ def build_resolver(answers, ctx, learned=None):
 
         # --- availability / pay ---
         (r"notice period", avail["notice_period"]),
-        (r"(pick|select).{0,12}date|start date|date.{0,12}available",
+        (r"(pick|select).{0,12}date|start date|date.{0,12}available|available from|available (as )?of",
          avail.get("earliest_start_iso", avail["earliest_start_date"])),
         (r"when can you start|availability|notice",
          avail["earliest_start_date"]),
@@ -293,7 +328,8 @@ def build_resolver(answers, ctx, learned=None):
         (r"able to work from a local office|work from the office|onsite \d|"
          r"hybrid|days per week", YES),
         (r"(salary|compensation|remuneration|package).*(expect|require|desired)"
-         r"|expected (salary|compensation|ctc)|desired (salary|compensation)"
+         r"|expected (annual |yearly |gross |base |total |monthly )?(salary|compensation|ctc|pay)"
+         r"|desired (salary|compensation)"
          r"|salary expectation", pay["expected_text"]),
         (r"current (salary|compensation|ctc)", comp["current_ctc"]),
 
@@ -419,6 +455,21 @@ def main():
     ap.add_argument("--url", help="override the apply URL")
     ap.add_argument("--submit", metavar="QUEUE_ID")
     ap.add_argument("--submit-approved", action="store_true")
+    ap.add_argument("--no-learn", action="store_true",
+                    help="with --fill: never write a platform module or start a learning session")
+    ap.add_argument("--session", metavar="CMD", choices=("start", "serve", "status", "retry", "next", "finish", "abort"),
+                    help="with --fill: drive a LIVE exploration by command instead of one run "
+                         "(start | status | retry | next | finish | abort); the browser stays open between commands")
+    ap.add_argument("--trust-agent", action="store_true",
+                    help="with --session start/serve: no browser-level submit guard — for a session a Claude "
+                         "learning run drives, which recognises Submit itself and stops there")
+    ap.add_argument("--resolve-session", metavar="CMD",
+                    choices=("serve", "status", "refill", "set", "click", "press", "finish", "abort"),
+                    help="with --submit ID: drive the live SUBMIT session a failed submit hands to Claude")
+    ap.add_argument("--label", help="with --resolve-session set")
+    ap.add_argument("--value", help="with --resolve-session set: an approved value")
+    ap.add_argument("--button", help="with --resolve-session click/press: the button's text")
+    ap.add_argument("--note", help="with --resolve-session finish: what was wrong, what fixed it")
     ap.add_argument("--limit", type=int, metavar="N",
                     help="with --submit-approved: file at most N (oldest approved first)")
     args = ap.parse_args()
@@ -432,23 +483,65 @@ def main():
 
     if args.fill:
         from jobpilot.fill.browser import fill_application       # imported late: needs playwright
+        from jobpilot.fill import platform_learn, hooks
         meta, jd_text = read_jd(args.fill)
-        portal = (meta.get("Platform / How applying") or "").split("—")[0].strip()
-        if portal not in SUPPORTED:
-            sys.exit(f"Portal '{portal}' is not supported for autofill "
-                     f"(supported: {', '.join(sorted(SUPPORTED))}).\n"
-                     f"Workday-class portals are handled on the desktop by hand — "
-                     f"see automation-plan.md decision D.")
         url = args.url or meta.get("Apply URL") or meta.get("Link")
-        if portal == "ashby" and url and not url.rstrip("/").endswith("/application"):
-            url = url.rstrip("/") + "/application"
+        portal = (meta.get("Platform / How applying") or "").split("—")[0].strip()
+        if not platforms.get(portal):
+            portal, _known = platforms.detect(url)         # a module may exist since JD.md was written
+        if platforms.is_manual(portal):
+            sys.exit(f"Portal '{portal}' is not supported for autofill — applied by hand, "
+                     f"never automated (README rule 1).")
+        form_url = hooks.knowledge(portal, args.fill).custom("form_url")
+        if form_url:
+            url = form_url(url)
         market = detect_market(meta.get("Location", ""), jd_text)
         ctx = {"market": market, "company": meta.get("Company", args.fill),
                "role": meta.get("Role / Title", ""), "portal": portal,
                "location": meta.get("Location", ""), "url": url,
                "company_slug": args.fill}
         resolve, pay = build_resolver(answers, ctx)
-        fill_application(ctx, answers, resolve, pay, submit=False)
+        if args.session:
+            from jobpilot.fill import session
+            if args.session == "serve":
+                # foreground server (start spawns this)
+                session.serve(ctx, answers, resolve, pay, guard=not args.trust_agent)
+            elif args.session == "start":
+                session.show(session.start_detached(args.fill, ["--trust-agent"] if args.trust_agent else []))
+            else:
+                session.show(session.send(args.fill, args.session))
+            return
+        if not args.no_learn and cfg("fill.llm_explore", True):
+            # Every exploration is a Claude session on the live form, reusing the
+            # driver and the company's hooks (platform_learn.explore_with_agent).
+            platform_learn.explore_with_agent(ctx, answers, resolve, pay)
+            return
+        item = fill_application(ctx, answers, resolve, pay, submit=False)
+        if args.no_learn:
+            return
+        if not platforms.get(item["portal"]):
+            # A platform nobody has described. Reached the end on its own: keep
+            # what was observed as its module. Did not: a Claude session writes
+            # and tests the module (and this application's hooks if it needs
+            # them), then the tool explores again with it.
+            platform_learn.after_exploration(item, ctx, answers, resolve, pay)
+        elif not item.get("reached_end"):
+            # A known platform, but this form could not be walked to the end: a
+            # Claude session refines THIS application's hooks only — the
+            # platform module stays as it is for every other application.
+            platform_learn.refine_application(item, ctx, answers, resolve, pay)
+        return
+
+    if args.submit and args.resolve_session:
+        from jobpilot.fill import session as S, submit_flow
+        if args.resolve_session == "serve":
+            from jobpilot.fill.browser import resolver_for_item, QUEUE_DIR
+            it = json.load(open(os.path.join(QUEUE_DIR, f"{args.submit}.json")))
+            ctx, resolve = resolver_for_item(it, answers)
+            submit_flow.serve_submit(it, ctx, answers, resolve)
+        else:
+            submit_flow.show(S.send(args.submit, args.resolve_session, kind="submit",
+                                    label=args.label, value=args.value, button=args.button, note=args.note))
         return
 
     if args.submit or args.submit_approved:

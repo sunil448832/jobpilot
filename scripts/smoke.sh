@@ -24,6 +24,19 @@ pg=$(pdfinfo "$T/applications/$s/sunil_resume.pdf" 2>/dev/null | awk '/Pages/{pr
 a=$("$PY" -m jobpilot.tailor.autotailor --limit 1 --dry-run 2>&1 | grep -c 'would scaffold'); [ "$a" -ge 0 ] && ok "autotailor --dry-run" "$a candidate(s)"
 sc=$("$PY" -m jobpilot.screen.screen --dry-run 2>&1 | head -1 | sed 's/^ *//'); ok "screen --dry-run" "$sc"
 dg=$("$PY" -m jobpilot.core.daily --digest-only --no-telegram --no-submit 2>&1 | grep -oE 'digest-only: [0-9]+ pending'); [ -n "$dg" ] && ok "daily --digest-only" "$dg" || bad "daily --digest-only" "no digest line"
+# the fill engine on local fixture forms, headless Chrome, no network: explore/replay of one
+# page (placeholders, recipes, gate, untick) and a multi-page route (Apply -> Next -> Submit,
+# guard, module learned from observation)
+# In parallel: each test has its own scratch dir, fixture port and headless browser.
+TD=$(mktemp -d)
+for t in test_replay test_walk test_session test_submit test_mismatch; do
+  ( timeout 400 "$PY" "$T/tests/$t.py" > "$TD/$t.log" 2>&1 ) &
+done
+wait
+for t in test_replay test_walk test_session test_submit test_mismatch; do
+  r=$(tail -1 "$TD/$t.log"); case "$r" in "ALL PASSED") ok "tests/$t.py" "$r";; *) bad "tests/$t.py" "$r";; esac
+done
+rm -rf "$TD"
 # a failed submit must turn its missing required fields into questions, without a browser or an LLM
 fq=$("$PY" - <<'PY' 2>&1
 from jobpilot.fill.browser import questions_from_missing

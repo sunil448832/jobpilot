@@ -19,7 +19,6 @@ Usage:
     python jobs/apply.py --list                       # show all applications
 """
 import argparse
-import html
 import json
 import os
 import re
@@ -28,22 +27,14 @@ import subprocess
 import sys
 import urllib.parse
 
-import requests
 from bs4 import BeautifulSoup
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
                    RESUME, APPLICATIONS, TRACKERS, MEMORY)
+from jobpilot.fill import platforms  # noqa: E402   one registry: recognise a link, fetch its JD, route it
+from jobpilot.fill.platforms._http import get as _get, html_to_text as _html_to_text  # noqa: E402
 APPLICATIONS_DIR = APPLICATIONS
 TEMPLATE_DIR = os.path.join(APPLICATIONS_DIR, "_template")
-
-UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
-TIMEOUT = 30
-
-# Portals whose forms are usable on a phone vs. ones batched for desktop.
-# Mirrors answers.yaml:portal_routing and automation-plan.md §1.
-MOBILE_OK = {"greenhouse", "lever", "ashby", "workday"}     # workday: fill/workday.py drives the wizard
-DESKTOP_ONLY = {"taleo", "icims", "successfactors"}
 
 
 # --------------------------------------------------------------------------
@@ -51,154 +42,9 @@ DESKTOP_ONLY = {"taleo", "icims", "successfactors"}
 # --------------------------------------------------------------------------
 
 def detect_portal(url):
-    h = urllib.parse.urlparse(url).netloc.lower()
-    q = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
-    # Many companies host a Greenhouse board on their own domain and pass the job
-    # id as ?gh_jid= (e.g. databricks.com/...?gh_jid=8747605002).
-    if "gh_jid" in q:               return "greenhouse"
-    if "greenhouse.io" in h:        return "greenhouse"
-    if "lever.co" in h:             return "lever"
-    if "ashbyhq.com" in h:          return "ashby"
-    if "myworkdayjobs.com" in h:    return "workday"
-    if "taleo.net" in h:            return "taleo"
-    if "icims.com" in h:            return "icims"
-    if "successfactors" in h:       return "successfactors"
-    if "linkedin.com" in h:         return "linkedin"
-    if "wellfound.com" in h:        return "wellfound"
-    return "unknown"
-
-
-def _get(url, as_json=False):
-    r = requests.get(url, headers={"User-Agent": UA, "Accept": "*/*"}, timeout=TIMEOUT)
-    if r.status_code in (404, 410):
-        raise SystemExit(f"EXPIRED: HTTP {r.status_code} — {url}")
-    r.raise_for_status()
-    return r.json() if as_json else r.text
-
-
-def _html_to_text(markup):
-    """HTML (possibly entity-encoded) -> readable plain text."""
-    soup = BeautifulSoup(html.unescape(markup or ""), "html.parser")
-    for tag in soup(["script", "style", "nav", "footer", "header", "noscript"]):
-        tag.decompose()
-    text = soup.get_text("\n")
-    text = re.sub(r"[ \t]+", " ", text)
-    text = re.sub(r"\n\s*\n\s*\n+", "\n\n", text)
-    return text.strip()
-
-
-def fetch_greenhouse(url):
-    parsed = urllib.parse.urlparse(url)
-    q = urllib.parse.parse_qs(parsed.query)
-
-    job_id = None
-    if q.get("gh_jid"):
-        job_id = q["gh_jid"][0]
-    else:
-        j = re.search(r"/jobs/(\d+)", url)
-        job_id = j.group(1) if j else None
-    if not job_id:
-        return None
-
-    # Board token: explicit in a greenhouse.io URL, otherwise guessed from the
-    # company's own domain (databricks.com -> "databricks"), which is the
-    # convention for self-hosted boards.
-    m = re.search(r"greenhouse\.io/(?:embed/job_app\?for=)?([^/?#]+)", url)
-    if m and m.group(1) not in ("embed",):
-        candidates = [m.group(1)]
-    else:
-        host = parsed.netloc.lower().replace("www.", "").replace("boards.", "")
-        base = host.split(".")[0]
-        candidates = [base, base.replace("-", ""), q.get("for", [""])[0]]
-    d = None
-    for board in [c for c in candidates if c]:
-        try:
-            d = _get(f"https://boards-api.greenhouse.io/v1/boards/{board}/jobs/{job_id}",
-                     as_json=True)
-            break
-        except Exception:
-            continue
-    if d is None:
-        return None
-    return {
-        "title": d.get("title", ""),
-        "company": (d.get("company_name")
-                    or board.replace("-", " ").title()),
-        "location": (d.get("location") or {}).get("name", ""),
-        "text": _html_to_text(d.get("content", "")),
-        "apply_url": d.get("absolute_url", url),
-    }
-
-
-def fetch_lever(url):
-    m = re.search(r"lever\.co/([^/?#]+)/([0-9a-f-]{36})", url)
-    if not m:
-        return None
-    co, post_id = m.group(1), m.group(2)
-    d = _get(f"https://api.lever.co/v0/postings/{co}/{post_id}", as_json=True)
-    cats = d.get("categories") or {}
-    parts = [d.get("descriptionPlain", "")]
-    for lst in d.get("lists") or []:
-        parts.append(f"\n{lst.get('text','')}\n" + _html_to_text(lst.get("content", "")))
-    parts.append(d.get("additionalPlain", ""))
-    return {
-        "title": d.get("text", ""),
-        "company": co.replace("-", " ").title(),
-        "location": cats.get("location", ""),
-        "text": "\n".join(p for p in parts if p).strip(),
-        "apply_url": d.get("hostedUrl", url),
-    }
-
-
-def fetch_ashby(url):
-    m = re.search(r"ashbyhq\.com/([^/?#]+)(?:/([0-9a-f-]{36}))?", url)
-    if not m:
-        return None
-    board, post_id = m.group(1), m.group(2)
-    d = _get(f"https://api.ashbyhq.com/posting-api/job-board/{board}", as_json=True)
-    jobs = d.get("jobs") or []
-    job = next((x for x in jobs if x.get("id") == post_id), None) if post_id else None
-    if job is None and jobs:
-        job = jobs[0]
-    if job is None:
-        return None
-    return {
-        "title": job.get("title", ""),
-        "company": board.replace("-", " ").title(),
-        "location": job.get("location", ""),
-        "text": job.get("descriptionPlain") or _html_to_text(job.get("descriptionHtml", "")),
-        "apply_url": job.get("jobUrl", url),
-    }
-
-
-def fetch_workday(url):
-    """Workday exposes the posting as JSON under /wday/cxs/<tenant>/<site>/job/<path>."""
-    p = urllib.parse.urlparse(url)
-    m = re.match(r"^([^.]+)\.wd\d+\.myworkdayjobs\.com$", p.netloc.lower())
-    if not m:
-        return None
-    tenant = m.group(1)
-    segs = [s for s in p.path.split("/") if s]
-    # A link copied from LinkedIn ends in ".../apply?source=LinkedIn" and may
-    # carry a locale segment; the API wants <site>/job/<location>/<posting>.
-    while segs and segs[-1].lower() in ("apply", "applymanually", "autofillwithresume"):
-        segs.pop()
-    if "job" not in segs:
-        return None
-    i = segs.index("job")
-    site = segs[i - 1] if i >= 1 else None
-    if not site or re.match(r"^[a-z]{2}-[A-Z]{2}$", site):
-        return None
-    api = f"https://{p.netloc}/wday/cxs/{tenant}/{site}/job/" + "/".join(segs[i + 1:])
-    d = _get(api, as_json=True)
-    info = d.get("jobPostingInfo") or {}
-    return {
-        "title": info.get("title", ""),
-        "company": tenant.replace("-", " ").title(),
-        "location": info.get("location", ""),
-        "text": _html_to_text(info.get("jobDescription", "")),
-        "apply_url": info.get("externalUrl", url),
-    }
+    """The platform id for a link — a known module's name, or one derived from
+    the host (fill/platforms). Unknown platforms are explored generically."""
+    return platforms.detect(url)[0]
 
 
 def fetch_generic(url):
@@ -211,37 +57,45 @@ def fetch_generic(url):
         title = ogt["content"]
     ogs = soup.find("meta", property="og:site_name")
     company = ogs["content"] if ogs and ogs.get("content") else urllib.parse.urlparse(url).netloc
+    # A company careers site is often only a front: its Apply button goes to
+    # the real platform (capitalonecareers.com -> Capital One's Workday).
+    apply_links = []
+    for a in soup.find_all("a", href=True):
+        if re.search(r"\bapply\b", a.get_text(" ", strip=True), re.I):
+            apply_links.append(urllib.parse.urljoin(url, a["href"]))
     return {
         "title": title,
         "company": company,
         "location": "",
         "text": _html_to_text(str(soup)),
         "apply_url": url,
+        "apply_links": apply_links,
     }
-
-
-FETCHERS = {
-    "greenhouse": fetch_greenhouse,
-    "lever": fetch_lever,
-    "ashby": fetch_ashby,
-    "workday": fetch_workday,
-}
 
 
 def fetch_jd(url):
     portal = detect_portal(url)
     jd = None
-    fn = FETCHERS.get(portal)
-    if fn:
+    if getattr(platforms.get(portal), "fetch_jd", None):
         try:
-            jd = fn(url)
+            jd = platforms.fetch_jd(portal, url)
             if jd:
                 print(f"  [fetch] {portal} API -> {len(jd['text'])} chars")
+        except SystemExit:
+            raise                                   # EXPIRED: the posting is gone
         except Exception as e:
             print(f"  [fetch] {portal} API failed ({e}); falling back to HTML")
     if jd is None:
         jd = fetch_generic(url)
         print(f"  [fetch] HTML scrape -> {len(jd['text'])} chars")
+        if not platforms.get(portal):
+            for link in jd.get("apply_links") or []:
+                pid, known = platforms.detect(link)
+                if known and not platforms.is_manual(pid):
+                    print(f"  [fetch] the page's Apply goes to {pid}: {link[:90]}")
+                    portal, jd["apply_url"] = pid, link
+                    break
+    jd.pop("apply_links", None)
     jd["portal"] = portal
     jd["url"] = url
     # A closed posting must not become a resume. TII's page said "the job you are
@@ -316,10 +170,10 @@ def scaffold(company, jd, force=False, market=None):
         print(f"  [scaffold] created applications/{company}/ with a copy of the base sections")
 
     portal = jd["portal"]
-    route = ("mobile" if portal in MOBILE_OK
-             else "desktop" if portal in DESKTOP_ONLY
-             else "manual" if portal == "linkedin" else "review")
-    ats_critical = portal in MOBILE_OK or portal in DESKTOP_ONLY
+    # Routing comes from the platform module (ROUTE); a platform nobody has
+    # described yet is "review": explored generically, checked on the phone.
+    route = platforms.route(portal)
+    ats_critical = route in ("mobile", "desktop")
 
     with open(os.path.join(dest, "JD.md"), "w", encoding="utf-8") as f:
         f.write(f"""# Job Description
@@ -340,6 +194,13 @@ def scaffold(company, jd, force=False, market=None):
 {jd['text']}
 """)
     print(f"  [scaffold] JD.md written ({len(jd['text'])} chars)")
+    # Every application has its own hooks.py (copied from the same employer's
+    # when another application has them, else a stub) and a replay.json from
+    # the start: the exploration runs WITH them and edits them only if needed.
+    from jobpilot.fill import hooks, replay
+    _, frm = hooks.ensure(company)
+    replay.ensure(company, jd["apply_url"], portal)
+    print(f"  [scaffold] hooks.py {'copied from ' + frm if frm else '(stub)'} + replay.json")
     set_location(dest, market)
     return dest, True
 

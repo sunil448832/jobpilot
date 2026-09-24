@@ -426,6 +426,18 @@ class H(BaseHTTPRequestHandler):
             sub = os.path.join(QUEUE_DIR, f"_submission-{item_id}.json")
             json.dump(payload, open(sub, "w"), indent=2)
 
+        # Write his answers into the application's replay.json straight away, so
+        # the recorded fill script carries the real values, not placeholders.
+        try:
+            from jobpilot.fill import replay as R
+            answered = {q["label"]: q["selected"] for q in item.get("questions", [])
+                        if q.get("status") == "answered" and (q.get("selected") or "").strip()}
+            n = R.apply_answers(item, answered)
+            if answered:
+                print(f"  [replay] {len(answered)} answer(s) written, {n} recipe(s) updated")
+        except Exception as e:
+            print(f"  [warn] replay.json not updated: {e}")
+
         # Fold the answers into learned.yaml so they are never asked again.
         try:
             subprocess.run([sys.executable, "-m", "jobpilot.fill.learn", sub],

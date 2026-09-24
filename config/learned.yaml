@@ -681,3 +681,297 @@ answers:
   - choice
   answer: San Francisco
   source: answered by Sunil on the Reflectionai form, 2026-09-23
+- match: 'if this role or future roles require relocation:'
+  keywords:
+  - role
+  - future
+  - roles
+  - require
+  - relocation
+  answer: I am willing to relocate and will self relocate
+  source: answered by Sunil on the Paloaltonetworks form, 2026-09-23
+- match: palo alto networks prides itself on being a military friendly employer. this information
+    will be used by panw to assist in our overall inclusion efforts. if you
+  keywords:
+  - palo
+  - alto
+  - networks
+  - prides
+  - itself
+  - being
+  - military
+  - friendly
+  answer: 'No'
+  source: answered by Sunil on the Paloaltonetworks form, 2026-09-23
+- match: are you in the reserves?
+  keywords:
+  - reserves
+  answer: 'No'
+  source: answered by Sunil on the Paloaltonetworks form, 2026-09-23
+- match: would you like to be considered for future opportunities?
+  keywords:
+  - would
+  - like
+  - considered
+  - future
+  - opportunities
+  answer: 'Yes'
+  source: answered by Sunil on the Paloaltonetworks form, 2026-09-23
+- match: integrity is a foundational core value at palo alto networks, reflected in our commitment
+    to attention to detail and understanding of nuance. by applying, you c
+  keywords:
+  - integrity
+  - foundational
+  - core
+  - value
+  - palo
+  - alto
+  - networks
+  - reflected
+  answer: I agree
+  source: answered by Sunil on the Paloaltonetworks form, 2026-09-23
+- match: i have read and agree to the candidate confidentiality agreement policy linked here.
+  keywords:
+  - read
+  - agree
+  - candidate
+  - confidentiality
+  - agreement
+  - policy
+  - linked
+  - here.
+  answer: i agree to be bound by the candidate confidentiality agreement and understand that
+    i must not use or disclose any confidential information disclosed to me during the application
+    process.
+  source: answered by Sunil on the Paloaltonetworks form, 2026-09-23
+- match: are you available to work 5 days from our munich office?
+  keywords:
+  - available
+  - work
+  - days
+  - from
+  - our
+  - munich
+  - office
+  answer: 'Yes'
+  source: answered by Sunil on the Mercura form, 2026-09-24
+- match: what is your proficiency in german?
+  keywords:
+  - proficiency
+  - german
+  answer: No German speaker
+  source: answered by Sunil on the Mercura form, 2026-09-24
+- match: 'data privacy statement:'
+  keywords:
+  - data
+  - privacy
+  - statement
+  answer: 'yes'
+  source: answered by Sunil on the KONUX form, 2026-09-24
+- match: please describe a model you built or significantly contributed to that was deployed
+    to production. in 1–2 paragraphs, explain the problem it solved, your role,
+  keywords:
+  - describe
+  - model
+  - built
+  - significantly
+  - contributed
+  - was
+  - deployed
+  - production.
+  answer: For a Roche retrieval system, I owned the evaluation and infrastructure work that
+    got the vector index into a production-viable state. The problem was that the existing
+    Qdrant index was too large and prone to out-of-memory failures under load. My role was
+    building the TurboQuant-based evaluation harness, fixing the Qdrant OOM issue, and building
+    an LLM-as-judge evaluation pipeline. Using 4-bit TurboQuant quantization I compressed
+    the index 8x while holding nDCG and Recall at parity with the uncompressed index across
+    8 BEIR benchmark datasets, which is what let it ship to production.
+  source: answered by Sunil on the KONUX form, 2026-09-24
+- match: by checking this box, i consent to mongodb collecting, storing, and processing my
+    responses to the demographic data surveys above.
+  keywords:
+  - checking
+  - box
+  - consent
+  - mongodb
+  - collecting
+  - storing
+  - processing
+  - responses
+  answer: By checking this box, I consent to MongoDB collecting, storing, and processing my
+    responses to the demographic data surveys above.*
+  source: answered by Sunil on the MongoDB form, 2026-09-24
+- match: have you signed any agreement with any prior or existing employer which includes
+    any restrictions on your ability to compete and non-solicit; to contact custome
+  keywords:
+  - signed
+  - agreement
+  - prior
+  - existing
+  - employer
+  - includes
+  - restrictions
+  - ability
+  answer: 'No'
+  source: answered by Sunil on the Berkadia form, 2026-09-24
+- match: by selecting the checkbox, you agree to our terms and conditions and applicant privacy
+    policy.
+  keywords:
+  - selecting
+  - checkbox
+  - agree
+  - our
+  - terms
+  - conditions
+  - applicant
+  - privacy
+  answer: By selecting the checkbox, you agree to our Terms and Conditions and Applicant Privacy
+    Policy.*
+  source: answered by Sunil on the Nvidia form, 2026-09-24
+- match: do you identify as one of the following protected veterans (disabled veteran, recently
+    separated veteran, active duty wartime or campaign badge veteran, armed f
+  keywords:
+  - identify
+  - one
+  - protected
+  - veterans
+  - disabled
+  - veteran
+  - recently
+  - separated
+  answer: i am not a veteran
+  source: answered by Sunil on the Nvidia form, 2026-09-24
+- match: do you meet all of the basic qualifications for this role as specified in the job
+    description?
+  keywords:
+  - meet
+  - basic
+  - qualifications
+  - role
+  - specified
+  - job
+  - description
+  answer: 'Yes'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: do you have any relatives employed by capital one? (a relative can include a spouse,
+    parent, child, sibling, in-law, grandparent, grandchild, aunt, uncle, firs
+  keywords:
+  - relatives
+  - employed
+  - capital
+  - one
+  - relative
+  - can
+  - include
+  - spouse
+  answer: 'No'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: 'please answer the next two questions to the best of your knowledge. for purposes
+    of these questions:'
+  keywords:
+  - answer
+  - next
+  - two
+  - questions
+  - best
+  - knowledge.
+  - purposes
+  - these
+  answer: 'No'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: are you related to a senior government official?
+  keywords:
+  - related
+  - senior
+  - government
+  - official
+  answer: 'No'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: do you have a second job, outside business, or other employment that you will continue
+    or that you plan to engage in while employed by capital one? (this inclu
+  keywords:
+  - second
+  - job
+  - outside
+  - business
+  - other
+  - employment
+  - will
+  - continue
+  answer: 'No'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: all capital one associates must follow the code of conduct. the code requires that
+    you inform your manager and submit a conflict of interest disclosure form to
+  keywords:
+  - capital
+  - one
+  - associates
+  - must
+  - follow
+  - code
+  - conduct.
+  - requires
+  answer: 'Yes'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: are you age 18 or over?
+  keywords:
+  - age
+  - over
+  answer: 'Yes'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: do you meet the preferred qualifications for this role as specified in the job description?
+  keywords:
+  - meet
+  - preferred
+  - qualifications
+  - role
+  - specified
+  - job
+  - description
+  answer: Yes, All
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: are you currently under any form of agreement or policy, with your current or previous
+    employer(s), which would prohibit or restrict you from recruiting or hiri
+  keywords:
+  - currently
+  - under
+  - form
+  - agreement
+  - policy
+  - current
+  - previous
+  - employer
+  answer: 'No'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: are you a spouse or partner of someone serving, or who served in the armed forces
+    of the united states of america (including the reserves and national guard)?
+  keywords:
+  - spouse
+  - partner
+  - someone
+  - serving
+  - who
+  - served
+  - armed
+  - forces
+  answer: 'No'
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: prefix
+  keywords:
+  - prefix
+  answer: Mr
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: school or university
+  keywords:
+  - school
+  - university
+  answer: Indian Institute of Technology Jodhpur (IITJ)
+  source: answered by Sunil on the Capital One Careers form, 2026-09-24
+- match: how did you hear about us?
+  keywords:
+  - how
+  - did
+  - hear
+  - about
+  answer: career site - corporate
+  source: answered by Sunil on the Takeaway form, 2026-09-24

@@ -287,6 +287,11 @@ def answer_question(token, chat, item, qid, text, source):
     q["answered_at"] = dt.datetime.now().isoformat(timespec="seconds")
     item.setdefault("fields", {})[q["label"][:80]] = text
     save_item(item)
+    try:
+        from jobpilot.fill import replay as R
+        R.apply_answers(item, {q["label"]: text})       # backfill replay.json now
+    except Exception as e:
+        print(f"  [warn] replay.json not updated: {e}")
     print(f"  [answered:{source}] {item['id']} q{qid} -> {text[:70]}")
     if open_questions(item, required_only=False):
         push_next_question(token, chat, item)

@@ -1,0 +1,287 @@
+{
+  "url": "https://berkadia.wd1.myworkdayjobs.com/Berkadia/job/New-York-NY/Senior-Engineer---Machine-Learning_R-00021",
+  "platform": "workday",
+  "explored_at": "2026-09-24T13:31:54",
+  "reached_end": true,
+  "frame": null,
+  "start": null,
+  "pages": [
+    {
+      "n": 1,
+      "heading": "my information"
+    },
+    {
+      "n": 2,
+      "heading": "my experience"
+    },
+    {
+      "n": 3,
+      "heading": "application questions"
+    },
+    {
+      "n": 4,
+      "heading": "voluntary disclosures"
+    },
+    {
+      "n": 5,
+      "heading": "review"
+    }
+  ],
+  "submit": null,
+  "recipes": [
+    {
+      "step": "my information",
+      "label": "How Did You Hear About Us?*",
+      "id": "source--source",
+      "name": "source",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "LinkedIn",
+      "value": "LinkedIn"
+    },
+    {
+      "step": "my information",
+      "label": "Country*",
+      "id": "country--country",
+      "name": "country",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "India",
+      "value": "India"
+    },
+    {
+      "step": "my information",
+      "label": "State*",
+      "id": "address--countryRegion",
+      "name": "countryRegion",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Delhi",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "Phone Device Type*",
+      "id": "phoneNumber--phoneType",
+      "name": "phoneType",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Mobile",
+      "value": "Mobile"
+    },
+    {
+      "step": "my information",
+      "label": "Given Name*",
+      "id": "name--legalName--firstName",
+      "name": "legalName--firstName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "my information",
+      "label": "Family or Last Name*",
+      "id": "name--legalName--lastName",
+      "name": "legalName--lastName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "my information",
+      "label": "Local Given Name(s)",
+      "id": "name--legalName--firstNameLocal",
+      "name": "legalName--firstNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "my information",
+      "label": "Local Family Name",
+      "id": "name--legalName--lastNameLocal",
+      "name": "legalName--lastNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "my information",
+      "label": "Address Line 1*",
+      "id": "address--addressLine1",
+      "name": "addressLine1",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "City*",
+      "id": "address--city",
+      "name": "city",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "Postal Code*",
+      "id": "address--postalCode",
+      "name": "postalCode",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "110019"
+    },
+    {
+      "step": "my information",
+      "label": "Country Phone Code*",
+      "id": "phoneNumber--countryPhoneCode",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "required": true,
+      "strategy": "typed",
+      "value": "+91-9641298471"
+    },
+    {
+      "step": "my information",
+      "label": "Phone Number*",
+      "id": "phoneNumber--phoneNumber",
+      "name": "phoneNumber",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "+91-9641298471"
+    },
+    {
+      "step": "my information",
+      "label": "Have you, in the past, been employed by Berkadia or any other Berkadia entity? If so, please fill in the following information:*",
+      "ask": "Have you, in the past, been employed by Berkadia or any other Berkadia entity? If so, please fill in the following information:* Yes No",
+      "name": "candidateIsPreviousWorker",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "check",
+      "chosen": "No",
+      "value": "no"
+    },
+    {
+      "step": "application questions",
+      "label": "Are you at least 18 years of age?*",
+      "id": "primaryQuestionnaire--6b8703b1f488100157fd8c4635560000",
+      "name": "6b8703b1f488100157fd8c4635560000",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions",
+      "label": "Will you now, or in the future, require sponsorship to work in the United States?*",
+      "id": "primaryQuestionnaire--6b8703b1f488100157fd8cdffdc30000",
+      "name": "6b8703b1f488100157fd8cdffdc30000",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions",
+      "label": "Have you, in the past, been employed by Berkadia or any other Berkadia entity?*",
+      "id": "primaryQuestionnaire--6b8703b1f488100157fd8cdffdc30003",
+      "name": "6b8703b1f488100157fd8cdffdc30003",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "No",
+      "value": "No"
+    },
+    {
+      "step": "application questions",
+      "label": "Have you signed any agreement with any prior or existing employer which includes any restrictions on your ability to compete and non-solicit; to contact custome",
+      "id": "primaryQuestionnaire--6b8703b1f488100157fd8d79cebb0001",
+      "name": "6b8703b1f488100157fd8d79cebb0001",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "listbox",
+      "value": "No",
+      "placeholder": "Yes",
+      "chosen": "No",
+      "answered_by": "applicant",
+      "answered_at": "2026-09-24T13:37:09"
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "I consent to the above terms and conditions*",
+      "ask": "I consent to the above terms and conditions* I consent to the above terms and conditions*",
+      "name": "acceptTermsAndAgreements",
+      "type": "checkbox",
+      "required": true,
+      "options": [
+        "I consent to the above terms and conditions*"
+      ],
+      "strategy": "check",
+      "chosen": "I consent to the above terms and conditions*",
+      "value": "confirmed"
+    }
+  ],
+  "placeholders": {},
+  "attempts": [
+    {
+      "at": "2026-09-24T13:36:39",
+      "status": "failed",
+      "replayed": 0,
+      "discovered": 0,
+      "outcome": "attempt 1/3: unknown"
+    },
+    {
+      "at": "2026-09-24T13:40:09",
+      "status": "submitted",
+      "replayed": 29,
+      "discovered": 14,
+      "outcome": "attempt 1/3: unknown"
+    }
+  ],
+  "answers": {
+    "Have you signed any agreement with any prior or existing employer which includes any restrictions on your ability to compete and non-solicit; to contact custome": "No"
+  },
+  "submit_procedure": {
+    "resolved_by": "code",
+    "pressed": null,
+    "verification_code": false,
+    "at": "2026-09-24T13:40:09"
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "url": "https://jobs.ashbyhq.com/mercura/90bb4d91-9311-4d6c-a30b-a2d6dc783a13/application",
+  "platform": "ashby",
+  "explored_at": "2026-09-24T10:04:27",
+  "reached_end": true,
+  "frame": null,
+  "start": null,
+  "pages": [
+    {
+      "n": 1,
+      "heading": "(Senior) AI/LLM Engineer",
+      "step": "Application",
+      "url": "https://jobs.ashbyhq.com/mercura/90bb4d91-9311-4d6c-a30b-a2d6dc783a13/application",
+      "controls": 15,
+      "next": null,
+      "submit": {
+        "text": "Submit Application"
+      }
+    }
+  ],
+  "submit": {
+    "text": "Submit Application"
+  },
+  "recipes": [
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "Autofill from resume",
+      "type": "file",
+      "tag": "input",
+      "strategy": "set_input_files",
+      "value": "sunil_resume.docx"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "CV",
+      "id": "_systemfield_resume",
+      "type": "file",
+      "tag": "input",
+      "required": true,
+      "strategy": "set_input_files",
+      "value": "sunil_resume.docx"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "Full Name",
+      "id": "_systemfield_name",
+      "name": "_systemfield_name",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil Kumar Sharma"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "Email",
+      "id": "_systemfield_email",
+      "name": "_systemfield_email",
+      "type": "email",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "sunil4832sharma@gmail.com"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "LinkedIn",
+      "id": "ff5c6009-c4e2-40d9-9e85-4cb9dad17e54",
+      "name": "ff5c6009-c4e2-40d9-9e85-4cb9dad17e54",
+      "type": "url",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "https://www.linkedin.com/in/sunil4832sharma"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "Preferred Start Date",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "typed",
+      "value": "2026-11-04"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "How did you first hear about Mercura?",
+      "id": "b0cc7b3c-387b-4b71-b5f6-e751010546ae",
+      "name": "b0cc7b3c-387b-4b71-b5f6-e751010546ae",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "LinkedIn"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "What is your expected total compensation in \u20ac (cash + equity)?",
+      "id": "03fa03f3-09dc-47f8-9521-741a36f6ed26",
+      "name": "03fa03f3-09dc-47f8-9521-741a36f6ed26",
+      "type": "number",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "88000"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "Are you legally authorized to work in Germany?",
+      "ask": "Are you legally authorized to work in Germany? Yes No",
+      "name": "Are you legally authorized to work in Germany?",
+      "type": "buttongroup",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "click",
+      "chosen": "No",
+      "value": "no"
+    },
+    {
+      "step": "page 1: (Senior) AI/LLM Engineer",
+      "label": "Are you available to work 5 days from our Munich office?",
+      "ask": "Are you available to work 5 days from our Munich office? Yes No",
+      "name": "Are you available to work 5 days from our Munich office?",
+      "type": "buttongroup",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "click",
+      "chosen": "Yes",
+      "value": "Yes",
+      "dummy": true
+    }
+  ],
+  "placeholders": {
+    "Are you available to work 5 days from our Munich office?": "Yes"
+  },
+  "attempts": [
+    {
+      "at": "2026-09-24T10:40:29",
+      "status": "failed",
+      "replayed": 8,
+      "discovered": 2,
+      "outcome": "attempt 1/3: submit did NOT go through \u2014 form still present with 3 invalid field(s). Check the screenshot; required fields are likely empty."
+    },
+    {
+      "at": "2026-09-24T10:44:31",
+      "status": "failed",
+      "replayed": 8,
+      "discovered": 2,
+      "outcome": "attempt 2/3: submit did NOT go through \u2014 form still present with 3 invalid field(s). Check the screenshot; required fields are likely empty."
+    },
+    {
+      "at": "2026-09-24T10:59:24",
+      "status": "submitted",
+      "replayed": 8,
+      "discovered": 2,
+      "outcome": "attempt 2/3: submit did NOT go through \u2014 form still present with 3 invalid field(s). Check the screenshot; required fields are likely empty."
+    }
+  ]
+}

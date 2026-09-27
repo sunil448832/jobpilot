@@ -1,0 +1,288 @@
+{
+  "url": "https://job-boards.greenhouse.io/anthropic/jobs/4613568008",
+  "platform": "greenhouse",
+  "explored_at": "2026-09-25T11:34:09",
+  "reached_end": true,
+  "frame": null,
+  "start": null,
+  "pages": [
+    {
+      "n": 1,
+      "heading": "Research Engineer, Machine Learning (Reinforcement Learning)",
+      "step": "",
+      "url": "https://job-boards.greenhouse.io/anthropic/jobs/4613568008",
+      "controls": 36,
+      "next": null,
+      "submit": {
+        "text": "Submit application"
+      }
+    }
+  ],
+  "submit": {
+    "text": "Submit application"
+  },
+  "recipes": [
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Attach",
+      "id": "resume",
+      "type": "file",
+      "tag": "input",
+      "strategy": "set_input_files",
+      "value": "sunil_resume.docx"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "First Name*",
+      "id": "first_name",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Last Name*",
+      "id": "last_name",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Email*",
+      "id": "email",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "sunil4832sharma@gmail.com"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Country*",
+      "id": "country",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "strategy": "react-select",
+      "value": "India"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Phone*",
+      "id": "phone",
+      "type": "tel",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "+91-9641298471"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "LinkedIn Profile",
+      "id": "question_10020569008",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "https://www.linkedin.com/in/sunil4832sharma"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "GitHub URL",
+      "id": "question_10020557008",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "https://github.com/sunil448832"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "When is the earliest you would want to start working with us?",
+      "id": "question_10020561008",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "My notice period is 2 months, so I could start roughly 2 months after an offer."
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Do you have any deadlines or timeline considerations we should be aware of?",
+      "id": "question_10020562008",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "No hard deadlines on my end \u2014 my notice period is 2 months, which is the main timeline constraint."
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "What is the address from which you plan on working?*",
+      "id": "question_10020571008",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "relocating"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Are you open to relocation for this role? *",
+      "id": "question_10020570008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "strategy": "react-select",
+      "value": "Yes"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Are you open to working in-person in one of our offices 25% of the time?*",
+      "id": "question_10020559008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "strategy": "react-select",
+      "value": "Yes, I'm open to being in the Zurich office at least 25% of the time."
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "AI Policy for Application*",
+      "id": "question_10020563008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "strategy": "react-select",
+      "value": "Yes"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Why Anthropic?*",
+      "id": "question_10020564008",
+      "type": "textarea",
+      "tag": "textarea",
+      "required": true,
+      "strategy": "fill",
+      "value": "I want to work on post-training where the engineering directly shapes model behavior. At Amazon and now at Aria I've built the pipeline side of ML systems (a low-latency inference service, an eval harness that graded 28 tasks at 86% exact-pass), and most recently I ran GRPO post-training on Qwen3-4B with verifiable rewards, lifting pass rate from 38.6% to 41.0% over 280 steps. Anthropic is the place doing that at frontier scale with safety as a first-class constraint, not an afterthought, and I want to bring that engineering rigor to it."
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?*",
+      "id": "question_10020857008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "strategy": "react-select",
+      "value": "Yes"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Have you ever interviewed at Anthropic before?*",
+      "id": "question_10020572008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "strategy": "react-select",
+      "value": "No, this is my first time applying/interviewing at Anthropic."
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Please read the arbitration agreement below*",
+      "id": "question_18371193008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "options": [
+        "i will read the arbitration agreement below."
+      ],
+      "strategy": "react-select",
+      "value": "i will read the arbitration agreement below.",
+      "placeholder": "i will read the arbitration agreement below.",
+      "chosen": "i will read the arbitration agreement below.",
+      "answered_by": "applicant",
+      "answered_at": "2026-09-25T13:07:46"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Agreement to Arbitrate*",
+      "id": "question_18374328008",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "required": true,
+      "options": [
+        "i understand and agree to the terms of the agreement to arbitrate set forth above."
+      ],
+      "strategy": "react-select",
+      "value": "i understand and agree to the terms of the agreement to arbitrate set forth above.",
+      "placeholder": "i understand and agree to the terms of the agreement to arbitrate set forth above.",
+      "chosen": "i understand and agree to the terms of the agreement to arbitrate set forth above.",
+      "answered_by": "applicant",
+      "answered_at": "2026-09-25T13:07:46"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Gender",
+      "id": "gender",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "strategy": "react-select",
+      "value": "Male"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Are you Hispanic/Latino?",
+      "id": "hispanic_ethnicity",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "strategy": "react-select",
+      "value": "Decline to self-identify"
+    },
+    {
+      "step": "page 1: Research Engineer, Machine Learning (Reinforcement Learning)",
+      "label": "Veteran Status",
+      "id": "veteran_status",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "rs": true,
+      "strategy": "react-select",
+      "value": "I am not a protected veteran"
+    }
+  ],
+  "placeholders": {},
+  "attempts": [
+    {
+      "at": "2026-09-25T13:32:40",
+      "status": "approved",
+      "replayed": 23,
+      "discovered": 5,
+      "outcome": "no verification code arrived in time \u2014 will retry next run"
+    }
+  ],
+  "answers": {
+    "Please read the arbitration agreement below*": "i will read the arbitration agreement below.",
+    "Agreement to Arbitrate*": "i understand and agree to the terms of the agreement to arbitrate set forth above."
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "url": "https://jobs.ashbyhq.com/openai/e522c734-6e4e-4d69-80c1-d09d5144eab4/application",
+  "platform": "ashby",
+  "explored_at": "2026-09-25T10:40:35",
+  "reached_end": true,
+  "frame": null,
+  "start": null,
+  "pages": [
+    {
+      "n": 1,
+      "heading": "Applied AI Engineer, Startups (Codex)",
+      "step": "Application",
+      "url": "https://jobs.ashbyhq.com/openai/e522c734-6e4e-4d69-80c1-d09d5144eab4/application",
+      "controls": 10,
+      "next": null,
+      "submit": {
+        "text": "Submit Application"
+      }
+    }
+  ],
+  "submit": {
+    "text": "Submit Application"
+  },
+  "recipes": [
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Autofill from resume",
+      "type": "file",
+      "tag": "input",
+      "strategy": "set_input_files",
+      "value": "sunil_resume.docx"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Resume",
+      "id": "_systemfield_resume",
+      "type": "file",
+      "tag": "input",
+      "required": true,
+      "strategy": "set_input_files",
+      "value": "sunil_resume.docx"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Legal Name",
+      "id": "_systemfield_name",
+      "name": "_systemfield_name",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil Kumar Sharma"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Preferred Name (if applicable)",
+      "id": "c1829b67-c6a2-4dc2-87f9-df5932a9d45c",
+      "name": "c1829b67-c6a2-4dc2-87f9-df5932a9d45c",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Email",
+      "id": "_systemfield_email",
+      "name": "_systemfield_email",
+      "type": "email",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "sunil4832sharma@gmail.com"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Phone Number",
+      "id": "d460e473-44ce-4d38-b5db-cbfb139ae9f9",
+      "name": "d460e473-44ce-4d38-b5db-cbfb139ae9f9",
+      "type": "tel",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "+91-9641298471"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Where are you currently located?",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "strategy": "typed",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "When can you start a new role?",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "typed",
+      "value": "2026-11-04"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "I confirm I have read the above.",
+      "ask": "I confirm I have read the above. I confirm I have read the above.",
+      "name": "I confirm I have read the above.",
+      "type": "checkbox",
+      "options": [
+        "I confirm I have read the above."
+      ],
+      "strategy": "check",
+      "chosen": "I confirm I have read the above.",
+      "value": "confirmed"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Are you authorized to work in the country where the job is located?",
+      "ask": "Are you authorized to work in the country where the job is located? Yes No",
+      "name": "Are you authorized to work in the country where the job is located?",
+      "type": "buttongroup",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "click",
+      "chosen": "No",
+      "value": "no"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Are you able to work from a local office three days per week?",
+      "ask": "Are you able to work from a local office three days per week? Yes No",
+      "name": "Are you able to work from a local office three days per week?",
+      "type": "buttongroup",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "click",
+      "chosen": "Yes",
+      "value": "yes"
+    },
+    {
+      "step": "page 1: Applied AI Engineer, Startups (Codex)",
+      "label": "Will you now or in the future require sponsorship for employment visa status in this country?",
+      "ask": "Will you now or in the future require sponsorship for employment visa status in this country? Yes No",
+      "name": "Will you now or in the future require sponsorship for employment visa status in this country?",
+      "type": "buttongroup",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "click",
+      "chosen": "Yes",
+      "value": "yes"
+    }
+  ],
+  "placeholders": {},
+  "attempts": [
+    {
+      "at": "2026-09-25T11:38:01",
+      "status": "submitted",
+      "replayed": 10,
+      "discovered": 1,
+      "outcome": "submitted"
+    }
+  ],
+  "submit_procedure": {
+    "resolved_by": "code",
+    "pressed": {
+      "text": "Submit Application"
+    },
+    "verification_code": false,
+    "at": "2026-09-25T11:38:01"
+  }
+}

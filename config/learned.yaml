@@ -975,3 +975,92 @@ answers:
   - about
   answer: career site - corporate
   source: answered by Sunil on the Takeaway form, 2026-09-24
+- match: f7b33932-2c60-40cc-82e9-fdd3a07d1abb__systemfield_eeoc_gender
+  keywords:
+  - f7b33932-2c60-40cc-82e9-fdd3a07d1abb
+  - systemfield
+  - eeoc
+  - gender
+  answer: Male
+  source: answered by Sunil on the Openai form, 2026-09-25
+- match: why do you want to join figma?
+  keywords:
+  - why
+  - want
+  - join
+  - figma
+  answer: I want to bring RL and generative AI research into a product used by millions of
+    designers. At Aria I've built and shipped GenAI systems end-to-end (a multi-agent orchestration
+    platform with 20ms median inference latency and 98% success across 500 concurrent sessions),
+    and more recently ran GRPO post-training on Qwen3-4B with verifiable rewards, lifting
+    pass rate from 38.6% to 41.0% on held-out problems. Figma's mix of applied research and
+    real product impact on AI-powered design features is exactly the kind of high-leverage,
+    user-facing ML work I want to keep doing.
+  source: answered by Sunil on the Figma form, 2026-09-25
+- match: from where do you intend to work?
+  keywords:
+  - from
+  - where
+  - intend
+  - work
+  answer: Remote from India, with the understanding that this role would require visa sponsorship
+    to relocate to the United States.
+  source: answered by Sunil on the Figma form, 2026-09-25
+- match: (optional) personal preferences
+  keywords:
+  - optional
+  - personal
+  - preferences
+  answer: No specific preferences — open to any of the SF, NYC, or Seattle offices, and open
+    to whichever team within RL Engineering best fits my background in training pipelines
+    and eval infrastructure.
+  source: answered by Sunil on the Anthropic form, 2026-09-25
+- match: additional information
+  keywords:
+  - additional
+  - information
+  answer: 'I mention this because it doesn''t fit neatly elsewhere on the form: outside of
+    GRPO post-training, I''ve also built and shipped a low-latency inference service (20ms
+    median) and a Qdrant retrieval index compressed 8x via TurboQuant 4-bit quantization at
+    nDCG/Recall parity across 8 BEIR datasets — systems-level ML work that I think maps well
+    to what this RL Engineering role needs.'
+  source: answered by Sunil on the Anthropic form, 2026-09-25
+- match: please read the arbitration agreement below
+  keywords:
+  - read
+  - arbitration
+  - agreement
+  - below
+  answer: i will read the arbitration agreement below.
+  source: answered by Sunil on the Anthropic form, 2026-09-25
+- match: agreement to arbitrate
+  keywords:
+  - agreement
+  - arbitrate
+  answer: i understand and agree to the terms of the agreement to arbitrate set forth above.
+  source: answered by Sunil on the Anthropic form, 2026-09-25
+- match: have you been employed by adobe in the past?
+  keywords:
+  - been
+  - employed
+  - adobe
+  - past
+  answer: 'No'
+  source: answered by Sunil on the Adobe form, 2026-09-25
+- match: proficiency in german
+  keywords:
+  - proficiency
+  - german
+  answer: B1 / B2
+  source: answered by Sunil on the Lio form, 2026-09-27
+- match: field of study
+  keywords:
+  - field
+  - study
+  answer: Electronics and Communication Engineering
+  source: answered by Sunil on the Adobe form, 2026-09-27
+- match: please select your ethnicity.
+  keywords:
+  - ethnicity.
+  answer: Declined to State (United States of America)
+  source: answered by Sunil on the Adobe form, 2026-09-27

@@ -1,0 +1,625 @@
+{
+  "url": "https://workday.wd5.myworkdayjobs.com/Workday/job/USA-CA-Pleasanton/Machine-Learning-Engineer---Payroll_JR-0108977",
+  "platform": "workday",
+  "explored_at": "2026-09-25T13:05:41",
+  "reached_end": true,
+  "frame": null,
+  "start": null,
+  "pages": [
+    {
+      "n": 1,
+      "heading": "my information"
+    },
+    {
+      "n": 2,
+      "heading": "my experience"
+    },
+    {
+      "n": 3,
+      "heading": "application questions 1 of 2"
+    },
+    {
+      "n": 4,
+      "heading": "application questions 2 of 2"
+    },
+    {
+      "n": 5,
+      "heading": "voluntary disclosures"
+    },
+    {
+      "n": 6,
+      "heading": "review"
+    }
+  ],
+  "submit": null,
+  "recipes": [
+    {
+      "step": "my information",
+      "label": "How Did You Hear About Us?*",
+      "id": "source--source",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "required": true,
+      "options": [
+        "advertisement",
+        "advertisement",
+        "partnership",
+        "partnership",
+        "socially",
+        "socially",
+        "website",
+        "website",
+        "workday",
+        "workday"
+      ],
+      "strategy": "widget",
+      "chosen": "Internet Advertisement | Internet Advertisement",
+      "value": "Internet Advertisement | Internet Advertisement",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "my information",
+      "label": "Given Name(s)*",
+      "id": "name--legalName--firstName",
+      "name": "legalName--firstName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "my information",
+      "label": "Middle Name",
+      "id": "name--legalName--middleName",
+      "name": "legalName--middleName",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Kumar"
+    },
+    {
+      "step": "my information",
+      "label": "Family Name*",
+      "id": "name--legalName--lastName",
+      "name": "legalName--lastName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "my information",
+      "label": "Local Given Name(s)",
+      "id": "name--legalName--firstNameLocal",
+      "name": "legalName--firstNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "my information",
+      "label": "Local Middle Name",
+      "id": "name--legalName--middleNameLocal",
+      "name": "legalName--middleNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Kumar"
+    },
+    {
+      "step": "my information",
+      "label": "Local Family Name",
+      "id": "name--legalName--lastNameLocal",
+      "name": "legalName--lastNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "my information",
+      "label": "Address Line 1",
+      "id": "address--addressLine1",
+      "name": "addressLine1",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "City",
+      "id": "address--city",
+      "name": "city",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "Postal Code",
+      "id": "address--postalCode",
+      "name": "postalCode",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "110019"
+    },
+    {
+      "step": "my information",
+      "label": "Phone Number*",
+      "id": "phoneNumber--phoneNumber",
+      "name": "phoneNumber",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "9641298471"
+    },
+    {
+      "step": "my information",
+      "label": "Country / Territory*",
+      "id": "country--country",
+      "name": "country",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "India",
+      "value": "India"
+    },
+    {
+      "step": "my information",
+      "label": "Phone Device Type*",
+      "id": "phoneNumber--phoneType",
+      "name": "phoneType",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Mobile",
+      "value": "Mobile"
+    },
+    {
+      "step": "my information",
+      "label": "Have you previously worked for or are you currently working for Workday as an employee or contractor?*",
+      "ask": "Have you previously worked for or are you currently working for Workday as an employee or contractor?* Yes No",
+      "name": "candidateIsPreviousWorker",
+      "type": "radio",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "check",
+      "chosen": "No",
+      "value": "no"
+    },
+    {
+      "step": "my experience",
+      "label": "Location",
+      "id": "workExperience-22--location",
+      "name": "location",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "my experience",
+      "label": "Job Title*",
+      "id": "workExperience-31--jobTitle",
+      "name": "jobTitle",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Company*",
+      "id": "workExperience-31--companyName",
+      "name": "companyName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Location",
+      "id": "workExperience-31--location",
+      "name": "location",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "my experience",
+      "label": "Job Title*",
+      "id": "workExperience-80--jobTitle",
+      "name": "jobTitle",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Company*",
+      "id": "workExperience-80--companyName",
+      "name": "companyName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Location",
+      "id": "workExperience-80--location",
+      "name": "location",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "my experience",
+      "label": "School or University*",
+      "id": "education-109--school",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "required": true,
+      "options": [
+        "indian institute of technology jodhpur",
+        "indian institute of technology jodhpur",
+        "indian institute of technology jodhpur (i.i.t.j.), india",
+        "indian institute of technology jodhpur (i.i.t.j.), india",
+        "indian institute of technology, jodhpur",
+        "indian institute of technology, jodhpur",
+        "jodhpur institute of engineering & technology, india",
+        "jodhpur institute of engineering & technology, india"
+      ],
+      "strategy": "widget",
+      "chosen": "Indian Institute of Technology Jodhpur | Indian Institute of Technology Jodhpur",
+      "value": "Indian Institute of Technology Jodhpur | Indian Institute of Technology Jodhpur",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "my experience",
+      "label": "School or University*",
+      "id": "education-114--school",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "required": true,
+      "options": [
+        "indian institute of technology jodhpur",
+        "indian institute of technology jodhpur",
+        "indian institute of technology jodhpur (i.i.t.j.), india",
+        "indian institute of technology jodhpur (i.i.t.j.), india",
+        "indian institute of technology, jodhpur",
+        "indian institute of technology, jodhpur",
+        "jodhpur institute of engineering & technology, india",
+        "jodhpur institute of engineering & technology, india"
+      ],
+      "strategy": "widget",
+      "chosen": "Indian Institute of Technology Jodhpur | Indian Institute of Technology Jodhpur",
+      "value": "Indian Institute of Technology Jodhpur | Indian Institute of Technology Jodhpur",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "my experience",
+      "label": "LinkedIn",
+      "id": "socialNetworkAccounts--linkedInAccount",
+      "name": "linkedInAccount",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "https://www.linkedin.com/in/sunil4832sharma"
+    },
+    {
+      "step": "my experience",
+      "label": "Degree*",
+      "id": "education-114--degree",
+      "name": "degree",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "Master of Education (Ed.M)",
+        "Post Graduate Diploma",
+        "High School, GED",
+        "Degree not completed",
+        "Degree in progress",
+        "Graduate Diploma",
+        "Associate of Arts",
+        "Associate of Science",
+        "Bachelor of Arts",
+        "Bachelor of Business Management",
+        "Bachelor of Commerce",
+        "Bachelor of Engineering",
+        "Bachelor of Science",
+        "Doctor of Education",
+        "Juris Doctor",
+        "Master of Arts",
+        "Master of Business Administration",
+        "Master of Science",
+        "Master of Public Policy",
+        "Doctor of Philosophy"
+      ],
+      "strategy": "listbox",
+      "value": "Master of Education (Ed.M)",
+      "dummy": true
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Would you consider relocating for this role?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcdd5a29860000",
+      "name": "ec1d4a8375ea10003bbcdd5a29860000",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "I am local to where the job is posted",
+        "Yes, I would consider relocating for this role",
+        "No, I am not able to relocate for this role"
+      ],
+      "strategy": "listbox",
+      "value": "No, I am not able to relocate for this role",
+      "dummy": true
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Are you subject to any non-compete or non-solicitation restrictions at your current or most recent employer?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcde8e01230001",
+      "name": "ec1d4a8375ea10003bbcde8e01230001",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "strategy": "listbox",
+      "value": "no",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "In your current job, do you use or work on the Workday system?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcdf285e010001",
+      "name": "ec1d4a8375ea10003bbcdf285e010001",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "Yes, I work for a partner implementing or supporting Workday projects",
+        "Yes, I am directly involved with supporting Workday from a customer's perspective",
+        "Yes, I occasionally use the Workday system in my current job (to complete items such as: review benefit elections, retrieve paystubs and compensation details, submit payroll and time-tracking requirements, and other typical worker tasks)",
+        "No, I do not use the Workday system in my current job"
+      ],
+      "strategy": "listbox",
+      "value": "No, I do not use the Workday system in my current job",
+      "dummy": true
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Are you authorized to work in the country where this job is located?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcdfc217650001",
+      "name": "ec1d4a8375ea10003bbcdfc217650001",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "No",
+      "value": "No"
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Do you now or in the future require any immigration filing or visa sponsorship to maintain work authorization, including sponsorship by Workday, renewal/extensi",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcdfc217650004",
+      "name": "ec1d4a8375ea10003bbcdfc217650004",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Are you a current or former employee of the United States government?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbce05c7b530001",
+      "name": "ec1d4a8375ea10003bbce05c7b530001",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "No",
+      "value": "No"
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "This information is sought for compliance with U.S. Export Control laws. All information that you provide will be considered in accordance with applicable law.",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbce7971a140005",
+      "name": "ec1d4a8375ea10003bbce7971a140005",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "listbox",
+      "value": "No",
+      "dummy": true
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Are you related to a current Workday employee?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbce9680dd00000",
+      "name": "ec1d4a8375ea10003bbce9680dd00000",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "No",
+      "value": "No"
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?*",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbce9680dd00004",
+      "name": "ec1d4a8375ea10003bbce9680dd00004",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "No",
+      "value": "No"
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "Are you (i) a current or recent former (within the preceding 24 months) employee of Ernst & Young, LLP, Workday\u2019s independent auditors, or (ii) a current or for",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcea02955c0002",
+      "name": "ec1d4a8375ea10003bbcea02955c0002",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "listbox",
+      "value": "No",
+      "dummy": true
+    },
+    {
+      "step": "application questions 1 of 2",
+      "label": "I acknowledge that I have read, understood and reviewed the above questions, and I have answered them truthfully and accurately. I further understand, and agree",
+      "id": "primaryQuestionnaire--ec1d4a8375ea10003bbcea02955c0005",
+      "name": "ec1d4a8375ea10003bbcea02955c0005",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions 2 of 2",
+      "label": "Click on the link below to review the Non Disclosure Agreement.",
+      "id": "secondaryQuestionnaire--0de44b7f52b0102375b02de60eb70000",
+      "name": "0de44b7f52b0102375b02de60eb70000",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "I have read and agree to the Non Disclosure Agreement",
+        "I have read and DO NOT agree to the Non Disclosure Agreement"
+      ],
+      "strategy": "listbox",
+      "value": "I have read and agree to the Non Disclosure Agreement",
+      "dummy": true
+    },
+    {
+      "step": "application questions 2 of 2",
+      "label": "Please enter your name:*",
+      "id": "secondaryQuestionnaire--0de44b7f52b0102375b02f1c06900005",
+      "type": "textarea",
+      "tag": "textarea",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil Kumar Sharma"
+    },
+    {
+      "step": "application questions 2 of 2",
+      "label": "Click on the link below to review the Arbitration Agreement.",
+      "id": "secondaryQuestionnaire--0de44b7f52b0102375b02f1c06900002",
+      "name": "0de44b7f52b0102375b02f1c06900002",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "i have read and agree to the mutual arbitration agreement",
+        "i have read and do not agree to the mutual arbitration agreement"
+      ],
+      "strategy": "listbox",
+      "value": "i have read and agree to the mutual arbitration agreement",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "Gender:",
+      "id": "personalInfoUS--gender",
+      "name": "gender",
+      "type": "listbox",
+      "tag": "button",
+      "strategy": "listbox",
+      "chosen": "Male",
+      "value": "Male"
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "Ethnicity (Single Selection):",
+      "id": "personalInfoUS--ethnicity",
+      "name": "ethnicity",
+      "type": "listbox",
+      "tag": "button",
+      "strategy": "listbox",
+      "chosen": "decline to answer (united states of america) (for 'decline to self-identify')",
+      "value": "Decline to self-identify"
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "I acknowledge Workday\u2019s Recruitment Privacy Statement and VIBE Philosophy.*",
+      "ask": "I acknowledge Workday\u2019s Recruitment Privacy Statement and VIBE Philosophy.* I acknowledge Workday\u2019s Recruitment Privacy Statement and VIBE Philosophy.*",
+      "name": "acceptTermsAndAgreements",
+      "type": "checkbox",
+      "required": true,
+      "options": [
+        "I acknowledge Workday\u2019s Recruitment Privacy Statement and VIBE Philosophy.*"
+      ],
+      "strategy": "check",
+      "chosen": "I acknowledge Workday\u2019s Recruitment Privacy Statement and VIBE Philosophy.*",
+      "value": "confirmed"
+    }
+  ],
+  "placeholders": {
+    "How Did You Hear About Us?*": "Internet Advertisement | Internet Advertisement",
+    "Job Title*": "To be confirmed",
+    "Company*": "To be confirmed",
+    "School or University*": "Indian Institute of Technology Jodhpur | Indian Institute of Technology Jodhpur",
+    "Degree*": "Master of Education (Ed.M)",
+    "Would you consider relocating for this role?*": "No, I am not able to relocate for this role",
+    "Are you subject to any non-compete or non-solicitation restrictions at your current or most recent employer?*": "no",
+    "In your current job, do you use or work on the Workday system?*": "No, I do not use the Workday system in my current job",
+    "This information is sought for compliance with U.S. Export Control laws. All information that you provide will be considered in accordance with applicable law.": "No",
+    "Are you (i) a current or recent former (within the preceding 24 months) employee of Ernst & Young, LLP, Workday\u2019s independent auditors, or (ii) a current or for": "No",
+    "Click on the link below to review the Non Disclosure Agreement.": "I have read and agree to the Non Disclosure Agreement",
+    "Click on the link below to review the Arbitration Agreement.": "i have read and agree to the mutual arbitration agreement"
+  },
+  "attempts": []
+}

@@ -1,0 +1,475 @@
+{
+  "url": "https://adobe.wd5.myworkdayjobs.com/external_experienced/job/Seattle/Research-Engineer_R166886",
+  "platform": "workday",
+  "explored_at": "2026-09-25T13:12:51",
+  "reached_end": true,
+  "frame": null,
+  "start": null,
+  "pages": [
+    {
+      "n": 1,
+      "heading": "my information"
+    },
+    {
+      "n": 2,
+      "heading": "my experience"
+    },
+    {
+      "n": 3,
+      "heading": "application questions"
+    },
+    {
+      "n": 4,
+      "heading": "voluntary disclosures"
+    },
+    {
+      "n": 5,
+      "heading": "review"
+    }
+  ],
+  "submit": null,
+  "recipes": [
+    {
+      "step": "my information",
+      "label": "How Did You Hear About Us?*",
+      "id": "source--source",
+      "type": "text",
+      "tag": "input",
+      "combobox": true,
+      "required": true,
+      "strategy": "widget",
+      "chosen": "LinkedIn | LinkedIn",
+      "value": "LinkedIn"
+    },
+    {
+      "step": "my information",
+      "label": "Given Name(s)*",
+      "id": "name--legalName--firstName",
+      "name": "legalName--firstName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "my information",
+      "label": "Family Name",
+      "id": "name--legalName--lastName",
+      "name": "legalName--lastName",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "my information",
+      "label": "Local Given Name(s)",
+      "id": "name--legalName--firstNameLocal",
+      "name": "legalName--firstNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sunil"
+    },
+    {
+      "step": "my information",
+      "label": "Local Family Name",
+      "id": "name--legalName--lastNameLocal",
+      "name": "legalName--lastNameLocal",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Sharma"
+    },
+    {
+      "step": "my information",
+      "label": "Address Line 1",
+      "id": "address--addressLine1",
+      "name": "addressLine1",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "City",
+      "id": "address--city",
+      "name": "city",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "Postal Code",
+      "id": "address--postalCode",
+      "name": "postalCode",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "110019"
+    },
+    {
+      "step": "my information",
+      "label": "Email*",
+      "id": "emailAddress--emailAddress",
+      "name": "emailAddress",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "sunil4832sharma@gmail.com"
+    },
+    {
+      "step": "my information",
+      "label": "Phone Number*",
+      "id": "phoneNumber--phoneNumber",
+      "name": "phoneNumber",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "9641298471"
+    },
+    {
+      "step": "my information",
+      "label": "Country*",
+      "id": "country--country",
+      "name": "country",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "India",
+      "value": "India"
+    },
+    {
+      "step": "my information",
+      "label": "State*",
+      "id": "address--countryRegion",
+      "name": "countryRegion",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Delhi",
+      "value": "Delhi"
+    },
+    {
+      "step": "my information",
+      "label": "Phone Device Type*",
+      "id": "phoneNumber--phoneType",
+      "name": "phoneType",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Mobile",
+      "value": "Mobile"
+    },
+    {
+      "step": "my information",
+      "label": "Have you been employed by Adobe in the past?*",
+      "ask": "Have you been employed by Adobe in the past?* Yes No",
+      "name": "candidateIsPreviousWorker",
+      "type": "radio",
+      "required": true,
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "strategy": "check",
+      "chosen": "No",
+      "value": "no"
+    },
+    {
+      "step": "my experience",
+      "label": "Location",
+      "id": "workExperience-4--location",
+      "name": "location",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "my experience",
+      "label": "Job Title*",
+      "id": "workExperience-50--jobTitle",
+      "name": "jobTitle",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Company*",
+      "id": "workExperience-50--companyName",
+      "name": "companyName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Location",
+      "id": "workExperience-50--location",
+      "name": "location",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "my experience",
+      "label": "Job Title*",
+      "id": "workExperience-75--jobTitle",
+      "name": "jobTitle",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Company*",
+      "id": "workExperience-75--companyName",
+      "name": "companyName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "To be confirmed",
+      "dummy": true
+    },
+    {
+      "step": "my experience",
+      "label": "Location",
+      "id": "workExperience-75--location",
+      "name": "location",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "Delhi, India"
+    },
+    {
+      "step": "my experience",
+      "label": "School or University*",
+      "id": "education-5--schoolName",
+      "name": "schoolName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Indian Institute of Technology Jodhpur (IITJ)"
+    },
+    {
+      "step": "my experience",
+      "label": "School or University*",
+      "id": "education-120--schoolName",
+      "name": "schoolName",
+      "type": "text",
+      "tag": "input",
+      "required": true,
+      "strategy": "fill",
+      "value": "Indian Institute of Technology Jodhpur (IITJ)"
+    },
+    {
+      "step": "my experience",
+      "label": "Share your LinkedIn Profile site",
+      "id": "socialNetworkAccounts--linkedInAccount",
+      "name": "linkedInAccount",
+      "type": "text",
+      "tag": "input",
+      "strategy": "fill",
+      "value": "https://www.linkedin.com/in/sunil4832sharma"
+    },
+    {
+      "step": "my experience",
+      "label": "Degree*",
+      "id": "education-120--degree",
+      "name": "degree",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "High School",
+        "Associates",
+        "Bachelors",
+        "Masters",
+        "Doctorate",
+        "JD"
+      ],
+      "strategy": "listbox",
+      "value": "High School",
+      "dummy": true
+    },
+    {
+      "step": "application questions",
+      "label": "Are you of legal age to work in the country in which this position will be based?*",
+      "id": "primaryQuestionnaire--305a1163be7301083ded7092b201bf8a",
+      "name": "305a1163be7301083ded7092b201bf8a",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "strategy": "listbox",
+      "value": "no",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "application questions",
+      "label": "Are you willing to submit a background check during the hiring process?*",
+      "id": "primaryQuestionnaire--305a1163be7301b985577192b201c88a",
+      "name": "305a1163be7301b985577192b201c88a",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions",
+      "label": "If you are offered employment by Adobe, can you provide documentation establishing your identity and right to work in the country where this position will be ba",
+      "id": "primaryQuestionnaire--305a1163be7301c9e1697192b201cb8a",
+      "name": "305a1163be7301c9e1697192b201cb8a",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "strategy": "listbox",
+      "value": "no",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "application questions",
+      "label": "Are you able to work on a daily basis in the work location listed for this position?  If not, are you willing to relocate at your own expense to accept a positi",
+      "id": "primaryQuestionnaire--305a1163be73017aae7b7192b201ce8a",
+      "name": "305a1163be73017aae7b7192b201ce8a",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions",
+      "label": "Will you now or in the future require sponsorship for employment visa status (e.g., H-1B visa status, spouse visa, etc)?*",
+      "id": "primaryQuestionnaire--305a1163be7301787b8d7192b201d18a",
+      "name": "305a1163be7301787b8d7192b201d18a",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Yes",
+      "value": "Yes"
+    },
+    {
+      "step": "application questions",
+      "label": "Employee",
+      "ask": "Employee Employee Intern Temporary Agency or Vendor Other I have not worked for Adobe in the past.",
+      "name": "Employee",
+      "type": "checkbox",
+      "required": true,
+      "options": [
+        "Employee",
+        "Intern",
+        "Temporary Agency or Vendor",
+        "Other",
+        "I have not worked for Adobe in the past."
+      ],
+      "strategy": "check",
+      "chosen": "I have not worked for Adobe in the past.",
+      "value": "no"
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "Please select your veteran status.*",
+      "id": "personalInfoUS--veteranStatus",
+      "name": "veteranStatus",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "options": [
+        "i identify with one or more of the classifications of protected veterans listed above",
+        "i identify as a veteran, just not a protected veteran",
+        "i am not a veteran",
+        "i do not wish to self-identify"
+      ],
+      "strategy": "listbox",
+      "value": "i identify with one or more of the classifications of protected veterans listed above",
+      "dummy": true,
+      "mismatch": true
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "Please select your gender.*",
+      "id": "personalInfoUS--gender",
+      "name": "gender",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "Male",
+      "value": "Male"
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "Please select your ethnicity.*",
+      "id": "personalInfoUS--ethnicity",
+      "name": "ethnicity",
+      "type": "listbox",
+      "tag": "button",
+      "required": true,
+      "strategy": "listbox",
+      "chosen": "declined to state (united states of america) (for 'decline to self-identify')",
+      "value": "Decline to self-identify"
+    },
+    {
+      "step": "voluntary disclosures",
+      "label": "Check this box to confirm the statement above.*",
+      "ask": "Check this box to confirm the statement above.* Check this box to confirm the statement above.*",
+      "name": "acceptTermsAndAgreements",
+      "type": "checkbox",
+      "required": true,
+      "options": [
+        "Check this box to confirm the statement above.*"
+      ],
+      "strategy": "check",
+      "chosen": "Check this box to confirm the statement above.*",
+      "value": "Check this box to confirm the statement above.*",
+      "dummy": true
+    }
+  ],
+  "placeholders": {
+    "Job Title*": "To be confirmed",
+    "Company*": "To be confirmed",
+    "Degree*": "High School",
+    "Are you of legal age to work in the country in which this position will be based?*": "no",
+    "If you are offered employment by Adobe, can you provide documentation establishing your identity and right to work in the country where this position will be ba": "no",
+    "Please select your veteran status.*": "i identify with one or more of the classifications of protected veterans listed above",
+    "Check this box to confirm the statement above.*": "Check this box to confirm the statement above.*"
+  },
+  "attempts": []
+}

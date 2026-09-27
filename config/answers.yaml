@@ -343,6 +343,9 @@ screening:
   non_compete_restrictions: false
   agree_to_background_check: true
   agree_to_drug_test: true
+  # a form's own acknowledgement box: "I have read and agree", "Check this box to
+  # confirm the statement above" (the information given is true, the terms read)
+  confirm_form_statements: true
   willing_to_travel: true
   travel_percentage_ok: "up to 25%"
   remote_or_onsite_preference: "Open — onsite, hybrid, or remote"

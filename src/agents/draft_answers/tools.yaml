@@ -1,0 +1,9 @@
+# Drafts tappable answers for the questions an exploration could not answer.
+# Reads the application's tailored resume and the stored answers; writes only the
+# questions file it is given. No Bash.
+llm: questions
+max_turns: true
+timeout: 600
+add_dirs: ["{tracking}", "{tool}"]
+allowed_tools: [Read, Glob, Grep, "Edit(/{qfile})"]    # an Edit rule on an absolute path (//...) also covers Write
+params: [appdir, qfile, resume, answers_file, policy, jd]

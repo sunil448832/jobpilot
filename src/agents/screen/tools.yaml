@@ -1,0 +1,8 @@
+# Screens a batch of scraped roles: keep / reject + a fit score, as JSON.
+# One turn, no tools: the prompt carries the whole base resume and the markets
+# policy, and the roles are appended by screen.build_prompt — a single answer.
+llm: screen
+max_turns: 1
+timeout: 900
+allowed_tools: []
+params: [resume, policy, name, citizenship, country, years, max_years]

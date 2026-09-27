@@ -54,7 +54,7 @@ def add(url, note=""):
     except Exception:
         market = None
     if not market:
-        from jobpilot.fill.autofill import detect_market
+        from jobpilot.core.answers import detect_market
         market = detect_market(location, text)
 
     key = intake.key_for(company, title, location)

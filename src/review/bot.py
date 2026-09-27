@@ -260,6 +260,13 @@ def resolve_decision(token, chat, item, decision):
         call(token, "sendMessage", chat_id=chat,
              text="⚠️ Still has an unanswered required question — answer it first.")
         return
+    if decision == APPROVED and item.get("reached_end") is False:
+        # Same rule as the review page: an exploration that stopped short has
+        # nothing to approve. Re-exploring is started from the page.
+        call(token, "sendMessage", chat_id=chat,
+             text="⚠️ Its exploration stopped before the last page — nothing to approve yet. "
+                  "Open it on the review page and tap Re-explore.")
+        return
     item["status"] = decision
     item["decided_at"] = dt.datetime.now().isoformat(timespec="seconds")
     save_item(item)
@@ -288,8 +295,8 @@ def answer_question(token, chat, item, qid, text, source):
     item.setdefault("fields", {})[q["label"][:80]] = text
     save_item(item)
     try:
-        from jobpilot.fill import replay as R
-        R.apply_answers(item, {q["label"]: text})       # backfill replay.json now
+        from jobpilot.apply.explore import record as R
+        R.apply_answers(item, {q["label"]: text})       # backfill explore.json now
     except Exception as e:
         print(f"  [warn] replay.json not updated: {e}")
     print(f"  [answered:{source}] {item['id']} q{qid} -> {text[:70]}")

@@ -97,6 +97,12 @@ h1,h2,h3{font-family:"Bricolage Grotesque","Source Sans 3",sans-serif;margin:0;t
 .q-label{font-size:14.5px;font-weight:600;line-height:1.42}
 .q-note{font-size:12.5px;font-weight:400;color:var(--muted);margin-top:3px}
 .req{color:var(--warn);font-weight:700}
+.q-where{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.pg{padding:10px 17px 4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--sunk);border-bottom:1px solid var(--line)}
+.src{display:inline-block;font-family:"Source Sans 3",sans-serif;font-size:10.5px;letter-spacing:.04em;padding:0 6px;border-radius:99px;margin-left:6px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.src.pick{background:var(--warn-soft);color:var(--warn)}
+.src.you{background:var(--accent-soft);color:var(--accent)}
+.shot{display:inline-block;margin-left:14px;margin-top:14px;font-size:14px;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-line);padding-bottom:1px}
 .opts{display:flex;flex-direction:column}
 .opt{display:flex;gap:11px;align-items:flex-start;padding:13px 17px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .12s}
 .opt:last-child{border-bottom:none}
@@ -144,6 +150,9 @@ button:not(:disabled):hover{filter:brightness(1.08)}
 .result.show{display:block}
 .empty{background:var(--ok-soft);border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:var(--r);padding:15px 17px;font-size:14.5px;color:var(--ink-2)}
 .result h2{font-size:17px;margin-bottom:5px}
+.undo{background:transparent;color:var(--accent);border:1px solid var(--accent-line);padding:7px 14px;font-size:14px;margin-top:10px}
+.flag.done{background:var(--accent-soft);border-left-color:var(--accent)}
+.flag.done b{color:var(--accent)}
 .result p{margin:0;color:var(--ink-2);font-size:14.5px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -155,6 +164,7 @@ button:not(:disabled):hover{filter:brightness(1.08)}
     <div class="co" id="co"></div>
     <dl class="meta" id="meta"></dl>
     <a class="jd" id="jd" target="_blank" rel="noopener">Read the full posting →</a>
+    <a class="shot" id="shot" target="_blank" rel="noopener">See the filled form →</a>
   </header>
 
   <div class="flags" id="flags"></div>
@@ -194,6 +204,7 @@ $("#meta").innerHTML = [
   ["Resume", (DATA.resume || "").split("/").pop() || "—"],
 ].map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
 if (DATA.url) $("#jd").href = DATA.url; else $("#jd").style.display = "none";
+if (DATA.shot) $("#shot").href = DATA.shot + location.search; else $("#shot").style.display = "none";
 
 /* flags -------------------------------------------------------------- */
 $("#flags").innerHTML = (DATA.flags || []).map(f =>
@@ -208,6 +219,36 @@ if (DATA.fail) {
   if (f.status === "failed") $("#approve").textContent = "Retry with these answers";
 }
 
+/* an exploration that stopped short: the button starts a new one */
+if (DATA.explore_failed) {
+  $("#flags").innerHTML = `<div class="flag" style="border-left-color:#D2453B"><b>Not ready</b>` +
+    `<span>${esc(DATA.explore_reason || "The exploration stopped before the last page")}. ` +
+    `Answer what you can below, then Re-explore: the form is walked again with your answers ` +
+    `and comes back here when it reaches the end.</span></div>` + $("#flags").innerHTML;
+  $("#approve").textContent = "Re-explore with these answers";
+}
+
+/* a decision already made on this card: say so, and offer to take it back */
+const WORD = {approved: "Approved", rejected: "Rejected", deferred: "Kept for later"};
+if (DATA.can_undo) {
+  $("#flags").innerHTML = `<div class="flag done"><b>${esc(WORD[DATA.decided] || "Decided")}</b>` +
+    `<span>on ${esc(String(DATA.decided_at || "").replace("T", " ").slice(0, 16))}. Changed your mind? ` +
+    `<button class="undo" onclick="undo()">Undo</button></span></div>` + $("#flags").innerHTML;
+}
+async function undo() {
+  const h = $("#hint");
+  h.className = "hint"; h.textContent = "Undoing…";
+  try {
+    const url = location.pathname.replace(/\/$/, "") + "/submit" + location.search;
+    const r = await fetch(url, {method: "POST", headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({item: DATA.id, decision: "undo"})});
+    if (!r.ok) throw new Error(await r.text());
+    location.href = location.pathname + location.search + (location.search ? "&" : "?") + "_=" + Date.now();
+  } catch (e) {
+    h.className = "hint bad"; h.textContent = "Couldn't undo: " + (e.message || e);
+  }
+}
+
 /* questions ---------------------------------------------------------- */
 const qs = DATA.questions || [];
 $("#count").textContent = qs.length ? `0 / ${qs.length}` : "none";
@@ -220,7 +261,7 @@ $("#questions").innerHTML += qs.map((q, i) => `
   <section class="q" id="q${i}">
     <div class="q-head">
       <span class="q-n">${i + 1}</span>
-      <span class="q-label">${esc(q.label)}${q.required ? ' <span class="req">*</span>' : ""}${q.note ? `<div class="q-note">${esc(q.note)}</div>` : ""}</span>
+      <span class="q-label">${q.where ? `<div class="q-where">${esc(q.where)}</div>` : ""}${esc(q.label)}${q.required ? ' <span class="req">*</span>' : ""}${q.note ? `<div class="q-note">${esc(q.note)}</div>` : ""}</span>
     </div>
     <div class="opts">
       ${(q.options || []).map((o, j) => `
@@ -234,11 +275,20 @@ $("#questions").innerHTML += qs.map((q, i) => `
       </label>
     </div>
     <div class="own-box" id="own${i}">
-      <textarea id="ta${i}" placeholder="Type your answer — I'll use it verbatim and redraft the options from it."></textarea>
+      <textarea id="ta${i}" placeholder="${q.kind === "select"
+        ? "Type the entry as the form's list words it — it is looked up in that list."
+        : "Type your answer — it is used as written."}"></textarea>
     </div>
   </section>`).join("");
 
 qs.forEach((q, i) => {
+  /* the choice the form was explored with starts selected: one tap to keep it */
+  const pre = (q.options || []).indexOf(q.value);
+  if (pre >= 0) {
+    const r = document.getElementsByName("q" + i)[pre];
+    r.checked = true;
+    answers[i] = { kind: "picked", index: pre, text: q.options[pre] };
+  }
   document.getElementsByName("q" + i).forEach(r => r.addEventListener("change", () => {
     const own = r.value === "own";
     $("#own" + i).classList.toggle("show", own);
@@ -274,10 +324,20 @@ function refresh() {
 }
 
 /* fields ------------------------------------------------------------- */
-const fe = Object.entries(DATA.fields || {});
-$("#nfields").textContent = fe.length;
-$("#fields").innerHTML = fe.map(([k, v]) =>
-  `<div class="fld"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+const SRC = {fact: ["from your profile", ""], pick: ["picked from the form's choices", "pick"],
+             you: ["your answer", "you"], shown: ["already on the form", ""]};
+if (DATA.values && DATA.values.length) {
+  $("#nfields").textContent = DATA.values.reduce((n, p) => n + p.rows.length, 0);
+  $("#fields").innerHTML = DATA.values.map(p => `<div class="pg">${esc(p.page)}</div>` + p.rows.map(r => {
+    const [t, c] = SRC[r.src] || ["", ""];
+    return `<div class="fld"><dt>${esc(r.label)}${t ? `<span class="src ${c}">${t}</span>` : ""}</dt><dd>${esc(r.value)}</dd></div>`;
+  }).join("")).join("");
+} else {
+  const fe = Object.entries(DATA.fields || {});
+  $("#nfields").textContent = fe.length;
+  $("#fields").innerHTML = fe.map(([k, v]) =>
+    `<div class="fld"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+}
 
 /* submit ------------------------------------------------------------- */
 const LOCAL = !window.claude;           // served from the local machine
@@ -313,14 +373,22 @@ async function send(decision) {
     decided = true;
     $("#approve").disabled = true; $("#skip").disabled = true;
     $("#result").classList.add("show");
-    $("#rtitle").textContent = {approved: "Approved", deferred: "Kept for later",
+    const again = decision === "approved" && DATA.explore_failed;
+    $("#rtitle").textContent = again ? "Re-exploring" : {approved: "Approved", deferred: "Kept for later",
                                 rejected: "Rejected"}[decision];
-    $("#rbody").textContent = {
+    $("#rbody").textContent = again
+      ? "Saved. The form is being walked again with your answers; the new card comes back here when it reaches the end."
+      : {
       approved: "Saved. Your machine will fill the form again with these answers and submit.",
       deferred: "Kept in the queue. It will still be there next time — nothing was discarded.",
       rejected: "Dropped from the queue. It will not be shown again.",
     }[decision];
     h.className = "hint good"; h.textContent = "Saved";
+    if (LOCAL && !again) {
+      const u = document.createElement("button");
+      u.className = "undo"; u.textContent = "Undo"; u.onclick = undo;
+      $("#result").appendChild(u);
+    }
     // Back to the list by a fresh GET (cache-busting param), never by history —
     // the back button restored a stale list on the phone.
     const back = document.createElement("a");
@@ -345,6 +413,45 @@ refresh();
 """
 
 
+def values_by_page(item):
+    """The values the submit will type, page by page, from the exploration record:
+    a readable label (the section it sits in, without the page's numbering) and
+    where each value came from — so a choice the map picked stands out."""
+    import re
+    try:
+        rec = json.load(open(os.path.join(TOOL, item["replay"])))
+    except (KeyError, OSError, ValueError):
+        return []
+    out = []
+    for p in rec.get("pages", []):
+        rows = []
+        for a in p.get("actions", []):
+            name, src = a.get("name", ""), a.get("source") or ""
+            sect, _, base = name.rpartition(" › ")
+            label = re.sub(r"\s*#\d+$", "", base or name)
+            numbered = base or name                 # "Field of Study #2": its number, when nothing names its section
+            fact = src[5:] if src.startswith("fact:") else ""
+            m = re.match(r"^(employment|education)\[(\d+)\]\.(\w+)(?:\.(\w+))?", fact)
+            if m:                               # "Job 2 · end month", not "Month #3"
+                what = {"employment": "Job", "education": "Education"}[m[1]]
+                if m[3].endswith("_date"):
+                    label = f"{m[3][:-5]} {m[4] or 'date'}"
+                label = f"{what} {int(m[2]) + 1} · {label}"
+            elif sect:
+                label = f"{sect} · {label}"
+            else:
+                label = numbered
+            value = str(a.get("value") or "")
+            if a.get("kind") == "file":
+                value = os.path.basename(value)
+            rows.append({"label": label, "value": value[:300],
+                         "src": ("fact" if src.startswith("fact:") else "pick" if src == "choice"
+                                 else "you" if src.startswith("placeholder:") else "shown" if src == "shown" else "")})
+        if rows:
+            out.append({"page": p.get("step", "").title(), "rows": rows})
+    return out
+
+
 def build(item):
     flags = []
     for w in item.get("warnings", []):
@@ -352,6 +459,8 @@ def build(item):
         if "question" in first.lower():
             continue
         flags.append({"tag": "Check", "text": first[:200]})
+    for q, how in (item.get("answer_map") or {}).items():
+        flags.append({"tag": "Mapped", "text": f"'{q[:70]}' answered from your stored {how[:120]}"})
     for note in item.get("manual_flags", []):
         flags.append({"tag": note.get("tag", "Note"), "text": note.get("text", "")})
 
@@ -363,6 +472,17 @@ def build(item):
                 "shot": ("/shot/" + os.path.basename(shot)[:-4]) if shot.endswith(".png") else None}
     data = {
         "fail": fail,
+        "values": values_by_page(item),
+        # the card's last decision can be taken back until it is being filed
+        "can_undo": bool(item.get("undo")) and not item.get("submitted_at")
+                    and item.get("status") not in ("submitted", "submitting", "exploring"),
+        "decided": ("deferred" if item.get("status") in ("pending", "needs_input") else item.get("status")),
+        "decided_at": item.get("decided_at") or "",
+        "shot": ("/shot/" + os.path.basename(item["screenshot"])[:-4])
+                if str(item.get("screenshot") or "").endswith(".png") else None,
+        # an exploration that stopped before the last page: nothing to approve yet
+        "explore_failed": item.get("reached_end") is False and not item.get("manual"),
+        "explore_reason": item.get("fail_reason") or "",
         "id": item["id"], "company": item.get("company"), "role": item.get("role"),
         "location": item.get("location"), "url": item.get("url"),
         "portal": item.get("portal"), "market": item.get("market"),
@@ -370,7 +490,10 @@ def build(item):
         "resume": item.get("resume"), "fields": item.get("fields", {}),
         "questions": [
             {"qid": q["qid"], "label": q["label"], "required": q.get("required", False),
-             "options": q.get("options", []), "note": q.get("note") or ""}
+             "options": q.get("options", []), "note": q.get("note") or "",
+             "kind": q.get("kind", "select"), "value": q.get("value") or "",
+             "where": " · ".join(x for x in (str(q.get("page") or "").title(), q.get("field") or "")
+                                 if x and x != q["label"])}
             for q in item.get("questions", []) if q.get("status") != "answered"
         ],
         "flags": flags,

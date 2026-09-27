@@ -8,6 +8,9 @@ applications/*/sunil_resume.pdf
 applications/*/sunil_resume.docx
 applications/*/ats.md
 applications/*/resume.pdf
+# the exploration's own record and page captures: machine-written, rewritten every run
+applications/*/explore.json
+applications/*/pages/
 *.aux
 *.log
 *.out

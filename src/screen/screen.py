@@ -47,72 +47,7 @@ from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, 
 from jobpilot.core.config import cfg  # noqa: E402
 DB = os.path.join(DATA, "state.db")
 
-PROMPT_HEAD = """You are screening a job shortlist for Sunil Kumar Sharma before any
-effort is spent tailoring a resume. Read jobs/POLICY.md first — section 1 for what
-is true about him, section 4 for his markets and sponsorship situation.
-
-The short version: Indian citizen, resident in India, ~5 years experience (3 in
-GenAI/agentic/LLM), ex-Amazon Applied Scientist, M.Tech AI from IIT Jodhpur. He
-NEEDS visa sponsorship to work outside India, or a fully-remote role that hires
-from India. He does NOT have Apache Spark, Azure, GCP, Databricks platform,
-JavaScript/TypeScript, or team management.
-
-What he HAS, verbatim from the current resume's Skills section:
-{skills}
-Plus, from Experience/Projects: A2A multi-agent orchestrator + sandboxed
-data-engineering agents (CrewAI/PydanticAI, bubblewrap, DuckDB streaming); an
-agent evaluation service (28 graded tasks, F1 grader, LLM root-cause); vLLM
-serving (Phi-3 Vision, Llama-3 FP8), Qdrant hybrid retrieval compressed 8x with
-TurboQuant; RL post-training from scratch (GRPO + verifiable rewards, QLoRA on
-Qwen3-4B, colocated vLLM rollouts); LLaVA LoRA / BLIP fine-tuning; FLAVA
-multimodal classifier at Amazon; ArcFace face recognition.
-
-Calibration, learned from a 193-role comparison against a stronger model:
-  - "6+", "7+" or "8+ years" with his 5 is CREDIBLE — keep. Reject on years only
-    at 10+ or at principal/staff scope. JD year counts are aspirational.
-  - Silent on sponsorship, or simply "San Francisco" / "New York" with no
-    "must be authorized" language, is NOT a reject. Silence is not a no.
-  - "Large-scale LLM training" wanted: he has done RL post-training and LoRA
-    fine-tuning on 4B-7B models and distributed training (DeepSpeed ZeRO-3) —
-    adjacent, keep unless the JD is explicitly pretraining-at-scale only.
-  - A Data Scientist title is a reject only if the work is pure product/BI
-    analytics; DS roles on LLM evals, ML modelling or experimentation are keeps.
-
-Below are candidate roles. For EACH one decide keep or reject.
-
-REJECT when:
-  - the JD says it will not sponsor, or requires existing work authorization in a
-    country where he has none ("must be authorized to work in the US")
-  - it is remote but locked to a country he cannot work from ("Remote - US only",
-    "must reside in the UK")
-  - it is not really an IC ML/AI engineering role — a manager, sales, recruiting,
-    pure data-analyst or pure data-engineering posting
-  - the core of the job is something he does not have (a Spark/Databricks
-    platform role, a frontend role, an infra-only SRE role)
-  - it demands substantially more experience than 5 years (10+, or "principal"
-    scope) such that applying is not credible
-  - it is an internship, new-grad, or contract-to-hire position
-
-KEEP when it is a genuine IC ML/AI/data-science/forward-deployed role he could
-plausibly do, AND either sponsorship is possible or it is remote-from-India
-eligible. When the JD is silent on sponsorship, KEEP it — silence is not a no.
-
-ALSO give each role a FIT score, 0-100: how well Sunil's actual profile (the
-skills and experience above) matches what the role really requires — the way a
-hiring manager reads it, not a keyword counter:
-  - Weigh the must-haves, including ABSTRACT ones ("embedded in the research
-    community", "publications", "fintech domain") and not only tool names.
-  - A requirement phrased "at least one of A, B, C" is fully satisfied if he has
-    any one of them. Missing nice-to-haves cost little; missing must-haves cost a lot.
-  - 80+ strong match; 60-79 plausible, worth tailoring; 40-59 a stretch;
-    below 40 do not bother. Keep/reject is about eligibility; fit is about match —
-    a role can be keep with fit 35.
-
-Reply with ONLY a JSON array, no prose, no markdown fence:
-[{"id": "<the id given>", "verdict": "keep"|"reject", "fit": <0-100>, "reason": "<12 words max>"}]
-
-Roles:
-"""
+# The screening prompt and tools: src/agents/screen/.
 
 
 def shortlist(top=30, per_company=3, floor=50.0, unscreened_only=True, market=None):
@@ -177,27 +112,21 @@ def digest_jd(jd, limit=1100):
     return out[:limit]
 
 
-def skills_text():
-    """The resume's Skills section as plain text, so the screener judges against
-    what is actually on the resume today rather than a summary that drifts."""
-    import glob, re
-    try:
-        t = open(os.path.join(RESUME, "sections", "skills.tex")).read()
-    except OSError:
-        return "(skills.tex not found)"
-    t = re.sub(r"(?m)^\s*%.*$", "", t)                       # comments
-    t = re.sub(r"\\skills\{([^}]*)\}", r"\1", t)           # \skills{Label:} -> Label:
-    t = re.sub(r"\\(par|vspace\{[^}]*\}|noindent|textbf|emph)", "", t)
-    t = re.sub(r"[{}]", "", t)
-    t = t.replace("\\&", "&")
-    keep = [l.strip() for l in t.splitlines()
-            if l.strip() and not l.strip().startswith(("\\documentclass", "\\usepackage",
-                                                      "\\begin", "\\end"))]
-    return "\n".join("  " + l for l in keep)
-
-
 def build_prompt(rows):
-    parts = [PROMPT_HEAD.replace("{skills}", skills_text())]
+    from jobpilot.core import agents
+    from jobpilot.tailor import tex2md
+    from jobpilot.tailor.autotailor import policy_sections
+    # the whole base resume (rebuilt from the .tex when it changes) and the markets policy
+    resume = open(tex2md.base_md(), encoding="utf-8").read().split("-->", 1)[-1].strip()
+    # his facts come from answers.yaml and config.yaml, never from the prompt text
+    from jobpilot.core.answers import load
+    a = load("answers.yaml")
+    years = int(str(a["experience_summary"]["total_years"]).strip("+ "))
+    parts = [agents.get("screen").render(
+        resume=resume, policy=policy_sections([4]), name=a["personal"]["full_name"],
+        citizenship=a["work_authorization"]["citizenship"],
+        country=a["work_authorization"]["current_work_country"],
+        years=years, max_years=years + int(cfg("screen.years_margin", 2)))]
     for i, (key, co, title, loc, market, score, url, jd) in enumerate(rows, 1):
         parts.append(
             f"\n--- id: {i} ---\n"
@@ -360,11 +289,10 @@ def main():
 def _ask(cli, chunk, auto):
     """One claude -p call over one chunk of rows -> {row_index_in_chunk: verdict}."""
     from jobpilot.tailor import autotailor
-    prompt = build_prompt(chunk).replace("jobs/POLICY.md", POLICY)
-    p = subprocess.run([cli, "-p", prompt, *autotailor.llm_flags("screen"),
-                        "--add-dir", TRACKING, "--add-dir", TOOL,
-                        "--allowedTools", "Read", "--output-format", "text"],
-                       cwd=auto, capture_output=True, text=True, timeout=900)
+    from jobpilot.core import agents
+    ag = agents.get("screen")
+    p = subprocess.run(ag.argv(cli, build_prompt(chunk), tracking=TRACKING),
+                       cwd=auto, capture_output=True, text=True, timeout=ag.timeout(900))
     v = parse_verdicts(p.stdout or "", len(chunk))
     return v, (p.stdout or p.stderr)[-300:]
 

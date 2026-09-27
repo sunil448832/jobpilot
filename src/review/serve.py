@@ -20,6 +20,7 @@ Usage:
     python jobs/serve.py --no-token      # LAN only, skip the token
 """
 import argparse
+import copy
 import datetime as dt
 import glob
 import json
@@ -150,21 +151,31 @@ class H(BaseHTTPRequestHandler):
             # ago still read "pending". Sections + colour + a reload on pageshow.
             t = f"?t={TOKEN}" if TOKEN else ""
             SECT = [("failed", "Failed — needs a look", "red"),
-                    ("needs_input", "Need your answers", "amber"),
+                    ("exploring", "Re-exploring — back when done", "grey"),
+                    ("needs_input", "Review now — need your answers", "amber"),
                     ("manual", "Apply by hand — content ready to copy", "purple"),
-                    ("pending", "Ready to review", "blue"),
+                    ("pending", "Review now — ready to approve", "blue"),
+                    ("later", "For later review — you kept these", "grey"),
+                    ("submitting", "Filing now", "green"),
                     ("approved", "Approved — files on the next run", "green"),
                     ("submitted", "Submitted", "grey")]
             groups = {k: [] for k, _, _ in SECT}
             for i in items():
                 st = i.get("status")
+                # a role he tapped "keep for later" on waits in its own list, apart
+                # from the ones still to look at for the first time
+                if st in ("pending", "needs_input") and i.get("deferred_count"):
+                    st = "later"
                 if st in groups:
                     groups[st].append(i)
-            def card(i, colour):
+            def card(i, colour, key):
                 nq = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
                 label = {"needs_input": f"{nq} to answer", "pending": "pending", "manual": "🖐 apply by hand",
-                         "approved": "✅ approved", "submitted": "submitted",
-                         "failed": f"⚠ attempt {i.get('attempts', 1)} failed"}[i["status"]]
+                         "later": "kept for later" + (f" · {nq} to answer" if nq else ""),
+                         "approved": "✅ approved", "submitted": "submitted", "submitting": "⏳ filing now",
+                         "exploring": "🔄 re-exploring",
+                         "failed": ("⚠ exploration stopped short" if i.get("reached_end") is False
+                                    else f"⚠ attempt {i.get('attempts', 1)} failed")}[key]
                 return (f'<a class="card {colour}" href="/a/{i["id"]}{t}">'
                         f'<div class="r">{i.get("role","?")}</div>'
                         f'<div class="m">{i.get("company","?")} · {i.get("location","")}</div>'
@@ -176,7 +187,7 @@ class H(BaseHTTPRequestHandler):
                 if not groups[k]:
                     continue
                 sections += (f'<h2 class="{colour}">{title} <span>{len(groups[k])}</span></h2>'
-                             + "".join(card(i, colour) for i in groups[k]))
+                             + "".join(card(i, colour, k) for i in groups[k]))
             body = (f"<title>Applications</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
                     f"<style>{INDEX_CSS}</style>"
                     f'<div class="wrap"><h1>Applications to review</h1>'
@@ -291,6 +302,47 @@ class H(BaseHTTPRequestHandler):
 
         return self._err(404, "not found")
 
+    def _undo(self, item_id, p):
+        """The card's Undo: its last decision taken back — status, answers, the
+        record's placeholders and what was learned from it. Not once it is being
+        filed or was filed."""
+        from jobpilot.apply.draft import learn as L
+        from jobpilot.apply.explore import record as R
+        with LOCK:
+            item = json.load(open(p))
+            u = item.get("undo")
+            if item.get("submitted_at") or item.get("status") in ("submitted", "submitting", "exploring"):
+                return self._err(409, f"cannot undo: the application is {item.get('status')}")
+            if not u:
+                return self._err(409, "nothing to undo")
+            for k in ("status", "questions", "fields", "deferred_count", "decided_at"):
+                if u.get(k) is None:
+                    item.pop(k, None)
+                else:
+                    item[k] = u[k]
+            item.pop("undo", None)
+            json.dump(item, open(p, "w"), indent=2)
+            sub = os.path.join(QUEUE_DIR, f"_submission-{item_id}.json")
+            if os.path.isfile(sub):
+                os.remove(sub)
+        try:
+            doc = R.load(item["company_slug"])
+            for q, a in (u.get("placeholders") or {}).items():
+                if q in (doc.get("placeholders") or {}):
+                    doc["placeholders"][q]["answer"] = a
+                    if a is None:
+                        doc["placeholders"][q].pop("answered_at", None)
+            R.save(item["company_slug"], doc)
+        except Exception as e:
+            print(f"  [warn] undo: record not restored: {e}")
+        try:
+            if u.get("learned"):
+                L.restore(u["learned"])
+        except Exception as e:
+            print(f"  [warn] undo: learned.yaml not restored: {e}")
+        print(f"  [undo] {item_id} -> {item.get('status')}")
+        return self._ok(json.dumps({"ok": True, "status": item.get("status")}), "application/json")
+
     def do_POST(self):
         u = urlparse(self.path)
         if not self._authed(parse_qs(u.query)):
@@ -389,6 +441,8 @@ class H(BaseHTTPRequestHandler):
         p = item_path(item_id)
         if not os.path.isfile(p):
             return self._err(404, "no such application")
+        if payload.get("decision") == "undo":
+            return self._undo(item_id, p)
 
         with LOCK:
             item = json.load(open(p))
@@ -402,6 +456,10 @@ class H(BaseHTTPRequestHandler):
             # submit-approved file it a second time — and spend a second OpenAI slot.
             if item.get("status") == "submitted" or item.get("submitted_at"):
                 return self._err(409, f"already submitted on {str(item.get('submitted_at',''))[:10]} — no changes accepted")
+            if item.get("status") == "submitting":
+                return self._err(409, "being filed right now — no changes accepted")
+            # what this decision changes, kept so the card's Undo can put it back
+            before = {k: copy.deepcopy(item.get(k)) for k in ("status", "questions", "fields", "deferred_count", "decided_at")}
             for a in payload.get("answers", []):
                 for qq in item.get("questions", []):
                     if qq["qid"] == a.get("qid") and (a.get("text") or "").strip():
@@ -411,8 +469,16 @@ class H(BaseHTTPRequestHandler):
                         item.setdefault("fields", {})[qq["label"][:80]] = a["text"]
             # "deferred" goes back to pending on purpose: an unreviewed role must
             # survive to the next session. Only an explicit reject discards.
-            item["status"] = {"approved": "approved", "deferred": "pending",
+            item["status"] = {"approved": "approved",
+                              # kept for later: still unanswered questions stay asked
+                              "deferred": item["status"] if item.get("status") in ("pending", "needs_input") else "pending",
                               "rejected": "rejected", "submitted": "submitted"}[decision]
+            # An exploration that stopped short has no route to replay. Approving
+            # it (three Workday items, 2026-09-25) only queued a submit that could
+            # fail the same way; the tap means "go again with these answers".
+            reexplore = decision == "approved" and item.get("reached_end") is False and not item.get("manual")
+            if reexplore:
+                item["status"] = "exploring"
             if decision == "submitted":
                 item["submitted_at"] = dt.datetime.now().isoformat(timespec="seconds")
                 item["submitted_via"] = "manual"
@@ -426,43 +492,55 @@ class H(BaseHTTPRequestHandler):
             sub = os.path.join(QUEUE_DIR, f"_submission-{item_id}.json")
             json.dump(payload, open(sub, "w"), indent=2)
 
-        # Write his answers into the application's replay.json straight away, so
-        # the recorded fill script carries the real values, not placeholders.
+        # Write his answers into the application's record (explore.json) straight
+        # away, so the submit replays the real values, not the placeholders.
+        from jobpilot.apply.draft import learn as L
+        from jobpilot.apply.explore import record as R
         try:
-            from jobpilot.fill import replay as R
+            rec_before = {q: v.get("answer") for q, v in
+                          (R.load(item["company_slug"]).get("placeholders") or {}).items()}
+        except Exception:
+            rec_before = {}
+        learned_before = L.snapshot()
+        try:
             answered = {q["label"]: q["selected"] for q in item.get("questions", [])
                         if q.get("status") == "answered" and (q.get("selected") or "").strip()}
             n = R.apply_answers(item, answered)
             if answered:
-                print(f"  [replay] {len(answered)} answer(s) written, {n} recipe(s) updated")
+                print(f"  [record] {len(answered)} answer(s) given, {n} placeholder(s) answered")
         except Exception as e:
             print(f"  [warn] replay.json not updated: {e}")
 
         # Fold the answers into learned.yaml so they are never asked again.
         try:
-            subprocess.run([sys.executable, "-m", "jobpilot.fill.learn", sub],
+            subprocess.run([sys.executable, "-m", "jobpilot.apply.draft.learn", sub],
                            check=False, timeout=30)
         except Exception as e:
             print(f"  [warn] learn.py failed: {e}")
 
+        learned_after = L.snapshot()
+        if decision != "submitted" and not reexplore:
+            with LOCK:
+                cur = json.load(open(p))
+                cur["undo"] = {**before, "placeholders": rec_before,
+                               "learned": [[m, learned_before.get(m)] for m, e in learned_after.items()
+                                           if learned_before.get(m) != e]}
+                json.dump(cur, open(p, "w"), indent=2)
+
+        if reexplore:
+            try:
+                subprocess.Popen([sys.executable, "-m", "jobpilot.apply.explore", item["company_slug"]],
+                                 cwd=TOOL, stdout=open(os.path.join(DATA, "reexplore.log"), "a"),
+                                 stderr=subprocess.STDOUT, start_new_session=True)
+                print(f"  [re-explore] {item_id} — exploration started")
+            except Exception as e:
+                print(f"  [warn] could not start the re-exploration: {e}")
+            return self._ok(json.dumps({"ok": True, "reexplore": True}), "application/json")
+
         print(f"  [{decision}] {item_id}")
 
-        n_ans = len([a for a in payload.get("answers", []) if (a.get("text") or "").strip()])
-        icon = {"approved": "✅", "deferred": "🕒", "rejected": "🚫", "submitted": "📨"}[decision]
-        word = {"approved": "APPROVED", "deferred": "KEPT FOR LATER", "submitted": "SUBMITTED BY HAND",
-                "rejected": "REJECTED"}[decision]
-        body = (f"{icon} <b>{word}</b>\n\n"
-                f"<b>{item.get('role','?')}</b>\n"
-                f"{item.get('company','?')} · {item.get('location','')}\n\n"
-                f"asking {item.get('salary_quoted','n/a')}\n"
-                f"{len(item.get('fields', {}))} fields"
-                + (f" · {n_ans} answers saved" if n_ans else "")
-                + f"\n\n<i>{item_id}</i>\n")
-        body += {"submitted": "Recorded. Tracker and follow-up date will update on the next sync.",
-                 "approved": "Nothing is sent yet — run submit-approved to file it.",
-                 "deferred": "Still in the queue. It will be waiting next time.",
-                 "rejected": "Dropped. It will not be shown again."}[decision]
-        threading.Thread(target=telegram, args=(body,), daemon=True).start()
+        # no Telegram message for a decision: the card itself says it was saved, and one
+        # message per tap buried the review-list link in the chat
 
         return self._ok(json.dumps({"ok": True}), "application/json")
 

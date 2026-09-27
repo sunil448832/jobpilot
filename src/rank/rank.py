@@ -16,7 +16,7 @@ well above 5.
 Usage:
     python jobs/rank.py                  # score everything marked 'new'
     python jobs/rank.py --top 10         # show the best, with why
-    python jobs/rank.py --queue 3        # mark the top N ready for apply.py
+    python jobs/rank.py --queue 3        # mark the top N ready for scaffolding
     python jobs/rank.py --show <key>
 """
 import argparse
@@ -233,7 +233,7 @@ def main():
         print(f"\n  queued {len(picked)} for tailoring:")
         for s, co, title, loc, market, url, why, k in picked:
             print(f"    {s:5.1f}  {co} — {title}\n           {url}")
-        print("\n  next:  python jobs/apply.py <url> --company <slug>")
+        print("\n  next:  ./jobpilot apply <url>")
 
 
 if __name__ == "__main__":

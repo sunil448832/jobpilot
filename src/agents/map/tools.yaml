@@ -1,0 +1,8 @@
+# The SEE step of exploration (fill/mapper.py): one page's snapshot + facts in,
+# [name, kind, fact] per control out. One turn, no tools — everything it needs is
+# in the prompt. Called only for controls no cached map covers.
+llm: map
+max_turns: 1
+timeout: 300
+allowed_tools: []
+params: [step, snapshot, todo, facts]

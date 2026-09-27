@@ -1,0 +1,232 @@
+"""
+platforms/workday.py — Workday: link recognition, the JD from the tenant's JSON API,
+and what only Workday needs BETWEEN its pages. Everything on a page is mapped and
+filled by the generic see / map / act engine (explore/walk.py); a tenant's page
+maps are kept per tenant (company_key) and reused across its roles.
+
+    start(page, ctx, log, press_start)
+                            the posting -> the first wizard page, through the account
+                            gate (sign in; create the account when the tenant does not
+                            know the address; an email verification asked on Telegram).
+                            Which button opens the form the map decides: press_start.
+                            Stops on a wrong password — never creates an account over
+                            one that exists.
+    step(page)              which page is showing: the progress bar's current step
+    next_page(page, step, name)  press the map's `next` button; (moved on, the page's errors)
+    is_last(step)           Review: exploration stops there, submit presses Submit
+
+Every button's name comes from the page map (Claude reads it off the page), so
+nothing here knows how a tenant words "Next" or "Apply".
+
+Credentials: ~/.config/jobbot/env (WORKDAY_EMAIL / WORKDAY_PASSWORD), never
+printed and never shown to Claude.
+"""
+import re
+import urllib.parse
+
+from jobpilot.apply.platforms._http import get, html_to_text
+
+ID = "workday"
+HOSTS = ("myworkdayjobs.com", "myworkdaysite.com")   # the same wizard on either domain
+ROUTE = "mobile"
+STANDARD = False                      # each tenant's own page maps
+WRONG_PASSWORD = re.compile(r"wrong (email address or )?password|incorrect password|account (might|may) be locked|"
+                            r"account is locked", re.I)
+
+
+def fetch_jd(url):
+    """Workday exposes the posting as JSON under /wday/cxs/<tenant>/<site>/job/<path>."""
+    p = urllib.parse.urlparse(url)
+    segs = [s for s in p.path.split("/") if s]
+    m = re.match(r"^([^.]+)\.wd\d+\.myworkdayjobs\.com$", p.netloc.lower())
+    if m:
+        tenant = m.group(1)
+    elif p.netloc.lower().endswith("myworkdaysite.com") and len(segs) > 2 and segs[0] == "recruiting":
+        tenant = segs[1]                     # wd3.myworkdaysite.com/recruiting/<tenant>/<site>/job/...
+        segs = segs[2:]
+    else:
+        return None
+    # A link copied from LinkedIn ends in ".../apply?source=LinkedIn" and may
+    # carry a locale segment; the API wants <site>/job/<location>/<posting>.
+    while segs and segs[-1].lower() in ("apply", "applymanually", "autofillwithresume"):
+        segs.pop()
+    if "job" not in segs:
+        return None
+    i = segs.index("job")
+    site = segs[i - 1] if i >= 1 else None
+    if not site or re.match(r"^[a-z]{2}-[A-Z]{2}$", site):
+        return None
+    api = f"https://{p.netloc}/wday/cxs/{tenant}/{site}/job/" + "/".join(segs[i + 1:])
+    d = get(api, as_json=True)
+    info = d.get("jobPostingInfo") or {}
+    return {
+        "title": info.get("title", ""),
+        "company": tenant.replace("-", " ").title(),
+        "location": info.get("location", ""),
+        "text": html_to_text(info.get("jobDescription", "")),
+        "apply_url": info.get("externalUrl", url),
+    }
+
+
+def company_key(url):
+    """The tenant: adobe.wd5.myworkdayjobs.com -> adobe; wd3.myworkdaysite.com/recruiting/takeaway/... -> takeaway."""
+    p = urllib.parse.urlparse(url or "")
+    m = re.match(r"^([^.]+)\.wd\d+\.myworkdayjobs\.com$", p.netloc.lower())
+    if m:
+        return m.group(1)
+    segs = [s for s in p.path.split("/") if s]
+    if len(segs) > 1 and segs[0] == "recruiting":
+        return segs[1]
+    return None
+
+
+def creds():
+    from jobpilot.core.daily import env
+    e = env()
+    return e.get("WORKDAY_EMAIL", ""), e.get("WORKDAY_PASSWORD", "")
+
+
+# ---------------------------------------------------------------- by name, like a person
+
+def _find(frame, name, roles=("button", "link")):
+    for role in roles:
+        loc = frame.get_by_role(role, name=name, exact=True)
+        if loc.count() and loc.first.is_visible():
+            return loc.first
+    return None
+
+
+def _click(frame, name):
+    loc = _find(frame, name)
+    if loc is None:
+        return False
+    loc.click(timeout=5000)
+    frame.wait_for_timeout(1500)
+    return True
+
+
+def _box(frame, pattern):
+    """The visible text box whose name matches (Email Address*, Password*)."""
+    for loc in frame.get_by_role("textbox").all():
+        try:
+            n = loc.get_attribute("aria-label") or loc.evaluate(
+                "el => (el.labels && el.labels[0] && el.labels[0].innerText) || ''")
+        except Exception:
+            continue
+        if re.search(pattern, n or "", re.I) and loc.is_visible():
+            return loc
+    return None
+
+
+def _quiet(page):
+    from jobpilot.apply.explore.browser import wait_quiet
+    wait_quiet(page.main_frame, max_s=10, quiet=2)
+
+
+# ---------------------------------------------------------------- the interface
+
+def step(page):
+    """The progress bar's current step, lower case ('my information'); '' when none."""
+    _quiet(page)
+    try:
+        t = page.evaluate("""() => {
+          const cur = document.querySelector('[aria-current="step"], [data-automation-id="progressBarActiveStep"]');
+          return cur ? cur.innerText : '';
+        }""") or ""
+    except Exception:
+        t = ""
+    t = re.sub(r"^current step \d+ of \d+\s*", "", re.sub(r"\s+", " ", t.strip().lower()))
+    return t
+
+
+def is_last(step_name):
+    return (step_name or "").startswith("review")
+
+
+def next_page(page, step_name, name):
+    """Press the page's `next` button (its name from the map). (moved on, [the page's errors])."""
+    from jobpilot.apply.explore import see
+    if not _click(page.main_frame, name):
+        return False, [f"no {name!r} button"]
+    _quiet(page)
+    if step(page) != step_name:
+        return True, []
+    return False, see.errors(page.main_frame) or ["the page did not move on and showed no error"]
+
+
+def start(page, ctx, log=print, press_start=None):
+    """From the posting to the first wizard page, through the account gate. The
+    button that opens the form is the map's (press_start)."""
+    f = page.main_frame
+    for _ in range(8):
+        _quiet(page)
+        body = (f.inner_text("body") or "").lower()[:3000]
+        if "something went wrong" in body:
+            log("    [workday] 'something went wrong' — reloading")
+            page.reload(wait_until="domcontentloaded")
+            continue
+        # the account gate first, told by its boxes — its step name varies by tenant
+        # ("Sign In", "Create Account/Sign In")
+        if _click(f, "Sign in with email"):               # the social sign-in chooser
+            continue
+        if _box(f, r"^email") and _box(f, r"^password"):
+            if not _gate(page, ctx, log):
+                return False
+            continue
+        if step(page):
+            if re.search(r"sign in|create account", step(page)):
+                page.wait_for_timeout(1500)               # the gate's own step: its boxes are still loading
+                continue
+            return True                                   # on a wizard page
+        if not (press_start and press_start(page)):
+            page.wait_for_timeout(2000)
+    log("    [workday] the application wizard did not open")
+    return False
+
+
+def _gate(page, ctx, log):
+    """Sign in; when the tenant does not know the address, create the account."""
+    f = page.main_frame
+    email, pw = creds()
+    if not (email and pw):
+        log("    [workday] WORKDAY_EMAIL / WORKDAY_PASSWORD missing in ~/.config/jobbot/env")
+        return False
+    creating = _box(f, r"verify.*password") is not None
+    if not creating:
+        _box(f, r"^email").fill(email)
+        _box(f, r"^password").fill(pw)
+        _click(f, "Sign In")
+        _quiet(page)
+        if not _box(f, r"^password"):
+            log("    [workday] signed in")
+            return True
+        from jobpilot.apply.explore import see
+        said = " ".join(see.errors(f))
+        if WRONG_PASSWORD.search(said):
+            log(f"    [workday] STOPPED — the stored password does not open this tenant's account ({said[:100]}); "
+                "reset it on the employer's Workday before retrying")
+            return False
+        if not _click(f, "Create Account"):
+            log(f"    [workday] could not sign in: {said[:120] or 'no message'}")
+            return False
+    _box(f, r"^email").fill(email)
+    _box(f, r"^password").fill(pw)
+    _box(f, r"verify.*password").fill(pw)
+    for cb in f.get_by_role("checkbox").all():            # the terms box
+        if cb.is_visible() and not cb.is_checked():
+            cb.check(force=True)
+    _click(f, "Create Account")
+    _quiet(page)
+    body = (f.inner_text("body") or "").lower()
+    if "verif" in body and "email" in body:
+        from jobpilot.review.ask import ask
+        ans = ask(f"wd-verify-{ctx.get('company_slug', 'x')}",
+                  f"{ctx.get('company', 'Workday')}: the new Workday account needs your email verified. "
+                  "Open the mail from them, click the link, then type 'done' here.", timeout=900)
+        if not ans:
+            log("    [workday] email verification not confirmed in time")
+            return False
+        page.goto(ctx["url"], wait_until="domcontentloaded", timeout=60000)
+        return True
+    log("    [workday] account created")
+    return True

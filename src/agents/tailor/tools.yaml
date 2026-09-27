@@ -1,0 +1,8 @@
+# Tailors the resume for one job: edits only the application's sections/*.tex.
+# Deliberately no Bash — the job is editing four text files.
+llm: tailor
+max_turns: false
+timeout: 900
+add_dirs: ["{tracking}", "{tool}"]
+allowed_tools: [Read, Edit, Write, Glob, Grep]
+params: [appdir, report, policy, jd]

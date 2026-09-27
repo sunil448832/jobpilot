@@ -93,7 +93,7 @@ def main():
     company_dir = os.path.join(APPLICATIONS_DIR, args.company)
     if not os.path.isdir(company_dir):
         print(f"No such company folder: {company_dir}")
-        print("Create it with: python src/apply.py <url> --company <slug>")
+        print("Create it with: ./jobpilot apply <url>")
         sys.exit(1)
 
     print(f"Building tailored resume: {args.company}")

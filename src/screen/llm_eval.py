@@ -23,7 +23,7 @@ import subprocess
 import sys
 import time
 
-from jobpilot.core.paths import DATA, TOOL, TRACKING, POLICY  # noqa: E402
+from jobpilot.core.paths import DATA, TOOL  # noqa: E402
 from jobpilot.screen import screen  # noqa: E402
 from jobpilot.tailor import autotailor  # noqa: E402
 
@@ -50,11 +50,13 @@ def labelled(limit=None):
 
 
 def run_model(model, batch, effort="low"):
-    prompt = screen.build_prompt([r[:8] for r in batch]).replace("jobs/POLICY.md", POLICY)
+    prompt = screen.build_prompt([r[:8] for r in batch])
     cli = autotailor.claude_bin()
+    # the screen agent's own settings (src/agents/screen/tools.yaml), with this model and effort
+    from jobpilot.core import agents
+    ag = agents.get("screen")
     cmd = [cli, "-p", prompt, "--model", model, "--effort", effort,
-           "--add-dir", TRACKING, "--add-dir", TOOL,
-           "--allowedTools", "Read", "--output-format", "text"]
+           "--max-turns", str(ag.spec.get("max_turns") or 1), "--output-format", "text"]
     auto = os.path.join(DATA, ".auto"); os.makedirs(auto, exist_ok=True)
     t0 = time.time()
     p = subprocess.run(cmd, cwd=auto, capture_output=True, text=True, timeout=900)

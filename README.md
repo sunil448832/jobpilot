@@ -25,16 +25,19 @@ repo** is read-only source of truth.
     discover/   intake.py careers.py find_careers.py startups.py       — find roles
     rank/       rank.py keywords.py salary.py keyword_learn.py …       — score a JD against what Sunil has
     screen/     screen.py llm_eval.py                                  — Claude: eligibility + fit score
-    tailor/     autotailor.py apply.py optimize.py build.py tex2md.py ats_score.py — per-application work
-    fill/       autofill.py browser.py walk.py session.py hooks.py replay.py learn.py platform_learn.py — explore, replay+submit,
-                                                                    learn answers, learn platforms
-      platforms/  greenhouse.py lever.py ashby.py workday.py …        — everything platform-specific, one module each
+    tailor/     autotailor.py scaffold.py optimize.py build.py tex2md.py ats_score.py — per-application work
+    apply/      the form, one sub-package per pass:
+      explore/    see.py mapper.py act.py walk.py reuse.py facts.py record.py browser.py — see / map / act, never submits
+      submit/     replay.py                                          — replays an approved exploration, then Submit
+      draft/      draft.py learn.py manual.py                        — drafted answers, learned answers, apply-by-hand
+      platforms/  greenhouse.py lever.py ashby.py workday.py …       — only what is truly platform-specific (account gate, steps)
+    agents/     map/ screen/ tailor/ draft_answers/                  — each Claude agent: prompt.md + tools.yaml
     review/     serve.py form.py bot.py keyword_form.py referral_form.py — what Sunil sees
     outreach/   referrals.py referral_tracker.py prospects.py outreach.py — referral drafting (never sending)
   config/                            what you edit: POLICY.md config.yaml targets.yaml answers.yaml learned.yaml boards.yaml
   data/                              machine-written: state.db queue/ daily.log connections.csv …
   applications/<slug>/               one application: sections/ (copy of the base), resume.tex, JD.md, built pdf+docx,
-                                     replay.json (the form's route + recipes), hooks.py (this form's own fill code, if needed)
+                                     explore.json (what the exploration did, what submit replays), pages/ (each page as seen)
   tracking/                          job-tracker.xlsx  referral-tracker.xlsx
   scripts/                           one-off setup
 
@@ -45,7 +48,7 @@ repo** is read-only source of truth.
 ```
 
 Dependencies between stages point one way — `core` ← `discover` ← `rank` ← `screen` ←
-`tailor` ← `fill` ← `review`/`outreach` — and every stage runs as a module
+`tailor` ← `apply` ← `review`/`outreach` — and every stage runs as a module
 (`python -m jobpilot.tailor.autotailor --limit 2`), so there are no path hacks: `src/core/paths.py`
 is the only file that knows where anything is. Each application carries its own `sections/`
 copy of the base resume and `resume.tex` imports that locally, so an application is
@@ -92,13 +95,15 @@ in different words, and new claims are reported, never written.
  │                  optimize.py ── add only TRUE keywords, rescore        │
  └───────────────────────┼────────────────────────────────────────────────┘
                          ▼
- ┌─ FILL ─ real Chrome, persistent profile ───────────────────────────────┐
+ ┌─ EXPLORE ─ real Chrome, persistent profile ────────────────────────────┐
  │                                                                        │
- │  autofill.py ──► browser.py ──► queue/<id>.json + .png                 │
- │  resolve every    find the ATS iframe, upload CV FIRST, wait for the   │
- │  field from       portal's own parser, re-extract, fill, screenshot.   │
- │  answers.yaml     NEVER submits on this path.                          │
- │  + learned.yaml                                                        │
+ │  per page:  SEE ──► MAP (Claude) ──► ACT ──► see again …               │
+ │  see.py      the page as a screen reader reads it + each list's        │
+ │              choices (≤30) or "a long list: search it"                 │
+ │  mapper.py   [name, kind, answer]: a fact key, option:<choice>,        │
+ │              search:<terms>, guess:<nearest>, or the question          │
+ │  act.py      one routine per kind; what the page says goes back        │
+ │  ──► queue/<id>.json + .png + explore.json.  NEVER presses Submit.     │
  └───────────────────────┬────────────────────────────────────────────────┘
                          ▼
  ┌─ APPROVE ─ phone, any network via Tailscale ───────────────────────────┐
@@ -106,14 +111,14 @@ in different words, and new claims are reported, never written.
  │  serve.py ──► one page: job, flags, every value, open questions        │
  │  (systemd)    with drafted options + "write my own"                    │
  │       │                                                                │
- │       ├── approve/skip ──► queue JSON + Telegram confirmation          │
+ │       ├── approve / later / reject ──► queue JSON (Undo on the card)   │
  │       └── answers ──► learn.py ──► learned.yaml (never asked again)    │
  └───────────────────────┬────────────────────────────────────────────────┘
                          ▼
  ┌─ SUBMIT + TRACK ───────────────────────────────────────────────────────┐
  │                                                                        │
- │  autofill.py --submit-approved ──► re-fill deterministically, click,   │
- │                                    VERIFY, screenshot the confirmation │
+ │  submit/replay.py ──► replay explore.json with the approved values,   │
+ │                       read back, press Submit, VERIFY, screenshot      │
  │  tracker.py ──► job-tracker.xlsx + follow-ups at 5 business days       │
  └────────────────────────────────────────────────────────────────────────┘
 
@@ -127,14 +132,14 @@ in different words, and new claims are reported, never written.
 ### The loop
 
 ```
-04:00 / 12:00 / 20:00   scan → rank → tailor → fill → queue     (unattended)
+04:00 / 12:00 / 20:00   scan → rank → tailor → explore → queue  (unattended)
 07:00 / 19:00           📱 "N waiting" + link                   (your cue)
                              │
                         review on the phone over Tailscale
                              │
                    Approve ──┴── Later (stays) ── Reject (dropped)
                         │
-                   laptop re-fills, submits, verifies
+                   laptop replays, submits, verifies
                         │
                    referral targets found automatically → one link
 ```
@@ -250,8 +255,8 @@ stops one employer with nine near-identical reqs owning the shortlist.
 
 ### Prepare
 
-**`apply.py`** — URL in, buildable application folder out. Recognises the platform and
-pulls the JD through its native API via `fill/platforms` (Greenhouse `gh_jid` on
+**`scaffold.py`** — URL in, buildable application folder out. Recognises the platform and
+pulls the JD through its native API via `apply/platforms` (Greenhouse `gh_jid` on
 self-hosted domains included), scaffolds `applications/<company>/` from `_template`,
 writes `JD.md` with the platform module's autofill route.
 
@@ -267,127 +272,102 @@ never-fabricate rule is enforced by judgment, not a prompt string.
 3. Insert SAFE terms beside the form already on the resume, rebuild, rescore, and warn if
    the anti-stuffing penalty moves off zero.
 
-### Fill
+### Explore
 
-**`autofill.py` + `browser.py`** — the field resolver and the browser half.
+`./jobpilot explore <slug>` (`python -m jobpilot.apply.explore`) walks an application's
+form to its last page and queues it for approval. It **never presses Submit**. Each page
+goes round one loop — **see → map → act**, and see again — until the page saves and the
+walk moves on. The design is in `docs/exploration-plan.md` and `docs/see-step-claude-json.md`.
 
-Resolution order per label, first match wins:
-```
-learned.yaml  →  compliance/negation HARD STOP  →  sponsorship & screeners
-              →  identity  →  address  →  links  →  availability & pay
-              →  EEO  →  else: ask the human
-```
-Real Chrome on a persistent profile, never headless. By default (`browser.display: auto`)
-it runs on its own virtual display (Xvfb `:99`), so it never covers the desktop browser;
-two runs wait for each other's profile lock instead of colliding.
+**See (`see.py`, `mapper.describe`)** — the page as a screen reader reads it (Playwright's
+accessibility snapshot), cut into controls: role, name, the question text above it, the
+group it sits in, its numbering when a name repeats (`Year #3`). What the page does not
+say, the see step works out without guessing per portal:
+- **Questions without an ARIA group** (Ashby's Yes/No buttons, a radio or checkbox list
+  under a question): one question, named by the text above it. A button that belongs to
+  another control (a combobox's toggle or clear, a file field's Replace) is never a
+  choice; buttons under a heading are never a question's choices.
+- **Every list control's choices are read before Claude maps it**: a `<select>` from the
+  page, a dropdown or combobox by opening and closing it. Up to `fill.choices_shown` (30)
+  go to Claude with the control (categories expanded: `Social Media › LinkedIn`); a longer
+  list is marked *a long list: search it*.
+- Left out before Claude sees them: the site's header / navigation / footer on form
+  pages, hidden controls, password boxes (the platform's sign-in handles credentials).
 
-**Order matters inside the page too:**
-1. Upload the CV **first**, then wait for the portal's own parser to finish and
-   **re-extract the DOM** — Ashby rewrites the form when parsing completes, silently
-   undoing everything filled before it.
-2. Poll for the ATS iframe (up to 20s); a fixed sleep falls back to the site nav and
-   fills nothing.
-3. Fill, then **read every value back**. `page.fill()` sets `el.value` on a React
-   typeahead without re-rendering, so it reports success on a visibly empty field.
-   Comboboxes get real keystrokes.
-4. Yes/No is often `<button>`, not `<input>`; checkboxes hide under styled overlays, so
-   ticking escalates: native check → click the `<label>` → set + dispatch events.
-5. Pass 1 has **no submit path at all**. `fill_application()` asserts it.
-6. Pass 1 **explores to the last page**. A required control nobody has an answer
-   for gets a *placeholder* so a wizard's Save and Continue is not blocked and every
-   later step is seen: for a choice, "No" when offered (a "Yes" often opens follow-up
-   fields), else any option; for text "To be confirmed", `1`, a date. A stored answer
-   that is not among a required menu's options ("LinkedIn" where the menu has only
-   "Career site" / "Employee referral") is explored with a placeholder too, and asked
-   with the real options. A placeholder never enters the item's `fields`; it is
-   recorded as such in `replay.json` and becomes a question on the phone, with a note
-   saying what stood in. Once approved, the true answer is written back into the recipe.
+**Map (`mapper.py`, the `map` agent in `src/agents/map/`)** — one Claude call, no tools:
+the snapshot, the controls no saved map covers, and the applicant's facts
+(`facts.py`: answers.yaml flattened, learned answers, this job's market). It replies
+`[name, kind, answer]` per control, where the answer is one of:
 
-**`walk.py`** — the platform-free page walker. It knows only what a person sees: a
-form lives in some frame, an *Apply* button may have to be pressed to reveal it, a
-*Next* button leads on, a *Submit* button ends it. Pass 1 walks single- or multi-page
-forms to the last page and records the route; it never presses Submit, and a guard
-installed in the browser itself (`guard_exploration`) makes submit-looking buttons
-inert on that pass — so even a Claude session learning a new platform cannot file
-anything. Pass 2 follows the recorded route, then presses the recorded Submit.
+| answer | when |
+|---|---|
+| a fact key (`education[1].field_of_study`) | a text box, or a choice the fact names word for word |
+| `option:<choice>` | a listed choice that means the same as the fact (M.Tech → Masters, "No German speaker" → None) |
+| `search:<term>; <term>; <term>` | a long list: 2-3 terms (`India; Ind; +91`) |
+| `guess:<choice> \| <question> \| <near>; …` | nothing fits: filled in for now, asked on the phone with the nearest real entries |
+| the question itself | nothing stored: asked on the phone |
+| `null` | next / submit / start buttons |
 
-**`platforms/`** — one module per platform, discovered by file name: how to recognise
-a link, fetch its JD, where its iframe lives, its Apply/Next/Submit buttons, and, only
-when the walker truly cannot cope, a custom driver (`workday.py`, whose wizard needs an
-account). A driver stays **generic**: it knows the platform's widgets and wizard, never
-one employer's form. Whatever one tenant does differently goes into that application's
-`hooks.py`, where the exploring Claude session can fix it. The engine asks the registry for hints and never hardcodes a platform. A
-link on a platform with no module is explored generically; if that walk reaches the
-last page, the observed route is written as the platform's module
-(`platform_learn.py`, no LLM). If it does not, a `claude -p` session writes and tests the module against the
-real form (`llm.platform`), and the tool re-explores by itself — the module is kept
-only when that run verifiably reaches the last page, else parked under
-`platforms/_failed/`. Off with `fill.learn_platforms: false`.
+A control with no useful name of its own (Workday's *Select One Required*, an unnamed text
+area) may be named by its question text; the code finds the one control under that text.
 
-**`session.py`** — a *live* exploration for fixing a form: the browser stays open and
-the walk pauses on the current page (`--session start | status | retry | next | finish |
-abort`). `status` lists only what remains on that page; `retry` reloads the hooks and
-platform module and fills that page again, keeping what was right; `next` moves on. A
-learning session works page by page and never walks the earlier pages again, and reads
-the short remaining-list rather than a full log. Any re-run of a slug also carries the
-previous exploration's recipes, so controls that worked take the fast path.
+**Check (`mapper.check`)** — every entry against the live page before anything is typed.
+A wrong entry goes back to Claude with what the page really has ("the page has a combobox
+named that: kind search-and-pick", "'B1 / B2' is one of the choices of 'Proficiency in
+German', leave it out", "this page has a submit button: it has no next"). Corrections run
+at `llm.map_correct` (medium effort); first maps at `llm.map` (low).
 
-**Submit is two parts.** `./jobpilot submit` first *replays*: the recorded route, the
-approved values, the recorded Submit button — code only, no LLM, and that files most
-applications. Only if it does not go through does part two start: a `claude -p` session
-(`llm.submit`) drives a live submit session (`submit_flow.py`) on the form, held open on
-its last page — `status` (the portal's errors, a screenshot), `refill`, `set` a value,
-`click` a harmless button, `press` Submit, `finish`. The limits are in code: `set` takes
-only values already approved for the application, `click` refuses Submit and answer
-buttons, `press` is capped (`fill.resolve_presses`) and refuses once the page shows a
-confirmation, and the page decides whether it counts as submitted. A structural fix goes
-into that application's `hooks.py`; how the filing went — by code or by Claude, which
-button, which steps — is written to `replay.json` as `submit_procedure`.
+**Act (`act.py`, `walk.py`)** — one routine per kind, found by role and name. Choices go
+first; if a choice added or hid fields ("I currently work here" hides an end date), the
+page is seen again before anything is typed. What the page says goes back to the map:
+- a pick that is not one of the choices → the choices it offers;
+- `search:` → the list is searched with each term (typed into its box, or a list read
+  whole by scrolling it and matched), and the top 5 hits per term go back; a hit that is
+  one of the terms word for word is picked with no extra round;
+- a pick that opens a sub-list was a category → its entries go back (`Social Media › …`);
+- date parts are typed over their own text, never Backspaced empty (a segmented date
+  jumps back into the box before it); every typed value is read back once the page is
+  filled, and set again if a later action undid it.
 
-**`hooks.py`** — application-specific fill code, `applications/<slug>/hooks.py`,
-same interface as a platform module but for one form only. **Every application has
-one**, created when the folder is scaffolded: a copy of the employer's hooks (another
-application for the same company, matched on `JD.md`'s Company) when they exist, else
-a copy of the base template `src/fill/hooks_base.py`, whose examples are all commented
-out. The loader is `src/fill/hooks.py`. Lookup order everywhere: application hooks,
-then company hooks, then the platform module, then the generic walker; an untouched
-copy of the base counts as nothing. Hook points: `FRAME_PATTERNS`, `START`, `NEXT`,
-`SUBMIT`, `form_url()`, `fill_step(page, step, flow)` (take a step over, return True
-when done), `after_fill(page, step, flow)` (add to the generic fill), and, rarely, a
-whole `explore()` / `submit()`. Hooks describe the form's structure, never answers.
-Both passes load it as plain code; replay never involves an LLM.
+A page that will not save goes back to the map with the portal's own error text. At most
+`fill.map_calls_per_page` Claude calls per page (+1 for each refusal); what is still
+unfilled fails the queue item with the questions named — it is never shown as ready.
 
-**Exploration is a Claude session** (`fill.llm_explore`, `llm.explore`). The tool
-first copies the hooks and a skeleton `replay.json` into the folder, then a `claude -p`
-session drives a live session (`session.py`, no browser guard: its judgment decides
-where Submit is, and it stops there). It is told to reuse the platform driver and the
-hooks as they are, and when a page will not fill, to fix *this application's*
-`hooks.py`, `retry` that page, and carry on from where it is — never from the start.
-It may write only inside the application folder; `src/` is snapshotted before the
-session and restored after it, so the platform drivers and the engine never change
-under other applications. Turns are capped (`llm.max_turns`, 20).
+**Reuse (`reuse.py`)** — a page the portal accepted saves its map under
+`data/maps/<platform>/<company>/<page>.json`; the next role at that company (or tenant)
+needs no Claude call for it. On one-page platforms (Greenhouse, Ashby, Lever) the standard
+fields carry over between companies too.
 
-**`replay.py`** — the per-application record, `applications/<slug>/replay.json`: the
-route (frame, start button, pages with their Next buttons, the Submit button) and one
-*recipe* per control — how it was identified (stable id, name, label, page), its
-widget kind and options, the strategy that made the value stick (`fill`, `typed`,
-`react-select`, `listbox`, `select`, `check`, `label-click`, `force-click`, `js-set`),
-the value used, and whether it was a placeholder. Forms differ per application, so the
-record does too; the queue item only points at it.
+**Record (`record.py`)** — `applications/<slug>/explore.json`: every page and every
+action with its source (`fact:…`, `choice`, `placeholder:<question>`, `shown`), the
+questions asked, and each page's map rounds. `pages/` keeps each page as it was seen, so
+its mapping can be replayed offline: `python tests/replay_page.py <slug> <page> [--claude]`.
+
+**Platforms (`apply/platforms/`)** — only what cannot be read off the page: Workday's
+account gate (credentials from `~/.config/jobbot/env`, never shown to Claude), its step
+name and last page; each platform's JD API and apply URL. No button names, no field
+lists — Claude reads those off each page.
 
 ### Approve
 
 **`serve.py`** — the review form, served from the laptop. No login, because an artifact
 with a database is org-internal and always demands one. Answers POST straight back into
 the queue file and run `learn.py`. On Approve, each answer is also written into the
-matching recipe of the application's `replay.json` (`answered_by: applicant`), so the
-submit replay uses it; the Telegram bot does the same for answers given there. Stable
+application's `explore.json` (its placeholder's `answer`), so the submit replay uses it.
+Every decision keeps what it changed, so the card's **Undo** takes it back — status,
+answers, the record, what `learned.yaml` learned — until the item is being filed. No
+Telegram message per decision: the card says it was saved. The list has **Review now**
+and **For later review** (cards kept with *Later*), then Approved, *Filing now*,
+Submitted. A re-exploration replaces every earlier unsent card of that application. Stable
 token in `~/.config/jobbot/env`. It runs as `jobpilot-form.service`: restart it after
 changing code, or it keeps serving the old version.
 
-**`form.py`** — renders one queue item as one page: header, honest flags, every value
-that will be submitted, and each open question with 2-3 drafted answers plus
-"write my own". Dual transport: the artifact `db` when hosted, a same-origin POST when
+**`form.py`** — renders one queue item as one page: header, honest flags, a link to the
+filled form's screenshot, each open question (with the page and field it sits on, the
+value it was explored with preselected, and for a long list the nearest real entries),
+and every value that will be submitted — grouped by page, readable ("Job 2 · end month"),
+marked with where it came from (*from your profile*, *picked from the form's choices*,
+*your answer*, *already on the form*). Dual transport: the artifact `db` when hosted, a same-origin POST when
 local.
 
 **`learn.py` / `learned.yaml`** — every answer given once is matched back by normalised
@@ -403,18 +383,15 @@ deduplication so a network timeout cannot replay a tap.
 
 ### Submit and track
 
-**`autofill.py --submit-approved`** — acts only on `approved`. **Gate first**: every
-recipe that took a placeholder, and every required one, must resolve to a true value
-(his approved answer, then `learned.yaml`, then the rules) *before a browser opens*;
-otherwise the item goes back to the phone as `needs_input` with exactly those
-questions, nothing sent. Then it **replays** the recipes with the true values — the
-recorded strategy first, a placeholder box ticked on pass 1 unticked when it is not
-the answer (Workday keeps the draft between passes) — and falls back to discovery for
-any control the recipes never saw. The attempt (replayed / discovered counts, outcome)
-is appended to the application's `replay.json`. Re-fills deterministically
-(same script, same data), clicks, then **verifies**: confirmation text present, no visible
-submit button, no `aria-invalid` fields. A clicked button is not a submission — that
-mistake produced a false "submitted" on a form with five required fields empty.
+**`./jobpilot submit`** (`python -m jobpilot.apply.submit`, `submit/replay.py`) — acts
+only on `approved`, oldest first. Each card is read again just before it is filed (an
+Undo since wins) and is `submitting` while filed. **Gate first**: a placeholder without
+his approved answer sends the card back to the phone as `needs_input`, before a browser
+opens. Then it **replays** `explore.json` page by page with the true values (facts looked
+up again, his answers, the choices recorded), reads every typed value back, and presses
+the recorded Submit; a page that differs from the exploration goes to the map like any
+page does. It **verifies** — confirmation text, no submit button left, no invalid field —
+and screenshots the result. A clicked button is not a submission.
 
 **`tracker.py`** — syncs `job-tracker.xlsx` using its existing columns and Stage
 vocabulary. Submitted → `Applied` with a follow-up **5 business days** out. Idempotent.
@@ -521,21 +498,16 @@ screen, no per-company cap (they are your picks). "Start tailoring now" on the p
 is the normal flow — build, score, tailor if needed, fill, review on the phone, submit after
 Approve. `./jobpilot inbox` shows where each one stands.
 
-**Workday** (added 2026-09-23, `src/fill/platforms/workday.py`). One account per employer tenant, credentials
-in `~/.config/jobbot/env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo): sign in, create
-the account if the tenant does not know the address, emailed verification code via Telegram. The
-driver is generic and page-by-page (`WorkdayFlow`: start, fill, next, retry, status), so an
-exploration resumes on the page it is on. My Experience uploads the resume first, then fills
-whatever employment / education / language blocks that tenant has, found by their headings;
-every other step goes through the generic label-based filler, and a tenant's own quirks go
-into the application's `hooks.py`. It stops at **Review** for prep; the submit pass walks it
-again and presses Submit. Verified end to end on NVIDIA, Capital One and Just Eat Takeaway
-(`myworkdaysite.com` links included); some tenants accept an application without an account. Workday quirks it
-handles: the progress bar lists every step name (only the bold one is current), forms paint
-seconds after the bar, "Something went wrong" pages (refresh, then re-enter from the posting),
-virtualised 250-entry country
-menus (page through until the exact match renders), `aria-labelledby` that points at the button's
-own "Select One" text. Tenants are registered with `./jobpilot careers <tenant URL>` and pulled
+**Workday** (added 2026-09-23, `src/apply/platforms/workday.py`). One account per employer tenant, credentials
+in `~/.config/jobbot/env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo, never shown to
+Claude): the module signs in, creates the account if the tenant does not know the address, and
+asks for an emailed verification code on Telegram. It knows the account gate by its email and
+password boxes (its step name varies by tenant), reads the current step from the progress bar,
+and knows Review is the last page. Everything on the wizard pages goes through see / map / act
+like any form: the Degree and Country lists, the phone code search, "How did you hear" and its
+categories, the repeated job and education blocks, the segmented Month / Year dates. It stops at
+**Review**; submit replays the recorded pages and presses Submit there. Explored end to end on
+Adobe; earlier (old engine) on NVIDIA, Capital One and Just Eat Takeaway. Tenants are registered with `./jobpilot careers <tenant URL>` and pulled
 by intake through the tenant jobs API (`discovery.workday_max` postings per tenant).
 Conflict-of-interest / relationship declarations (Mastercard asks four) are hard-stopped in the
 resolver and always come to you as questions.
@@ -576,7 +548,7 @@ Each stage on its own:
 ./jobpilot tracker         # sync the xlsx tracker
 ./jobpilot digest          # review prompt + file approved items (--no-submit: prompt only)
 ./jobpilot apply <url>     # one job you found yourself
-./jobpilot fill <slug>     # re-fill an application that is already built
+./jobpilot explore <slug>  # explore an application's form again (never submits)
 ./jobpilot submit 4        # file at most 4 of the approved items (oldest first); bare `submit` files all
 ./jobpilot queue           # what is waiting
 ./jobpilot link            # the review URL

@@ -55,6 +55,9 @@ or metrics.
 | `ats.md` | ATS-clean source -> `.docx` via pandoc |
 | `JD.md` | the job description + meta (platform, visa, salary, link) |
 | `notes.md` | keywords mirrored, what changed, fit/gaps, follow-up |
+| `explore.json` | what the exploration did, page by page — what submit replays (machine-written, not versioned) |
+| `pages/` | each form page as it was seen, for offline replay of its mapping (machine-written, not versioned) |
+| `hooks.py`, `replay.json` | the old fill engine's per-application code and record; the new engine does not read them |
 
 Everything not overridden (education, experience, certifications, achievements)
 comes from the resume repo via the `\BASE` macro automatically, so base edits flow to every company.

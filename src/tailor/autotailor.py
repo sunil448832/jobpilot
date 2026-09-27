@@ -39,9 +39,7 @@ from jobpilot.core.config import cfg  # noqa: E402
 AUTO_CWD = os.path.join(DATA, ".auto")
 DB = os.path.join(DATA, "state.db")
 
-# Tools the spawned session may use. Deliberately no Bash: the job is to edit
-# five text files, and anything else is out of scope for an unattended run.
-ALLOWED_TOOLS = "Read,Edit,Write,Glob,Grep"
+# Each Claude session's tools: src/agents/<agent>/tools.yaml.
 
 # Roles are prepared CONCURRENTLY (pipeline.tailor_workers). Everything per role
 # is independent — its own applications/<slug>/, its own claude -p processes,
@@ -54,108 +52,8 @@ FILL_LOCK = threading.Lock()
 LOG_LOCK = threading.Lock()
 MANUAL = []                    # apply-by-hand items created this run, for the Telegram note
 
-PROMPT = """Tailor Sunil Kumar Sharma's resume for one specific job. It has already been
-built untailored and scored against the JD; the score is below target, so this
-session exists to raise it — honestly. Everything you need to know is in this
-message; do not go looking for policy or the JD elsewhere.
-
-======================================================================
-OPERATING POLICY (the relevant sections; they outrank anything inferred from the JD)
-======================================================================
-{policy}
-
-======================================================================
-JOB DESCRIPTION
-======================================================================
-{jd}
-
-======================================================================
-SCORE REPORT — what the current resume misses against this JD
-======================================================================
-{report}
-
-======================================================================
-WHAT TO DO
-======================================================================
-The resume lives in {appdir}/sections/ — a per-application copy of the base
-resume. Read these four files, then edit them in place, and nothing else:
-  objective.tex   skills.tex   experience.tex   projects.tex
-Read all four in one turn; make all your edits in one turn. Do not touch
-_header, education, achievements, resume.tex, or anything outside sections/.
-ats.md is generated from the .tex on build — never edit it.
-
-Tailor ONLY by reordering, re-emphasising, and matching the JD's wording, using
-things ALREADY TRUE in those files. In experience.tex you may reorder bullets and
-reword a bullet into the JD's vocabulary for the same fact; never change an
-employer, title, date or number, and never add a bullet describing work not
-already there. Add a SAFE keyword only where the resume already states that
-fact. Never add a NOT SAFE keyword. If the JD wants something he does not have,
-leave it out and let the score be lower.
-
-The objective may name only capabilities the resume's own bullets evidence. Do
-not adopt the JD's description of the ROLE as a description of Sunil: no
-"trusted advisor", "customer-facing consultant", "from discovery through
-production", "partner with executives" and the like unless a resume bullet
-already says he did that. Customer-facing work is claimable only in the concrete
-form the resume shows (production systems delivered for Roche), never as
-consulting or pre-sales scope. Matching keywords is never a reason to change
-what he did.
-
-The resume MUST stay at two pages. Rewording may not lengthen: when you put a
-bullet into the JD's vocabulary, keep it the same length or shorter, and drop
-filler rather than adding words. A round that overflows to a third page is
-reverted automatically, so length is not a way to add keywords.
-
-Keep every file valid LaTeX for the macros already used (\\skills{{}}, zitemize,
-\\jobentry, \\subsection ... \\hfill \\href). When the edits are done, reply with
-the single word DONE. Do not explain the edits.
-"""
-
-Q_PROMPT = """The application at {appdir}/ has been filled, but some form questions
-could not be answered automatically. They are in this JSON file:
-
-  {qfile}
-
-Everything you need is in this message; do not go looking for policy or the JD
-elsewhere, and do not read the resume files.
-
-======================================================================
-OPERATING POLICY (the relevant sections)
-======================================================================
-{policy}
-
-======================================================================
-JOB DESCRIPTION
-======================================================================
-{jd}
-
-======================================================================
-WHAT TO DO
-======================================================================
-Read the JSON file. For every question whose "options" list is EMPTY, write 2-3
-complete, ready-to-send answers into its "options" array:
-  - Each option must be a COMPLETE answer Sunil can tap and be done with — not a
-    hint, not a template with blanks.
-  - Each must be TRUE: draw only on facts in the policy above and these resume
-    numbers: 20 ms median inference latency; 98% end-to-end success across 500
-    concurrent sessions; 28 graded tasks, 86% exact-pass / 0.86 mean F1; 99%
-    precision on a 1,000-person gallery; Qdrant index compressed 8x via TurboQuant
-    4-bit at nDCG/Recall parity across 8 BEIR datasets; GRPO post-training of
-    Qwen3-4B, pass rate 38.6% to 41.0% on 500 held-out problems; notice period
-    2 months.
-  - Vary them meaningfully — different projects or different emphasis, not
-    reworded versions of the same answer.
-  - For a multi-select question, each option is a complete combination.
-  - A question about a personal fact only Sunil knows (have you interviewed here
-    before, referrals, deadlines) gets ONE neutral option that states the most
-    likely answer plainly, so he can tap or overwrite it.
-  - If a question is a legal, compliance, sanctions or data-consent declaration,
-    LEAVE its options empty. Those are Sunil's to answer.
-
-Write the whole updated file back in ONE Write call — valid JSON, nothing changed
-except the "options" arrays. Then reply with the single word DONE.
-"""
-
+# The tailoring and answer-drafting prompts and tools: src/agents/tailor/,
+# src/agents/draft_answers/ (loaded by jobpilot.core.agents).
 
 
 def log(m):
@@ -181,8 +79,7 @@ def llm_flags(step):
 
 
 def turn_limit():
-    """--max-turns for the Claude sessions in exploration and submit (platform
-    learning, hooks refine, submit resolve, answer drafting): llm.max_turns."""
+    """--max-turns for a multi-turn Claude session (answer drafting): llm.max_turns."""
     return ["--max-turns", str(int(cfg("llm.max_turns", 20)))]
 
 
@@ -469,59 +366,17 @@ def score_report(company, r):
 
 def tailor(company, cli, report=""):
     """One `claude -p` session, scoped to editing this application's sections/."""
-    cmd = [cli, "-p", PROMPT.format(company=company, appdir=os.path.join(APPLICATIONS, company),
-                                    report=report, policy=policy_sections([1, 2, 3, 8]),
-                                    jd=jd_text(company)),
-           *llm_flags("tailor"),
-           "--add-dir", TRACKING, "--add-dir", TOOL,
-           "--allowedTools", ALLOWED_TOOLS,
-           "--output-format", "text"]
+    from jobpilot.core import agents
+    ag = agents.get("tailor")
+    kw = dict(appdir=os.path.join(APPLICATIONS, company), report=report,
+              policy=policy_sections([1, 2, 3, 8]), jd=jd_text(company), tracking=TRACKING)
+    cmd = ag.argv(cli, ag.render(**kw), **kw)
     os.makedirs(AUTO_CWD, exist_ok=True)
     try:
-        ok, out = run(cmd, timeout=900, cwd=AUTO_CWD)
+        ok, out = run(cmd, timeout=ag.timeout(900), cwd=AUTO_CWD)
         return ok, out[-400:]
     except subprocess.TimeoutExpired:
         return False, "claude -p timed out after 900s"
-
-
-def newest_queue_file(slug):
-    import glob
-    fs = sorted(glob.glob(os.path.join(DATA, "queue", f"{slug}-*.json")))
-    return fs[-1] if fs else None
-
-
-def set_status(qfile, status):
-    try:
-        d = json.load(open(qfile))
-        d["status"] = status
-        json.dump(d, open(qfile, "w"), indent=2)
-    except (OSError, ValueError):
-        pass
-
-
-def open_question_count(qfile):
-    import json
-    try:
-        d = json.load(open(qfile))
-    except Exception:
-        return 0
-    return len([q for q in d.get("questions", []) if not q.get("options")])
-
-
-def draft_questions(company, qfile, cli):
-    """Second `claude -p` pass: write tappable answers for anything unanswered."""
-    rel = os.path.abspath(qfile)
-    cmd = [cli, "-p", Q_PROMPT.format(company=company, qfile=rel, appdir=os.path.join(APPLICATIONS, company),
-                                      policy=policy_sections([1, 5, 6, 8]), jd=jd_text(company)),
-           *llm_flags("questions"), *turn_limit(),
-           "--add-dir", TRACKING, "--add-dir", TOOL,
-           "--allowedTools", ALLOWED_TOOLS,
-           "--output-format", "text"]
-    try:
-        ok, out = run(cmd, timeout=600, cwd=AUTO_CWD)
-        return ok, out[-300:]
-    except subprocess.TimeoutExpired:
-        return False, "question drafting timed out"
 
 
 def process_role(p, cli, tag=""):
@@ -531,7 +386,7 @@ def process_role(p, cli, tag=""):
     t0 = dt.datetime.now()
     log(f"{tag}{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
 
-    ok, out = run([sys.executable, "-m", "jobpilot.tailor.apply",
+    ok, out = run([sys.executable, "-m", "jobpilot.tailor.scaffold",
                    p["url"], "--company", p["slug"], "--market", p["market"]], timeout=300)
     if not ok:
         if "EXPIRED:" in out:
@@ -548,7 +403,7 @@ def process_role(p, cli, tag=""):
     # Build and score FIRST. A role the untailored resume already matches
     # costs zero LLM sessions. (POLICY: tailoring is a means to a score, and
     # an honest resume that already scores does not need touching.)
-    ok, _ = run([sys.executable, "-m", "jobpilot.tailor.apply",
+    ok, _ = run([sys.executable, "-m", "jobpilot.tailor.scaffold",
                  "--build", p["slug"]], timeout=600)
     if not ok:
         log(f"  {tag}build FAILED"); return
@@ -573,11 +428,11 @@ def process_role(p, cli, tag=""):
             restore_sections(p["slug"], snap); break
         run([sys.executable, "-m", "jobpilot.tailor.optimize", p["slug"],
              "--apply"], timeout=300)
-        ok, _ = run([sys.executable, "-m", "jobpilot.tailor.apply",
+        ok, _ = run([sys.executable, "-m", "jobpilot.tailor.scaffold",
                      "--build", p["slug"]], timeout=600)
         if not ok:
             log(f"  {tag}rebuild FAILED — reverting round"); restore_sections(p["slug"], snap)
-            run([sys.executable, "-m", "jobpilot.tailor.apply", "--build", p["slug"]], timeout=600)
+            run([sys.executable, "-m", "jobpilot.tailor.scaffold", "--build", p["slug"]], timeout=600)
             break
         cur = ats_score(p["slug"]); pages = pdf_pages(p["slug"])
         log(f"  {tag}score: {cur['match_rate']}% after round {rnd}"
@@ -588,7 +443,7 @@ def process_role(p, cli, tag=""):
         if why:
             log(f"  {tag}{why} — reverting round {rnd}")
             restore_sections(p["slug"], snap)
-            run([sys.executable, "-m", "jobpilot.tailor.apply", "--build", p["slug"]], timeout=600)
+            run([sys.executable, "-m", "jobpilot.tailor.scaffold", "--build", p["slug"]], timeout=600)
             break
         best = cur
         added = new_claims(p["slug"])
@@ -601,38 +456,23 @@ def process_role(p, cli, tag=""):
         + (" (below target — real gap, reported not chased)" if best["match_rate"] < target else ""))
 
     with FILL_LOCK:                       # one browser session at a time
-        ok, out = run([sys.executable, "-m", "jobpilot.fill.autofill",
-                       "--fill", p["slug"]], timeout=900)
+        ok, out = run([sys.executable, "-m", "jobpilot.apply.explore", p["slug"]], timeout=900)
     if not ok and "not supported for autofill" in out:
         # No form the walker could find (LinkedIn, an account wall, a JS shell):
         # hand him the content instead of dropping it.
-        from jobpilot.fill import manual
+        from jobpilot.apply.draft import manual, draft
         m = re.search(r"Portal '([^']+)'", out)
         qfile = manual.create(p, m.group(1) if m else "unknown")
-        ok2, out2 = draft_questions(p["slug"], qfile, cli)
-        log(f"  {tag}fill: not autofillable ({m.group(1) if m else 'unknown'}) — manual pack ready"
+        ok2, out2 = draft.draft_questions(p["slug"], qfile, cli)
+        log(f"  {tag}explore: not autofillable ({m.group(1) if m else 'unknown'}) — manual pack ready"
             f"{', answers drafted' if ok2 else ', drafting FAILED — ' + out2[-80:]}")
         MANUAL.append(p)
     else:
-        log(f"  {tag}fill: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
+        log(f"  {tag}explore: {'queued for approval' if ok else 'not fillable — ' + out[-100:]}")
 
-    # A question with no drafted answers makes him type on a phone, which is
-    # exactly what this system exists to avoid (POLICY.md section 5). The item
-    # is `preparing` while the answers are drafted: the review page does not
-    # list it, so it never shows up half-ready (Berkadia was opened in the two
-    # minutes between the item and its drafts).
-    qfile = newest_queue_file(p["slug"])
-    if qfile and open_question_count(qfile):
-        try:
-            before = json.load(open(qfile)).get("status") or "needs_input"
-        except (OSError, ValueError):
-            before = "needs_input"
-        set_status(qfile, "preparing")
-        try:
-            ok2, out2 = draft_questions(p["slug"], qfile, cli)
-            log(f"  {tag}questions: {'drafted' if ok2 else 'FAILED — ' + out2[-100:]}")
-        finally:
-            set_status(qfile, before)           # a failed exploration stays failed
+    # Answers drafted for every open question before the item reaches the phone.
+    from jobpilot.apply.draft import draft
+    draft.draft_for(p["slug"], cli, log=lambda m: log(f"  {tag}{m}"))
     con = sqlite3.connect(DB, timeout=30)
     con.execute("UPDATE jobs SET status='queued' WHERE key=?", (p["key"],))
     con.commit(); con.close()

@@ -6,7 +6,7 @@
 #   ./jobpilot <command>    run one
 #
 # Layout (see paths.py for how the two trees are found):
-#   src/<stage>/   code: core discover rank screen tailor fill review outreach  (imported as jobpilot.<stage>)
+#   src/<stage>/   code: core discover rank screen tailor apply (platforms explore draft submit) review outreach  (imported as jobpilot.<stage>)
 #   config/   what you edit      data/  machine-written      applications/  per-role output
 #   tracking repo: resume/ applications/ tracking/ target-companies/  (config.yaml paths.tracking_repo)
 # ============================================================================
@@ -62,7 +62,7 @@ usage() { cat <<'TXT'
                                reviewed, tailored FIRST — no rank, no screen. Also on the phone: /add
     ./jobpilot inbox           what you have added and where each one stands
     ./jobpilot apply <url>     scaffold ONE job by hand (no queueing)
-    ./jobpilot fill <slug>     fill an application that is already built
+    ./jobpilot explore <slug>  explore an application's form (never submits); `fill` works too
     ./jobpilot keywords        what applied JDs ask for vs targets.yaml (--dry-run / --promote)
 
   ADDING SOURCES
@@ -169,8 +169,8 @@ case "$cmd" in
               echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok" ;;
   queue)      py review.bot --status ;;
   submit)     # ./jobpilot submit [N]  — file the approved items (oldest first); N caps how many today
-              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py fill.autofill --submit-approved --limit "$1"
-              else py fill.autofill --submit-approved; fi ;;
+              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.submit --limit "$1"
+              else py apply.submit; fi ;;
   log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
   intake)     py discover.intake "$@" ;;
@@ -186,11 +186,11 @@ case "$cmd" in
   prep|tailor) # ./jobpilot prep [N]  — tailor+build+fill the top N screened roles (default config tailor_limit)
               if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py tailor.autotailor --limit "$1" "${@:2}"
               else py tailor.autotailor "$@"; fi ;;
-  apply)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot apply <url>"; exit 1; }; py tailor.apply "$1" ;;
+  apply)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot apply <url>"; exit 1; }; py tailor.scaffold "$1" ;;
   add)        [ $# -ge 1 ] || { echo "  usage: ./jobpilot add <url> [url...]   (company-site apply links you found; skips rank+screen)"; exit 1; }
               py discover.inbox "$@" ;;
   inbox)      py discover.inbox --list ;;
-  fill)       [ $# -ge 1 ] || { echo "  usage: ./jobpilot fill <slug>"; exit 1; }; py fill.autofill --fill "$1" ;;
+  explore|fill) [ $# -ge 1 ] || { echo "  usage: ./jobpilot explore <slug>"; exit 1; }; py apply.explore "$1" ;;
   dedupe)     py core.dedupe "$@" ;;
   keywords)   py rank.keyword_learn "$@" ;;
   careers)    [ $# -ge 1 ] || { echo "  usage: ./jobpilot careers <url>"; exit 1; }; py discover.careers --add "$1" ;;

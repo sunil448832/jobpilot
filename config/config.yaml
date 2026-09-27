@@ -37,20 +37,14 @@ llm:
   screen:    {model: sonnet, effort: low}
   tailor:    {model: sonnet, effort: medium}
   questions: {model: sonnet, effort: low}
-  # platform  writes fill code when an exploration did not reach the last page:
-  #           fill/platforms/<id>.py for a platform nobody has described, or
-  #           applications/<slug>/hooks.py for one form on a known platform.
-  #           Tested against the real form (pass 1 only: the browser guard makes
-  #           submit-looking buttons inert). Rare, so quality over price.
-  platform:  {model: sonnet, effort: medium}
-  # submit    only when an approved application's automatic submit did not go
-  #           through: drives a live submit session to fix and file it, with
-  #           approved values only and a capped number of Submit presses.
-  submit:    {model: sonnet, effort: medium}
-  # explore   EVERY exploration (fill.llm_explore): walks the live form with the
-  #           existing driver + the company's hooks; edits hooks only when a page
-  #           is stuck. Mostly status/next/finish, so a smooth form is a few turns.
-  explore:   {model: sonnet, effort: low}
+  # map       the SEE step of exploration: reads one page's accessibility snapshot
+  #           and returns [name, kind, fact] per control (fill/mapper.py). Only for
+  #           pages and questions no cached map covers; ~1-2K tokens in, <100 out.
+  map:       {model: sonnet, effort: low}
+  # map_correct  a correction round of the map: a few failed controls with the page's
+  #           own words on why (choices offered, the real kind). Small prompts, where a
+  #           careless pick ("Mother tongue / C2" for "No German speaker") costs most.
+  map_correct: {model: sonnet, effort: medium}
   # Turn cap (claude --max-turns) for every Claude session in exploration and
   # submit: platform learning, application-hooks refine, submit resolve, answer
   # drafting. One turn is one tool call; a session that hits the cap stops, and
@@ -107,6 +101,9 @@ pipeline:
   tailor_workers: 3
 
 screen:
+  # A role asking for (your years in answers.yaml experience_summary.total_years
+  # + years_margin) or more years of experience is rejected at screening.
+  years_margin: 2
   # Claude reviews this many before anything is tailored. One call over 30 costs
   # far less than tailoring even one role that was never viable.
   top: 30
@@ -199,27 +196,19 @@ server:
   tailscale_host: ""
 
 fill:
-  # A platform with no module under src/fill/platforms/ is explored generically.
-  # If that walk reaches the last page, the observed route is written as the
-  # platform's module. If not — or if a KNOWN platform's form gets stuck — a
-  # Claude session writes and tests the code (llm.platform): the platform module
-  # for a new platform, this application's hooks.py for a known one. Kept
-  # only when the tool's own re-exploration reaches the last page. Off: a stuck
-  # exploration is queued as it is, with its warnings.
-  # Every exploration runs as a Claude session on the live form (llm.explore).
-  # false = explore by code alone, and use Claude only when that gets stuck.
-  llm_explore: true
-  session_start_s: 600   # sign-in + page 1 can take minutes on Workday
-  explore_timeout_s: 2400
-  learn_platforms: true
-  learn_timeout_s: 1800
-  # Submit is two parts: the code replay files it; only if that did not go
-  # through does a Claude session (llm.submit) take the live form, fix it and
-  # file it. It may press Submit at most resolve_presses times, and can only
-  # put values into the form that are already approved for the application.
-  resolve_submit: true
-  resolve_presses: 2
-  resolve_timeout_s: 1500
+  # Exploration is see / map / act (docs/exploration-plan.md): code reads each
+  # page, a cached map is applied, and only the controls no map covers go to
+  # Claude (llm.map). Its map is checked against the live page and the failures
+  # go back to it, at most map_rounds times per page.
+  map_rounds: 3
+  # At most this many Claude calls per page, corrections included. What is still
+  # unmapped after that is not guessed: the page stops, the reason is reported.
+  map_calls_per_page: 5
+  # A list control's choices go to the map with it when it holds this many or fewer;
+  # a longer one is searched (the map gives 2-3 terms, the top hits come back).
+  choices_shown: 30
+  # Submit replays the recorded actions by code. A page whose recorded actions
+  # no longer fit is re-mapped (the same see / map / act) and the replay goes on.
 
 browser:
   # A multi-page form is walked page by page; this caps how far.

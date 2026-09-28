@@ -1,0 +1,54 @@
+{
+ "slug": "sonarsource-ai-research-engineer",
+ "platform": "lever",
+ "at": "2026-09-28T11:58:22",
+ "outcome": "last-page",
+ "note": "Lever form filled up to Submit (not sent). Placeholders to confirm: Switzerland sponsorship (c17, c22) — no Swiss work-authorization fact; guessed \"requires sponsorship\".",
+ "pages": [
+  "AI Research Engineer"
+ ],
+ "filled": {
+  "AI Research Engineer :: link 'ATTACH RESUME/CV Resume/CV ✱'": "sunil_resume.docx",
+  "AI Research Engineer :: combobox ' #2'": "Yes",
+  "AI Research Engineer :: radio 'Yes'": "checked",
+  "AI Research Engineer :: combobox 'Gender'": "Male",
+  "AI Research Engineer :: combobox 'Race Click to see details about each option.'": "Decline to self-identify",
+  "AI Research Engineer :: combobox 'Veteran status'": "I am not a veteran",
+  "AI Research Engineer :: radio 'Male'": "checked",
+  "AI Research Engineer :: textbox 'Full name ✱'": "Sunil Kumar Sharma",
+  "AI Research Engineer :: textbox 'Email ✱'": "sunil4832sharma@gmail.com",
+  "AI Research Engineer :: textbox 'Phone ✱'": "+91-9641298471",
+  "AI Research Engineer :: textbox 'Current location ✱'": "Delhi",
+  "AI Research Engineer :: textbox 'Current company'": "Aria Intelligent Solutions",
+  "AI Research Engineer :: textbox 'LinkedIn URL ✱'": "https://www.linkedin.com/in/sunil4832sharma",
+  "AI Research Engineer :: textbox 'Type your response #1'": "2 months",
+  "AI Research Engineer :: textbox 'Type your response #2'": "2 months"
+ },
+ "placeholders": {
+  "Would you now or at any time require employer sponsorship to work in the country this role is located (Switzerland)?": {
+   "used": "Yes",
+   "field": "combobox ' #1'",
+   "candidates": [
+    "Yes",
+    "No"
+   ],
+   "page": "AI Research Engineer"
+  },
+  "Are you eligible to work in this country (Switzerland) or would you require sponsorship?": {
+   "used": "I require sponsorship",
+   "field": "radio 'I require sponsorship'",
+   "candidates": [
+    "I require sponsorship",
+    "I am eligible to work in this country (e.g., I am a local citizen or have a visa)"
+   ],
+   "page": "AI Research Engineer"
+  }
+ },
+ "tool_calls": 10,
+ "seconds": 73,
+ "model": "opus",
+ "effort": "low",
+ "turns": 11,
+ "cost_usd": 0.28378139999999996,
+ "transcript": "tests/maps/sonarsource-ai-research-engineer/agentic-0928-1157.log"
+}

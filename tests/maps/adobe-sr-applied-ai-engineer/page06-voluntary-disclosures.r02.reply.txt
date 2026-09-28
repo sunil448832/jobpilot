@@ -1,0 +1,1 @@
+[["c1", "select", "option:I AM NOT A VETERAN"], ["c2", "select", "keep:eeo.gender"], ["c3", "select", "keep:eeo.race_ethnicity"], ["c4", "select", "keep:screening.confirm_form_statements"], ["c6", "select", "next"]]

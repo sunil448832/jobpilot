@@ -1,0 +1,35 @@
+{
+ "slug": "mongodb-senior-data-scientist",
+ "platform": "greenhouse",
+ "at": "2026-09-28T12:00:43",
+ "outcome": "last-page",
+ "note": "Single-page Greenhouse form filled; Submit not pressed.",
+ "pages": [
+  "Apply for this job"
+ ],
+ "filled": {
+  "Apply for this job :: button 'Attach #1'": "sunil_resume.docx",
+  "Apply for this job :: combobox 'Would you like to stay up to date with MongoDB Culture and Careers content?'": "No",
+  "Apply for this job :: combobox 'How did you learn about this job?'": "LinkedIn",
+  "Apply for this job :: combobox 'Receive alerts for similar jobs?'": "No",
+  "Apply for this job :: combobox 'Will you now or in the future require employment sponsorship?'": "Yes",
+  "Apply for this job :: combobox 'Have you ever worked at MongoDB before?'": "No",
+  "Apply for this job :: combobox 'Gender Identity (Select one)'": "Male",
+  "Apply for this job :: checkbox 'By checking this box, I consent to MongoDB collecting, storing, and processing my responses to the demographic data surveys above.*'": "checked",
+  "Apply for this job :: textbox 'First Name'": "Sunil",
+  "Apply for this job :: textbox 'Last Name'": "Sharma",
+  "Apply for this job :: textbox 'Email'": "sunil4832sharma@gmail.com",
+  "Apply for this job :: textbox 'Phone'": "96412 98471",
+  "Apply for this job :: textbox 'Preferred Name'": "Sunil",
+  "Apply for this job :: textbox 'LinkedIn Profile'": "https://www.linkedin.com/in/sunil4832sharma",
+  "Apply for this job :: combobox 'Location (City)'": "Delhi, India"
+ },
+ "placeholders": {},
+ "tool_calls": 4,
+ "seconds": 74,
+ "model": "opus",
+ "effort": "low",
+ "turns": 5,
+ "cost_usd": 0.2008516,
+ "transcript": "tests/maps/mongodb-senior-data-scientist/agentic-0928-1159.log"
+}

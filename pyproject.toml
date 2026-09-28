@@ -12,4 +12,4 @@ dependencies = ["pyyaml", "requests", "openpyxl", "playwright", "python-docx"]
 # src/ is the package itself (src/core, src/rank, ...), imported as jobpilot.<stage>.
 [tool.setuptools]
 package-dir = {"jobpilot" = "src"}
-packages = ["jobpilot", "jobpilot.core", "jobpilot.discover", "jobpilot.apply", "jobpilot.apply.explore", "jobpilot.apply.platforms", "jobpilot.apply.draft", "jobpilot.apply.submit", "jobpilot.outreach", "jobpilot.rank", "jobpilot.review", "jobpilot.screen", "jobpilot.tailor"]
+packages = ["jobpilot", "jobpilot.core", "jobpilot.discover", "jobpilot.apply", "jobpilot.apply.explore", "jobpilot.apply.platforms", "jobpilot.apply.draft", "jobpilot.apply.submit", "jobpilot.apply.explore_agentic", "jobpilot.outreach", "jobpilot.rank", "jobpilot.review", "jobpilot.screen", "jobpilot.tailor"]

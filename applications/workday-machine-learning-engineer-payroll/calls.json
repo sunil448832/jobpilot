@@ -1,0 +1,2021 @@
+[
+ {
+  "tool": "press",
+  "args": {
+   "id": "c8"
+  },
+  "page": "Careers at Workday",
+  "controls": {
+   "c8": {
+    "role": "button",
+    "name": "Apply",
+    "nth": 1,
+    "group": "",
+    "above": "Machine Learning Engineer - Payroll",
+    "qn": 0
+   }
+  },
+  "moved_to": "Start Your Application",
+  "result": "moved on: now on page 'Start Your Application'. see it.",
+  "n": 1
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c41",
+     "select",
+     "guess:Socially; Website; Advertisement | How Did You Hear About Us?"
+    ],
+    [
+     "c44",
+     "select",
+     "keep:screening.previously_employed_here"
+    ],
+    [
+     "c45",
+     "select",
+     "keep:location.country"
+    ],
+    [
+     "c46",
+     "write",
+     "keep:personal.first_name"
+    ],
+    [
+     "c47",
+     "write",
+     "keep:personal.middle_name"
+    ],
+    [
+     "c48",
+     "write",
+     "keep:personal.last_name"
+    ],
+    [
+     "c49",
+     "write",
+     "keep:personal.first_name"
+    ],
+    [
+     "c50",
+     "write",
+     "keep:personal.middle_name"
+    ],
+    [
+     "c51",
+     "write",
+     "keep:personal.last_name"
+    ],
+    [
+     "c53",
+     "write",
+     "keep:location.address_line_1"
+    ],
+    [
+     "c54",
+     "write",
+     "keep:location.city"
+    ],
+    [
+     "c55",
+     "write",
+     "keep:location.postal_code"
+    ],
+    [
+     "c56",
+     "select",
+     "keep:option:Mobile"
+    ],
+    [
+     "c57",
+     "select",
+     "keep:option:India (+91)"
+    ],
+    [
+     "c59",
+     "write",
+     "keep:personal.phone_national"
+    ]
+   ]
+  },
+  "page": "my information",
+  "controls": {
+   "c41": {
+    "role": "textbox",
+    "name": "How Did You Hear About Us?",
+    "nth": 1,
+    "group": "",
+    "above": "How Did You Hear About Us?",
+    "qn": 0
+   },
+   "c44": {
+    "role": "radio",
+    "name": "No",
+    "nth": 1,
+    "group": "Have you previously worked for or are you currently working for Workday as an employee or contractor?",
+    "above": "Yes",
+    "qn": 0
+   },
+   "c45": {
+    "role": "button",
+    "name": "Country / Territory India Required",
+    "nth": 1,
+    "group": "",
+    "above": "Country / Territory",
+    "qn": 0
+   },
+   "c46": {
+    "role": "textbox",
+    "name": "Given Name(s)",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Given Name(s)",
+    "qn": 0
+   },
+   "c47": {
+    "role": "textbox",
+    "name": "Middle Name",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Middle Name",
+    "qn": 0
+   },
+   "c48": {
+    "role": "textbox",
+    "name": "Family Name",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Family Name",
+    "qn": 0
+   },
+   "c49": {
+    "role": "textbox",
+    "name": "Local Given Name(s)",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Local Given Name(s)",
+    "qn": 0
+   },
+   "c50": {
+    "role": "textbox",
+    "name": "Local Middle Name",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Local Middle Name",
+    "qn": 0
+   },
+   "c51": {
+    "role": "textbox",
+    "name": "Local Family Name",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Local Family Name",
+    "qn": 0
+   },
+   "c53": {
+    "role": "textbox",
+    "name": "Address Line 1",
+    "nth": 1,
+    "group": "Address",
+    "above": "Address Line 1",
+    "qn": 0
+   },
+   "c54": {
+    "role": "textbox",
+    "name": "City",
+    "nth": 1,
+    "group": "Address",
+    "above": "City",
+    "qn": 0
+   },
+   "c55": {
+    "role": "textbox",
+    "name": "Postal Code",
+    "nth": 1,
+    "group": "Address",
+    "above": "Postal Code",
+    "qn": 0
+   },
+   "c56": {
+    "role": "button",
+    "name": "Phone Device Type Mobile Required",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Device Type",
+    "qn": 0
+   },
+   "c57": {
+    "role": "textbox",
+    "name": "Country / Territory Phone Code",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Country / Territory Phone Code",
+    "qn": 0
+   },
+   "c59": {
+    "role": "textbox",
+    "name": "Phone Number",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Number",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c41",
+    "kind": "select",
+    "answer": "guess:Socially; Website; Advertisement | How Did You Hear About Us?",
+    "how": "guess",
+    "ok": false,
+    "shown": "Expanded; Social Media",
+    "question": "How Did You Hear About Us?",
+    "reads": ""
+   },
+   {
+    "id": "c44",
+    "kind": "select",
+    "answer": "keep:screening.previously_employed_here",
+    "how": "keep",
+    "ok": true,
+    "shown": "false",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c45",
+    "kind": "select",
+    "answer": "keep:location.country",
+    "how": "keep",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   },
+   {
+    "id": "c56",
+    "kind": "select",
+    "answer": "keep:option:Mobile",
+    "how": "keep",
+    "ok": true,
+    "shown": "Mobile",
+    "question": null,
+    "reads": "Mobile"
+   },
+   {
+    "id": "c57",
+    "kind": "select",
+    "answer": "keep:option:India (+91)",
+    "how": "keep",
+    "ok": true,
+    "shown": "1 item selected, India (+91); India (+91)",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c46",
+    "kind": "write",
+    "answer": "keep:personal.first_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Sunil",
+    "question": null,
+    "reads": "Sunil"
+   },
+   {
+    "id": "c47",
+    "kind": "write",
+    "answer": "keep:personal.middle_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Kumar",
+    "question": null,
+    "reads": "Kumar"
+   },
+   {
+    "id": "c48",
+    "kind": "write",
+    "answer": "keep:personal.last_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Sharma",
+    "question": null,
+    "reads": "Sharma"
+   },
+   {
+    "id": "c49",
+    "kind": "write",
+    "answer": "keep:personal.first_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Sunil",
+    "question": null,
+    "reads": "Sunil"
+   },
+   {
+    "id": "c50",
+    "kind": "write",
+    "answer": "keep:personal.middle_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Kumar",
+    "question": null,
+    "reads": "Kumar"
+   },
+   {
+    "id": "c51",
+    "kind": "write",
+    "answer": "keep:personal.last_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Sharma",
+    "question": null,
+    "reads": "Sharma"
+   },
+   {
+    "id": "c53",
+    "kind": "write",
+    "answer": "keep:location.address_line_1",
+    "how": "keep",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": "Delhi"
+   },
+   {
+    "id": "c54",
+    "kind": "write",
+    "answer": "keep:location.city",
+    "how": "keep",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": "Delhi"
+   },
+   {
+    "id": "c55",
+    "kind": "write",
+    "answer": "keep:location.postal_code",
+    "how": "keep",
+    "ok": true,
+    "shown": "110019",
+    "question": null,
+    "reads": "110019"
+   },
+   {
+    "id": "c59",
+    "kind": "write",
+    "answer": "keep:personal.phone_national",
+    "how": "keep",
+    "ok": true,
+    "shown": "096412 98471",
+    "question": null,
+    "reads": "096412 98471"
+   }
+  ],
+  "result": "c41  CHECK  textbox 'How Did You Hear About Us?': set to 'Socially'; the field now shows 'Expanded; Social Media' — the same entry (a short or cut form of it)? if not, act on it again   (a placeholder: 'Socially', asked later)\nc44  ok  radio 'No': shows 'false'\nc45  ok  button 'Country / Territory India Required': shows 'India'\nc56  ok  button 'Phone Device Type Mobile Required': shows 'Mobile'\nc57  ok  textbox 'Country / Territory Phone Code': shows '1 item selected, India (+91); India (+91)'\nc46  ok  textbox 'Given Name(s)': shows 'Sunil'\nc47  ok  textbox 'Middle Name': shows 'Kumar'\nc48  ok  textbox 'Family Name': shows 'Sharma'\nc49  ok  textbox 'Local Given Name(s)': shows 'Sunil'\nc50  ok  textbox 'Local Middle Name': shows 'Kumar'\nc51  ok  textbox 'Local Family Name': shows 'Sharma'\nc53  ok  textbox 'Address Line 1': shows 'Delhi'\nc54  ok  textbox 'City': shows 'Delhi'\nc55  ok  textbox 'Postal Code': shows '110019'\nc59  ok  textbox 'Phone Number': shows '096412 98471'\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'How Did You Hear About Us?' holds 'Socially' — asked as 'How Did You Hear About Us?'",
+  "n": 2
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c61"
+  },
+  "page": "my information",
+  "controls": {
+   "c61": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "Phone Extension",
+    "qn": 0
+   }
+  },
+  "moved_to": "my experience",
+  "result": "moved on: now on page 'my experience'. see it.",
+  "n": 3
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c67",
+     "write",
+     "keep:employment[0].title"
+    ],
+    [
+     "c68",
+     "write",
+     "keep:employment[0].employer"
+    ],
+    [
+     "c69",
+     "write",
+     "keep:employment[0].location"
+    ],
+    [
+     "c70",
+     "select",
+     "keep:employment[0].current"
+    ],
+    [
+     "c71",
+     "write",
+     "keep:employment[0].start_date.month"
+    ],
+    [
+     "c72",
+     "write",
+     "keep:employment[0].start_date.year"
+    ],
+    [
+     "c74",
+     "write",
+     "employment[0].summary"
+    ],
+    [
+     "c76",
+     "write",
+     "keep:employment[1].title"
+    ],
+    [
+     "c77",
+     "write",
+     "keep:employment[1].employer"
+    ],
+    [
+     "c78",
+     "write",
+     "keep:employment[1].location"
+    ],
+    [
+     "c80",
+     "write",
+     "keep:employment[1].start_date.month"
+    ],
+    [
+     "c81",
+     "write",
+     "keep:employment[1].start_date.year"
+    ],
+    [
+     "c83",
+     "write",
+     "keep:employment[1].end_date.month"
+    ],
+    [
+     "c84",
+     "write",
+     "keep:employment[1].end_date.year"
+    ],
+    [
+     "c86",
+     "write",
+     "employment[1].summary"
+    ],
+    [
+     "c88",
+     "write",
+     "keep:employment[2].title"
+    ],
+    [
+     "c89",
+     "write",
+     "keep:employment[2].employer"
+    ],
+    [
+     "c90",
+     "write",
+     "keep:employment[2].location"
+    ],
+    [
+     "c92",
+     "write",
+     "keep:employment[2].start_date.month"
+    ],
+    [
+     "c93",
+     "write",
+     "keep:employment[2].start_date.year"
+    ],
+    [
+     "c95",
+     "write",
+     "keep:employment[2].end_date.month"
+    ],
+    [
+     "c96",
+     "write",
+     "keep:employment[2].end_date.year"
+    ],
+    [
+     "c98",
+     "write",
+     "employment[2].summary"
+    ],
+    [
+     "c101",
+     "select",
+     "keep:education[0].institution"
+    ],
+    [
+     "c103",
+     "select",
+     "guess:Master of Science; Post Graduate Diploma; Graduate Diploma | Degree — Education 1 (Indian Institute of Technology, Jodhpur)"
+    ],
+    [
+     "c104",
+     "select",
+     "keep:option:Artificial Intelligence and Robotics"
+    ],
+    [
+     "c108",
+     "select",
+     "keep:education[1].institution"
+    ],
+    [
+     "c110",
+     "select",
+     "keep:option:Bachelor of Engineering"
+    ],
+    [
+     "c111",
+     "select",
+     "keep:learned:93"
+    ],
+    [
+     "c115",
+     "select",
+     "add:1"
+    ],
+    [
+     "c118",
+     "select",
+     "keep:file:resume"
+    ],
+    [
+     "c120",
+     "write",
+     "keep:links.huggingface"
+    ],
+    [
+     "c122",
+     "write",
+     "keep:links.github"
+    ],
+    [
+     "c124",
+     "write",
+     "keep:links.linkedin"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c67": {
+    "role": "textbox",
+    "name": "Job Title",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Job Title",
+    "qn": 0
+   },
+   "c68": {
+    "role": "textbox",
+    "name": "Company",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Company",
+    "qn": 0
+   },
+   "c69": {
+    "role": "textbox",
+    "name": "Location",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Location",
+    "qn": 0
+   },
+   "c70": {
+    "role": "checkbox",
+    "name": "I currently work here",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "I currently work here",
+    "qn": 0
+   },
+   "c71": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 1,
+    "group": "From",
+    "above": "From",
+    "qn": 0
+   },
+   "c72": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 1,
+    "group": "From",
+    "above": "From",
+    "qn": 1
+   },
+   "c74": {
+    "role": "textbox",
+    "name": "Role Description",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c76": {
+    "role": "textbox",
+    "name": "Job Title",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Job Title",
+    "qn": 0
+   },
+   "c77": {
+    "role": "textbox",
+    "name": "Company",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Company",
+    "qn": 0
+   },
+   "c78": {
+    "role": "textbox",
+    "name": "Location",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Location",
+    "qn": 0
+   },
+   "c80": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 2,
+    "group": "From",
+    "above": "From",
+    "qn": 2
+   },
+   "c81": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 2,
+    "group": "From",
+    "above": "From",
+    "qn": 3
+   },
+   "c83": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 3,
+    "group": "To",
+    "above": "From",
+    "qn": 0
+   },
+   "c84": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 3,
+    "group": "To",
+    "above": "From",
+    "qn": 1
+   },
+   "c86": {
+    "role": "textbox",
+    "name": "Role Description",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c88": {
+    "role": "textbox",
+    "name": "Job Title",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Job Title",
+    "qn": 0
+   },
+   "c89": {
+    "role": "textbox",
+    "name": "Company",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Company",
+    "qn": 0
+   },
+   "c90": {
+    "role": "textbox",
+    "name": "Location",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Location",
+    "qn": 0
+   },
+   "c92": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 4,
+    "group": "From",
+    "above": "From",
+    "qn": 4
+   },
+   "c93": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 4,
+    "group": "From",
+    "above": "From",
+    "qn": 5
+   },
+   "c95": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 5,
+    "group": "To",
+    "above": "From",
+    "qn": 2
+   },
+   "c96": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 5,
+    "group": "To",
+    "above": "From",
+    "qn": 3
+   },
+   "c98": {
+    "role": "textbox",
+    "name": "Role Description",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c101": {
+    "role": "textbox",
+    "name": "School or University",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "School or University",
+    "qn": 0
+   },
+   "c103": {
+    "role": "button",
+    "name": "Degree Master of Science Required",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "Degree",
+    "qn": 0
+   },
+   "c104": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "Field of Study",
+    "qn": 0
+   },
+   "c108": {
+    "role": "textbox",
+    "name": "School or University",
+    "nth": 2,
+    "group": "Education 2",
+    "above": "School or University",
+    "qn": 0
+   },
+   "c110": {
+    "role": "button",
+    "name": "Degree Bachelor of Engineering Required",
+    "nth": 1,
+    "group": "Education 2",
+    "above": "Degree",
+    "qn": 0
+   },
+   "c111": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 2,
+    "group": "Education 2",
+    "above": "Field of Study",
+    "qn": 0
+   },
+   "c115": {
+    "role": "button",
+    "name": "Add",
+    "nth": 1,
+    "group": "Certifications",
+    "above": "Certifications",
+    "qn": 0
+   },
+   "c118": {
+    "role": "button",
+    "name": "Delete sunil_resume.docx",
+    "nth": 1,
+    "group": "Resume/CV",
+    "above": "sunil_resume.docx 14.94 KB Successfully Uploaded!",
+    "qn": 0
+   },
+   "c120": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   },
+   "c122": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   },
+   "c124": {
+    "role": "textbox",
+    "name": "LinkedIn",
+    "nth": 1,
+    "group": "Social Network URLs",
+    "above": "LinkedIn",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c115",
+    "kind": "select",
+    "answer": "add:1",
+    "how": "add",
+    "ok": true,
+    "shown": "added 1 block(s)",
+    "question": null,
+    "section": "Certifications",
+    "section_count": 14
+   },
+   {
+    "id": "c70",
+    "kind": "select",
+    "answer": "keep:employment[0].current",
+    "how": "keep",
+    "ok": true,
+    "shown": "on",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c101",
+    "kind": "select",
+    "answer": "keep:education[0].institution",
+    "how": "keep",
+    "ok": true,
+    "shown": "1 item selected, Indian Institute of Technology, Jodhpur; Indian Institute of Te",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c103",
+    "kind": "select",
+    "answer": "guess:Master of Science; Post Graduate Diploma; Graduate Diploma | Degree — Education 1 (Indian Institute of Technology, Jodhpur)",
+    "how": "guess",
+    "ok": true,
+    "shown": "Master of Science",
+    "question": "Degree — Education 1 (Indian Institute of Technology, Jodhpur)",
+    "reads": "Master of Science"
+   },
+   {
+    "id": "c104",
+    "kind": "select",
+    "answer": "keep:option:Artificial Intelligence and Robotics",
+    "how": "keep",
+    "ok": true,
+    "shown": "1 item selected, Artificial Intelligence and Robotics; Artificial Intelligence a",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c108",
+    "kind": "select",
+    "answer": "keep:education[1].institution",
+    "how": "keep",
+    "ok": true,
+    "shown": "1 item selected, Sikkim Manipal Institute of Technology; Sikkim Manipal Institut",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c110",
+    "kind": "select",
+    "answer": "keep:option:Bachelor of Engineering",
+    "how": "keep",
+    "ok": true,
+    "shown": "Bachelor of Engineering",
+    "question": null,
+    "reads": "Bachelor of Engineering"
+   },
+   {
+    "id": "c111",
+    "kind": "select",
+    "answer": "keep:learned:93",
+    "how": "keep",
+    "ok": true,
+    "shown": "1 item selected, Electrical Engineering; Electrical Engineering",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c118",
+    "kind": "select",
+    "answer": "keep:file:resume",
+    "how": "keep",
+    "ok": true,
+    "shown": "",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c67",
+    "kind": "write",
+    "answer": "keep:employment[0].title",
+    "how": "keep",
+    "ok": true,
+    "shown": "Senior Data Scientist",
+    "question": null,
+    "reads": "Senior Data Scientist"
+   },
+   {
+    "id": "c68",
+    "kind": "write",
+    "answer": "keep:employment[0].employer",
+    "how": "keep",
+    "ok": true,
+    "shown": "Aria Intelligent Solutions",
+    "question": null,
+    "reads": "Aria Intelligent Solutions"
+   },
+   {
+    "id": "c69",
+    "kind": "write",
+    "answer": "keep:employment[0].location",
+    "how": "keep",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   },
+   {
+    "id": "c71",
+    "kind": "write",
+    "answer": "keep:employment[0].start_date.month",
+    "how": "keep",
+    "ok": true,
+    "shown": "12",
+    "question": null,
+    "reads": "12"
+   },
+   {
+    "id": "c72",
+    "kind": "write",
+    "answer": "keep:employment[0].start_date.year",
+    "how": "keep",
+    "ok": true,
+    "shown": "2023",
+    "question": null,
+    "reads": "2023"
+   },
+   {
+    "id": "c74",
+    "kind": "write",
+    "answer": "employment[0].summary",
+    "how": "fact",
+    "ok": true,
+    "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions). Built IngestIQ, autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running end-to-e",
+    "question": null,
+    "reads": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions). Built IngestIQ, autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running end-to-end ETL from a natural-language task. Built an automated evaluation framework benchmarking the agent fleet at 86% exact-pass and 0.86 mean F1."
+   },
+   {
+    "id": "c76",
+    "kind": "write",
+    "answer": "keep:employment[1].title",
+    "how": "keep",
+    "ok": true,
+    "shown": "Applied Scientist I",
+    "question": null,
+    "reads": "Applied Scientist I"
+   },
+   {
+    "id": "c77",
+    "kind": "write",
+    "answer": "keep:employment[1].employer",
+    "how": "keep",
+    "ok": true,
+    "shown": "Amazon Development Centre (India) Pvt. Ltd.",
+    "question": null,
+    "reads": "Amazon Development Centre (India) Pvt. Ltd."
+   },
+   {
+    "id": "c78",
+    "kind": "write",
+    "answer": "keep:employment[1].location",
+    "how": "keep",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   },
+   {
+    "id": "c80",
+    "kind": "write",
+    "answer": "keep:employment[1].start_date.month",
+    "how": "keep",
+    "ok": true,
+    "shown": "10",
+    "question": null,
+    "reads": "10"
+   },
+   {
+    "id": "c81",
+    "kind": "write",
+    "answer": "keep:employment[1].start_date.year",
+    "how": "keep",
+    "ok": true,
+    "shown": "2022",
+    "question": null,
+    "reads": "2022"
+   },
+   {
+    "id": "c83",
+    "kind": "write",
+    "answer": "keep:employment[1].end_date.month",
+    "how": "keep",
+    "ok": true,
+    "shown": "6",
+    "question": null,
+    "reads": "6"
+   },
+   {
+    "id": "c84",
+    "kind": "write",
+    "answer": "keep:employment[1].end_date.year",
+    "how": "keep",
+    "ok": true,
+    "shown": "2023",
+    "question": null,
+    "reads": "2023"
+   },
+   {
+    "id": "c86",
+    "kind": "write",
+    "answer": "employment[1].summary",
+    "how": "fact",
+    "ok": true,
+    "shown": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting hard samples to lift edge-case recall.",
+    "question": null,
+    "reads": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting hard samples to lift edge-case recall."
+   },
+   {
+    "id": "c88",
+    "kind": "write",
+    "answer": "keep:employment[2].title",
+    "how": "keep",
+    "ok": true,
+    "shown": "Computer Vision Engineer",
+    "question": null,
+    "reads": "Computer Vision Engineer"
+   },
+   {
+    "id": "c89",
+    "kind": "write",
+    "answer": "keep:employment[2].employer",
+    "how": "keep",
+    "ok": true,
+    "shown": "Beltech AI Pvt. Ltd.",
+    "question": null,
+    "reads": "Beltech AI Pvt. Ltd."
+   },
+   {
+    "id": "c90",
+    "kind": "write",
+    "answer": "keep:employment[2].location",
+    "how": "keep",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   },
+   {
+    "id": "c92",
+    "kind": "write",
+    "answer": "keep:employment[2].start_date.month",
+    "how": "keep",
+    "ok": true,
+    "shown": "7",
+    "question": null,
+    "reads": "7"
+   },
+   {
+    "id": "c93",
+    "kind": "write",
+    "answer": "keep:employment[2].start_date.year",
+    "how": "keep",
+    "ok": true,
+    "shown": "2021",
+    "question": null,
+    "reads": "2021"
+   },
+   {
+    "id": "c95",
+    "kind": "write",
+    "answer": "keep:employment[2].end_date.month",
+    "how": "keep",
+    "ok": true,
+    "shown": "9",
+    "question": null,
+    "reads": "9"
+   },
+   {
+    "id": "c96",
+    "kind": "write",
+    "answer": "keep:employment[2].end_date.year",
+    "how": "keep",
+    "ok": true,
+    "shown": "2022",
+    "question": null,
+    "reads": "2022"
+   },
+   {
+    "id": "c98",
+    "kind": "write",
+    "answer": "employment[2].summary",
+    "how": "fact",
+    "ok": true,
+    "shown": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extractor with ResNet-34 under ArcFace metric-learning loss for multi-camera re-identification.",
+    "question": null,
+    "reads": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extractor with ResNet-34 under ArcFace metric-learning loss for multi-camera re-identification."
+   },
+   {
+    "id": "c120",
+    "kind": "write",
+    "answer": "keep:links.huggingface",
+    "how": "keep",
+    "ok": true,
+    "shown": "https://huggingface.co/sunil448832",
+    "question": null,
+    "reads": "https://huggingface.co/sunil448832"
+   },
+   {
+    "id": "c122",
+    "kind": "write",
+    "answer": "keep:links.github",
+    "how": "keep",
+    "ok": true,
+    "shown": "https://github.com/sunil448832",
+    "question": null,
+    "reads": "https://github.com/sunil448832"
+   },
+   {
+    "id": "c124",
+    "kind": "write",
+    "answer": "keep:links.linkedin",
+    "how": "keep",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null,
+    "reads": "https://www.linkedin.com/in/sunil4832sharma"
+   }
+  ],
+  "result": "c115  ok  button 'Add': shows 'added 1 block(s)'\nc70  ok  checkbox 'I currently work here #1': shows 'on'\nc101  ok  textbox 'School or University #1': shows '1 item selected, Indian Institute of Technology, Jodhpur; Indian Institute of Te'\nc103  ok  button 'Degree Master of Science Required': shows 'Master of Science'   (a placeholder: 'Master of Science', asked later)\nc104  ok  textbox 'Field of Study #1': shows '1 item selected, Artificial Intelligence and Robotics; Artificial Intelligence a'\nc108  ok  textbox 'School or University #2': shows '1 item selected, Sikkim Manipal Institute of Technology; Sikkim Manipal Institut'\nc110  ok  button 'Degree Bachelor of Engineering Required': shows 'Bachelor of Engineering'\nc111  ok  textbox 'Field of Study #2': shows '1 item selected, Electrical Engineering; Electrical Engineering'\nc118  ok  button 'Delete sunil_resume.docx': shows ''\nc67  ok  textbox 'Job Title #1': shows 'Senior Data Scientist'\nc68  ok  textbox 'Company #1': shows 'Aria Intelligent Solutions'\nc69  ok  textbox 'Location #1': shows 'India'\nc71  ok  spinbutton 'Month #1': shows '12'\nc72  ok  spinbutton 'Year #1': shows '2023'\nc74  ok  textbox 'Role Description #1': shows 'Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions)'\nc76  ok  textbox 'Job Title #2': shows 'Applied Scientist I'\nc77  ok  textbox 'Company #2': shows ",
+  "n": 4
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c128"
+  },
+  "page": "my experience",
+  "controls": {
+   "c128": {
+    "role": "button",
+    "name": "Delete",
+    "nth": 6,
+    "group": "Certifications 1",
+    "above": "Certifications 1",
+    "qn": 0
+   }
+  },
+  "moved_to": null,
+  "result": "still on page 'my experience'. It shows no error message. see it for what changed.",
+  "n": 5
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c61"
+  },
+  "page": "my experience",
+  "controls": {
+   "c61": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "Facebook",
+    "qn": 1
+   }
+  },
+  "moved_to": "application questions 1 of 2",
+  "result": "moved on: now on page 'application questions 1 of 2'. see it.",
+  "n": 6
+ },
+ {
+  "n": 7,
+  "tool": "replay",
+  "args": {},
+  "page": "Careers at Workday",
+  "controls": {},
+  "result": "redone: ['Careers at Workday', 'my information', 'my experience']; now on page 'application questions 1 of 2' — the record does not know this page\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand."
+ },
+ {
+  "n": 8,
+  "tool": "see",
+  "args": {
+   "snapshot": true
+  },
+  "page": "application questions 1 of 2",
+  "controls": {},
+  "result": "PAGE: application questions 1 of 2\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc30  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, Français (‏Canada), 日本語 (‏日本)]\nc31  button 'Settings'   [a button that opens a list, shows 'Settings']   shows: 'Settings'   choices: [Change Email]\nc32  button 'sunil4832sharma@gmail.com'   [a button that opens a list, shows 'sunil4832sharma@gmail.com']   shows: 'sunil4832sharma@gmail.com'   choices: [Sign Out]\nc33  button 'Careers Page'   [a button]   shows: 'Careers Page'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  button 'Candidate Home'   [a button]   shows: 'Candidate Home'\nc36  button 'Job Alerts'   [a button]   shows: 'Job Alerts'\nc37  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc138  button 'Yes, I would consider relocating for this role Required'   [a button that opens a list, shows 'Yes, I would consider relocating for this role']   shows: 'Yes, I would consider relocating for this role'   choices: [Select One, I am local to where the job is posted, \"Yes, I would consider relocating for this role\", \"No, I am not able to relocate for this role\"]\nc139  button 'No Required #1'   [a button that opens a list, shows 'No']   shows: 'No'   choices: [Select One, Yes, No]\nc140  button 'No, I do not use the Workday system in my current job Required'   [a button that opens a list, show"
+ },
+ {
+  "n": 9,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c138",
+     "select",
+     "keep:option:Yes, I would consider relocating for this role"
+    ],
+    [
+     "c139",
+     "select",
+     "keep:screening.non_compete_restrictions"
+    ],
+    [
+     "c140",
+     "select",
+     "guess:No, I do not use the Workday system in my current job; Yes, I occasionally use the Workday system in my current job (to complete items such as: review benefit elections, retrieve paystubs and compensation details, submit payroll and time-tracking requirements, and other typical worker tasks) | In your current job, do you use or work on the Workday system?"
+    ],
+    [
+     "c141",
+     "select",
+     "keep:work_authorization.us.authorized_without_sponsorship"
+    ],
+    [
+     "c142",
+     "select",
+     "keep:work_authorization.us.requires_sponsorship"
+    ],
+    [
+     "c143",
+     "select",
+     "guess:No; Yes | Are you a current or former employee of the United States government?"
+    ],
+    [
+     "c144",
+     "select",
+     "keep:option:No"
+    ],
+    [
+     "c145",
+     "select",
+     "keep:screening.related_to_current_employee"
+    ],
+    [
+     "c146",
+     "select",
+     "guess:No; Yes | To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?"
+    ],
+    [
+     "c147",
+     "select",
+     "guess:No; Yes | Are you a current or recent former employee of Ernst & Young, LLP, or a current or former partner or principal of Ernst & Young, LLP?"
+    ],
+    [
+     "c148",
+     "select",
+     "keep:screening.confirm_form_statements"
+    ],
+    [
+     "c38",
+     "select",
+     "next"
+    ]
+   ]
+  },
+  "page": "application questions 1 of 2",
+  "controls": {
+   "c138": {
+    "role": "button",
+    "name": "Yes, I would consider relocating for this role Required",
+    "nth": 1,
+    "group": "Would you consider relocating for this role?*",
+    "above": "Would you consider relocating for this role?*",
+    "qn": 0
+   },
+   "c139": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 1,
+    "group": "Are you subject to any non-compete or non-solicitation restrictions at your current or most recent employer?*",
+    "above": "Are you subject to any non-compete or non-solicitation restrictions at your current or most recent employer?*",
+    "qn": 0
+   },
+   "c140": {
+    "role": "button",
+    "name": "No, I do not use the Workday system in my current job Required",
+    "nth": 1,
+    "group": "In your current job, do you use or work on the Workday system?*",
+    "above": "In your current job, do you use or work on the Workday system?*",
+    "qn": 0
+   },
+   "c141": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 2,
+    "group": "Are you authorized to work in the country where this job is located?*",
+    "above": "Are you authorized to work in the country where this job is located?*",
+    "qn": 0
+   },
+   "c142": {
+    "role": "button",
+    "name": "Yes Required",
+    "nth": 1,
+    "group": "Do you now or in the future require any immigration filing or visa sponsorship to maintain work authorization, including sponsorship by Workday, renewal/extension of open work permit, permanent residency, etc.?*",
+    "above": "Do you now or in the future require any immigration filing or visa sponsorship to maintain work authorization, including sponsorship by Workday, renewal/extension of open work permit, permanent residency, etc.?*",
+    "qn": 0
+   },
+   "c143": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 3,
+    "group": "Are you a current or former employee of the United States government?*",
+    "above": "Are you a current or former employee of the United States government?*",
+    "qn": 0
+   },
+   "c144": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 4,
+    "group": "This information is sought for compliance with U.S. Export Control laws. All information that you provide will be considered in accordance with applicable law. Are you a current citizen, national or resident of any of the following countries/regions: Iran, Cuba, North Korea, Syria, Crimea, Donetsk People’s Republic (DNR), Luhansk People’s Republic (LNR) regions of Ukraine?*",
+    "above": "This information is sought for compliance with U.S. Export Control laws. All information that you provide will be considered in accordance with applicable law. Are you a current citizen, national or resident of any of the following countries/regions: Iran, Cuba, North Korea, Syria, Crimea, Donetsk People’s Republic (DNR), Luhansk People’s Republic (LNR) regions of Ukraine?*",
+    "qn": 0
+   },
+   "c145": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 5,
+    "group": "Are you related to a current Workday employee?*",
+    "above": "Are you related to a current Workday employee?*",
+    "qn": 0
+   },
+   "c146": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 6,
+    "group": "To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?*",
+    "above": "To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?*",
+    "qn": 0
+   },
+   "c147": {
+    "role": "button",
+    "name": "No Required",
+    "nth": 7,
+    "group": "Are you (i) a current or recent former (within the preceding 24 months) employee of Ernst & Young, LLP, Workday’s independent auditors, or (ii) a current or former (at any time) partner or principal of Ernst & Young, LLP?*",
+    "above": "Are you (i) a current or recent former (within the preceding 24 months) employee of Ernst & Young, LLP, Workday’s independent auditors, or (ii) a current or former (at any time) partner or principal of Ernst & Young, LLP?*",
+    "qn": 0
+   },
+   "c148": {
+    "role": "button",
+    "name": "Yes Required",
+    "nth": 2,
+    "group": "",
+    "above": "NOTE: Workday will not consider any applications with \"No\" selected.*",
+    "qn": 0
+   },
+   "c38": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "NOTE: Workday will not consider any applications with \"No\" selected.*",
+    "qn": 2
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c138",
+    "kind": "select",
+    "answer": "keep:option:Yes, I would consider relocating for this role",
+    "how": "keep",
+    "ok": true,
+    "shown": "Yes, I would consider relocating for this role",
+    "question": null,
+    "reads": "Yes, I would consider relocating for this role"
+   },
+   {
+    "id": "c139",
+    "kind": "select",
+    "answer": "keep:screening.non_compete_restrictions",
+    "how": "keep",
+    "ok": true,
+    "shown": "No",
+    "question": null,
+    "reads": "No"
+   },
+   {
+    "id": "c140",
+    "kind": "select",
+    "answer": "guess:No, I do not use the Workday system in my current job; Yes, I occasionally use the Workday system in my current job (to complete items such as: review benefit elections, retrieve paystubs and compensation details, submit payroll and time-tracking requirements, and other typical worker tasks) | In your current job, do you use or work on the Workday system?",
+    "how": "guess",
+    "ok": true,
+    "shown": "No, I do not use the Workday system in my current job",
+    "question": "In your current job, do you use or work on the Workday system?",
+    "reads": "No, I do not use the Workday system in my current job"
+   },
+   {
+    "id": "c141",
+    "kind": "select",
+    "answer": "keep:work_authorization.us.authorized_without_sponsorship",
+    "how": "keep",
+    "ok": true,
+    "shown": "No",
+    "question": null,
+    "reads": "No"
+   },
+   {
+    "id": "c142",
+    "kind": "select",
+    "answer": "keep:work_authorization.us.requires_sponsorship",
+    "how": "keep",
+    "ok": true,
+    "shown": "Yes",
+    "question": null,
+    "reads": "Yes"
+   },
+   {
+    "id": "c143",
+    "kind": "select",
+    "answer": "guess:No; Yes | Are you a current or former employee of the United States government?",
+    "how": "guess",
+    "ok": true,
+    "shown": "No",
+    "question": "Are you a current or former employee of the United States government?",
+    "reads": "No"
+   },
+   {
+    "id": "c144",
+    "kind": "select",
+    "answer": "keep:option:No",
+    "how": "keep",
+    "ok": true,
+    "shown": "No",
+    "question": null,
+    "reads": "No"
+   },
+   {
+    "id": "c145",
+    "kind": "select",
+    "answer": "keep:screening.related_to_current_employee",
+    "how": "keep",
+    "ok": true,
+    "shown": "No",
+    "question": null,
+    "reads": "No"
+   },
+   {
+    "id": "c146",
+    "kind": "select",
+    "answer": "guess:No; Yes | To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?",
+    "how": "guess",
+    "ok": true,
+    "shown": "No",
+    "question": "To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?",
+    "reads": "No"
+   },
+   {
+    "id": "c147",
+    "kind": "select",
+    "answer": "guess:No; Yes | Are you a current or recent former employee of Ernst & Young, LLP, or a current or former partner or principal of Ernst & Young, LLP?",
+    "how": "guess",
+    "ok": true,
+    "shown": "No",
+    "question": "Are you a current or recent former employee of Ernst & Young, LLP, or a current or former partner or principal of Ernst & Young, LLP?",
+    "reads": "No"
+   },
+   {
+    "id": "c148",
+    "kind": "select",
+    "answer": "keep:screening.confirm_form_statements",
+    "how": "keep",
+    "ok": true,
+    "shown": "Yes",
+    "question": null,
+    "reads": "Yes"
+   },
+   {
+    "id": "c38",
+    "kind": "select",
+    "answer": "next",
+    "how": "button",
+    "ok": true,
+    "shown": "left for the walk",
+    "question": null,
+    "reads": "Save and Continue"
+   }
+  ],
+  "result": "c138  ok  button 'Yes, I would consider relocating for this role Required': shows 'Yes, I would consider relocating for this role'\nc139  ok  button 'No Required #1': shows 'No'\nc140  ok  button 'No, I do not use the Workday system in my current job Required': shows 'No, I do not use the Workday system in my current job'   (a placeholder: 'No, I do not use the Workday system in my current job', asked later)\nc141  ok  button 'No Required #2': shows 'No'\nc142  ok  button 'Yes Required #1': shows 'Yes'\nc143  ok  button 'No Required #3': shows 'No'   (a placeholder: 'No', asked later)\nc144  ok  button 'No Required #4': shows 'No'\nc145  ok  button 'No Required #5': shows 'No'\nc146  ok  button 'No Required #6': shows 'No'   (a placeholder: 'No', asked later)\nc147  ok  button 'No Required #7': shows 'No'   (a placeholder: 'No', asked later)\nc148  ok  button 'Yes Required #2': shows 'Yes'\nc38  ok  button 'Save and Continue': shows 'left for the walk'\n\nPAGE: application questions 1 of 2\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'No, I do not use the Workday system in my current job Required' holds 'No, I do not use the Workday system in my current job' — asked as 'In your current job, do you use or work on the Workday system?'\n- button 'No Required #3' holds 'No' — asked as 'Are you a current or former employee of the United States government?'\n- button 'No Required #6' holds 'No' — asked as 'To the best of your knowledge, are you related to"
+ },
+ {
+  "n": 10,
+  "tool": "replay",
+  "args": {},
+  "page": "application questions 1 of 2",
+  "controls": {},
+  "result": "redone: (no page); now on page 'application questions 1 of 2' — the record does not know this page\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand."
+ },
+ {
+  "n": 11,
+  "tool": "press",
+  "args": {
+   "id": "c38"
+  },
+  "page": "application questions 1 of 2",
+  "controls": {
+   "c38": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "NOTE: Workday will not consider any applications with \"No\" selected.*",
+    "qn": 2
+   }
+  },
+  "moved_to": "application questions 2 of 2",
+  "result": "moved on: now on page 'application questions 2 of 2'. see it."
+ },
+ {
+  "n": 12,
+  "tool": "replay",
+  "args": {},
+  "page": "application questions 2 of 2",
+  "controls": {},
+  "result": "redone: (no page); now on page 'application questions 2 of 2' — the record does not know this page\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand."
+ },
+ {
+  "n": 13,
+  "tool": "see",
+  "args": {
+   "snapshot": true
+  },
+  "page": "application questions 2 of 2",
+  "controls": {},
+  "result": "PAGE: application questions 2 of 2\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc37  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc149  link 'Workday Non Disclosure Agreement'   [a link]\nc150  button 'I have read and agree to the Non Disclosure Agreement Required'   [a button that opens a list, shows 'I have read and agree to the Non Disclosure Agreement']   shows: 'I have read and agree to the Non Disclosure Agreement'   choices: [Select One, I have read and agree to the Non Disclosure Agreement, I have read and DO NOT agree to the Non Disclosure Agreement]\nc151  link 'Mutual Arbitration Agreement'   [a link]\nc152  button 'I have read and agree to the Mutual Arbitration Agreement Required'   [a button that opens a list, shows 'I have read and agree to the Mutual Arbitration Agreement']   shows: 'I have read and agree to the Mutual Arbitration Agreement'   choices: [Select One, I have read and agree to the Mutual Arbitration Agreement, I have read and DO NOT agree to the Mutual Arbitration Agreement]\nc153  textbox ''   [a text area, required]   shows: 'Sunil Kumar Sharma'\nc154  spinbutton 'Month'   [a number box (a date part, shows '9')]   shows: '9'\nc155  spinbutton 'Day'   [a number box (a date part, shows '20')]   shows: '20'\nc156  spinbutton 'Year'   [a number box (a date part, shows '2026')]   shows: '2026'\nc157  button 'Calendar'   [a button]\nc124  button 'Back'   [a button]   shows: 'Back'\nc38  "
+ },
+ {
+  "n": 14,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c150",
+     "select",
+     "keep:option:I have read and agree to the Non Disclosure Agreement"
+    ],
+    [
+     "c152",
+     "select",
+     "keep:option:I have read and agree to the Mutual Arbitration Agreement"
+    ],
+    [
+     "c153",
+     "write",
+     "keep:personal.full_name"
+    ],
+    [
+     "c154",
+     "write",
+     "keep:9"
+    ],
+    [
+     "c155",
+     "write",
+     "28"
+    ],
+    [
+     "c156",
+     "write",
+     "keep:2026"
+    ],
+    [
+     "c38",
+     "select",
+     "next"
+    ]
+   ]
+  },
+  "page": "application questions 2 of 2",
+  "controls": {
+   "c150": {
+    "role": "button",
+    "name": "I have read and agree to the Non Disclosure Agreement Required",
+    "nth": 1,
+    "group": "Click on the link below to review the Non Disclosure Agreement. Workday Non Disclosure Agreement Have you read and agree to the Non Disclosure Agreement? (NOTE: Workday will not consider any applications with \"DO NOT agree\" selected.)*",
+    "above": "Have you read and agree to the Non Disclosure Agreement? (NOTE: Workday will not consider any applications with \"DO NOT agree\" selected.)*",
+    "qn": 0
+   },
+   "c152": {
+    "role": "button",
+    "name": "I have read and agree to the Mutual Arbitration Agreement Required",
+    "nth": 1,
+    "group": "Click on the link below to review the Arbitration Agreement. Mutual Arbitration Agreement To be considered for employment, all applicants must agree to the Mutual Arbitration Agreement. Applicants will not be considered for employment if the Company is not in receipt of the individual’s agreement to the Mutual Arbitration Agreement.*",
+    "above": "To be considered for employment, all applicants must agree to the Mutual Arbitration Agreement. Applicants will not be considered for employment if the Company is not in receipt of the individual’s agreement to the Mutual Arbitration Agreement.*",
+    "qn": 0
+   },
+   "c153": {
+    "role": "textbox",
+    "name": "",
+    "nth": 1,
+    "group": "Please enter your name:*",
+    "above": "Please enter your name:*",
+    "qn": 0
+   },
+   "c154": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 1,
+    "group": "Please enter today's date:*",
+    "above": "Please enter today's date:*",
+    "qn": 0
+   },
+   "c155": {
+    "role": "spinbutton",
+    "name": "Day",
+    "nth": 1,
+    "group": "Please enter today's date:*",
+    "above": "Please enter today's date:*",
+    "qn": 1
+   },
+   "c156": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 1,
+    "group": "Please enter today's date:*",
+    "above": "Please enter today's date:*",
+    "qn": 2
+   },
+   "c38": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "Please enter today's date:*",
+    "qn": 1
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c150",
+    "kind": "select",
+    "answer": "keep:option:I have read and agree to the Non Disclosure Agreement",
+    "how": "keep",
+    "ok": true,
+    "shown": "I have read and agree to the Non Disclosure Agreement",
+    "question": null,
+    "reads": "I have read and agree to the Non Disclosure Agreement"
+   },
+   {
+    "id": "c152",
+    "kind": "select",
+    "answer": "keep:option:I have read and agree to the Mutual Arbitration Agreement",
+    "how": "keep",
+    "ok": true,
+    "shown": "I have read and agree to the Mutual Arbitration Agreement",
+    "question": null,
+    "reads": "I have read and agree to the Mutual Arbitration Agreement"
+   },
+   {
+    "id": "c38",
+    "kind": "select",
+    "answer": "next",
+    "how": "button",
+    "ok": true,
+    "shown": "left for the walk",
+    "question": null,
+    "reads": "Save and Continue"
+   },
+   {
+    "id": "c153",
+    "kind": "write",
+    "answer": "keep:personal.full_name",
+    "how": "keep",
+    "ok": true,
+    "shown": "Sunil Kumar Sharma",
+    "question": null,
+    "reads": "Sunil Kumar Sharma"
+   },
+   {
+    "id": "c154",
+    "kind": "write",
+    "answer": "keep:9",
+    "how": "keep",
+    "ok": true,
+    "shown": "9",
+    "question": null,
+    "reads": "9"
+   },
+   {
+    "id": "c155",
+    "kind": "write",
+    "answer": "28",
+    "how": "question",
+    "ok": true,
+    "shown": "left empty (optional, nothing stored)",
+    "question": null,
+    "reads": "20"
+   },
+   {
+    "id": "c156",
+    "kind": "write",
+    "answer": "keep:2026",
+    "how": "keep",
+    "ok": true,
+    "shown": "2026",
+    "question": null,
+    "reads": "2026"
+   }
+  ],
+  "result": "c150  ok  button 'I have read and agree to the Non Disclosure Agreement Required': shows 'I have read and agree to the Non Disclosure Agreement'\nc152  ok  button 'I have read and agree to the Mutual Arbitration Agreement Required': shows 'I have read and agree to the Mutual Arbitration Agreement'\nc38  ok  button 'Save and Continue': shows 'left for the walk'\nc153  ok  textbox '': shows 'Sunil Kumar Sharma'\nc154  ok  spinbutton 'Month': shows '9'\nc155  ok  spinbutton 'Day': shows 'left empty (optional, nothing stored)'\nc156  ok  spinbutton 'Year': shows '2026'\n\nPAGE: application questions 2 of 2\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+ },
+ {
+  "n": 15,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c155",
+     "write",
+     "Please enter today's date: (day)"
+    ]
+   ]
+  },
+  "page": "application questions 2 of 2",
+  "controls": {
+   "c155": {
+    "role": "spinbutton",
+    "name": "Day",
+    "nth": 1,
+    "group": "Please enter today's date:*",
+    "above": "Please enter today's date:*",
+    "qn": 1
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c155",
+    "kind": "write",
+    "answer": "Please enter today's date: (day)",
+    "how": "question",
+    "ok": true,
+    "shown": "left empty (optional, nothing stored)",
+    "question": null,
+    "reads": "20"
+   }
+  ],
+  "result": "c155  ok  spinbutton 'Day': shows 'left empty (optional, nothing stored)'\n\nPAGE: application questions 2 of 2\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+ },
+ {
+  "n": 16,
+  "tool": "press",
+  "args": {
+   "id": "c38"
+  },
+  "page": "application questions 2 of 2",
+  "controls": {
+   "c38": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "Please enter today's date:*",
+    "qn": 1
+   }
+  },
+  "moved_to": "voluntary disclosures",
+  "result": "moved on: now on page 'voluntary disclosures'. see it."
+ },
+ {
+  "n": 17,
+  "tool": "see",
+  "args": {},
+  "page": "voluntary disclosures",
+  "controls": {},
+  "result": "PAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc30  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, Français (‏Canada), 日本語 (‏日本)]\nc31  button 'Settings'   [a button that opens a list, shows 'Settings']   shows: 'Settings'   choices: [Change Email]\nc32  button 'sunil4832sharma@gmail.com'   [a button that opens a list, shows 'sunil4832sharma@gmail.com']   shows: 'sunil4832sharma@gmail.com'   choices: [Sign Out]\nc33  button 'Careers Page'   [a button]   shows: 'Careers Page'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  button 'Candidate Home'   [a button]   shows: 'Candidate Home'\nc36  button 'Job Alerts'   [a button]   shows: 'Job Alerts'\nc37  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc158  button 'Gender: Male'   [a button that opens a list, shows 'Male']   shows: 'Male'   choices: [Select One, Female, Male]\nc159  button 'Ethnicity (Single Selection): Decline to Answer (United States of America)'   [a button that opens a list, shows 'Decline to Answer (United States of America)']   shows: 'Decline to Answer (United States of America)'   choices: [Select One, \"American Indian or Alaskan Native, not Hispanic or Latino (United States of America)\", \"Asian, not Hispanic or Latino (United States of America)\", \"Black, not Hispanic or Latino (United States of America)\", Decline to Answer (United "
+ },
+ {
+  "n": 18,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c158",
+     "select",
+     "keep:eeo.gender"
+    ],
+    [
+     "c159",
+     "select",
+     "keep:option:Decline to Answer (United States of America)"
+    ],
+    [
+     "c160",
+     "select",
+     "keep:option:I AM NOT A VETERAN"
+    ],
+    [
+     "c162",
+     "select",
+     "option:I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy."
+    ],
+    [
+     "c38",
+     "select",
+     "next"
+    ]
+   ]
+  },
+  "page": "voluntary disclosures",
+  "controls": {
+   "c158": {
+    "role": "button",
+    "name": "Gender: Male",
+    "nth": 1,
+    "group": "U.S. Equal Opportunity Employment Information (Completion is Voluntary)",
+    "above": "Gender:",
+    "qn": 0
+   },
+   "c159": {
+    "role": "button",
+    "name": "Ethnicity (Single Selection): Decline to Answer (United States of America)",
+    "nth": 1,
+    "group": "U.S. Equal Opportunity Employment Information (Completion is Voluntary)",
+    "above": "Ethnicity (Single Selection):",
+    "qn": 0
+   },
+   "c160": {
+    "role": "button",
+    "name": "Veterans Status I AM NOT A VETERAN",
+    "nth": 1,
+    "group": "U.S. Equal Opportunity Employment Information (Completion is Voluntary)",
+    "above": "Veterans Status",
+    "qn": 0
+   },
+   "c162": {
+    "role": "checkbox",
+    "name": "I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.",
+    "nth": 1,
+    "group": "Terms and Conditions",
+    "above": "I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.",
+    "qn": 0
+   },
+   "c38": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.",
+    "qn": 1
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c158",
+    "kind": "select",
+    "answer": "keep:eeo.gender",
+    "how": "keep",
+    "ok": true,
+    "shown": "Male",
+    "question": null,
+    "reads": "Male"
+   },
+   {
+    "id": "c159",
+    "kind": "select",
+    "answer": "keep:option:Decline to Answer (United States of America)",
+    "how": "keep",
+    "ok": true,
+    "shown": "Decline to Answer (United States of America)",
+    "question": null,
+    "reads": "Decline to Answer (United States of America)"
+   },
+   {
+    "id": "c160",
+    "kind": "select",
+    "answer": "keep:option:I AM NOT A VETERAN",
+    "how": "keep",
+    "ok": true,
+    "shown": "I AM NOT A VETERAN",
+    "question": null,
+    "reads": "I AM NOT A VETERAN"
+   },
+   {
+    "id": "c162",
+    "kind": "select",
+    "answer": "option:I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.",
+    "how": "chain",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c38",
+    "kind": "select",
+    "answer": "next",
+    "how": "button",
+    "ok": true,
+    "shown": "left for the walk",
+    "question": null,
+    "reads": "Save and Continue"
+   }
+  ],
+  "result": "c158  ok  button 'Gender: Male': shows 'Male'\nc159  ok  button 'Ethnicity (Single Selection): Decline to Answer (United States of America)': shows 'Decline to Answer (United States of America)'\nc160  ok  button 'Veterans Status I AM NOT A VETERAN': shows 'I AM NOT A VETERAN'\nc162  ok  checkbox 'I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.': shows 'checked'\nc38  ok  button 'Save and Continue': shows 'left for the walk'\n\nPAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+ },
+ {
+  "n": 19,
+  "tool": "press",
+  "args": {
+   "id": "c38"
+  },
+  "page": "voluntary disclosures",
+  "controls": {
+   "c38": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.",
+    "qn": 1
+   }
+  },
+  "moved_to": "review",
+  "result": "moved on: now on page 'review' — the form's LAST PAGE. see it."
+ },
+ {
+  "n": 20,
+  "tool": "see",
+  "args": {
+   "scope": "ids",
+   "ids": []
+  },
+  "page": "review",
+  "controls": {},
+  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\n"
+ },
+ {
+  "n": 21,
+  "tool": "see",
+  "args": {},
+  "page": "review",
+  "controls": {},
+  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc30  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, Français (‏Canada), 日本語 (‏日本)]\nc31  button 'Settings'   [a button that opens a list, shows 'Settings']   shows: 'Settings'   choices: [Change Email]\nc32  button 'sunil4832sharma@gmail.com'   [a button that opens a list, shows 'sunil4832sharma@gmail.com']   shows: 'sunil4832sharma@gmail.com'   choices: [Sign Out]\nc33  button 'Careers Page'   [a button]   shows: 'Careers Page'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  button 'Candidate Home'   [a button]   shows: 'Candidate Home'\nc36  button 'Job Alerts'   [a button]   shows: 'Job Alerts'\nc37  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc163  link 'Workday Non Disclosure Agreement'   [a link]\nc164  link 'Mutual Arbitration Agreement'   [a link]\nc124  button 'Back'   [a button]   shows: 'Back'\nc38  button 'Submit'   [a button]   shows: 'Submit'"
+ },
+ {
+  "n": 22,
+  "tool": "finish",
+  "args": {
+   "outcome": "last-page",
+   "note": "Replay redid My Information and My Experience. Application Questions 1-2 and Voluntary Disclosures filled; guesses set for Workday-system use, US govt employee, related-to-customer, Ernst & Young. Today's date day field: tried to set 28 (was 20) but it shows empty; page moved on anyway — verify date on review.",
+   "submit_id": "c38"
+  },
+  "page": "review",
+  "controls": {
+   "c38": {
+    "role": "button",
+    "name": "Submit",
+    "nth": 1,
+    "group": "",
+    "above": "I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy. Yes",
+    "qn": 1
+   }
+  },
+  "result": "finished."
+ }
+]

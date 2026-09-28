@@ -1,0 +1,151 @@
+{
+ "slug": "workday-senior-ai-engineer",
+ "platform": "workday",
+ "at": "2026-09-28T11:52:36",
+ "outcome": "last-page",
+ "note": "Reached Review. Placeholders to ask: How did you hear (list lacks LinkedIn; 'Socially' set); degrees (M.Tech->Master of Science guess, B.Tech->Bachelor of Engineering guess); Workday system use; US gov employee; related to customer/official; Ernst & Young; interview recording consent. Certification block removed (list lacks DeepLearning.AI cert).",
+ "pages": [
+  "Careers at Workday",
+  "my information",
+  "my experience",
+  "application questions 1 of 2",
+  "application questions 2 of 2",
+  "voluntary disclosures",
+  "review"
+ ],
+ "filled": {
+  "my information :: radio 'No'": "false",
+  "my information :: button 'Country / Territory India Required'": "India",
+  "my information :: button 'Phone Device Type Mobile Required'": "Mobile",
+  "my information :: textbox 'Country / Territory Phone Code'": "1 item selected, India (+91); India (+91)",
+  "my information :: textbox 'Given Name(s)'": "Sunil",
+  "my information :: textbox 'Middle Name'": "Kumar",
+  "my information :: textbox 'Family Name'": "Sharma",
+  "my information :: textbox 'Address Line 1'": "Delhi",
+  "my information :: textbox 'City'": "Delhi",
+  "my information :: textbox 'Postal Code'": "110019",
+  "my information :: textbox 'Phone Number'": "096412 98471",
+  "my experience :: checkbox 'I currently work here #1'": "on",
+  "my experience :: textbox 'Job Title #1'": "Senior Data Scientist",
+  "my experience :: textbox 'Company #1'": "Aria Intelligent Solutions",
+  "my experience :: textbox 'Location #1'": "India",
+  "my experience :: spinbutton 'Month #1'": "12",
+  "my experience :: spinbutton 'Year #1'": "2023",
+  "my experience :: textbox 'Role Description #1'": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decom",
+  "my experience :: textbox 'Job Title #2'": "Applied Scientist I",
+  "my experience :: textbox 'Company #2'": "Amazon Development Centre (India) Pvt. Ltd.",
+  "my experience :: textbox 'Location #2'": "India",
+  "my experience :: spinbutton 'Month #2'": "10",
+  "my experience :: spinbutton 'Year #2'": "2022",
+  "my experience :: spinbutton 'Month #3'": "6",
+  "my experience :: spinbutton 'Year #3'": "2023",
+  "my experience :: textbox 'Role Description #2'": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detec",
+  "my experience :: textbox 'Job Title #3'": "Computer Vision Engineer",
+  "my experience :: textbox 'Company #3'": "Beltech AI Pvt. Ltd.",
+  "my experience :: textbox 'Location #3'": "India",
+  "my experience :: spinbutton 'Month #4'": "7",
+  "my experience :: spinbutton 'Year #4'": "2021",
+  "my experience :: spinbutton 'Month #5'": "9",
+  "my experience :: spinbutton 'Year #5'": "2022",
+  "my experience :: textbox 'Role Description #3'": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precisi",
+  "my experience :: textbox 'URL #1'": "https://github.com/sunil448832",
+  "my experience :: textbox 'URL #2'": "https://huggingface.co/sunil448832",
+  "my experience :: textbox 'LinkedIn'": "https://www.linkedin.com/in/sunil4832sharma",
+  "my experience :: textbox 'School or University #1'": "1 item selected, Indian Institute of Technology, Jodhpur; Indian Institute of Technology, Jodhpur",
+  "my experience :: textbox 'School or University #2'": "1 item selected, Sikkim Manipal Institute of Technology; Sikkim Manipal Institute of Technology",
+  "my experience :: textbox 'Field of Study #1'": "Expanded; Artificial Intelligence and Robotics",
+  "my experience :: textbox 'Field of Study #2'": "1 item selected, Electrical Engineering; Electrical Engineering",
+  "application questions 1 of 2 :: button 'Yes, I would consider relocating for this role Required'": "Yes, I would consider relocating for this role",
+  "application questions 1 of 2 :: button 'No Required #1'": "No",
+  "application questions 1 of 2 :: button 'No Required #2'": "No",
+  "application questions 1 of 2 :: button 'Yes Required #1'": "Yes",
+  "application questions 1 of 2 :: button 'No Required #4'": "No",
+  "application questions 1 of 2 :: button 'No Required #5'": "No",
+  "application questions 1 of 2 :: button 'Yes Required #2'": "Yes",
+  "application questions 2 of 2 :: button 'I have read and agree to the Non Disclosure Agreement Required'": "I have read and agree to the Non Disclosure Agreement",
+  "voluntary disclosures :: button 'Gender Male'": "Male",
+  "voluntary disclosures :: checkbox 'I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.'": "checked"
+ },
+ "placeholders": {
+  "How Did You Hear About Us?": {
+   "used": "Socially",
+   "field": "textbox 'How Did You Hear About Us?'",
+   "candidates": [
+    "Socially",
+    "Website",
+    "Advertisement"
+   ],
+   "page": "my information"
+  },
+  "Degree — Education 1 (Indian Institute of Technology, Jodhpur): Master of Technology (M.Tech)": {
+   "used": "Master of Science",
+   "field": "button 'Degree Select One Required #1'",
+   "candidates": [
+    "Master of Science",
+    "Graduate Diploma"
+   ],
+   "page": "my experience"
+  },
+  "Degree — Education 2 (Sikkim Manipal Institute of Technology): Bachelor of Technology (B.Tech)": {
+   "used": "Bachelor of Engineering",
+   "field": "button 'Degree Select One Required #2'",
+   "candidates": [
+    "Bachelor of Engineering",
+    "Bachelor of Science"
+   ],
+   "page": "my experience"
+  },
+  "In your current job, do you use or work on the Workday system?": {
+   "used": "No, I do not use the Workday system in my current job",
+   "field": "button 'No, I do not use the Workday system in my current job Required'",
+   "candidates": [
+    "No, I do not use the Workday system in my current job",
+    "Yes, I occasionally use the Workday system in my current job (to complete items such as: review benefit elections, retrieve paystubs and compensation details, submit payroll and time-tracking requirements, and other typical worker tasks)"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "Are you a current or former employee of the United States government?": {
+   "used": "No",
+   "field": "button 'No Required #3'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?": {
+   "used": "No",
+   "field": "button 'No Required #6'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "Are you a current or recent former employee of Ernst & Young, LLP, or a current or former partner or principal of Ernst & Young?": {
+   "used": "No",
+   "field": "button 'No Required #7'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "Do you consent to recorded Workday interviews?": {
+   "used": "Yes",
+   "field": "button 'Yes Required'",
+   "candidates": [
+    "Yes",
+    "No"
+   ],
+   "page": "application questions 2 of 2"
+  }
+ },
+ "tool_calls": 29,
+ "seconds": 479,
+ "model": "opus",
+ "effort": "low",
+ "turns": 30,
+ "cost_usd": 0.678247,
+ "transcript": "tests/maps/workday-senior-ai-engineer/agentic-0928-1144.log"
+}

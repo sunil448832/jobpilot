@@ -1,360 +1,201 @@
 #!/usr/bin/env python3
 """
-explore.py — PASS 1: walk an application form to its last page by see / map /
-act, record every action, never press Submit. docs/exploration-plan.md.
+walk.py — PASS 1: walk an application form page by page to its last page, never press
+Submit, and queue it for approval (docs/exploration-plan.md).
 
-Per page:
-    see     the form's frame, its accessibility snapshot            (see.py)
-    map     cached page map -> the rest by Claude, checked, corrected (mapper.py, reuse.py)
-    act     each entry with its kind's routine, checked; a menu is mapped first and
-            the answer picked by its path; a failed action goes back to the map
-            (act.py)
-    record  the action and where its value comes from                (record.py)
-    ask     a required control no fact answers: a placeholder, and a question
-            for the applicant with the real choices
-    next    the platform's (Workday: Save and Continue) or the page's Next; the
-            portal's refusal goes back to the map too
-
-do_page() is shared with submit/replay.py, which re-maps a page whose recorded actions
-no longer fit.
+    start     the posting -> the form: the platform's own start (Workday's sign-in), else
+              the button the map marks `start`
+    per page  see -> map -> act -> see, in rounds:
+                  see   see.describe: the page's controls, their HTML facts, their lists
+                  map   mapper.map_page: one Claude call — [id, write|select, answer] rows
+                  act   act.act_rows: every row on its control, read back
+                  see   the page again: when every action took, nothing was turned back and no
+                        field appeared or went away, the page is done — no further Claude
+                        call; else the next round, with the placeholders this page holds and
+                        what the last act could not finish (LAST ACT)
+    next      the button the map marks `next` (a platform may press it its own way); a
+              page that refuses goes back to its rounds, the refusal under LAST ACT
+    last      the platform's last page (Workday: Review), or a page whose map marks submit
+              and no next: its submit button is recorded, never pressed
+    record    applications/<slug>/explore.json: each page's rounds (rows, outcomes) and
+              the placeholders — the questions for the applicant, with their candidates
+    queue     data/queue/<id>.json: the card the phone shows
 """
 import datetime as dt
 import json
 import os
+import time
 
 from jobpilot.core.config import cfg
 from jobpilot.core.paths import TOOL
 from jobpilot.apply import platforms
 from jobpilot.apply.explore import browser as B, facts as F, record as R
-from jobpilot.apply.explore import act as A, see as S
-from jobpilot.apply.explore import mapper as M, reuse
+from jobpilot.apply.explore import act as A, see as S, mapper as M, reuse
 
-PLACEHOLDER_TEXT = "To be confirmed"
-# what the map is told when a control offers choices and the stored answer is not one of
-# them (or nothing is stored): pick one of the choices, never type a value of its own
-CHOOSE = ("answer option:<the choice> when one means the same; otherwise guess:<the nearest choice> | "
-          "<the question> — it is filled in as a placeholder and asked on the phone; for a long list, "
-          "search:<term>; <term> to see what it holds. Never type your own value.")
+
+def trim(o):
+    """An act outcome as the record keeps it."""
+    keep = ("id", "control", "kind", "answer", "how", "ok", "kept", "shown", "source", "placeholder", "error", "offered")
+    return {k: o[k] for k in keep if o.get(k) not in (None, "", [], {})}
 
 
 class Walk:
     """Everything one form walk carries: the job, its facts, the record being written."""
 
-    def __init__(self, ctx, answers, learned, log=print, stage="explore"):
-        self.ctx, self.answers, self.learned, self.log, self.stage = ctx, answers, learned, log, stage
+    def __init__(self, ctx, answers, learned, log=print):
+        self.ctx, self.answers, self.learned, self.log = ctx, answers, learned, log
         self.slug = ctx["company_slug"]
         self.pid = ctx.get("portal") or "unknown"
         self.mod = platforms.get(self.pid)
         self.company = reuse.company_key(self.pid, ctx.get("url"), ctx.get("company"))
         self.resume = B.resume_path(answers, self.slug)
         self.facts = F.job_facts(answers, ctx, learned, self.resume)
+        self.model, self.effort = ctx.get("map_model"), ctx.get("map_effort")     # else llm.map's
         old = R.load(self.slug)
         self.answered = {q: p["answer"] for q, p in (old.get("placeholders") or {}).items() if p.get("answer")}
         self.record = {"url": ctx.get("url"), "platform": self.pid, "company": self.company,
                        "explored_at": dt.datetime.now().isoformat(timespec="seconds"), "reached_end": False,
                        "pages": [], "placeholders": {}, "submit": None,
                        "attempts": old.get("attempts") or []}
-        self.warnings, self.filled, self.unfilled = [], {}, {}      # unfilled: {page: [question]}, its last try
-        self.budget = {}                                  # step -> Claude calls left on that page
-        self.maps = {}                                    # step -> the page's entries (dicts), as last mapped
-
-    # ------------------------------------------------------------ one control
-    def required(self, frame, e):
-        """A '*' on the name or its group, or the control says so."""
-        if "*" in e["name"]:
-            return True
-        try:
-            if e["kind"] in M.GROUPED:
-                g = S.group_scope(frame, e["name"])
-                if g is None:
-                    return False
-                return bool(g.evaluate("el => !!el.querySelector('[required], [aria-required=\"true\"]') || "
-                                       "el.getAttribute('aria-required') === 'true'"))
-            loc = A.locate(frame, M.role_of(frame, e["kind"], e["name"]), e["name"])
-            return bool(loc.evaluate("el => el.required || el.getAttribute('aria-required') === 'true'"))
-        except Exception:
-            return False
-
-    def options_of(self, frame, e):
-        """A group's choices as a person reads them (the radios' / buttons' labels)."""
-        return S.group_options(frame, e["name"])
-
-    def guess_note(self, e):
-        """What the phone says about a choice the map guessed."""
-        stored = self.facts.get(e["fact"]) if e.get("fact") else None
-        return (f"picked the closest choice to your stored answer {stored!r} — confirm or change" if stored
-                else "nothing stored: picked the likeliest choice — confirm or change")
-
-    def search(self, frame, e, page_rec):
-        """A long list searched with the map's terms: the top hits of each go back to the
-        map, which picks one (the next see). A searchable box is typed into; a list read
-        whole is matched against each term (a pattern, case-insensitive)."""
-        import re
-        kind, name, hits = e["kind"], e["name"], {}
-        tree = None
-        for term in e["search"]:
-            try:
-                if kind == "search-and-pick":
-                    found = A.search_options(frame, name, term, limit=5)
-                else:
-                    tree = tree if tree is not None else A.map_menu(frame, kind, name, max_options=5000)
-                    try:
-                        rx = re.compile(term, re.I)
-                    except re.error:
-                        rx = re.compile(re.escape(term), re.I)
-                    found = [x for x in A.leaves(tree) if rx.search(x)][:5]
-                    if not found and kind == "dropdown":   # drawn only on screen: typed to
-                        found = A.search_options(frame, name, term, limit=5, kind="dropdown")
-            except Exception as ex:
-                found = [f"(could not search: {type(ex).__name__})"]
-            hits[term] = found
-        self.log(f"      search          {M.question(e)[:50]!r:52} {hits}")
-        # a hit that is word for word one of the terms is the entry meant: picked, no round
-        exact = next((h for t in e["search"] for h in hits.get(t, []) if h.strip().lower() == t.strip().lower()), None)
-        if exact:
-            e.pop("search", None)
-            e["option"] = exact
-            return self.act_entry(frame, e, page_rec)
-        if not any(hits.values()):
-            return (f"searching the list for {list(hits)} found nothing — try other terms "
-                    "(search:<term>; <term>), or guess:<the likeliest entry> | <the question>")
-        return ("searching the list found: " + "; ".join(f"{t!r} -> {h}" for t, h in hits.items())
-                + " — answer option:<one of these, copied exactly> for the entry that is the applicant's "
-                "answer in the list's own words ('India +91' for +91, 'Artificial Intelligence and Robotics' "
-                "is not AI alone: guess); guess:<the nearest of these> | <the question> | <other near ones>; ... "
-                "only when none of them is his answer.")
-
-    def nearest(self, frame, e, kind, choices, picked):
-        """The choices the phone offers for a guessed pick. A short list: all of it. A long
-        one (the phone cannot show it, and only its start was read): the pick and the
-        entries the map named as nearest, each looked up in the list — only what the
-        list really holds. The pick is set again after the lookups."""
-        if len(choices) <= 15 and not e.get("near"):
-            return choices
-        out = [picked]
-        for term in e.get("near") or []:
-            found = [c for c in choices if term.lower() in c.lower()]
-            if not found and kind == "search-and-pick":
-                try:
-                    found = A.search_options(frame, e["name"], term)
-                except Exception:
-                    found = []
-            out += [f for f in found if f not in out]
-        if kind == "search-and-pick" and len(out) > 1:
-            A.act(frame, kind, e["name"], picked)             # the searches emptied the box
-        return out[:12] if len(out) > 1 else choices
-
-    def placeholder(self, q, used, options, kind):
-        field, page = getattr(self, "_at", ("", ""))
-        self.record["placeholders"][q] = {"value": used, "options": options, "kind": kind,
-                                          "answer": self.answered.get(q),
-                                          "field": field, "page": page}      # where the card says it is
-
-    def act_entry(self, frame, e, page_rec):
-        """Fill one mapped control. Returns None, or the error for the map."""
-        kind, name, q = e["kind"], e["name"], M.question(e)
-        other = self.record["placeholders"].get(q)
-        if other and other.get("field") not in (None, "", name):
-            q = f"{q} ({name})"                                   # the same question in another section
-        self._at = (name, page_rec["step"])
-        if kind == "skip" or kind in M.BUTTONS:                   # buttons are pressed by the walk, not filled
-            return None
-        A.close_menus(frame)
-        if e.get("search") and kind in ("search-and-pick", "dropdown", "native-select"):
-            return self.search(frame, e, page_rec)
-        fact = e.get("fact")
-        value = self.facts.get(fact) if fact else None
-        source = f"fact:{fact}" if fact else None
-        if e.get("option"):                                       # the map chose a choice the page offers
-            value, source = e["option"], "choice"
-            if e.get("guess"):                                     # ...its nearest guess: a placeholder, asked
-                source = f"placeholder:{q}"
-            if " › " in value:                                     # inside a category: "Social Media › LinkedIn"
-                *cats, value = [p.strip() for p in value.split(" › ")]
-                e["_path"] = tuple(cats)
-        if value is None and q in self.answered:                  # his answer from an earlier round
-            value, source = self.answered[q], f"placeholder:{q}"
-        path, used, searched = (), value, {}
-        try:
-            if kind == "file":
-                used, source = self.resume, "fact:file:resume"
-                if not used:
-                    return "no resume file built for this application"
-
-            elif kind in ("search-and-pick", "dropdown", "native-select"):
-                if value is None and not self.required(frame, e):
-                    return None                                    # optional, nothing stored: not even opened
-                tree = A.map_menu(frame, kind, name)
-                page_rec["menus"][q] = tree
-                choices = A.leaves(tree)
-                hit = A.find_path(tree, value) if value is not None else None
-                if not hit and e.get("_path") and value is not None:
-                    hit = [*e["_path"], value]                     # the category the map named
-                if hit:
-                    used, path = hit[-1], tuple(hit[:-1])
-                    if e.get("guess"):
-                        self.placeholder(q, " › ".join(hit), self.nearest(frame, e, kind, choices, hit[-1]), "select")
-                        self.record["placeholders"][q]["note"] = self.guess_note(e)
-                elif value is not None and tree and kind == "search-and-pick" and (searched := A.act(frame, kind, name, value)).get("ok"):
-                    # not a top-level choice, but the box's own search found it (inside a
-                    # category the page does not mark: "Social Media" › "LinkedIn")
-                    page_rec["actions"].append({"kind": kind, "name": name, "fact": e.get("fact"), "source": source or "fact",
-                                                "value": str(value), "path": []})
-                    if e.get("guess"):
-                        self.placeholder(q, str(value), self.nearest(frame, e, kind, choices, str(value)), "select")
-                        self.record["placeholders"][q]["note"] = self.guess_note(e)
-                    else:
-                        self.filled[q] = str(value)
-                    self.log(f"      {kind:15} {q[:50]!r:52} = {str(value)[:40]!r}   [{source}, found by searching]")
-                    return None
-                elif value is not None and tree:
-                    # not one of the choices: back to the map, which picks one of them
-                    return (f"the answer {value!r} is not one of the choices; the menu offers {choices[:40]}"
-                            + (f" — only its first entries: the list is longer and searchable; searching it for "
-                               f"{value!r} found {searched.get('offered', [])[:25]}"
-                               if any(o not in choices for o in searched.get("offered", [])) else "")
-                            + " — " + CHOOSE)
-                elif value is None:
-                    if not self.required(frame, e):
-                        return None                                # optional, nothing stored: leave it
-                    if not choices:
-                        return "the menu offered nothing to pick"
-                    # no stored answer: the map picks the likeliest choice as the placeholder
-                    return (f"no stored answer; the menu offers {choices[:40]} — "
-                            + CHOOSE)
-                # else: a search-only menu — search for the stored value itself (a miss comes back with what it offered)
-
-            elif kind in M.GROUPED:
-                options = self.options_of(frame, e)
-                if value is not None:
-                    used = next((o for o in options if o.strip().lower() == str(value).strip().lower()), None)
-                    if used is None:
-                        return (f"the answer {value!r} is not one of the choices {options} — "
-                                + CHOOSE)
-                    if e.get("guess"):
-                        self.placeholder(q, used, options, "choice")
-                        self.record["placeholders"][q]["note"] = self.guess_note(e)
-                else:
-                    if not self.required(frame, e):
-                        return None
-                    if not options:
-                        return "the group has no options"
-                    return (f"no stored answer; the choices are {options} — " + CHOOSE)
-
-            elif kind == "checkbox":
-                if value is None:
-                    if not self.required(frame, e):
-                        return None
-                    used, source = "Yes", f"placeholder:{q}"            # a required acknowledgement: asked
-                    self.placeholder(q, "Yes", ["Yes"], "choice")
-                else:                                                    # stored "No": untick it (a resume parse may have ticked it)
-                    used = "Yes" if str(value).strip().lower() in ("yes", "true", "1") else "No"
-
-            else:                                                        # text / number
-                if value is None:
-                    loc = A.locate(frame, M.ROLE[kind], name)
-                    shown = (loc.input_value() or "").strip()
-                    if shown:                                            # the page's own value (a resume parse)
-                        used, source = shown, "shown"
-                    elif not self.required(frame, e):
-                        return None
-                    else:
-                        used, source = ("1" if kind == "number" else PLACEHOLDER_TEXT), f"placeholder:{q}"
-                        self.placeholder(q, used, [], "text")
-
-            r = A.act(frame, kind, name, used, path)
-        except Exception as ex:
-            # everything the browser said (an element covering it, a timeout) and the
-            # control's own HTML: the map decides what it really is
-            lines = [x.strip() for x in str(ex).splitlines() if x.strip()]
-            why = [x for x in lines if any(w in x for w in ("intercepts", "not visible", "disabled", "detached", "outside"))]
-            said = " | ".join(lines[:1] + why[-2:] + [x for x in lines[1:] if x not in why][:3])[:500]
-            html = A.field_html(frame, M.role_of(frame, kind, name), name)
-            return f"acting on it failed — {type(ex).__name__}: {said}" + (f"\n      its HTML: {html}" if html else "")
-        if not r.get("ok"):
-            return (f"the value did not take (shows {r.get('shown')!r})"
-                    + (f"; the menu offers {r['offered'][:40]} — " + CHOOSE if r.get("offered") else ""))
-        page_rec["actions"].append({"kind": kind, "name": name, "fact": e.get("fact"), "source": source or "fact",
-                                    "value": str(used), "path": list(path)})
-        if not (source or "").startswith("placeholder"):
-            self.filled[q] = str(used)
-        self.log(f"      {kind:15} {q[:50]!r:52} = {str(used)[:40]!r}"
-                 + (f" via {' › '.join(path)}" if path else "") + f"   [{source}]")
-        return None
+        self.warnings, self.filled, self.unfilled = [], {}, {}      # unfilled: {page: [control]}
 
     # ------------------------------------------------------------ one page
-    def do_page(self, frame, step, failures=None, cached=None, chrome=False):
-        """Map the page and act on it; failed actions go back to the map. Returns the page record."""
-        page_rec = next((p for p in self.record["pages"] if p["step"] == step), None)
-        if page_rec is None:
-            page_rec = {"step": step, "entries": [], "menus": {}, "actions": [], "rounds": []}
-            self.record["pages"].append(page_rec)
-        if cached is None:
-            cached = reuse.load(self.pid, self.company, step)
-        self.capture(frame, step)
-        B.wait_quiet(frame, max_s=10)
-        # an action counts as done for this exact entry: a corrected entry (same name,
-        # a new kind or fact) is acted on again
-        done = {(a["name"], a["kind"], a.get("fact")) for a in page_rec["actions"]}
-        entries = cached
-        for attempt in range(int(cfg("fill.map_rounds", 3))):
-            entries, bad = M.map_page(frame, step, entries, self.facts, self.learned, log=self.log,
-                                      failures=failures, rounds=page_rec["rounds"],
-                                      budget=self.budget.setdefault(step, {"calls": int(cfg("fill.map_calls_per_page", 5))}),
-                                      chrome=chrome)
-            # what the map could not get right in its rounds: never acted on, still unfilled
-            failures = [(e, err) for e, err in bad if e and e.get("kind") not in M.BUTTONS]
-            # choices first: a tick or a pick may add or hide fields ("I currently work here"
-            # hides an end date) — then the page is seen again before anything is typed
-            shape, moved = self.shape(frame), None
-            for e in sorted(entries, key=lambda x: x["kind"] in ("text", "number")):
-                key = (e["name"], e["kind"], e.get("fact"))
-                if key in done or e["kind"] == "skip":
-                    continue
-                if e["kind"] in ("text", "number") and moved is None:
-                    now = self.shape(frame)
-                    moved = {n for n in set(now) | set(shape) if now.get(n) != shape.get(n)}
-                if moved and A._split(e["name"])[1] in moved:
-                    continue                                   # its numbering moved: mapped again below
-                err = self.act_entry(frame, e, page_rec)
-                if err:
-                    self.log(f"      ✗ {e['name'][:50]!r}: {err}")
-                    failures.append((e, err))
-                else:
-                    done.add(key)
-            if moved:
-                self.log(f"    the page changed as it was filled ({sorted(moved)[:6]}) -> seen again")
-                entries = [e for e in entries if A._split(e["name"])[1] not in moved]
-                failures.append((None, "the page changed as it was filled — fields appeared or went away "
-                                       f"({sorted(moved)[:6]}): map the controls as they are now"))
-            if not failures:
-                break
-            self.log(f"    -> {len(failures)} failed action(s) back to the map")
-        self.recheck(frame, page_rec)
-        for e, err in failures or []:
-            self.warnings.append(f"'{M.question(e)}' could not be filled: {err}")
-        self.unfilled[step] = [M.question(e) for e, _ in failures or [] if e]
-        page_rec["entries"] = [[e["name"], e["kind"], e.get("fact"), e.get("question")] for e in entries]
-        self.maps[step] = entries
-        reuse.save(self.pid, self.company, step, entries, source=self.slug)          # a draft until the page is taken
-        return page_rec
+    def page_rec(self, step):
+        rec = next((p for p in self.record["pages"] if p["step"] == step), None)
+        if rec is None:
+            rec = {"step": step, "rounds": [], "acted": {}, "tried": []}
+            self.record["pages"].append(rec)
+        return rec
 
-    def shape(self, frame):
-        """{name: how many} of the page's typing fields — numbered names ("Year #4") hold
-        only while this stays the same."""
+    def note(self, step, rec, o):
+        """What an act outcome leaves: the control's last outcome, what the phone shows as
+        filled, and a placeholder as a question for the applicant."""
+        rec["acted"][o.get("control", o.get("id"))] = trim(o)
+        p = o.get("placeholder")
+        if p:
+            q = p["question"] or o.get("control", "")
+            self.record["placeholders"][q] = {
+                "value": p["used"], "options": p.get("candidates") or [],
+                "kind": "select" if p.get("candidates") else "text",
+                "answer": self.answered.get(q), "field": o.get("control", ""), "page": step,
+                "note": "picked the likeliest choice — confirm or change" if p.get("candidates")
+                        else "nothing stored: filled in for now — your answer is needed"}
+        elif o.get("ok") and o.get("how") not in ("button", "search", "add"):
+            self.filled[o.get("control", "")] = str(o.get("shown") or "")[:80]
+
+    @staticmethod
+    def shape(frame):
+        """How many controls of each role the page shows: a field appearing or going away
+        (a block added, a question a choice opened) changes it; a value does not."""
         out = {}
-        for c in S.form_controls(S.snapshot(frame)):
-            if c.role in ("textbox", "spinbutton", "combobox"):
-                out[c.name] = out.get(c.name, 0) + 1
+        for c in S.parse(S.snapshot(frame)):
+            out[c.role] = out.get(c.role, 0) + 1
         return out
 
-    def recheck(self, frame, page_rec):
-        """The page's typed values read back once it is filled (act.readback)."""
-        A.readback(frame, [(a["kind"], a["name"], a["value"]) for a in page_rec["actions"]], self.log)
+    def do_page(self, frame, step, last_act="(none)", chrome=False):
+        """The page's rounds of see -> map -> act, until nothing is left to do. Returns the
+        page's buttons as the map marked them: {"next" | "submit" | "start": control}."""
+        rec = self.page_rec(step)
+        B.wait_quiet(frame, max_s=6)
+        self.capture(frame, step)
+        held = [o for o in rec["acted"].values() if o.get("placeholder")]    # set on this page earlier
+        buttons, left = {}, []
+        for _ in range(int(cfg("fill.map_rounds", 6))):
+            m = M.map_page(frame, step, self.facts, self.learned, placeholders=M.placeholders_text(held),
+                           last_act=self.with_history(rec, last_act), chrome=chrome,
+                           model=self.model, effort=self.effort, log=self.log)
+            self.keep_io(step, len(rec["rounds"]) + 1, m)
+            by_id = {c.id: c for c in m["controls"] if c.id}
+            rows, buttons = [], {}
+            for r in m["rows"]:
+                how, what = A.read_answer(r[2], self.facts, self.resume)
+                if how == "button":
+                    buttons[what] = by_id[r[0]]
+                else:
+                    rows.append(r)
+            shape = self.shape(frame)
+            outcomes = A.act_rows(frame, m["controls"], rows, self.facts, self.resume, log=self.log)
+            for o in outcomes:
+                self.note(step, rec, o)
+            held += [o for o in outcomes if o.get("placeholder")]
+            rec["rounds"].append({"round": len(rec["rounds"]) + 1, "rows": m["rows"],
+                                  "problems": [[p, why] for p, why in m["problems"]],
+                                  "outcomes": [trim(o) for o in outcomes]})
+            left = [o for o in outcomes if not o.get("ok")]
+            if not left and not m["problems"]:
+                if not any(o.get("acted") for o in outcomes):
+                    break                                      # nothing to do, nothing failed: the page is as it should be
+                B.wait_quiet(frame, max_s=3)
+                if self.shape(frame) == shape:
+                    break                                      # every action took and the page kept its fields: done
+            if not left and not m["problems"]:
+                last_act = "(none)"                            # new fields showed: they are mapped next
+                continue
+            last_act = M.last_act_text(outcomes, m["problems"])
+            rec["tried"] += [line for line in last_act.splitlines() if line.startswith("- ")]
+            rec["tried"] += [f"- {o.get('control')}" + (f" in {o['group']!r}" if o.get("group") else "")
+                             + " was pressed: that block was removed on purpose (its required list does not hold "
+                               "the fact) — do not add it again"
+                             for o in outcomes if o.get("how") == "press" and o.get("ok")]
+            B.wait_quiet(frame, max_s=3)
+        else:
+            left += [{"control": json.dumps(p, ensure_ascii=False), "error": why} for p, why in m["problems"]]
+        for o in left:
+            self.warnings.append(f"{o.get('control')!s} on '{step}' could not be filled: {o.get('error') or o.get('shown')}")
+        self.unfilled[step] = [str(o.get("control")) for o in left]
+        return buttons
+
+    def with_history(self, rec, last_act, keep=20):
+        """This round's LAST ACT, and what earlier rounds on this page could not finish — every
+        search already tried, every entry not found, every refusal — so a new round (after a
+        refusal too) does not try again what already failed."""
+        now = [] if last_act in (None, "", "(none)") else [last_act]
+        seen, earlier = set(last_act.splitlines()) if now else set(), []
+        for line in reversed(rec.get("tried") or []):
+            if line not in seen and line not in earlier:
+                earlier.append(line)
+        earlier = list(reversed(earlier[:keep]))
+        if earlier:
+            now.append("EARLIER ON THIS PAGE (tried before, did not finish):\n" + "\n".join(earlier))
+        return "\n".join(now) or "(none)"
+
+    def keep_io(self, step, rnd, m):
+        """During the review phase: each round's prompt and Claude's reply, as sent and as
+        received, under tests/maps/<slug>/ — page number, page, round."""
+        if not m.get("prompt"):
+            return
+        n = next((i + 1 for i, p in enumerate(self.record["pages"]) if p["step"] == step), 0)
+        base = os.path.join(TOOL, "tests", "maps", self.slug, f"page{n:02d}-{reuse.slug(step)}.r{rnd:02d}")
+        try:
+            os.makedirs(os.path.dirname(base), exist_ok=True)
+            for ext, text in ((".prompt.txt", m["prompt"]), (".reply.txt", m["reply"])):
+                with open(base + ext, "w", encoding="utf-8") as f:
+                    f.write(text)
+        except OSError:
+            pass
 
     # ------------------------------------------------------------ the walk
     def frame(self, page):
         return S.form_frame(page, getattr(self.mod, "FRAME_PATTERNS", ()))
+
+    def drawn(self, page, wait_s=20, settle_s=4):
+        """The page's frame once its fields are drawn: a wizard page draws its heading first
+        and its fields a moment later. A page that shows fewer than two fields (a review
+        page) is taken once it has not changed for a moment, after `settle_s`."""
+        t0, last, still = time.time(), None, 0
+        frame = self.frame(page)
+        while time.time() - t0 < wait_s:
+            snap = S.snapshot(frame)
+            if sum(1 for c in S.parse(snap) if c.role in S.FORM_ROLES) >= 2:
+                break
+            still = still + 1 if snap == last else 0
+            if still >= 6 and time.time() - t0 >= settle_s:
+                break
+            last = snap
+            page.wait_for_timeout(250)
+            frame = self.frame(page)
+        B.wait_quiet(frame, max_s=4)
+        return frame
 
     def step_name(self, page, frame, n):
         if self.mod and hasattr(self.mod, "step"):
@@ -367,15 +208,10 @@ class Walk:
             h = ""
         return h[:60] or f"page {n}"
 
-    def accept(self, step):
-        """The portal took this page (it moved on): its map is the accepted one."""
-        if self.maps.get(step):
-            reuse.save(self.pid, self.company, step, self.maps[step], source=self.slug, accepted=True)
-
     def capture(self, frame, step):
         """The page as it was when mapped — HTML and accessibility snapshot, under
-        applications/<slug>/pages/ — so its mapping can be replayed offline
-        (tests/replay_page.py) without a live run."""
+        applications/<slug>/pages/ — so its see and map can be run again offline
+        (tests/see_page.py, tests/map_page.py)."""
         d = os.path.join(os.path.dirname(R.path_for(self.slug)), "pages")
         try:
             os.makedirs(d, exist_ok=True)
@@ -387,106 +223,107 @@ class Walk:
         except Exception as e:
             self.log(f"    [capture] {step}: {type(e).__name__}")
 
-    def button(self, step, kind):
-        """The name of this page's `kind` button (next / submit / start) from its map."""
-        page_rec = next((p for p in self.record.get("pages", []) if p["step"] == step), None)
-        for x in (page_rec or {}).get("entries", []):
-            if x[1] == kind:
-                return x[0]
-        return None
+    def press(self, frame, c):
+        S.tap(A.locate(frame, c))
+        B.wait_quiet(frame.page.main_frame, max_s=10)
 
     def press_start(self, page):
-        """On the job posting (or an 'apply how?' dialog): map it and press the
-        button the map calls `start`. True when one was pressed."""
+        """On the job posting (or an 'apply how?' dialog): the button the map marks start,
+        pressed. True when one was."""
+        B.wait_quiet(page.main_frame, max_s=8)
         frame = self.frame(page)
-        step = "posting" if not frame.get_by_role("dialog").count() else "apply dialog"
-        self.do_page(frame, step, chrome=True)             # a posting's Apply may sit in a sticky header
-        name = self.button(step, "start")
-        if not name:
-            # a map that marks no start button failed its one job: never keep it — map the
-            # page again from nothing, telling the map what was missing
-            self.log(f"    [map] no start button marked on '{step}' — mapping it again")
-            self.do_page(frame, step, cached=[], chrome=True,
-                         failures=[(None, "no button was marked start: which button opens the application form?")])
-            name = self.button(step, "start")
-        if not name and step == "apply dialog":
-            # a dialog that opens nothing (a cookie banner): the start is on the posting behind it
-            step = "posting"
-            self.do_page(frame, step, chrome=True)
-            name = self.button(step, "start")
-        if not name:
+        if sum(1 for c in S.parse(S.snapshot(frame)) if c.role in S.FORM_ROLES) >= 2:
+            return True                                    # the form is already showing: nothing to start
+        if frame.get_by_role("dialog").count():
+            step = "apply dialog"
+        else:                                              # named by what it shows — never assumed a posting
+            try:
+                step = (frame.get_by_role("heading").first.inner_text(timeout=1500) or "").strip()[:60] or "page before the form"
+            except Exception:
+                step = "page before the form"
+        m = M.map_page(frame, step, self.facts, self.learned, open_lists=False, chrome=True,
+                       model=self.model, effort=self.effort, log=self.log)
+        self.keep_io(step, len(self.page_rec(step)["rounds"]) + 1, m)
+        by_id = {c.id: c for c in m["controls"] if c.id}
+        start = next((by_id[r[0]] for r in m["rows"] if str(r[2]).strip().lower() == "start"), None)
+        self.page_rec(step)["rounds"].append({"rows": m["rows"], "problems": [[p, why] for p, why in m["problems"]]})
+        for p, why in m["problems"]:
+            self.log(f"      turned back {p}: {why}")
+        if start is None:
+            self.log(f"    [map] no start button marked on '{step}'")
             return False
-        A.act(frame, "button", name)
-        B.wait_quiet(page.main_frame, max_s=10)
-        self.accept(step)                                 # the page did what its start button promised
+        self.log(f"    start: {start.role} {start.ref!r}")
+        try:
+            self.press(frame, start)
+        except Exception as ex:
+            self.log(f"    start {start.ref!r} could not be pressed: {type(ex).__name__}")
+            return False
         return True
 
     def start(self, page):
-        """The posting -> the form: the platform's start (Workday's account gate), else
-        the map's `start` button while the page shows no form yet."""
+        """The posting -> the form: the platform's start (Workday's account gate), else the
+        map's start button while the page shows no form yet."""
         if self.mod and hasattr(self.mod, "start"):
             return self.mod.start(page, self.ctx, self.log, self.press_start)
         for _ in range(3):
-            frame = self.frame(page)
-            if len([c for c in S.form_controls(S.snapshot(frame)) if c.role not in ("button", "link")]) >= 2:
+            if sum(1 for c in S.parse(S.snapshot(self.frame(page))) if c.role in S.FORM_ROLES) >= 2:
                 return True
             if not self.press_start(page):
                 return True                          # no start button: the form is the page itself
         return True
 
-    def next(self, page, frame, step):
-        """(moved on, errors, is_last) — by the button the page's map calls `next`;
-        a page whose map has no `next` but a `submit` is the last page."""
-        nxt, sub = self.button(step, "next"), self.button(step, "submit")
-        if sub:
-            self.record["submit"] = sub
-        if not nxt:
-            return False, [] if sub else ["the map found no next or submit button on this page"], bool(sub)
+    def next(self, page, frame, step, buttons):
+        """(moved on, errors, is_last) by the button the map marks next. A page with a
+        submit and no next is the last one: its submit is recorded, never pressed."""
+        if "submit" in buttons:
+            self.record["submit"] = buttons["submit"].name
+        nxt = buttons.get("next")
+        if nxt is None:
+            return False, ([] if "submit" in buttons else ["the map marked no next or submit button"]), "submit" in buttons
         if self.mod and hasattr(self.mod, "next_page"):
-            ok, errs = self.mod.next_page(page, step, nxt)
+            ok, errs = self.mod.next_page(page, step, nxt.name)
             return ok, errs, False
         before = S.snapshot(frame)
-        A.act(frame, "button", nxt)
-        B.wait_quiet(frame, max_s=10)
+        self.press(frame, nxt)
         if S.snapshot(self.frame(page)) == before:
-            return False, S.errors(frame) or [f"the page did not change after {nxt!r}"], False
+            return False, S.errors(frame) or [f"the page did not change after {nxt.name!r}"], False
         return True, [], False
 
     def run(self, page):
         """Walk from the posting to the last page. Returns reached_end."""
         if not self.start(page):
-            self.warnings.append("could not get from the posting to the form" +
-                                 (f": {self.ctx['warnings'][-1]}" if self.ctx.get("warnings") else ""))
+            self.warnings.append("could not get from the posting to the form")
             return False
         last_step = None
         for n in range(1, int(cfg("browser.max_pages", 12)) + 1):
-            frame = self.frame(page)
+            frame = self.drawn(page)
             step = self.step_name(page, frame, n)
             self.log(f"\n  page {n}: {step}")
-            if self.mod and hasattr(self.mod, "is_last") and self.mod.is_last(step):
-                self.do_page(frame, step)                   # a review page: its map names the submit button
-                self.record["submit"] = self.button(step, "submit")
-                return True
             if step == last_step:
                 self.warnings.append(f"'{step}' came back after Next — stopped")
                 return False
-            self.do_page(frame, step)
-            ok, errs, last = self.next(page, frame, step)
-            for attempt in range(2):
+            if step != last_step:
+                S.forget_lists()                               # a new page: its lists are read afresh
+            buttons = self.do_page(frame, step)
+            if self.mod and hasattr(self.mod, "is_last") and self.mod.is_last(step):
+                self.record["submit"] = buttons["submit"].name if "submit" in buttons else None
+                return True
+            ok, errs, last = self.next(page, frame, step, buttons)
+            for _ in range(2):
+                if not ok and not last and self.step_name(page, self.frame(page), n) != step:
+                    ok = True                                  # it did move on, only slowly
                 if ok or last or not errs:
                     break
-                self.log(f"    the page refused: {errs[:3]} -> back to the map")
-                # the page's own complaint always gets a Claude call, whatever corrections used
-                self.budget.setdefault(step, {"calls": 0})["calls"] += 1
-                self.do_page(frame, step, failures=[(None, f"Save / Next refused the page: {e}") for e in errs[:6]])
-                ok, errs, last = self.next(page, frame, step)
+                self.log(f"    the page refused: {errs[:3]} -> back to its rounds")
+                buttons = self.do_page(frame, step, last_act="\n".join(
+                    ["- Next was pressed and the page did not move on. What it says:"] + [f"  {e}" for e in errs[:8]]
+                    + ["  Read the SNAPSHOT for what it asks, and answer those controls."]))
+                ok, errs, last = self.next(page, frame, step, buttons)
             if last:
-                self.accept(step)
                 return True
             if not ok:
                 self.warnings.append(f"'{step}' would not save: {errs[:4]}")
                 return False
-            self.accept(step)
             last_step = step
         self.warnings.append("too many pages — stopped")
         return False
@@ -495,17 +332,18 @@ class Walk:
 # ---------------------------------------------------------------- the queue item
 
 def questions_from(record):
-    """The placeholders as review-page questions: the real choices, a note on what stood in."""
+    """The placeholders as review-page questions: the candidates the map found (whole
+    chains for a nested list — "Social Media › LinkedIn" and "Job Board › LinkedIn" are
+    different answers), and what stood in while exploring."""
     out = []
     for i, (q, p) in enumerate((record.get("placeholders") or {}).items()):
         if p.get("answer"):
             continue
-        opts = [o.split(" › ")[-1] for o in (p.get("options") or [])]
-        out.append({"qid": i, "label": q, "options": opts if p.get("kind") != "text" else [],
-                    "kind": "select" if p.get("kind") in ("select", "choice") else "text",
+        out.append({"qid": i, "label": q, "options": list(p.get("options") or []),
+                    "kind": "select" if p.get("kind") == "select" else "text",
                     "required": True, "status": "open",
                     "page": p.get("page") or "", "field": p.get("field") or "",
-                    "value": str(p.get("value") or "").split(" › ")[-1],
+                    "value": str(p.get("value") or ""),
                     "note": p.get("note") or f"explored with placeholder {str(p.get('value'))[:40]!r} — needs your answer"})
     return out
 
@@ -534,10 +372,10 @@ def write_item(w, pay, shot_rel, reached):
         "salary_quoted": pay.get("expected_text"), "score": ctx.get("score"), "resume": w.resume,
         "screenshot": shot_rel, "fields": w.filled, "warnings": w.warnings, "questions": questions,
         "pages": len(w.record["pages"]), "reached_end": reached, "replay": os.path.relpath(R.path_for(w.slug), TOOL),
-        # a question left unfilled is neither ready to approve nor askable on the phone
+        # a control left unfilled is neither ready to approve nor askable on the phone
         "status": ("needs_input" if questions else "pending") if reached and not unfilled else "failed",
         "fail_reason": (None if reached and not unfilled else
-                        f"{len(unfilled)} question(s) could not be filled: {unfilled[:6]}" if reached else
+                        f"{len(unfilled)} control(s) could not be filled: {unfilled[:6]}" if reached else
                         "exploration did not reach the last page — " + (w.warnings[-1][:200] if w.warnings else "no reason given")),
         "created": dt.datetime.now().isoformat(timespec="seconds"),
     }
@@ -549,6 +387,8 @@ def write_item(w, pay, shot_rel, reached):
 
 def explore(ctx, answers, learned, pay, log=print):
     """PASS 1 for one application. Returns the queue item written."""
+    t0, plain = time.time(), log
+    log = lambda s, **kw: plain(f"[{time.time() - t0:5.0f}s]{s}", **kw)     # where the minutes go
     w = Walk(ctx, answers, learned, log)
     mod = w.mod
     url = mod.form_url(ctx["url"]) if mod and hasattr(mod, "form_url") else ctx["url"]
@@ -556,9 +396,9 @@ def explore(ctx, answers, learned, pay, log=print):
     reached = False
     with B.session() as br:
         page = br.new_page()
-        log(f"  [explore] {ctx['company']} — {ctx['role']} ({w.pid}, maps: {w.company})")
+        log(f"  [explore] {ctx['company']} — {ctx['role']} ({w.pid})")
         page.goto(url, wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_timeout(3000)
+        B.wait_quiet(page.main_frame, max_s=8)
         gone = B.dead_posting(page)
         if gone:
             raise SystemExit(f"EXPIRED: posting is closed ({gone!r})")

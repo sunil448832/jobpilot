@@ -1,0 +1,695 @@
+Map one page of a job-application form. Everything you need is in this prompt,
+in this order: the rules for your reply (next), the applicant's stored FACTS, the
+page's CONTROLS still to map, and last the page's full SNAPSHOT as a screen reader
+reads it.
+
+Each control still to map has an id (c1, c2, ...). The id is in the CONTROLS list
+and also written into the control's own line of the SNAPSHOT ("- [c7] radio "No""),
+so you can see every control in place: its label, the question above it, the text
+right after it (a checkbox is often labelled by the text or link that follows it),
+the group and section it sits in. Read the SNAPSHOT to know what each id is.
+
+The SNAPSHOT is the whole page as it is at this moment. It may already be partly
+filled — by the site (a resume parse, a saved draft), or by an earlier round on this
+page — so a value it shows is what the page holds now.
+
+Reply with one row per control that needs something done: [id, kind, answer]
+  id    the control's id, exactly as given ("c7"). Never a name, never an id
+        that is not in the CONTROLS list. One row per id.
+  kind  one of two:
+          write    you type the answer into it (a text box, a text area, a
+                   number or date part)
+          select   you pick, tick or press it: a list or menu, a search box
+                   whose value is an entry picked from the list it shows, a
+                   radio, a checkbox, a choice button (Yes / No), a file
+                   picker, a page button
+        The CONTROLS line says what its HTML is ("a button that opens a list",
+        "a search box", "a file input in its field", "checkbox: not checked"):
+        use it, with the SNAPSHOT, to tell which. A plain "a text box" / "a text
+        area" / "a number box" line is write — whatever its answer is (a name,
+        an email, a city, a fact key) — unless the SNAPSHOT shows a list of
+        entries that belongs to it (then it is a search box: select).
+  answer  what goes in — and first, whether anything needs doing. A control that
+        already shows the right value still gets its row (keep:...): the row is
+        what records which fact or choice it holds. Leaving a row out means "not a
+        question of this form", never "already done".
+        keep:<the answer below>  the control ALREADY shows the right value (its
+            "shows:" in CONTROLS, its value in the SNAPSHOT) — the value the
+            answer means, in the page's own wording ("India (+91)" for the fact
+            +91, "Delhi" for location.state = Delhi): nothing is done to it. Write
+            the answer it stands for after keep: (keep:personal.first_name,
+            keep:option:Social Media › LinkedIn) so the record knows what it is.
+        <the answer below>  the control is empty, or shows something else (a
+            placeholder, "Select One", another value): it is set to the answer.
+        keep only when the shown value says the SAME thing in full, differing at
+        most in form: spaces, case, a leading zero ("6" for 06), a phone written
+        with spaces ("096412 98471" for 9641298471), a ticked box for Yes, the
+        list's own wording of the same entry. Not kept — set instead: a shorter or
+        partial value ("Indian Institute of Technology" for "Indian Institute of
+        Technology, Jodhpur"), a different entry, or a text box / text area whose
+        text differs from the fact's (a resume parser's own wording is replaced by
+        the stored fact). When unsure, give the answer: it is set again.
+        a question the applicant's FACTS answer: the fact's KEY, copied exactly
+            from the FACTS list — character for character, never shortened,
+            extended or guessed ("work_authorization.us..." stays "us", not "usa";
+            no ".<company>" added to a key that does not have it). If no listed key
+            answers it, it is a question no fact answers (below).
+        a question no fact answers: the question itself as a person reads it,
+            without "*", "Select One" or a shown value, naming its section when the
+            page repeats it ("Field of Study — Education 2 (Sikkim Manipal
+            Institute of Technology)"). The applicant is asked it. Do not stretch
+            a fact to fit. A question about someone else (who referred you, a
+            relative who works there) is never answered with the applicant's
+            own facts: ask it.
+        a select control that shows its choices ("choices: [a, b, c]" — each
+            entry as the page words it; an entry that itself holds a comma is in
+            quotes; a CATEGORY, an entry that opens a list of its own, is shown
+            with its entries: "Social Media › [LinkedIn, X, Instagram]"):
+            option:<the choice that means the same as the applicant's fact>,
+            copied exactly. Same meaning in other words is a match, not a guess:
+            "No German speaker" -> None, "Decline to self-identify" -> "Declined
+            to State (United States of America)", "I am not a protected veteran"
+            -> "I AM NOT A VETERAN", M.Tech -> Masters.
+        nested lists: the whole chain, category first, down to an entry that
+            opens nothing more — option:Social Media › LinkedIn. It is acted on in
+            one go (open the list, pick Social Media, pick LinkedIn). A category
+            alone only opens its list and is never an answer. A category shown
+            with a bare "›" (its entries could not be read): the chain to the entry
+            you expect there, in the page's words.
+        a select control marked "a long list" / "fills in as you type" / "only
+            the first entries", when the entry you want is not shown:
+            search:<regex>; <regex>; <regex> — 2-3 regular expressions, most
+            specific first: the entry's whole word(s) (\bIndia\b), then its first
+            letters (^Ind), then its first letter (^I). Each is matched, case
+            aside, against every entry of the list (a nested list: against each
+            whole chain, "Social Media › LinkedIn"); a box that fills in as you
+            type gets each one's plain letters typed and the regex run over what
+            appears. What each matches comes back under LAST ACT, and you pick.
+        when no choice means the same as the fact — or nothing is stored for it:
+            guess:<choice 1>; <choice 2>; ... | <the question>
+            — the top 5 most probable choices at most, each copied exactly from the
+            list — for a nested list the top 5 most probable CHAINS
+            (guess:Social Media › LinkedIn; Job Board › Indeed; ... | How did you
+            hear about us?) — the most likely first. Choice 1 is filled in for now
+            so the form can go on; the applicant is asked the question with these
+            choices, in this order. Fewer than 5 when fewer are plausible; never a
+            choice the page does not show. (A fact that means the same as one
+            choice is option:, not guess:.)
+        radios, checkboxes, choice buttons — a row means "tick / press THIS one",
+            by ITS id. Give a row only for a choice that is TRUE for the applicant:
+            its label says what the applicant's facts say. The answer is the fact
+            key whose value makes this very label true, or option:<its label>, or
+            guess:<its label>; <next most likely label>; ... | <the question>
+            (the row's id is choice 1's). Every other choice of the same
+            question gets no row — a related key is not a reason to tick it
+            ("Have you worked at Adobe as: Employee / Intern / ... / I have not
+            worked for Adobe": the facts say never employed there -> one row, for
+            "I have not worked for Adobe", and none for Employee). A single
+            checkbox that the facts leave unticked: no row.
+        a file picker: file:resume on the form's own resume field only (not an
+            "autofill from your resume" box, which only pre-fills the form;
+            not a cover letter unless FACTS hold one).
+        a page button — at most one of each on a page:
+            next     saves this page and moves on (Next, Continue, Save and
+                     Continue); never Back, never a button inside a field. A
+                     one-page form has no next.
+            submit   sends the application
+            start    opens the application form: on the posting its Apply; in a
+                     "how do you want to apply" choice, the one that opens a
+                     blank form to fill in by hand (not autofill, not reuse of a
+                     past application, not Close)
+            add:<n>  a repeated section's Add / Add Another when FACTS hold n
+                     more blocks than the page shows (Work Experience 1 only,
+                     FACTS hold employment[0], [1], [2] -> add:2)
+
+Leave out (no row): the page header, navigation and footer (language pickers, the
+site's search, Sign In), a cookie or consent banner, a date box's calendar button,
+Back, Previous, Close, Cancel, Delete, Remove — these are never rows, whatever the
+answer would be — an Add the facts have nothing more for, the page's
+error summary ("Errors Found" and its links), anything that is part of another
+control (a picker's own search box, an "items selected" list, a hidden box behind a
+choice button), and an optional box that collects tags (skills, interests) when no
+fact lists them.
+
+LAST ACT (below the CONTROLS) is what the last round on this page could not finish:
+a search's matches for each of your regexes, a choice its list did not hold (with what
+it holds), an error. Answer each of those controls again, found by its name in
+CONTROLS: option:<one of the matches, copied exactly> when one is the answer, else
+guess:<up to 5 of them, most likely first> | <the question>, else a new search with
+other regexes. Empty the first time a page is seen.
+
+PLACEHOLDERS (below the CONTROLS) are values put into this page earlier only so the
+form could go on — choice 1 of an earlier guess, or "To be confirmed" in a box. The
+SNAPSHOT shows them in their controls, but they are NOT the applicant's answers and
+not facts: never answer another control from a placeholder. A control holding one
+that is listed in CONTROLS again is answered afresh: option: when a FACT now matches
+one of its choices (or a chain of a nested list), else the same guess row (the same
+candidates, most likely first) unless the page now offers different choices.
+
+Before you reply, check each row: its id is in CONTROLS; its answer is a key copied
+from FACTS, option: with a label (or a path of labels) the page shows, guess: with
+up to 5 such labels most likely first, search:, file:resume, a page button's word, or
+the question; no category alone as an answer; no row for Back / Close / Cancel; for a question with
+several choices, only the true one has a row; every box a FACT answers has a row — keep:
+when it already shows that value, else the answer.
+Reply with only the JSON array, no prose, and use no tools:
+[["<id>", "<write|select>", "<[keep:]fact key, [keep:]option:<choice or path>, guess:<choice 1>; <choice 2>; ... | <question>, search:<regex>; <regex>, file:resume, next, submit, start, add:<n>, or the question>"], ...]
+
+FACTS (key: value)
+job.company: Openai
+job.location: San Francisco
+job.market: usa
+personal.first_name: Sunil
+personal.middle_name: Kumar
+personal.last_name: Sharma
+personal.full_name: Sunil Kumar Sharma
+personal.preferred_name: Sunil
+personal.email: sunil4832sharma@gmail.com
+personal.phone: +91-9641298471
+personal.phone_country_code: +91
+personal.phone_national: 9641298471
+location.city: Delhi
+location.state: Delhi
+location.country: India
+location.postal_code: 110019
+location.address_line_1: Delhi
+location.willing_to_relocate: Yes
+location.preferred_locations: UAE, Saudi Arabia, Singapore, US, Remote
+links.linkedin: https://www.linkedin.com/in/sunil4832sharma
+links.github: https://github.com/sunil448832
+links.huggingface: https://huggingface.co/sunil448832
+work_authorization.citizenship: India
+work_authorization.current_work_country: India
+work_authorization.us.authorized_without_sponsorship: No
+work_authorization.us.requires_sponsorship: Yes
+work_authorization.uk.authorized_without_sponsorship: No
+work_authorization.uk.requires_sponsorship: Yes
+work_authorization.eu.authorized_without_sponsorship: No
+work_authorization.eu.requires_sponsorship: Yes
+work_authorization.uae.authorized_without_sponsorship: No
+work_authorization.uae.requires_sponsorship: Yes
+work_authorization.saudi_arabia.authorized_without_sponsorship: No
+work_authorization.saudi_arabia.requires_sponsorship: Yes
+work_authorization.australia.authorized_without_sponsorship: No
+work_authorization.australia.requires_sponsorship: Yes
+work_authorization.netherlands.authorized_without_sponsorship: No
+work_authorization.netherlands.requires_sponsorship: Yes
+work_authorization.india.authorized_without_sponsorship: Yes
+work_authorization.india.requires_sponsorship: No
+work_authorization.visa_status_note: Indian citizen, currently in India. Require employment visa sponsorship to work onsite outside India. Available immediately for fully-remote roles, engaged as a
+work_authorization.remote_from_india_note: For fully-remote roles I work from India as a contractor or via an EOR (Deel / Remote.com / Oyster), invoiced in the company's currency.
+availability.notice_period: 2 months
+availability.notice_period_days: 60
+availability.earliest_start_date: 2 months from offer acceptance
+availability.earliest_start_iso: 2026-11-04
+availability.earliest_start_iso.year: 2026
+availability.earliest_start_iso.month: 11
+availability.earliest_start_iso.day: 04
+availability.currently_employed: Yes
+compensation.current_ctc: Prefer to discuss — targeting the local market rate for the role
+compensation.never_quote_inr: Yes
+compensation.salary_flexible_note: Open to discussing based on total package and level. Prioritising role scope, team, and the sponsorship/remote arrangement over base alone.
+compensation.by_market.usa.currency: USD
+compensation.by_market.usa.expected_annual: 200000
+compensation.by_market.usa.expected_text: USD 200,000 base (open on total comp / equity mix)
+compensation.by_market.usa.note: Base ask. US total comp usually adds equity on top.
+experience_summary.total_years: 5
+experience_summary.total_years_phrase: 5+ years
+experience_summary.current_title: Senior Data Scientist
+experience_summary.target_title: Senior Machine Learning Engineer
+experience_summary.highest_degree: Master's Degree
+experience_summary.employment_gap_explanation: Took a planned break between roles in 2023 to focus full-time on generative-AI and LLM upskilling, including freelance vision-language model work (LLaVA/BLIP fi
+skill_years.default: 5
+skill_years.python: 5
+skill_years.machine_learning: 5
+skill_years.deep_learning: 5
+skill_years.pytorch: 5
+skill_years.computer_vision: 5
+skill_years.nlp: 5
+skill_years.aws: 5
+skill_years.sql: 5
+skill_years.docker: 4
+skill_years.generative_ai: 3
+skill_years.llm: 3
+skill_years.agentic_ai: 3
+skill_years.rag: 3
+skill_years.langchain: 3
+skill_years.vector_databases: 3
+skill_years.vllm: 2
+skill_years.kubernetes: 2
+skill_years.fine_tuning: 3
+skill_years.lora: 3
+skill_years.reinforcement_learning: 1
+skill_years.rlhf: 1
+skill_years.post_training: 1
+employment[0].employer: Aria Intelligent Solutions
+employment[0].title: Senior Data Scientist
+employment[0].location: India
+employment[0].start_date: 2023-12
+employment[0].start_date.year: 2023
+employment[0].start_date.month: 12
+employment[0].current: Yes
+employment[0].summary: Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end
+employment[1].employer: Amazon Development Centre (India) Pvt. Ltd.
+employment[1].title: Applied Scientist I
+employment[1].location: India
+employment[1].start_date: 2022-10
+employment[1].start_date.year: 2022
+employment[1].start_date.month: 10
+employment[1].end_date: 2023-06
+employment[1].end_date.year: 2023
+employment[1].end_date.month: 06
+employment[1].current: No
+employment[1].summary: Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting
+employment[2].employer: Beltech AI Pvt. Ltd.
+employment[2].title: Computer Vision Engineer
+employment[2].location: India
+employment[2].start_date: 2021-07
+employment[2].start_date.year: 2021
+employment[2].start_date.month: 07
+employment[2].end_date: 2022-09
+employment[2].end_date.year: 2022
+employment[2].end_date.month: 09
+employment[2].current: No
+employment[2].summary: Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extract
+education[0].institution: Indian Institute of Technology, Jodhpur
+education[0].degree: Master of Technology (M.Tech)
+education[0].field_of_study: Artificial Intelligence
+education[0].start_date: 2019-07
+education[0].start_date.year: 2019
+education[0].start_date.month: 07
+education[0].end_date: 2021-06
+education[0].end_date.year: 2021
+education[0].end_date.month: 06
+education[1].institution: Sikkim Manipal Institute of Technology
+education[1].degree: Bachelor of Technology (B.Tech)
+education[1].field_of_study: Electronics and Communication Engineering
+education[1].start_date: 2015-07
+education[1].start_date.year: 2015
+education[1].start_date.month: 07
+education[1].end_date: 2019-06
+education[1].end_date.year: 2019
+education[1].end_date.month: 06
+certifications: DeepLearning.AI — Generative AI with Large Language Models
+questions.how_did_you_hear: LinkedIn
+questions.greatest_strength: Taking research-stage models to low-latency production. I have shipped LLM and vision systems end to end — Phi-3 Vision via vLLM at 20 ms median latency, a Qdra
+questions.reason_for_leaving: Looking for a role with international scope and deeper ownership of generative-AI systems at scale.
+eeo.gender: Male
+eeo.race_ethnicity: Decline to self-identify
+eeo.hispanic_latino: Decline to self-identify
+eeo.veteran_status: I am not a protected veteran
+eeo.disability_status: No, I do not have a disability
+eeo.requires_accommodation: No
+screening.over_18: Yes
+screening.can_perform_essential_functions: Yes
+screening.previously_employed_here: No
+screening.related_to_current_employee: No
+screening.previously_employed_overrides.amazon: Yes
+screening.previously_employed_overrides.amazon web services: Yes
+screening.previously_employed_overrides.aws: Yes
+screening.previously_employed_overrides.amazon development centre: Yes
+screening.previously_employed_detail.amazon: Applied Scientist I, Amazon Development Centre (India), Oct 2022 - Jun 2023
+screening.non_compete_restrictions: No
+screening.agree_to_background_check: Yes
+screening.agree_to_drug_test: Yes
+screening.confirm_form_statements: Yes
+screening.willing_to_travel: Yes
+screening.travel_percentage_ok: up to 25%
+screening.remote_or_onsite_preference: Open — onsite, hybrid, or remote
+learned:0: answer to 'confirm whether any of the below applies to you sanctions cuba iran north korea ': None of the above
+learned:1: answer to 'us person status citizen permanent resident asylum refugee': Not applicable (I selected “none of the 
+learned:2: answer to 'export control restrictions': No
+learned:3: answer to 'which of the following core spark and production engineering concepts do you hav': Production ETL/ELT pipelines (Batch & St
+learned:4: answer to 'do you have hands-on experience owning end-to-end data and ai architectures in p': Yes. I own end-to-end data and AI archit
+learned:5: answer to 'have you ever been convicted of a crime': No
+learned:6: answer to 'do you have a valid passport': Yes
+learned:7: answer to 'by checking this box, i agree to allow catawiki to store and process my data for': By checking this box, I agree to allow C
+learned:8: answer to 'briefly describe a project where you had to deploy ml models serving real-time r': At Aria I deployed Phi-3 Vision behind v
+learned:9: answer to "could you please list the standard and widespread ml techniques you're most comf": Supervised and unsupervised learning, de
+learned:10: answer to 'at remote, we are committed to transparency, innovation, and care for our employ': Yes
+learned:11: answer to 'have you ever been hired through remote as a third party?': No. I have never been engaged through Re
+learned:12: answer to 'do you have experience working with multiple programming languages?': Yes — Python, SQL and C++. Python is my 
+learned:13: answer to 'have you implemented ai workflows or ai-powered solutions in production or at cu': Yes, in production. I built IngestIQ, a 
+learned:14: answer to 'have you held a customer-facing technical role (solutions engineer, post-sales e': No. I have not held a formal customer-fa
+learned:15: answer to 'are you able to travel approximately ~10% for customer engagement and in-person ': Yes. I am comfortable with approximately
+learned:16: answer to 'why are you interested in the forward deployed engineer role, and what about rem': The half of my work I want more of is th
+learned:17: answer to 'do you identify as part of the lesbian, bisexual, gay, transgender, queer, inter': No
+learned:18: answer to 'do you have any relatives currently working for airwallex?': No
+learned:19: answer to 'how did you first hear about airwallex?': LinkedIn
+learned:20: answer to 'are you based in melbourne, australia?': No — I'm currently based in India. This 
+learned:21: answer to 'point of data transfer': Acknowledge
+learned:22: answer to 'current or most recent company?': Aria Intelligent Solutions
+learned:23: answer to 'would you like to stay up to date with mongodb culture and careers content?': No, thank you. Please use my details for
+learned:24: answer to 'if you answered mongodb employee, mongodb event, or other, please specify here:': Other - I found this role through the jo
+learned:25: answer to 'tell us about yourself': I am a Senior Data Scientist at Aria Int
+learned:26: answer to 'links': LinkedIn: https://www.linkedin.com/in/su
+learned:27: answer to 'do you have professional experience reading cutting-edge ai research papers and ': Yes. I post-trained Qwen3-4B with GRPO a
+learned:28: answer to 'do you have experience operating with a high degree of autonomy to solve complex': Yes. As Senior Data Scientist at Aria In
+learned:29: answer to 'for dutch citizens: which culture was alongside the dutch significant in your up': Not applicable — I am an Indian citizen,
+learned:30: answer to 'do you identify as having a mental or physical health condition?': No.
+learned:31: answer to 'do you identify as neurodiverse (eg attention deficit disorder, dyslexia, autism': No.
+learned:32: answer to 'are you open to working in-person in one of our offices 25% of the time?': Yes, I'm open to being in the Zurich off
+learned:33: answer to 'ai policy for application': Yes
+learned:34: answer to 'why anthropic?': I want to work on post-training where th
+learned:35: answer to 'have you ever interviewed at anthropic before?': No, this is my first time applying/inter
+learned:36: answer to 'when is the earliest you would want to start working with us?': My notice period is 2 months, so I could
+learned:37: answer to 'do you have any deadlines or timeline considerations we should be aware of?': No hard deadlines on my end — my notice 
+learned:38: answer to 'what is the address from which you plan on working? if you would need to relocat': relocating
+learned:39: answer to 'visa sponsorship': Yes
+learned:40: answer to 'what makes you excited to join deepjudge? what are the most interesting componen': DeepJudge sits exactly where my last two
+learned:41: answer to 'what did you own, what were you trying to improve, and what was the outcome? if ': I owned an evaluation service meant to r
+learned:42: answer to 'i am based in or within a reasonable commuting distance of zurich (able to be in': I live outside commuting distance and re
+learned:43: answer to 'do you have a proven track record of writing clean, efficient, and scalable code': Yes
+learned:44: answer to 'please email me about future job openings': No
+learned:45: answer to 'us export control laws 2026: are you a citizen, national or permanent resident o': No
+learned:46: answer to 'us export control laws 2026: do you hold an additional citizenship, nationality,': No
+learned:47: answer to 'us export control laws 2026: in which country did you obtain citizenship, nation': India
+learned:48: answer to 'in your current role, do you engage with mastercard employees to negotiate, infl': No.
+learned:49: answer to 'are you related to anyone who has the authority to influence and/or sign commerc': No
+learned:50: answer to 'are you or were you recently (in the last six months) an employee of a governmen': No
+learned:51: answer to 'do you have a close personal relationship with a current mastercard employee? [e': No
+learned:52: answer to 'are you currently engaged in any outside employment or activity that you would l': No
+learned:53: answer to 'except where consent is not required by applicable privacy law, i consent to the': Yes
+learned:54: answer to 'how soon can you start full-time?': About 2 months out, to complete a standa
+learned:55: answer to 'office location of choice': San Francisco
+learned:56: answer to 'if this role or future roles require relocation:': I am willing to relocate and will self r
+learned:57: answer to 'palo alto networks prides itself on being a military friendly employer. this inf': No
+learned:58: answer to 'are you in the reserves?': No
+learned:59: answer to 'would you like to be considered for future opportunities?': Yes
+learned:60: answer to 'integrity is a foundational core value at palo alto networks, reflected in our c': I agree
+learned:61: answer to 'i have read and agree to the candidate confidentiality agreement policy linked h': i agree to be bound by the candidate con
+learned:62: answer to 'are you available to work 5 days from our munich office?': Yes
+learned:63: answer to 'what is your proficiency in german?': No German speaker
+learned:64: answer to 'data privacy statement:': yes
+learned:65: answer to 'please describe a model you built or significantly contributed to that was deplo': For a Roche retrieval system, I owned th
+learned:66: answer to 'by checking this box, i consent to mongodb collecting, storing, and processing m': By checking this box, I consent to Mongo
+learned:67: answer to 'have you signed any agreement with any prior or existing employer which includes': No
+learned:68: answer to 'by selecting the checkbox, you agree to our terms and conditions and applicant p': By selecting the checkbox, you agree to 
+learned:69: answer to 'do you identify as one of the following protected veterans (disabled veteran, re': i am not a veteran
+learned:70: answer to 'do you meet all of the basic qualifications for this role as specified in the jo': Yes
+learned:71: answer to 'do you have any relatives employed by capital one? (a relative can include a spo': No
+learned:72: answer to 'please answer the next two questions to the best of your knowledge. for purposes': No
+learned:73: answer to 'are you related to a senior government official?': No
+learned:74: answer to 'do you have a second job, outside business, or other employment that you will co': No
+learned:75: answer to 'all capital one associates must follow the code of conduct. the code requires th': Yes
+learned:76: answer to 'are you age 18 or over?': Yes
+learned:77: answer to 'do you meet the preferred qualifications for this role as specified in the job d': Yes, All
+learned:78: answer to 'are you currently under any form of agreement or policy, with your current or pr': No
+learned:79: answer to 'are you a spouse or partner of someone serving, or who served in the armed force': No
+learned:80: answer to 'prefix': Mr
+learned:81: answer to 'school or university': Indian Institute of Technology Jodhpur (
+learned:82: answer to 'how did you hear about us?': career site - corporate
+learned:83: answer to 'f7b33932-2c60-40cc-82e9-fdd3a07d1abb__systemfield_eeoc_gender': Male
+learned:84: answer to 'why do you want to join figma?': I want to bring RL and generative AI res
+learned:85: answer to 'from where do you intend to work?': Remote from India, with the understandin
+learned:86: answer to '(optional) personal preferences': No specific preferences — open to any of
+learned:87: answer to 'additional information': I mention this because it doesn't fit ne
+learned:88: answer to 'please read the arbitration agreement below': i will read the arbitration agreement be
+learned:89: answer to 'agreement to arbitrate': i understand and agree to the terms of t
+learned:90: answer to 'have you been employed by adobe in the past?': No
+learned:91: answer to 'proficiency in german': B1 / B2
+learned:92: answer to 'field of study': Electronics and Communication Engineerin
+learned:93: answer to 'please select your ethnicity.': Declined to State (United States of Amer
+file:resume: (the resume file)
+
+PAGE: form
+CONTROLS (the others are already mapped)
+c1  button 'Upload file'   [a file picker]   shows: 'Upload file'
+c2  textbox 'Legal Name'   [a text box, required, placeholder 'Type here...']
+c3  textbox 'Preferred Name (if applicable)'   [a text box, placeholder 'Type here...']
+c4  textbox 'Email'   [a text box type=email, required, placeholder 'hello@example.com...']
+c5  button 'Upload File'   [a file picker]   shows: 'Upload File'
+c6  textbox 'Phone Number'   [a text box type=tel, required, placeholder '1-415-555-1234...']
+c7  combobox 'Start typing...'   [a search box: type, then pick from the list that appears, placeholder 'Start typing...']
+c8  button ''   [a button]
+c9  textbox 'Pick date...'   [a text box, required, placeholder 'Pick date...']
+c10  button 'Yes #1'   [a button]   shows: 'Yes'
+c11  button 'No #1'   [a button]   shows: 'No'
+c12  checkbox ' #1'   [checkbox: not checked]
+c13  button 'Yes #2'   [a button]   shows: 'Yes'
+c14  button 'No #2'   [a button]   shows: 'No'
+c15  checkbox ' #2'   [checkbox: not checked]
+c16  button 'Yes #3'   [a button]   shows: 'Yes'
+c17  button 'No #3'   [a button]   shows: 'No'
+c18  checkbox ' #3'   [checkbox: not checked]
+c19  textbox 'Additional Information'   [a text area, placeholder 'Type here...']
+c20  checkbox 'I acknowledge that I have opened, read, and understood the Arbitration Agreement. I understand that by submitting my application, I am agreeing to be bound by the terms of the Arbitration Agreement.'   [checkbox: not checked]
+c21  checkbox 'I confirm I have read the above.'   [checkbox: not checked]
+c22  radio 'Male'   [radio: not checked]
+c23  radio 'Female'   [radio: not checked]
+c24  radio 'Decline to self-identify #1'   [radio: not checked]
+c25  radio 'Hispanic or Latino'   [radio: not checked]
+c26  radio 'White (Not Hispanic or Latino)'   [radio: not checked]
+c27  radio 'Black or African American (Not Hispanic or Latino)'   [radio: not checked]
+c28  radio 'Native Hawaiian or Other Pacific Islander (Not Hispanic or Latino)'   [radio: not checked]
+c29  radio 'Asian (Not Hispanic or Latino)'   [radio: not checked]
+c30  radio 'American Indian or Alaska Native (Not Hispanic or Latino)'   [radio: not checked]
+c31  radio 'Two or More Races (Not Hispanic or Latino)'   [radio: not checked]
+c32  radio 'Decline to self-identify #2'   [radio: not checked]
+c33  radio 'I identify as one or more of the classifications of protected veteran listed above'   [radio: not checked]
+c34  radio 'I am not a protected veteran'   [radio: not checked]
+c35  radio 'I decline to self-identify for protected veteran status'   [radio: not checked]
+c36  button 'Submit Application'   [a button]   shows: 'Submit Application'
+
+LAST ACT ON THIS PAGE
+(none)
+
+PLACEHOLDERS ON THIS PAGE (not the applicant's answers)
+(none)
+
+SNAPSHOT
+- list:
+  - listitem:
+    - link "OpenAI":
+      - /url: https://openai.com/
+      - img "OpenAI"
+  - link "Back to OpenAI’s Job Listings":
+    - /url: https://openai.com/careers/search/
+    - img
+  - listitem
+- heading "Research Engineer, Codex" [level=1]
+- heading "Location" [level=2]
+- paragraph: San Francisco
+- heading "Employment Type" [level=2]
+- paragraph: Full time
+- heading "Department" [level=2]
+- paragraph: Research
+- heading "Compensation" [level=2]
+- list:
+  - listitem: $380K – $500K • Offers Equity
+- paragraph: The base pay offered may vary depending on multiple individualized factors, including market location, job-related knowledge, skills, and experience. If the role is non-exempt, overtime pay will be provided consistent with applicable laws. In addition to the salary range listed above, total compensation also includes generous equity, performance-related bonus(es) for eligible employees, and the following benefits.
+- list:
+  - listitem:
+    - paragraph: Medical, dental, and vision insurance for you and your family, with employer contributions to Health Savings Accounts
+  - listitem:
+    - paragraph: Pre-tax accounts for Health FSA, Dependent Care FSA, and commuter expenses (parking and transit)
+  - listitem:
+    - paragraph: 401(k) retirement plan with employer match
+  - listitem:
+    - paragraph: Paid parental leave (up to 24 weeks for birth parents and 20 weeks for non-birthing parents), plus paid medical and caregiver leave (up to 8 weeks)
+  - listitem:
+    - paragraph: "Paid time off: flexible PTO for exempt employees and up to 15 days annually for non-exempt employees"
+  - listitem:
+    - paragraph: 13+ paid company holidays, and multiple paid coordinated company office closures throughout the year for focus and recharge, plus paid sick or safe time (1 hour per 30 hours worked, or more, as required by applicable state or local law)
+  - listitem:
+    - paragraph: Mental health and wellness support
+  - listitem:
+    - paragraph: Employer-paid basic life and disability coverage
+  - listitem:
+    - paragraph: Annual learning and development stipend to fuel your professional growth
+  - listitem:
+    - paragraph: Daily meals in our offices, and meal delivery credits as eligible
+  - listitem:
+    - paragraph: Relocation support for eligible employees
+  - listitem:
+    - paragraph: Additional taxable fringe benefits, such as charitable donation matching and wellness stipends, may also be provided.
+- paragraph: More details about our benefits are available to candidates during the hiring process.
+- paragraph: This role is at-will and OpenAI reserves the right to modify base pay and other compensation components at any time based on individual performance, team or company results, or market conditions.
+- tablist:
+  - tab "Overview"
+  - tab "Application" [selected]
+- tabpanel "Application":
+  - button "Choose File"
+  - img
+  - heading "Autofill from resume" [level=3]
+  - paragraph: Upload your resume here to autofill key application fields.
+  - [c1] button "Upload file"
+  - img
+  - text: Drop your resume here!
+  - progressbar "Loading..."
+  - text: Parsing your resume. Autofilling key fields...
+  - img
+  - text: This job has application limits
+  - img
+  - paragraph: "Please Note: we have set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span."
+  - text: Legal Name
+  - paragraph: Please enter your legal name exactly as shown on your government-issued ID. This helps keep records accurate for later hiring steps.
+  - [c2] textbox "Legal Name":
+    - /placeholder: Type here...
+  - text: Preferred Name (if applicable)
+  - [c3] textbox "Preferred Name (if applicable)":
+    - /placeholder: Type here...
+  - text: Email
+  - [c4] textbox "Email":
+    - /placeholder: hello@example.com...
+  - text: Resume
+  - button "Resume"
+  - [c5] button "Upload File":
+    - img
+    - text: Upload File
+  - paragraph: or drag and drop here
+  - text: Phone Number
+  - [c6] textbox "Phone Number":
+    - /placeholder: 1-415-555-1234...
+  - text: Where are you currently located?
+  - [c7] combobox "Start typing..."
+  - [c8] button:
+    - img
+  - text: When can you start a new role?
+  - [c9] textbox "Pick date..."
+  - text: Are you authorized to work in the country where the job is located?
+  - [c10] button "Yes"
+  - [c11] button "No"
+  - [c12] checkbox
+  - text: Will you now or in the future require sponsorship for employment visa status in this country?
+  - paragraph: We may provide immigration and sponsorship support to new employees based on their unique circumstances.
+  - [c13] button "Yes"
+  - [c14] button "No"
+  - [c15] checkbox
+  - text: Are you able to work from our US office three days per week?
+  - [c16] button "Yes"
+  - [c17] button "No"
+  - [c18] checkbox
+  - text: Additional Information
+  - paragraph: Please share anything else you want us to know, such as your motivation to apply or additional context for your application.
+  - [c19] textbox "Additional Information":
+    - /placeholder: Type here...
+  - group:
+    - text: Applicant Arbitration Agreement Acknowledgement
+    - paragraph:
+      - link "Applicant Arbitration Agreement":
+        - /url: https://cdn.openai.com/pdf/applicant-arbitration-agreement.pdf
+    - img
+    - [c20] checkbox "I acknowledge that I have opened, read, and understood the Arbitration Agreement. I understand that by submitting my application, I am agreeing to be bound by the terms of the Arbitration Agreement."
+    - text: I acknowledge that I have opened, read, and understood the Arbitration Agreement. I understand that by submitting my application, I am agreeing to be bound by the terms of the Arbitration Agreement.
+  - group:
+    - text: I hereby certify that I have not knowingly withheld any information that might adversely affect my chances for employment and that the answers given by me are true and correct to the best of my knowledge. I further certify that I, the undersigned applicant, have personally completed this application. I understand that, to the extent permitted by applicable law, any omission or misstatement of material fact on this application or on any document used to secure employment shall be grounds for rejection of this application or for immediate discharge if I am employed, regardless of the time elapsed before discovery.
+    - paragraph:
+      - strong: OpenAI is not seeking, nor should you disclose, any information that may be subject to confidentiality obligations to third parties, including but not limited to, your current employer.
+    - img
+    - [c21] checkbox "I confirm I have read the above."
+    - text: I confirm I have read the above.
+  - paragraph:
+    - strong: U.S. EQUAL EMPLOYMENT OPPORTUNITY INFORMATION
+    - text: (Completion is voluntary and will not subject you to adverse treatment)
+  - paragraph
+  - paragraph: OpenAI provides equal employment opportunities to applicants and employees without regard to race, color, religion, sex, sexual orientation, gender identity, national origin, protected veteran status, disability, or any other classification protected by applicable law.
+  - paragraph
+  - paragraph: OpenAI is a federal contractor or subcontractor subject to certain governmental recordkeeping and reporting requirements for the administration of civil rights laws and regulations. Employment decisions are made on the basis of job-related criteria without regard to race, ethnicity, color, religion, sex, sexual orientation, gender identity, marital status, age, genetic information, national origin, disability, protected veteran status, or any other classification protected by applicable law.
+  - paragraph
+  - paragraph: We invite all applicants to voluntarily self-identify their race, ethnicity, and gender. Submission of the information on this form is strictly voluntary and refusal to provide it will not subject you to any adverse treatment. Information obtained will be retained in a confidential file and separate from personnel records. This information may only be used in accordance with the provision of applicable federal laws, executive orders, and regulations. If you want more information about any of the sections, please check with a company representative.
+  - group:
+    - text: Gender
+    - paragraph: Input gender
+    - [c22] radio "Male"
+    - text: Male
+    - [c23] radio "Female"
+    - text: Female
+    - [c24] radio "Decline to self-identify"
+    - text: Decline to self-identify
+  - group:
+    - text: Race
+    - list:
+      - listitem:
+        - paragraph:
+          - strong: Hispanic or Latino
+          - text: "- A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin regardless of race."
+    - list:
+      - listitem:
+        - paragraph:
+          - strong: White
+          - text: (Not Hispanic or Latino) - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa.
+      - listitem:
+        - paragraph:
+          - strong: Black or African American
+          - text: (Not Hispanic or Latino) - A person having origins in any of the Black racial groups of Africa.
+      - listitem:
+        - paragraph:
+          - strong: Native Hawaiian or Other Pacific Islander
+          - text: (Not Hispanic or Latino) - A person having origins in any of the peoples of Hawaii, Guam, Samoa, or other Pacific Islands.
+      - listitem:
+        - paragraph:
+          - strong: Asian
+          - text: (Not Hispanic or Latino) - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian Subcontinent, including, for example, Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine Islands, Thailand, and Vietnam.
+      - listitem:
+        - paragraph:
+          - strong: American Indian or Alaska Native
+          - text: (Not Hispanic or Latino) - A person having origins in any of the original peoples of North and South America (including Central America), and who maintain tribal affiliation or community attachment.
+      - listitem:
+        - paragraph:
+          - strong: Two or More Races
+          - text: (Not Hispanic or Latino) - All persons who identify with more than one of the above five races.
+    - [c25] radio "Hispanic or Latino"
+    - text: Hispanic or Latino
+    - [c26] radio "White (Not Hispanic or Latino)"
+    - text: White (Not Hispanic or Latino)
+    - [c27] radio "Black or African American (Not Hispanic or Latino)"
+    - text: Black or African American (Not Hispanic or Latino)
+    - [c28] radio "Native Hawaiian or Other Pacific Islander (Not Hispanic or Latino)"
+    - text: Native Hawaiian or Other Pacific Islander (Not Hispanic or Latino)
+    - [c29] radio "Asian (Not Hispanic or Latino)"
+    - text: Asian (Not Hispanic or Latino)
+    - [c30] radio "American Indian or Alaska Native (Not Hispanic or Latino)"
+    - text: American Indian or Alaska Native (Not Hispanic or Latino)
+    - [c31] radio "Two or More Races (Not Hispanic or Latino)"
+    - text: Two or More Races (Not Hispanic or Latino)
+    - [c32] radio "Decline to self-identify"
+    - text: Decline to self-identify
+  - paragraph:
+    - strong: SELF-IDENTIFICATION OF VETERAN STATUS
+    - text: (Completion is voluntary and will not subject you to adverse treatment)
+  - paragraph: OpenAI is a Government contractor subject to Section 4212 of the Vietnam Era Veterans’ Readjustment Assistance Act of 1974, as amended by the Jobs for Veterans Act of 2002, which requires Government contractors to take affirmative action to employ and advance in employment protected veterans. If you believe that you belong to any of the following categories of protected veterans, please indicate by making the appropriate selection.
+  - list:
+    - listitem:
+      - paragraph:
+        - strong: Disabled veteran
+        - text: – A veteran who served on active duty in the U.S. military and is entitled to disability compensation (or who but for the receipt of military retired pay would be entitled to disability compensation) under laws administered by the Secretary of Veterans Affairs, or was discharged or released from active duty because of a service-connected disability
+    - listitem:
+      - paragraph:
+        - strong: Recently separated veteran
+        - text: – A veteran separated during the three-year period beginning on the date of the veteran's discharge or release from active duty in the U.S military, ground, naval, or air service
+    - listitem:
+      - paragraph:
+        - strong: Active duty wartime or campaign badge veteran
+        - text: – A veteran who served on active duty in the U.S. military during a war, or in a campaign or expedition for which a campaign badge was authorized under the laws administered by the Department of Defense
+    - listitem:
+      - paragraph:
+        - strong: Armed forces service medal veteran
+        - text: – A veteran who, while serving on active duty in the U.S. military, ground, naval, or air service, participated in a United States military operation for which an Armed Forces service medal was awarded pursuant to Executive Order 12985 (61 Fed. Reg. 1209).
+  - group:
+    - text: Veteran Status
+    - [c33] radio "I identify as one or more of the classifications of protected veteran listed above"
+    - text: I identify as one or more of the classifications of protected veteran listed above
+    - [c34] radio "I am not a protected veteran"
+    - text: I am not a protected veteran
+    - [c35] radio "I decline to self-identify for protected veteran status"
+    - text: I decline to self-identify for protected veteran status
+  - [c36] button "Submit Application":
+    - text: Submit Application
+    - img
+  - paragraph:
+    - text: OpenAI may use Artificial Intelligence with this application.
+    - link "Learn more.":
+      - /url: /openai/automation-notice
+- contentinfo:
+  - link "Learn more about Ashby":
+    - /url: https://www.ashbyhq.com
+    - text: Powered by
+    - img "Ashby"
+  - paragraph:
+    - link "Privacy Policy":
+      - /url: https://www.ashbyhq.com/privacy
+    - link "Security":
+      - /url: https://www.ashbyhq.com/security
+    - link "Vulnerability Disclosure":
+      - /url: https://www.ashbyhq.com/disclosure

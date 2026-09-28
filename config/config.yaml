@@ -200,7 +200,7 @@ fill:
   # page, a cached map is applied, and only the controls no map covers go to
   # Claude (llm.map). Its map is checked against the live page and the failures
   # go back to it, at most map_rounds times per page.
-  map_rounds: 3
+  map_rounds: 6
   # At most this many Claude calls per page, corrections included. What is still
   # unmapped after that is not guessed: the page stops, the reason is reported.
   map_calls_per_page: 5

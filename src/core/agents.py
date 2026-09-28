@@ -75,6 +75,8 @@ class Agent:
         tools = [fill(t, kw) for t in self.spec.get("allowed_tools") or []]
         if tools:
             out += ["--allowedTools", ",".join(tools)]
+        if self.spec.get("tools") == "none":             # an answer-only agent: no tool is even offered
+            out += ["--tools", ""]
         return out + ["--output-format", "text"]
 
 

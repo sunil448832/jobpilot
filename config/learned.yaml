@@ -1047,12 +1047,6 @@ answers:
   - past
   answer: 'No'
   source: answered by Sunil on the Adobe form, 2026-09-25
-- match: proficiency in german
-  keywords:
-  - proficiency
-  - german
-  answer: B1 / B2
-  source: answered by Sunil on the Lio form, 2026-09-27
 - match: field of study
   keywords:
   - field
@@ -1064,3 +1058,14 @@ answers:
   - ethnicity.
   answer: Declined to State (United States of America)
   source: answered by Sunil on the Adobe form, 2026-09-27
+- match: field of study — education 2 (sikkim manipal institute of technology)
+  keywords:
+  - field
+  - study
+  - education
+  - sikkim
+  - manipal
+  - institute
+  - technology
+  answer: Electrical Engineering
+  source: answered by Sunil on the Adobe form, 2026-09-28

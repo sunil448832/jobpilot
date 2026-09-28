@@ -1,31 +1,44 @@
 #!/usr/bin/env python3
 """
-submit/replay.py — PASS 2: file an approved application by replaying its recorded
-actions (applications/<slug>/explore.json) with the true values. Code only.
+submit/replay.py — PASS 2: file an approved application. The same walk as exploration
+(see -> map -> act -> see, page by page, explore/walk.py), with the applicant's approved
+answers known, then Submit on the last page.
 
-    value of an action    fact:<key>      the fact, looked up again for this job
-                          placeholder:<q> his approved answer to q — the submit
-                                          does not open while one is unanswered
-                          shown           the value the page itself held (a resume parse)
-    a page that no longer fits (an action fails, or the page refuses Next): that
-    page only is re-mapped — the same see / map / act as exploration — and the
-    replay goes on. A question that appears only now has no approved answer: the
-    item goes back to the phone.
-    success               a positive confirmation from the portal. A refusal
-                          (OpenAI: "We couldn't submit your application…") or an
-                          error on the page is a failure, never a submission.
+    answers      each question he answered on the phone goes to the map as an answer of
+                 his ("answer to <question>: <his answer>"), the way a learned answer
+                 does — so the map picks it; nothing is decided by code
+    a draft      a portal that kept the explored draft (Workday) shows most controls
+                 filled: the map answers keep: and nothing is done to them
+    safety       Submit is pressed only when the walk reached the last page, no control
+                 was left unfilled, and no placeholder was set while filing — a question
+                 the map could not answer from his answers (new on the form, or asked
+                 another way) sends the card back to the phone, nothing sent
+    success      a positive confirmation from the portal; a refusal or an error on the
+                 page is a failure, never a submission
+    dry run      the walk to the last page, nothing pressed there, the card left as it is:
+                 a screenshot of the last page and what would have stopped the submit
+
+The filing's own record: applications/<slug>/filing.json (explore.json stays as approved).
+
+    python -m jobpilot.apply.submit.replay [QUEUE_ID] [--limit N] [--dry-run] [--model M --effort E]
+        QUEUE_ID             one queue item (default: every approved one, oldest first)
+        --limit N            file at most N now
+        --dry-run QUEUE_ID   walk that application to its last page and press nothing there;
+                             the card is left as it is (any card, approved or not)
+        --model / --effort   the map's model and effort for this run (default: config llm.map)
 """
+import argparse
 import datetime as dt
 import json
 import os
 import re
 import subprocess
 import sys
+import time
 
 from jobpilot.core.config import cfg
 from jobpilot.core.paths import TOOL, DATA
-from jobpilot.apply.explore import browser as B, record as R
-from jobpilot.apply.explore import act as A, see as S
+from jobpilot.apply.explore import browser as B, record as R, see as S, act as A
 from jobpilot.apply.explore.walk import Walk, questions_from
 
 CONFIRMED_RX = re.compile(r"thank you for (applying|your application)|application (has been )?(submitted|received)|"
@@ -40,121 +53,51 @@ def _save(it):
         json.dump(it, f, indent=2)
 
 
-def ctx_of(it):
+def ctx_of(it, model=None, effort=None):
     return {"market": it["market"], "company": it["company"], "company_slug": it["company_slug"],
-            "role": it["role"], "portal": it["portal"], "location": it.get("location", ""), "url": it["url"]}
+            "role": it["role"], "portal": it["portal"], "location": it.get("location", ""), "url": it["url"],
+            "map_model": model, "map_effort": effort}
 
 
-class Replay(Walk):
-    """A Walk that replays the record instead of mapping from scratch."""
+class Filing(Walk):
+    """The explore walk, with his approved answers known to the map."""
 
-    def __init__(self, it, answers, learned, log=print):
-        super().__init__(ctx_of(it), answers, learned, log, stage="submit")
-        self.it = it
-        old = R.load(self.slug)
-        self.record = old                        # the same record: a re-mapped page is written back into it
-        self.record.setdefault("placeholders", {})
-        self.answered = {q: p["answer"] for q, p in self.record["placeholders"].items() if p.get("answer")}
+    def __init__(self, it, answers, learned, log=print, model=None, effort=None):
+        approved = {q: p["answer"] for q, p in (R.load(it["company_slug"]).get("placeholders") or {}).items()
+                    if (p.get("answer") or "").strip()}
+        # his answers reach the map as learned answers do: "answer to <question>: <answer>"
+        learned = list(learned or []) + [{"match": q, "answer": a} for q, a in approved.items()]
+        super().__init__(ctx_of(it, model, effort), answers, learned, log)
+        self.it, self.approved = it, approved
+        self.last_buttons = {}
 
-    def value_for(self, a):
-        src = a.get("source") or ""
-        if src.startswith("placeholder:"):
-            return self.answered.get(src.split(":", 1)[1])
-        if src.startswith("fact:"):
-            return self.facts.get(src[5:])
-        return a.get("value")
+    def do_page(self, frame, step, last_act="(none)", chrome=False):
+        self.last_buttons = super().do_page(frame, step, last_act, chrome)
+        return self.last_buttons
 
-    def replay_page(self, frame, step):
-        """Every recorded action of this page, with the true values. Returns failures."""
-        page_rec = next((p for p in self.record.get("pages", []) if p["step"] == step), None)
-        if page_rec is None:
-            return [(None, f"page '{step}' was never explored")]
-        failures, done = [], []
-        for a in page_rec["actions"]:
-            v = self.value_for(a)
-            kind, path = a["kind"], tuple(a.get("path") or ())
-            if a["source"].startswith("placeholder:"):
-                if v is None:
-                    return [(None, f"'{a['source'][12:]}' has no approved answer")]
-                if kind in ("search-and-pick", "dropdown", "native-select"):
-                    hit = A.find_path(A.map_menu(frame, kind, a["name"]), v)
-                    path = tuple(hit[:-1]) if hit else ()
-            try:
-                r = A.act(frame, kind, a["name"], v, path)
-                ok = r.get("ok")
-                err = None if ok else f"the value did not take (shows {r.get('shown')!r})"
-            except Exception as ex:
-                ok, err = False, f"{type(ex).__name__}: {str(ex).splitlines()[0][:120]}"
-            self.log(f"      replay {kind:15} {a['name'][:48]!r:50} {'✓' if ok else '✗ ' + err}")
-            if ok:
-                done.append((kind, a["name"], v))
-            if not ok:
-                failures.append(({"name": a["name"], "kind": kind, "fact": (a["source"][5:] if a["source"].startswith("fact:") else None)}, err))
-        A.readback(frame, done, self.log)
-        return failures
-
-    def run(self, page):
-        """Replay to the last page. Returns (reached, problem)."""
-        if not self.start(page):
-            return False, "could not get from the posting to the form"
-        last = None
-        for n in range(1, int(cfg("browser.max_pages", 12)) + 1):
-            frame = self.frame(page)
-            step = self.step_name(page, frame, n)
-            self.log(f"\n  page {n}: {step}")
-            if self.mod and hasattr(self.mod, "is_last") and self.mod.is_last(step):
-                return True, None
-            if step == last:
-                return False, f"'{step}' came back after Next"
-            bad = self.replay_page(frame, step)
-            if bad:
-                before = set(R.unanswered(self.record))
-                self.log(f"    {len(bad)} recorded action(s) no longer fit — re-mapping this page")
-                cached = [{"name": x[0], "kind": x[1], "fact": x[2], "question": (x[3] if len(x) > 3 else None)} for x in
-                          next((p["entries"] for p in self.record["pages"] if p["step"] == step), [])]
-                self.do_page(frame, step, failures=[b for b in bad if b[0]], cached=cached)
-                new = set(R.unanswered(self.record)) - before
-                if new:
-                    return False, "NEEDS_INPUT"
-            ok, errs, is_last = self.next(page, frame, step)
-            for _ in range(2):
-                if ok or is_last or not errs:
-                    break
-                self.log(f"    the page refused: {errs[:3]} -> re-mapping")
-                before = set(R.unanswered(self.record))
-                self.do_page(frame, step, failures=[(None, f"Next refused the page: {e}") for e in errs[:6]])
-                if set(R.unanswered(self.record)) - before:
-                    return False, "NEEDS_INPUT"
-                ok, errs, is_last = self.next(page, frame, step)
-            if is_last:
-                return True, None
-            if not ok:
-                return False, f"'{step}' would not save: {errs[:3]}"
-            last = step
-        return False, "too many pages"
+    def stops(self):
+        """What must stop the Submit: controls left unfilled, placeholders set while filing."""
+        out = [f"'{step}': {c} could not be filled" for step, cs in self.unfilled.items() for c in cs]
+        out += [f"'{p.get('page')}': {q!r} has no answer of yours — filled with {p.get('value')!r} for now"
+                for q, p in (self.record.get("placeholders") or {}).items()]
+        return out
 
     def press_submit(self, page):
-        """Press Submit and read the outcome: (submitted, why)."""
+        """Press the submit button the last page's map marked, then read the outcome:
+        (submitted, why)."""
+        btn = self.last_buttons.get("submit")
+        if btn is None:
+            return False, "the map marked no submit button on the last page"
         frame = self.frame(page)
-        name = self.record.get("submit")
-        try:
-            A.locate(frame, "button", name or "")
-        except A.NotFound:
-            # not the recorded one: the page's map says which button submits
-            step = (self.record.get("pages") or [{}])[-1].get("step") or "form"
-            self.do_page(frame, step)
-            name = self.button(step, "submit")
-        if not name:
-            return False, "the map found no Submit button on the last page"
-        A.act(frame, "button", name)
-        self.log(f"    pressed {name!r}")
+        S.tap(A.locate(frame, btn))
+        self.log(f"    pressed {btn.name!r}")
         page.wait_for_timeout(2500)
-        if B.enter_verification_code(frame, self.it, name):
+        if B.enter_verification_code(frame, self.it, lambda: A.locate(self.frame(page), btn).click(timeout=A.WAIT)):
             page.wait_for_timeout(2500)
         for _ in range(int(cfg("browser.submit_poll_s", 30))):
             text = " ".join(S.body_text(f, 4000) for f in page.frames)
-            if REFUSED_RX.search(text):
-                m = REFUSED_RX.search(text)
+            m = REFUSED_RX.search(text)
+            if m:
                 return False, "the portal refused it: " + text[max(0, m.start() - 60):m.end() + 140].strip()
             if CONFIRMED_RX.search(text):
                 return True, None
@@ -163,10 +106,65 @@ class Replay(Walk):
         return False, ("the portal shows: " + "; ".join(errs[:4])) if errs else "no confirmation from the portal"
 
 
-def submit_one(it, answers, learned, log=print):
-    """File one approved item. Updates and saves the item; returns it. The card is
-    read again first — an Undo on the phone since the list was read wins — and is
-    `submitting` while it is filed, so it cannot be undone half way."""
+def _walk(it, answers, learned, log, model, effort, press):
+    """Open the posting and walk it; with `press`, Submit when nothing stops it.
+    (w, outcome) — outcome: submitted / expired / not-last-page / stopped / dry-run / failed."""
+    w = Filing(it, answers, learned, log, model, effort)
+    url = w.mod.form_url(it["url"]) if w.mod and hasattr(w.mod, "form_url") else it["url"]
+    tag = "submitted" if press else "dryrun"
+    w.outcome, w.why = "failed", None
+    with B.session() as br:
+        page = br.new_page()
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            B.wait_quiet(page.main_frame, max_s=8)
+            gone = B.dead_posting(page)
+            if gone:
+                w.outcome, w.why = "expired", f"posting is closed ({gone!r})"
+                return w
+            if not w.run(page):
+                w.outcome, w.why = "not-last-page", (w.warnings[-1] if w.warnings else "the walk stopped")
+            elif w.stops():
+                w.outcome, w.why = "stopped", "; ".join(w.stops())[:400]
+            elif not press:
+                w.outcome = "dry-run"
+            else:
+                ok, why = w.press_submit(page)
+                w.outcome, w.why = ("submitted" if ok else "failed"), why
+        except Exception as e:
+            w.outcome, w.why = "failed", f"submit error: {type(e).__name__}: {str(e)[:200]}"
+        finally:
+            shot = os.path.join(DATA, "queue", f"{it['id']}-{tag}.png")
+            try:
+                page.screenshot(path=shot, full_page=True)
+                w.shot = os.path.relpath(shot, TOOL)
+            except Exception:
+                w.shot = None
+            w.record["filed_at"] = dt.datetime.now().isoformat(timespec="seconds")
+            w.record["outcome"], w.record["why"] = w.outcome, w.why
+            with open(os.path.join(os.path.dirname(R.path_for(w.slug)), "filing.json"), "w", encoding="utf-8") as f:
+                json.dump(w.record, f, indent=1, ensure_ascii=False)
+    return w
+
+
+def dry_run(it, answers, learned, log=print, model=None, effort=None):
+    """Walk the application to its last page and press nothing there. The card is left as it
+    is. Returns the walk (outcome, why, shot)."""
+    rec = R.load(it["company_slug"])
+    log(f"  [dry run] {it['id']} — {it['company']} / {it['role']}"
+        f" ({len(R.unanswered(rec))} question(s) still without your answer)")
+    t0, plain = time.time(), log
+    w = _walk(it, answers, learned, lambda s, **kw: plain(f"[{time.time() - t0:5.0f}s]{s}", **kw), model, effort, press=False)
+    log(f"\n  [dry run] {w.outcome}" + (f": {w.why}" if w.why else "") + f" — screenshot {w.shot}")
+    for s in w.stops():
+        log(f"    would stop the submit: {s}")
+    return w
+
+
+def submit_one(it, answers, learned, log=print, model=None, effort=None):
+    """File one approved item. The card is read again first — an Undo on the phone since the
+    list was read wins — and is `submitting` while it is filed, so it cannot be undone half
+    way. Updates and saves the item; returns it."""
     path = os.path.join(B.QUEUE_DIR, it["id"] + ".json")
     try:
         cur = json.load(open(path))
@@ -179,14 +177,14 @@ def submit_one(it, answers, learned, log=print):
     it["status"] = "submitting"
     _save(it)
     try:
-        return _submit_one(it, answers, learned, log)
+        return _submit_one(it, answers, learned, log, model, effort)
     finally:
         if it.get("status") == "submitting":         # crashed before an outcome: approved again
             it["status"] = "approved"
             _save(it)
 
 
-def _submit_one(it, answers, learned, log=print):
+def _submit_one(it, answers, learned, log, model, effort):
     log(f"  [submit] {it['id']} — {it['company']} / {it['role']}")
     rec = R.load(it["company_slug"])
     if it.get("reached_end") is False or not rec.get("pages"):
@@ -195,56 +193,39 @@ def _submit_one(it, answers, learned, log=print):
         return it
     missing = R.unanswered(rec)
     if missing:
-        it["questions"] = questions_from(rec)
-        it["status"] = "needs_input"
-        it["fail_reason"] = f"{len(missing)} question(s) still without your answer — nothing opened, nothing sent"
+        it.update(questions=questions_from(rec), status="needs_input",
+                  fail_reason=f"{len(missing)} question(s) still without your answer — nothing opened, nothing sent")
         _save(it)
         B.notify_outcome(it)
         return it
-    w = Replay(it, answers, learned, log)
-    url = w.mod.form_url(it["url"]) if w.mod and hasattr(w.mod, "form_url") else it["url"]
-    ok, why = False, None
-    with B.session() as br:
-        try:
-            page = br.new_page()
-            page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            page.wait_for_timeout(3000)
-            gone = B.dead_posting(page)
-            if gone:
-                it.update(status="expired", fail_reason=f"posting is closed ({gone!r})")
-                _save(it)
-                B.notify_outcome(it)
-                return it
-            reached, why = w.run(page)
-            if reached:
-                ok, why = w.press_submit(page)
-            shot = os.path.join(DATA, "queue", f"{it['id']}-submitted.png")
-            try:
-                page.screenshot(path=shot, full_page=True)
-                it["submit_screenshot"] = os.path.relpath(shot, TOOL)
-            except Exception:
-                pass
-        except Exception as e:
-            why = f"submit error: {type(e).__name__}: {str(e)[:200]}"
-    R.save(w.slug, w.record)                      # re-mapped pages and new placeholders, if any
+    w = _walk(it, answers, learned, log, model, effort, press=True)
     now = dt.datetime.now().isoformat(timespec="seconds")
-    if ok:
+    if w.shot:
+        it["submit_screenshot"] = w.shot
+    if w.outcome == "submitted":
         it.update(status="submitted", submitted_at=now, fail_reason=None)
-    elif why == "NEEDS_INPUT":
-        it.update(status="needs_input", questions=questions_from(w.record),
-                  fail_reason="the form asked something new at submit — answer it, then Approve")
+    elif w.outcome == "expired":
+        it.update(status="expired", fail_reason=w.why)
+    elif w.outcome == "stopped":
+        # asked something his answers do not cover: back to the phone, nothing sent
+        new = {q: p for q, p in w.record["placeholders"].items()}
+        doc = R.load(w.slug)
+        doc.setdefault("placeholders", {}).update({q: p for q, p in new.items() if q not in doc["placeholders"]})
+        R.save(w.slug, doc)
+        it.update(status="needs_input", questions=questions_from(doc),
+                  fail_reason="the form asked something your answers do not cover — answer it, then Approve. " + (w.why or ""))
     else:
         it["attempts"] = (it.get("attempts") or 0) + 1
         it["last_attempt_at"] = now
         code_wait = any("verification code not received" in x for x in it.get("warnings", []))
         it["status"] = "approved" if code_wait and it["attempts"] < cfg("pipeline.submit_attempts", 3) else "failed"
-        it["fail_reason"] = (why or "unknown")[:300]
+        it["fail_reason"] = (w.why or "unknown")[:300]
     it.setdefault("warnings", []).extend(w.warnings)
     _save(it)
-    R.note_attempt(w.slug, it["status"], why=why)
-    log(f"    -> {it['status']}" + (f": {why}" if why and not ok else ""))
+    R.note_attempt(w.slug, it["status"], why=w.why)
+    log(f"    -> {it['status']}" + (f": {w.why}" if w.why and w.outcome != "submitted" else ""))
     B.notify_outcome(it)
-    if ok:
+    if w.outcome == "submitted":
         # an application in an ATS queue is the weakest form of applying: line up referrals now
         try:
             subprocess.run([sys.executable, "-m", "jobpilot.outreach.referral_tracker", "--for", it["company_slug"]],
@@ -254,7 +235,11 @@ def _submit_one(it, answers, learned, log=print):
     return it
 
 
-def submit_approved(answers, learned, one=None, limit=None, log=print):
+def load_item(item_id):
+    return json.load(open(os.path.join(B.QUEUE_DIR, item_id + ".json")))
+
+
+def submit_approved(answers, learned, one=None, limit=None, log=print, model=None, effort=None):
     """Every approved item (or just `one`), oldest first; `limit` caps how many now."""
     items = []
     for fn in sorted(os.listdir(B.QUEUE_DIR)) if os.path.isdir(B.QUEUE_DIR) else []:
@@ -271,4 +256,27 @@ def submit_approved(answers, learned, one=None, limit=None, log=print):
         log(f"  {len(items)} approved; filing {limit} now, {len(items) - limit} stay approved")
         items = items[:limit]
     for it in items:
-        submit_one(it, answers, learned, log)
+        submit_one(it, answers, learned, log, model, effort)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("id", nargs="?", help="one queue item (default: every approved one)")
+    ap.add_argument("--limit", type=int, metavar="N", help="file at most N now (oldest approved first)")
+    ap.add_argument("--dry-run", action="store_true", help="walk to the last page, press nothing, change nothing")
+    ap.add_argument("--model", help="the map's model for this run")
+    ap.add_argument("--effort", help="the map's effort for this run")
+    a = ap.parse_args()
+    from jobpilot.core.answers import load, load_learned, preflight
+    answers = load("answers.yaml")
+    preflight(answers)
+    if a.dry_run:
+        if not a.id:
+            sys.exit("--dry-run needs a queue id")
+        dry_run(load_item(a.id), answers, load_learned(), model=a.model, effort=a.effort)
+        return
+    submit_approved(answers, load_learned(), one=a.id, limit=a.limit, model=a.model, effort=a.effort)
+
+
+if __name__ == "__main__":
+    main()

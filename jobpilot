@@ -169,8 +169,8 @@ case "$cmd" in
               echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok" ;;
   queue)      py review.bot --status ;;
   submit)     # ./jobpilot submit [N]  — file the approved items (oldest first); N caps how many today
-              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.submit --limit "$1"
-              else py apply.submit; fi ;;
+              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.submit.replay --limit "$1"
+              else py apply.submit.replay; fi ;;
   log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
   intake)     py discover.intake "$@" ;;

@@ -329,13 +329,33 @@ page is seen again before anything is typed. What the page says goes back to the
   jumps back into the box before it); every typed value is read back once the page is
   filled, and set again if a later action undid it.
 
-A page that will not save goes back to the map with the portal's own error text. At most
+**See again** — once the page is acted on, its snapshot is read back and every acted
+control is compared with what the page now shows (a typed value, a pill, a list button's
+choice, a checked radio; `see.looks_empty`). A control that still shows nothing — a pick
+that did not take, a list at *Select One*, a date part the widget dropped — is set once
+more by code, then goes back to the map like any failed action, its recorded action void.
+A pick is judged by what the field holds (its pills, its shown choice), never by the text
+typed into it, and a category is never a pick. Only then is Next pressed.
+
+**Repeated sections** — a section's *Add Another* is a control of kind `add`: when the
+facts hold more jobs or degrees than the page shows blocks, the map answers `add:<n>`,
+the blocks are added and the page is seen again before anything else, so the new blocks
+are mapped. Nothing about that is saved for reuse (it depends on the day's page).
+
+A page that will not save goes back to the map with the portal's own error text — the
+fields it names in words (*The field X is required and must have a value*, read off the
+snapshot as well as the DOM) and each invalid control named by its question, not by what
+it shows. Every complaint is tied to the entry it names, whose recorded action is void, so
+that control is answered and acted on again rather than skipped as done. At most
 `fill.map_calls_per_page` Claude calls per page (+1 for each refusal); what is still
 unfilled fails the queue item with the questions named — it is never shown as ready.
 
 **Reuse (`reuse.py`)** — a page the portal accepted saves its map under
 `data/maps/<platform>/<company>/<page>.json`; the next role at that company (or tenant)
-needs no Claude call for it. On one-page platforms (Greenhouse, Ashby, Lever) the standard
+needs no Claude call for it. Only resolved entries are kept — a fact key, a choice the map
+matched, or the question; a guess is asked again next time, never remembered as the answer,
+and an entry with no answer at all is rejected by the check (so a box the page pre-filled
+still carries its fact). On one-page platforms (Greenhouse, Ashby, Lever) the standard
 fields carry over between companies too.
 
 **Record (`record.py`)** — `applications/<slug>/explore.json`: every page and every
@@ -346,7 +366,9 @@ its mapping can be replayed offline: `python tests/replay_page.py <slug> <page> 
 **Platforms (`apply/platforms/`)** — only what cannot be read off the page: Workday's
 account gate (credentials from `~/.config/jobbot/env`, never shown to Claude), its step
 name and last page; each platform's JD API and apply URL. No button names, no field
-lists — Claude reads those off each page.
+lists — Claude reads those off each page. The gate sends its forms the way a person does
+(the form's own submit, else Enter in the password box): a tenant may hide that button from
+assistive technology while the page header shows a *Sign In* of the same name.
 
 ### Approve
 

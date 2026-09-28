@@ -134,11 +134,12 @@ def resume_path(answers, company_slug):
     return fallback if os.path.isfile(fallback) else None
 
 
-def wait_quiet(frame, max_s=12, quiet=2):
-    """Until the page has stopped changing for `quiet` seconds (a resume parse, a re-render)."""
+def wait_quiet(frame, max_s=12, quiet=3):
+    """Until the page has stopped changing for `quiet` quarter-second polls (a resume parse,
+    a re-render): `max_s` seconds at most."""
     sig, still = None, 0
-    for _ in range(max_s):
-        frame.wait_for_timeout(1000)
+    for _ in range(int(max_s * 4)):
+        frame.wait_for_timeout(250)
         try:
             cur = frame.evaluate("() => document.querySelectorAll('input,textarea,select,button').length"
                                  " + '/' + document.body.innerText.length")
@@ -180,9 +181,9 @@ CODE_INPUTS = ('input[autocomplete="one-time-code"], input[maxlength="1"], '
                'input[name*="code" i], input[id*="code" i], input[aria-label*="code" i]')
 
 
-def enter_verification_code(frame, it, submit_name):
+def enter_verification_code(frame, it, press_submit):
     """If the portal is waiting on an emailed code: ask him on Telegram, type it,
-    press the same Submit again. True when a code was entered."""
+    press the same Submit again (`press_submit()`). True when a code was entered."""
     body = (frame.inner_text("body") or "").lower()
     if not re.search(r"verification code|security code|code (was|has been) sent|enter the .{0,12}code", body):
         return False
@@ -203,9 +204,8 @@ def enter_verification_code(frame, it, submit_name):
         it.setdefault("warnings", []).append("verification code asked for but no input found")
         return False
     wait_quiet(frame, max_s=8)
-    from jobpilot.apply.explore import act as A
     try:
-        A.act(frame, "button", submit_name)
+        press_submit()
     except Exception as e:
         it.setdefault("warnings", []).append(f"code entered, Submit not pressed again: {e}")
     it.setdefault("warnings", []).append("verification code entered")

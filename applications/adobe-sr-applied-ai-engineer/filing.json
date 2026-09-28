@@ -1,0 +1,3642 @@
+{
+ "url": "https://adobe.wd5.myworkdayjobs.com/external_experienced/job/San-Francisco/Sr-Applied-AI-Engineer_R171752",
+ "platform": "workday",
+ "company": "adobe",
+ "explored_at": "2026-09-28T07:14:15",
+ "reached_end": false,
+ "pages": [
+  {
+   "step": "page before the form",
+   "rounds": [
+    {
+     "rows": [
+      [
+       "c4",
+       "select",
+       "start"
+      ]
+     ],
+     "problems": []
+    }
+   ],
+   "acted": {},
+   "tried": []
+  },
+  {
+   "step": "apply dialog",
+   "rounds": [
+    {
+     "rows": [
+      [
+       "c3",
+       "select",
+       "start"
+      ]
+     ],
+     "problems": []
+    }
+   ],
+   "acted": {},
+   "tried": []
+  },
+  {
+   "step": "my information",
+   "rounds": [
+    {
+     "round": 1,
+     "rows": [
+      [
+       "c1",
+       "select",
+       "option:Social Media › LinkedIn"
+      ],
+      [
+       "c3",
+       "select",
+       "screening.previously_employed_here"
+      ],
+      [
+       "c4",
+       "select",
+       "keep:option:India"
+      ],
+      [
+       "c5",
+       "write",
+       "personal.first_name"
+      ],
+      [
+       "c6",
+       "write",
+       "personal.last_name"
+      ],
+      [
+       "c9",
+       "write",
+       "location.address_line_1"
+      ],
+      [
+       "c10",
+       "write",
+       "location.city"
+      ],
+      [
+       "c11",
+       "write",
+       "location.postal_code"
+      ],
+      [
+       "c12",
+       "select",
+       "option:Delhi"
+      ],
+      [
+       "c13",
+       "write",
+       "personal.email"
+      ],
+      [
+       "c14",
+       "select",
+       "keep:option:Mobile"
+      ],
+      [
+       "c15",
+       "select",
+       "keep:personal.phone_country_code"
+      ],
+      [
+       "c16",
+       "write",
+       "personal.phone_national"
+      ],
+      [
+       "c18",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c1",
+       "control": "textbox 'How Did You Hear About Us?'",
+       "kind": "select",
+       "answer": "option:Social Media › LinkedIn",
+       "how": "chain",
+       "ok": true,
+       "shown": "LinkedIn",
+       "source": "choice"
+      },
+      {
+       "id": "c3",
+       "control": "radio 'No'",
+       "kind": "select",
+       "answer": "screening.previously_employed_here",
+       "how": "fact",
+       "ok": true,
+       "shown": "checked",
+       "source": "fact:screening.previously_employed_here"
+      },
+      {
+       "id": "c4",
+       "control": "button 'Country India Required'",
+       "kind": "select",
+       "answer": "keep:option:India",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "choice"
+      },
+      {
+       "id": "c12",
+       "control": "button 'State Select One Required'",
+       "kind": "select",
+       "answer": "option:Delhi",
+       "how": "chain",
+       "ok": true,
+       "shown": "Delhi",
+       "source": "choice"
+      },
+      {
+       "id": "c14",
+       "control": "button 'Phone Device Type Mobile Required'",
+       "kind": "select",
+       "answer": "keep:option:Mobile",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Mobile",
+       "source": "choice"
+      },
+      {
+       "id": "c15",
+       "control": "textbox 'Country Phone Code'",
+       "kind": "select",
+       "answer": "keep:personal.phone_country_code",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India (+91)",
+       "source": "fact:personal.phone_country_code"
+      },
+      {
+       "id": "c5",
+       "control": "textbox 'Given Name(s)'",
+       "kind": "write",
+       "answer": "personal.first_name",
+       "how": "fact",
+       "ok": true,
+       "shown": "Sunil",
+       "source": "fact:personal.first_name"
+      },
+      {
+       "id": "c6",
+       "control": "textbox 'Family Name'",
+       "kind": "write",
+       "answer": "personal.last_name",
+       "how": "fact",
+       "ok": true,
+       "shown": "Sharma",
+       "source": "fact:personal.last_name"
+      },
+      {
+       "id": "c9",
+       "control": "textbox 'Address Line 1'",
+       "kind": "write",
+       "answer": "location.address_line_1",
+       "how": "fact",
+       "ok": true,
+       "shown": "Delhi",
+       "source": "fact:location.address_line_1"
+      },
+      {
+       "id": "c10",
+       "control": "textbox 'City'",
+       "kind": "write",
+       "answer": "location.city",
+       "how": "fact",
+       "ok": true,
+       "shown": "Delhi",
+       "source": "fact:location.city"
+      },
+      {
+       "id": "c11",
+       "control": "textbox 'Postal Code'",
+       "kind": "write",
+       "answer": "location.postal_code",
+       "how": "fact",
+       "ok": true,
+       "shown": "110019",
+       "source": "fact:location.postal_code"
+      },
+      {
+       "id": "c13",
+       "control": "textbox 'Email'",
+       "kind": "write",
+       "answer": "personal.email",
+       "how": "fact",
+       "ok": true,
+       "shown": "sunil4832sharma@gmail.com",
+       "source": "fact:personal.email"
+      },
+      {
+       "id": "c16",
+       "control": "textbox 'Phone Number'",
+       "kind": "write",
+       "answer": "personal.phone_national",
+       "how": "fact",
+       "ok": true,
+       "shown": "9641298471",
+       "source": "fact:personal.phone_national"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "rows": [
+      [
+       "c1",
+       "select",
+       "keep:option:Social Media › LinkedIn"
+      ],
+      [
+       "c2",
+       "write",
+       "What's their name or email address? — How Did You Hear About Us?"
+      ],
+      [
+       "c4",
+       "select",
+       "keep:screening.previously_employed_here"
+      ],
+      [
+       "c5",
+       "select",
+       "keep:option:India"
+      ],
+      [
+       "c6",
+       "write",
+       "keep:personal.first_name"
+      ],
+      [
+       "c7",
+       "write",
+       "keep:personal.last_name"
+      ],
+      [
+       "c10",
+       "write",
+       "keep:location.address_line_1"
+      ],
+      [
+       "c11",
+       "write",
+       "keep:location.city"
+      ],
+      [
+       "c12",
+       "write",
+       "keep:location.postal_code"
+      ],
+      [
+       "c13",
+       "select",
+       "keep:option:Delhi"
+      ],
+      [
+       "c14",
+       "write",
+       "keep:personal.email"
+      ],
+      [
+       "c15",
+       "select",
+       "keep:option:Mobile"
+      ],
+      [
+       "c16",
+       "select",
+       "keep:option:India (+91)"
+      ],
+      [
+       "c17",
+       "write",
+       "keep:personal.phone_national"
+      ],
+      [
+       "c19",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c1",
+       "control": "textbox 'How Did You Hear About Us?'",
+       "kind": "select",
+       "answer": "keep:option:Social Media › LinkedIn",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "LinkedIn",
+       "source": "choice"
+      },
+      {
+       "id": "c4",
+       "control": "radio 'No'",
+       "kind": "select",
+       "answer": "keep:screening.previously_employed_here",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "false",
+       "source": "fact:screening.previously_employed_here"
+      },
+      {
+       "id": "c5",
+       "control": "button 'Country India Required'",
+       "kind": "select",
+       "answer": "keep:option:India",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "choice"
+      },
+      {
+       "id": "c13",
+       "control": "button 'State Delhi Required'",
+       "kind": "select",
+       "answer": "keep:option:Delhi",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Delhi",
+       "source": "choice"
+      },
+      {
+       "id": "c15",
+       "control": "button 'Phone Device Type Mobile Required'",
+       "kind": "select",
+       "answer": "keep:option:Mobile",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Mobile",
+       "source": "choice"
+      },
+      {
+       "id": "c16",
+       "control": "textbox 'Country Phone Code'",
+       "kind": "select",
+       "answer": "keep:option:India (+91)",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India (+91)",
+       "source": "choice"
+      },
+      {
+       "id": "c2",
+       "control": "textbox \"What's their name or email address?\"",
+       "kind": "write",
+       "answer": "What's their name or email address? — How Did You Hear About Us?",
+       "how": "question",
+       "ok": true,
+       "shown": "To be confirmed",
+       "source": "placeholder:What's their name or email address? — How Did You Hear About Us?",
+       "placeholder": {
+        "question": "What's their name or email address? — How Did You Hear About Us?",
+        "candidates": [],
+        "used": "To be confirmed"
+       }
+      },
+      {
+       "id": "c6",
+       "control": "textbox 'Given Name(s)'",
+       "kind": "write",
+       "answer": "keep:personal.first_name",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Sunil",
+       "source": "fact:personal.first_name"
+      },
+      {
+       "id": "c7",
+       "control": "textbox 'Family Name'",
+       "kind": "write",
+       "answer": "keep:personal.last_name",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Sharma",
+       "source": "fact:personal.last_name"
+      },
+      {
+       "id": "c10",
+       "control": "textbox 'Address Line 1'",
+       "kind": "write",
+       "answer": "keep:location.address_line_1",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Delhi",
+       "source": "fact:location.address_line_1"
+      },
+      {
+       "id": "c11",
+       "control": "textbox 'City'",
+       "kind": "write",
+       "answer": "keep:location.city",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Delhi",
+       "source": "fact:location.city"
+      },
+      {
+       "id": "c12",
+       "control": "textbox 'Postal Code'",
+       "kind": "write",
+       "answer": "keep:location.postal_code",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "110019",
+       "source": "fact:location.postal_code"
+      },
+      {
+       "id": "c14",
+       "control": "textbox 'Email'",
+       "kind": "write",
+       "answer": "keep:personal.email",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "sunil4832sharma@gmail.com",
+       "source": "fact:personal.email"
+      },
+      {
+       "id": "c17",
+       "control": "textbox 'Phone Number'",
+       "kind": "write",
+       "answer": "keep:personal.phone_national",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "9641298471",
+       "source": "fact:personal.phone_national"
+      }
+     ]
+    }
+   ],
+   "acted": {
+    "textbox 'How Did You Hear About Us?'": {
+     "id": "c1",
+     "control": "textbox 'How Did You Hear About Us?'",
+     "kind": "select",
+     "answer": "keep:option:Social Media › LinkedIn",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "LinkedIn",
+     "source": "choice"
+    },
+    "radio 'No'": {
+     "id": "c4",
+     "control": "radio 'No'",
+     "kind": "select",
+     "answer": "keep:screening.previously_employed_here",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "false",
+     "source": "fact:screening.previously_employed_here"
+    },
+    "button 'Country India Required'": {
+     "id": "c5",
+     "control": "button 'Country India Required'",
+     "kind": "select",
+     "answer": "keep:option:India",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "India",
+     "source": "choice"
+    },
+    "button 'State Select One Required'": {
+     "id": "c12",
+     "control": "button 'State Select One Required'",
+     "kind": "select",
+     "answer": "option:Delhi",
+     "how": "chain",
+     "ok": true,
+     "shown": "Delhi",
+     "source": "choice"
+    },
+    "button 'Phone Device Type Mobile Required'": {
+     "id": "c15",
+     "control": "button 'Phone Device Type Mobile Required'",
+     "kind": "select",
+     "answer": "keep:option:Mobile",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Mobile",
+     "source": "choice"
+    },
+    "textbox 'Country Phone Code'": {
+     "id": "c16",
+     "control": "textbox 'Country Phone Code'",
+     "kind": "select",
+     "answer": "keep:option:India (+91)",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "India (+91)",
+     "source": "choice"
+    },
+    "textbox 'Given Name(s)'": {
+     "id": "c6",
+     "control": "textbox 'Given Name(s)'",
+     "kind": "write",
+     "answer": "keep:personal.first_name",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Sunil",
+     "source": "fact:personal.first_name"
+    },
+    "textbox 'Family Name'": {
+     "id": "c7",
+     "control": "textbox 'Family Name'",
+     "kind": "write",
+     "answer": "keep:personal.last_name",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Sharma",
+     "source": "fact:personal.last_name"
+    },
+    "textbox 'Address Line 1'": {
+     "id": "c10",
+     "control": "textbox 'Address Line 1'",
+     "kind": "write",
+     "answer": "keep:location.address_line_1",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Delhi",
+     "source": "fact:location.address_line_1"
+    },
+    "textbox 'City'": {
+     "id": "c11",
+     "control": "textbox 'City'",
+     "kind": "write",
+     "answer": "keep:location.city",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Delhi",
+     "source": "fact:location.city"
+    },
+    "textbox 'Postal Code'": {
+     "id": "c12",
+     "control": "textbox 'Postal Code'",
+     "kind": "write",
+     "answer": "keep:location.postal_code",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "110019",
+     "source": "fact:location.postal_code"
+    },
+    "textbox 'Email'": {
+     "id": "c14",
+     "control": "textbox 'Email'",
+     "kind": "write",
+     "answer": "keep:personal.email",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "sunil4832sharma@gmail.com",
+     "source": "fact:personal.email"
+    },
+    "textbox 'Phone Number'": {
+     "id": "c17",
+     "control": "textbox 'Phone Number'",
+     "kind": "write",
+     "answer": "keep:personal.phone_national",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "9641298471",
+     "source": "fact:personal.phone_national"
+    },
+    "button 'State Delhi Required'": {
+     "id": "c13",
+     "control": "button 'State Delhi Required'",
+     "kind": "select",
+     "answer": "keep:option:Delhi",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Delhi",
+     "source": "choice"
+    },
+    "textbox \"What's their name or email address?\"": {
+     "id": "c2",
+     "control": "textbox \"What's their name or email address?\"",
+     "kind": "write",
+     "answer": "What's their name or email address? — How Did You Hear About Us?",
+     "how": "question",
+     "ok": true,
+     "shown": "To be confirmed",
+     "source": "placeholder:What's their name or email address? — How Did You Hear About Us?",
+     "placeholder": {
+      "question": "What's their name or email address? — How Did You Hear About Us?",
+      "candidates": [],
+      "used": "To be confirmed"
+     }
+    }
+   },
+   "tried": []
+  },
+  {
+   "step": "my experience",
+   "rounds": [
+    {
+     "round": 1,
+     "rows": [
+      [
+       "c1",
+       "write",
+       "employment[0].title"
+      ],
+      [
+       "c2",
+       "write",
+       "employment[0].employer"
+      ],
+      [
+       "c3",
+       "write",
+       "employment[0].location"
+      ],
+      [
+       "c4",
+       "select",
+       "employment[0].current"
+      ],
+      [
+       "c5",
+       "write",
+       "employment[0].start_date.month"
+      ],
+      [
+       "c6",
+       "write",
+       "employment[0].start_date.year"
+      ],
+      [
+       "c11",
+       "write",
+       "employment[0].summary"
+      ],
+      [
+       "c12",
+       "select",
+       "add:2"
+      ],
+      [
+       "c13",
+       "write",
+       "education[0].institution"
+      ],
+      [
+       "c14",
+       "select",
+       "option:Masters"
+      ],
+      [
+       "c15",
+       "select",
+       "search:\\bArtificial Intelligence\\b; ^Artificial; ^A"
+      ],
+      [
+       "c18",
+       "write",
+       "education[0].start_date.year"
+      ],
+      [
+       "c19",
+       "write",
+       "education[0].end_date.year"
+      ],
+      [
+       "c20",
+       "select",
+       "add:1"
+      ],
+      [
+       "c21",
+       "select",
+       "add:1"
+      ],
+      [
+       "c23",
+       "select",
+       "file:resume"
+      ],
+      [
+       "c24",
+       "write",
+       "links.linkedin"
+      ],
+      [
+       "c26",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c12",
+       "control": "button 'Add Another #1'",
+       "kind": "select",
+       "answer": "add:2",
+       "how": "add",
+       "ok": true,
+       "shown": "added 2 block(s)",
+       "source": "add"
+      },
+      {
+       "id": "c20",
+       "control": "button 'Add Another #2'",
+       "kind": "select",
+       "answer": "add:1",
+       "how": "add",
+       "ok": true,
+       "shown": "added 1 block(s)",
+       "source": "add"
+      },
+      {
+       "id": "c21",
+       "control": "button 'Add'",
+       "kind": "select",
+       "answer": "add:1",
+       "how": "add",
+       "ok": true,
+       "shown": "added 1 block(s)",
+       "source": "add"
+      },
+      {
+       "id": "c4",
+       "control": "checkbox 'I currently work here'",
+       "kind": "select",
+       "answer": "employment[0].current",
+       "how": "fact",
+       "ok": true,
+       "shown": "checked",
+       "source": "fact:employment[0].current"
+      },
+      {
+       "id": "c14",
+       "control": "button 'Degree Select One Required'",
+       "kind": "select",
+       "answer": "option:Masters",
+       "how": "chain",
+       "ok": true,
+       "shown": "Masters",
+       "source": "choice"
+      },
+      {
+       "id": "c15",
+       "control": "textbox 'Field of Study'",
+       "kind": "select",
+       "answer": "search:\\bArtificial Intelligence\\b; ^Artificial; ^A",
+       "how": "search",
+       "ok": false,
+       "error": "searched: what the list holds for each term goes back to the map",
+       "offered": {
+        "\\bArtificial Intelligence\\b": [
+         "Artificial Intelligence and Robotics"
+        ],
+        "^Artificial": [
+         "Artificial Intelligence and Robotics"
+        ],
+        "^A": [
+         "Accounting",
+         "Actuarial Science",
+         "Advertising",
+         "Aerospace Engineering",
+         "African-American Studies",
+         "African Languages, Literatures, and Linguistics",
+         "African Studies",
+         "Agricultural/Biological Engineering and Bioengineering",
+         "Agricultural Business and Management",
+         "Agricultural Economics",
+         "Agricultural Education",
+         "Agricultural Journalism",
+         "Agricultural Mechanization",
+         "Agricultural Technology Management",
+         "Agriculture",
+         "Agronomy and Crop Science",
+         "Air Traffic Control",
+         "American History",
+         "American Literature",
+         "American Sign Language",
+         "American Studies",
+         "Anatomy",
+         "Ancient Studies",
+         "Animal Behavior and Ethology",
+         "Animal Science"
+        ]
+       }
+      },
+      {
+       "id": "c23",
+       "control": "button 'Select files'",
+       "kind": "select",
+       "answer": "file:resume",
+       "how": "file",
+       "ok": true,
+       "shown": "sunil_resume.docx",
+       "source": "fact:file:resume"
+      },
+      {
+       "id": "c1",
+       "control": "textbox 'Job Title'",
+       "kind": "write",
+       "answer": "employment[0].title",
+       "how": "fact",
+       "ok": true,
+       "shown": "Senior Data Scientist",
+       "source": "fact:employment[0].title"
+      },
+      {
+       "id": "c2",
+       "control": "textbox 'Company'",
+       "kind": "write",
+       "answer": "employment[0].employer",
+       "how": "fact",
+       "ok": true,
+       "shown": "Aria Intelligent Solutions",
+       "source": "fact:employment[0].employer"
+      },
+      {
+       "id": "c3",
+       "control": "textbox 'Location'",
+       "kind": "write",
+       "answer": "employment[0].location",
+       "how": "fact",
+       "ok": true,
+       "shown": "India",
+       "source": "fact:employment[0].location"
+      },
+      {
+       "id": "c5",
+       "control": "spinbutton 'Month #1'",
+       "kind": "write",
+       "answer": "employment[0].start_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "12",
+       "source": "fact:employment[0].start_date.month"
+      },
+      {
+       "id": "c6",
+       "control": "spinbutton 'Year #1'",
+       "kind": "write",
+       "answer": "employment[0].start_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2023",
+       "source": "fact:employment[0].start_date.year"
+      },
+      {
+       "id": "c11",
+       "control": "textbox 'Role Description'",
+       "kind": "write",
+       "answer": "employment[0].summary",
+       "how": "fact",
+       "ok": true,
+       "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions). Built IngestIQ, autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running end-to-end ETL from a natural-language task. Built an automated evaluation framework benchmarking the agent fleet at 86% exact-pass and 0.86 mean F1.",
+       "source": "fact:employment[0].summary"
+      },
+      {
+       "id": "c13",
+       "control": "textbox 'School or University'",
+       "kind": "write",
+       "answer": "education[0].institution",
+       "how": "fact",
+       "ok": true,
+       "shown": "Indian Institute of Technology, Jodhpur",
+       "source": "fact:education[0].institution"
+      },
+      {
+       "id": "c18",
+       "control": "spinbutton 'Year #3'",
+       "kind": "write",
+       "answer": "education[0].start_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2019",
+       "source": "fact:education[0].start_date.year"
+      },
+      {
+       "id": "c19",
+       "control": "spinbutton 'Year #4'",
+       "kind": "write",
+       "answer": "education[0].end_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2021",
+       "source": "fact:education[0].end_date.year"
+      },
+      {
+       "id": "c24",
+       "control": "textbox 'Share your LinkedIn Profile site'",
+       "kind": "write",
+       "answer": "links.linkedin",
+       "how": "fact",
+       "ok": true,
+       "shown": "https://www.linkedin.com/in/sunil4832sharma",
+       "source": "fact:links.linkedin"
+      }
+     ]
+    },
+    {
+     "round": 2,
+     "rows": [
+      [
+       "c1",
+       "write",
+       "keep:employment[0].title"
+      ],
+      [
+       "c2",
+       "write",
+       "keep:employment[0].employer"
+      ],
+      [
+       "c3",
+       "write",
+       "keep:employment[0].location"
+      ],
+      [
+       "c4",
+       "select",
+       "keep:employment[0].current"
+      ],
+      [
+       "c5",
+       "write",
+       "employment[0].start_date.month"
+      ],
+      [
+       "c6",
+       "write",
+       "keep:employment[0].start_date.year"
+      ],
+      [
+       "c8",
+       "write",
+       "keep:employment[0].summary"
+      ],
+      [
+       "c10",
+       "write",
+       "employment[1].title"
+      ],
+      [
+       "c11",
+       "write",
+       "employment[1].employer"
+      ],
+      [
+       "c12",
+       "write",
+       "employment[1].location"
+      ],
+      [
+       "c14",
+       "write",
+       "employment[1].start_date.month"
+      ],
+      [
+       "c15",
+       "write",
+       "employment[1].start_date.year"
+      ],
+      [
+       "c17",
+       "write",
+       "employment[1].end_date.month"
+      ],
+      [
+       "c18",
+       "write",
+       "employment[1].end_date.year"
+      ],
+      [
+       "c20",
+       "write",
+       "employment[1].summary"
+      ],
+      [
+       "c22",
+       "write",
+       "employment[2].title"
+      ],
+      [
+       "c23",
+       "write",
+       "employment[2].employer"
+      ],
+      [
+       "c24",
+       "write",
+       "employment[2].location"
+      ],
+      [
+       "c26",
+       "write",
+       "employment[2].start_date.month"
+      ],
+      [
+       "c27",
+       "write",
+       "employment[2].start_date.year"
+      ],
+      [
+       "c29",
+       "write",
+       "employment[2].end_date.month"
+      ],
+      [
+       "c30",
+       "write",
+       "employment[2].end_date.year"
+      ],
+      [
+       "c32",
+       "write",
+       "employment[2].summary"
+      ],
+      [
+       "c34",
+       "write",
+       "keep:education[0].institution"
+      ],
+      [
+       "c35",
+       "select",
+       "keep:option:Masters"
+      ],
+      [
+       "c36",
+       "select",
+       "option:Artificial Intelligence and Robotics"
+      ],
+      [
+       "c39",
+       "write",
+       "keep:education[0].start_date.year"
+      ],
+      [
+       "c40",
+       "write",
+       "keep:education[0].end_date.year"
+      ],
+      [
+       "c42",
+       "write",
+       "education[1].institution"
+      ],
+      [
+       "c43",
+       "select",
+       "option:Bachelors"
+      ],
+      [
+       "c44",
+       "select",
+       "search:\\bElectronics and Communication\\b; ^Electronics; ^E"
+      ],
+      [
+       "c47",
+       "write",
+       "education[1].start_date.year"
+      ],
+      [
+       "c48",
+       "write",
+       "education[1].end_date.year"
+      ],
+      [
+       "c51",
+       "select",
+       "search:Large Language Models; ^DeepLearning; ^D"
+      ],
+      [
+       "c64",
+       "select",
+       "keep:file:resume"
+      ],
+      [
+       "c66",
+       "write",
+       "keep:links.linkedin"
+      ],
+      [
+       "c68",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c4",
+       "control": "checkbox 'I currently work here #1'",
+       "kind": "select",
+       "answer": "keep:employment[0].current",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "on",
+       "source": "fact:employment[0].current"
+      },
+      {
+       "id": "c35",
+       "control": "button 'Degree Masters Required'",
+       "kind": "select",
+       "answer": "keep:option:Masters",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Masters",
+       "source": "choice"
+      },
+      {
+       "id": "c36",
+       "control": "textbox 'Field of Study #1'",
+       "kind": "select",
+       "answer": "option:Artificial Intelligence and Robotics",
+       "how": "chain",
+       "ok": true,
+       "shown": "Artificial Intelligence and Robotics",
+       "source": "choice"
+      },
+      {
+       "id": "c43",
+       "control": "button 'Degree Select One Required'",
+       "kind": "select",
+       "answer": "option:Bachelors",
+       "how": "chain",
+       "ok": true,
+       "shown": "Bachelors",
+       "source": "choice"
+      },
+      {
+       "id": "c44",
+       "control": "textbox 'Field of Study #2'",
+       "kind": "select",
+       "answer": "search:\\bElectronics and Communication\\b; ^Electronics; ^E",
+       "how": "search",
+       "ok": false,
+       "error": "searched: what the list holds for each term goes back to the map",
+       "offered": {
+        "\\bElectronics and Communication\\b": [],
+        "^Electronics": [],
+        "^E": [
+         "Early Childhood Education",
+         "East Asian Studies",
+         "East European Studies",
+         "Ecology",
+         "Economics",
+         "Education",
+         "Education Administration",
+         "Educational Psychology",
+         "Education of the Deaf",
+         "Electrical Engineering",
+         "Elementary Education",
+         "Engineering Mechanics",
+         "Engineering Physics",
+         "English",
+         "English Composition",
+         "English Literature",
+         "Entomology",
+         "Entrepreneurship",
+         "Environmental/Environmental Health Engineering",
+         "Environmental Design/Architecture",
+         "Environmental Science",
+         "Epidemiology",
+         "Equine Studies",
+         "Ethnic Studies",
+         "European History"
+        ]
+       }
+      },
+      {
+       "id": "c51",
+       "control": "textbox 'Certification'",
+       "kind": "select",
+       "answer": "search:Large Language Models; ^DeepLearning; ^D",
+       "how": "search",
+       "ok": false,
+       "error": "searched: what the list holds for each term goes back to the map",
+       "offered": {
+        "Large Language Models": [],
+        "^DeepLearning": [],
+        "^D": [
+         "DPM"
+        ]
+       }
+      },
+      {
+       "id": "c64",
+       "control": "button 'Select files #2'",
+       "kind": "select",
+       "answer": "keep:file:resume",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Select files",
+       "source": "fact:file:resume"
+      },
+      {
+       "id": "c1",
+       "control": "textbox 'Job Title #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Senior Data Scientist",
+       "source": "fact:employment[0].title"
+      },
+      {
+       "id": "c2",
+       "control": "textbox 'Company #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Aria Intelligent Solutions",
+       "source": "fact:employment[0].employer"
+      },
+      {
+       "id": "c3",
+       "control": "textbox 'Location #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[0].location"
+      },
+      {
+       "id": "c5",
+       "control": "spinbutton 'Month #1'",
+       "kind": "write",
+       "answer": "employment[0].start_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "12",
+       "source": "fact:employment[0].start_date.month"
+      },
+      {
+       "id": "c6",
+       "control": "spinbutton 'Year #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2023",
+       "source": "fact:employment[0].start_date.year"
+      },
+      {
+       "id": "c8",
+       "control": "textbox 'Role Description #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decom",
+       "source": "fact:employment[0].summary"
+      },
+      {
+       "id": "c10",
+       "control": "textbox 'Job Title #2'",
+       "kind": "write",
+       "answer": "employment[1].title",
+       "how": "fact",
+       "ok": true,
+       "shown": "Applied Scientist I",
+       "source": "fact:employment[1].title"
+      },
+      {
+       "id": "c11",
+       "control": "textbox 'Company #2'",
+       "kind": "write",
+       "answer": "employment[1].employer",
+       "how": "fact",
+       "ok": true,
+       "shown": "Amazon Development Centre (India) Pvt. Ltd.",
+       "source": "fact:employment[1].employer"
+      },
+      {
+       "id": "c12",
+       "control": "textbox 'Location #2'",
+       "kind": "write",
+       "answer": "employment[1].location",
+       "how": "fact",
+       "ok": true,
+       "shown": "India",
+       "source": "fact:employment[1].location"
+      },
+      {
+       "id": "c14",
+       "control": "spinbutton 'Month #2'",
+       "kind": "write",
+       "answer": "employment[1].start_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "10",
+       "source": "fact:employment[1].start_date.month"
+      },
+      {
+       "id": "c15",
+       "control": "spinbutton 'Year #2'",
+       "kind": "write",
+       "answer": "employment[1].start_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2022",
+       "source": "fact:employment[1].start_date.year"
+      },
+      {
+       "id": "c17",
+       "control": "spinbutton 'Month #3'",
+       "kind": "write",
+       "answer": "employment[1].end_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "6",
+       "source": "fact:employment[1].end_date.month"
+      },
+      {
+       "id": "c18",
+       "control": "spinbutton 'Year #3'",
+       "kind": "write",
+       "answer": "employment[1].end_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2023",
+       "source": "fact:employment[1].end_date.year"
+      },
+      {
+       "id": "c20",
+       "control": "textbox 'Role Description #2'",
+       "kind": "write",
+       "answer": "employment[1].summary",
+       "how": "fact",
+       "ok": true,
+       "shown": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting hard samples to lift edge-case recall.",
+       "source": "fact:employment[1].summary"
+      },
+      {
+       "id": "c22",
+       "control": "textbox 'Job Title #3'",
+       "kind": "write",
+       "answer": "employment[2].title",
+       "how": "fact",
+       "ok": true,
+       "shown": "Computer Vision Engineer",
+       "source": "fact:employment[2].title"
+      },
+      {
+       "id": "c23",
+       "control": "textbox 'Company #3'",
+       "kind": "write",
+       "answer": "employment[2].employer",
+       "how": "fact",
+       "ok": true,
+       "shown": "Beltech AI Pvt. Ltd.",
+       "source": "fact:employment[2].employer"
+      },
+      {
+       "id": "c24",
+       "control": "textbox 'Location #3'",
+       "kind": "write",
+       "answer": "employment[2].location",
+       "how": "fact",
+       "ok": true,
+       "shown": "India",
+       "source": "fact:employment[2].location"
+      },
+      {
+       "id": "c26",
+       "control": "spinbutton 'Month #4'",
+       "kind": "write",
+       "answer": "employment[2].start_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "7",
+       "source": "fact:employment[2].start_date.month"
+      },
+      {
+       "id": "c27",
+       "control": "spinbutton 'Year #4'",
+       "kind": "write",
+       "answer": "employment[2].start_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2021",
+       "source": "fact:employment[2].start_date.year"
+      },
+      {
+       "id": "c29",
+       "control": "spinbutton 'Month #5'",
+       "kind": "write",
+       "answer": "employment[2].end_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "9",
+       "source": "fact:employment[2].end_date.month"
+      },
+      {
+       "id": "c30",
+       "control": "spinbutton 'Year #5'",
+       "kind": "write",
+       "answer": "employment[2].end_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2022",
+       "source": "fact:employment[2].end_date.year"
+      },
+      {
+       "id": "c32",
+       "control": "textbox 'Role Description #3'",
+       "kind": "write",
+       "answer": "employment[2].summary",
+       "how": "fact",
+       "ok": true,
+       "shown": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extractor with ResNet-34 under ArcFace metric-learning loss for multi-camera re-identification.",
+       "source": "fact:employment[2].summary"
+      },
+      {
+       "id": "c34",
+       "control": "textbox 'School or University #1'",
+       "kind": "write",
+       "answer": "keep:education[0].institution",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Indian Institute of Technology, Jodhpur",
+       "source": "fact:education[0].institution"
+      },
+      {
+       "id": "c39",
+       "control": "spinbutton 'Year #6'",
+       "kind": "write",
+       "answer": "keep:education[0].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2019",
+       "source": "fact:education[0].start_date.year"
+      },
+      {
+       "id": "c40",
+       "control": "spinbutton 'Year #7'",
+       "kind": "write",
+       "answer": "keep:education[0].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2021",
+       "source": "fact:education[0].end_date.year"
+      },
+      {
+       "id": "c42",
+       "control": "textbox 'School or University #2'",
+       "kind": "write",
+       "answer": "education[1].institution",
+       "how": "fact",
+       "ok": true,
+       "shown": "Sikkim Manipal Institute of Technology",
+       "source": "fact:education[1].institution"
+      },
+      {
+       "id": "c47",
+       "control": "spinbutton 'Year #8'",
+       "kind": "write",
+       "answer": "education[1].start_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2015",
+       "source": "fact:education[1].start_date.year"
+      },
+      {
+       "id": "c48",
+       "control": "spinbutton 'Year #9'",
+       "kind": "write",
+       "answer": "education[1].end_date.year",
+       "how": "fact",
+       "ok": true,
+       "shown": "2019",
+       "source": "fact:education[1].end_date.year"
+      },
+      {
+       "id": "c66",
+       "control": "textbox 'Share your LinkedIn Profile site'",
+       "kind": "write",
+       "answer": "keep:links.linkedin",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "https://www.linkedin.com/in/sunil4832sharma",
+       "source": "fact:links.linkedin"
+      }
+     ]
+    },
+    {
+     "round": 3,
+     "rows": [
+      [
+       "c1",
+       "write",
+       "keep:employment[0].title"
+      ],
+      [
+       "c2",
+       "write",
+       "keep:employment[0].employer"
+      ],
+      [
+       "c3",
+       "write",
+       "keep:employment[0].location"
+      ],
+      [
+       "c4",
+       "select",
+       "keep:employment[0].current"
+      ],
+      [
+       "c5",
+       "write",
+       "keep:employment[0].start_date.month"
+      ],
+      [
+       "c6",
+       "write",
+       "keep:employment[0].start_date.year"
+      ],
+      [
+       "c8",
+       "write",
+       "keep:employment[0].summary"
+      ],
+      [
+       "c10",
+       "write",
+       "keep:employment[1].title"
+      ],
+      [
+       "c11",
+       "write",
+       "keep:employment[1].employer"
+      ],
+      [
+       "c12",
+       "write",
+       "keep:employment[1].location"
+      ],
+      [
+       "c14",
+       "write",
+       "employment[1].start_date.month"
+      ],
+      [
+       "c15",
+       "write",
+       "keep:employment[1].start_date.year"
+      ],
+      [
+       "c17",
+       "write",
+       "employment[1].end_date.month"
+      ],
+      [
+       "c18",
+       "write",
+       "keep:employment[1].end_date.year"
+      ],
+      [
+       "c20",
+       "write",
+       "keep:employment[1].summary"
+      ],
+      [
+       "c22",
+       "write",
+       "keep:employment[2].title"
+      ],
+      [
+       "c23",
+       "write",
+       "keep:employment[2].employer"
+      ],
+      [
+       "c24",
+       "write",
+       "keep:employment[2].location"
+      ],
+      [
+       "c26",
+       "write",
+       "employment[2].start_date.month"
+      ],
+      [
+       "c27",
+       "write",
+       "keep:employment[2].start_date.year"
+      ],
+      [
+       "c29",
+       "write",
+       "employment[2].end_date.month"
+      ],
+      [
+       "c30",
+       "write",
+       "keep:employment[2].end_date.year"
+      ],
+      [
+       "c32",
+       "write",
+       "keep:employment[2].summary"
+      ],
+      [
+       "c34",
+       "write",
+       "keep:education[0].institution"
+      ],
+      [
+       "c35",
+       "select",
+       "keep:option:Masters"
+      ],
+      [
+       "c36",
+       "select",
+       "keep:option:Artificial Intelligence and Robotics"
+      ],
+      [
+       "c39",
+       "write",
+       "keep:education[0].start_date.year"
+      ],
+      [
+       "c40",
+       "write",
+       "keep:education[0].end_date.year"
+      ],
+      [
+       "c42",
+       "write",
+       "keep:education[1].institution"
+      ],
+      [
+       "c43",
+       "select",
+       "keep:option:Bachelors"
+      ],
+      [
+       "c44",
+       "select",
+       "option:Electrical Engineering"
+      ],
+      [
+       "c47",
+       "write",
+       "keep:education[1].start_date.year"
+      ],
+      [
+       "c48",
+       "write",
+       "keep:education[1].end_date.year"
+      ],
+      [
+       "c50",
+       "select",
+       "press"
+      ],
+      [
+       "c64",
+       "select",
+       "keep:file:resume"
+      ],
+      [
+       "c66",
+       "write",
+       "keep:links.linkedin"
+      ],
+      [
+       "c68",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [
+      [
+       "(no row) c51 textbox 'Certification'",
+       "it is marked required and has no row — answer it: keep: when it already shows the right value, the fact key, or the question itself when no fact answers it"
+      ]
+     ],
+     "outcomes": [
+      {
+       "id": "c4",
+       "control": "checkbox 'I currently work here #1'",
+       "kind": "select",
+       "answer": "keep:employment[0].current",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "on",
+       "source": "fact:employment[0].current"
+      },
+      {
+       "id": "c35",
+       "control": "button 'Degree Masters Required'",
+       "kind": "select",
+       "answer": "keep:option:Masters",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Masters",
+       "source": "choice"
+      },
+      {
+       "id": "c36",
+       "control": "textbox 'Field of Study #1'",
+       "kind": "select",
+       "answer": "keep:option:Artificial Intelligence and Robotics",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Artificial Intelligence and Robotics",
+       "source": "choice"
+      },
+      {
+       "id": "c43",
+       "control": "button 'Degree Bachelors Required'",
+       "kind": "select",
+       "answer": "keep:option:Bachelors",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Bachelors",
+       "source": "choice"
+      },
+      {
+       "id": "c44",
+       "control": "textbox 'Field of Study #2'",
+       "kind": "select",
+       "answer": "option:Electrical Engineering",
+       "how": "chain",
+       "ok": true,
+       "shown": "Electrical Engineering",
+       "source": "choice"
+      },
+      {
+       "id": "c50",
+       "control": "button 'Delete #4'",
+       "kind": "select",
+       "answer": "press",
+       "how": "press",
+       "ok": true,
+       "shown": "pressed",
+       "source": "press"
+      },
+      {
+       "id": "c64",
+       "control": "button 'Select files #2'",
+       "kind": "select",
+       "answer": "keep:file:resume",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Select files",
+       "source": "fact:file:resume"
+      },
+      {
+       "id": "c1",
+       "control": "textbox 'Job Title #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Senior Data Scientist",
+       "source": "fact:employment[0].title"
+      },
+      {
+       "id": "c2",
+       "control": "textbox 'Company #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Aria Intelligent Solutions",
+       "source": "fact:employment[0].employer"
+      },
+      {
+       "id": "c3",
+       "control": "textbox 'Location #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[0].location"
+      },
+      {
+       "id": "c5",
+       "control": "spinbutton 'Month #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].start_date.month",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "12",
+       "source": "fact:employment[0].start_date.month"
+      },
+      {
+       "id": "c6",
+       "control": "spinbutton 'Year #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2023",
+       "source": "fact:employment[0].start_date.year"
+      },
+      {
+       "id": "c8",
+       "control": "textbox 'Role Description #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decom",
+       "source": "fact:employment[0].summary"
+      },
+      {
+       "id": "c10",
+       "control": "textbox 'Job Title #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Applied Scientist I",
+       "source": "fact:employment[1].title"
+      },
+      {
+       "id": "c11",
+       "control": "textbox 'Company #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Amazon Development Centre (India) Pvt. Ltd.",
+       "source": "fact:employment[1].employer"
+      },
+      {
+       "id": "c12",
+       "control": "textbox 'Location #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[1].location"
+      },
+      {
+       "id": "c14",
+       "control": "spinbutton 'Month #2'",
+       "kind": "write",
+       "answer": "employment[1].start_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "10",
+       "source": "fact:employment[1].start_date.month"
+      },
+      {
+       "id": "c15",
+       "control": "spinbutton 'Year #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2022",
+       "source": "fact:employment[1].start_date.year"
+      },
+      {
+       "id": "c17",
+       "control": "spinbutton 'Month #3'",
+       "kind": "write",
+       "answer": "employment[1].end_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "6",
+       "source": "fact:employment[1].end_date.month"
+      },
+      {
+       "id": "c18",
+       "control": "spinbutton 'Year #3'",
+       "kind": "write",
+       "answer": "keep:employment[1].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2023",
+       "source": "fact:employment[1].end_date.year"
+      },
+      {
+       "id": "c20",
+       "control": "textbox 'Role Description #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detec",
+       "source": "fact:employment[1].summary"
+      },
+      {
+       "id": "c22",
+       "control": "textbox 'Job Title #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Computer Vision Engineer",
+       "source": "fact:employment[2].title"
+      },
+      {
+       "id": "c23",
+       "control": "textbox 'Company #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Beltech AI Pvt. Ltd.",
+       "source": "fact:employment[2].employer"
+      },
+      {
+       "id": "c24",
+       "control": "textbox 'Location #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[2].location"
+      },
+      {
+       "id": "c26",
+       "control": "spinbutton 'Month #4'",
+       "kind": "write",
+       "answer": "employment[2].start_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "7",
+       "source": "fact:employment[2].start_date.month"
+      },
+      {
+       "id": "c27",
+       "control": "spinbutton 'Year #4'",
+       "kind": "write",
+       "answer": "keep:employment[2].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2021",
+       "source": "fact:employment[2].start_date.year"
+      },
+      {
+       "id": "c29",
+       "control": "spinbutton 'Month #5'",
+       "kind": "write",
+       "answer": "employment[2].end_date.month",
+       "how": "fact",
+       "ok": true,
+       "shown": "9",
+       "source": "fact:employment[2].end_date.month"
+      },
+      {
+       "id": "c30",
+       "control": "spinbutton 'Year #5'",
+       "kind": "write",
+       "answer": "keep:employment[2].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2022",
+       "source": "fact:employment[2].end_date.year"
+      },
+      {
+       "id": "c32",
+       "control": "textbox 'Role Description #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precisi",
+       "source": "fact:employment[2].summary"
+      },
+      {
+       "id": "c34",
+       "control": "textbox 'School or University #1'",
+       "kind": "write",
+       "answer": "keep:education[0].institution",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Indian Institute of Technology, Jodhpur",
+       "source": "fact:education[0].institution"
+      },
+      {
+       "id": "c39",
+       "control": "spinbutton 'Year #6'",
+       "kind": "write",
+       "answer": "keep:education[0].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2019",
+       "source": "fact:education[0].start_date.year"
+      },
+      {
+       "id": "c40",
+       "control": "spinbutton 'Year #7'",
+       "kind": "write",
+       "answer": "keep:education[0].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2021",
+       "source": "fact:education[0].end_date.year"
+      },
+      {
+       "id": "c42",
+       "control": "textbox 'School or University #2'",
+       "kind": "write",
+       "answer": "keep:education[1].institution",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Sikkim Manipal Institute of Technology",
+       "source": "fact:education[1].institution"
+      },
+      {
+       "id": "c47",
+       "control": "spinbutton 'Year #8'",
+       "kind": "write",
+       "answer": "keep:education[1].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2015",
+       "source": "fact:education[1].start_date.year"
+      },
+      {
+       "id": "c48",
+       "control": "spinbutton 'Year #9'",
+       "kind": "write",
+       "answer": "keep:education[1].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2019",
+       "source": "fact:education[1].end_date.year"
+      },
+      {
+       "id": "c66",
+       "control": "textbox 'Share your LinkedIn Profile site'",
+       "kind": "write",
+       "answer": "keep:links.linkedin",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "https://www.linkedin.com/in/sunil4832sharma",
+       "source": "fact:links.linkedin"
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "rows": [
+      [
+       "c1",
+       "write",
+       "keep:employment[0].title"
+      ],
+      [
+       "c2",
+       "write",
+       "keep:employment[0].employer"
+      ],
+      [
+       "c3",
+       "write",
+       "keep:employment[0].location"
+      ],
+      [
+       "c4",
+       "select",
+       "keep:employment[0].current"
+      ],
+      [
+       "c5",
+       "write",
+       "keep:employment[0].start_date.month"
+      ],
+      [
+       "c6",
+       "write",
+       "keep:employment[0].start_date.year"
+      ],
+      [
+       "c8",
+       "write",
+       "keep:employment[0].summary"
+      ],
+      [
+       "c10",
+       "write",
+       "keep:employment[1].title"
+      ],
+      [
+       "c11",
+       "write",
+       "keep:employment[1].employer"
+      ],
+      [
+       "c12",
+       "write",
+       "keep:employment[1].location"
+      ],
+      [
+       "c14",
+       "write",
+       "keep:employment[1].start_date.month"
+      ],
+      [
+       "c15",
+       "write",
+       "keep:employment[1].start_date.year"
+      ],
+      [
+       "c17",
+       "write",
+       "keep:employment[1].end_date.month"
+      ],
+      [
+       "c18",
+       "write",
+       "keep:employment[1].end_date.year"
+      ],
+      [
+       "c20",
+       "write",
+       "keep:employment[1].summary"
+      ],
+      [
+       "c22",
+       "write",
+       "keep:employment[2].title"
+      ],
+      [
+       "c23",
+       "write",
+       "keep:employment[2].employer"
+      ],
+      [
+       "c24",
+       "write",
+       "keep:employment[2].location"
+      ],
+      [
+       "c26",
+       "write",
+       "keep:employment[2].start_date.month"
+      ],
+      [
+       "c27",
+       "write",
+       "keep:employment[2].start_date.year"
+      ],
+      [
+       "c29",
+       "write",
+       "keep:employment[2].end_date.month"
+      ],
+      [
+       "c30",
+       "write",
+       "keep:employment[2].end_date.year"
+      ],
+      [
+       "c32",
+       "write",
+       "keep:employment[2].summary"
+      ],
+      [
+       "c34",
+       "write",
+       "keep:education[0].institution"
+      ],
+      [
+       "c35",
+       "select",
+       "keep:option:Masters"
+      ],
+      [
+       "c36",
+       "select",
+       "keep:option:Artificial Intelligence and Robotics"
+      ],
+      [
+       "c39",
+       "write",
+       "keep:education[0].start_date.year"
+      ],
+      [
+       "c40",
+       "write",
+       "keep:education[0].end_date.year"
+      ],
+      [
+       "c42",
+       "write",
+       "keep:education[1].institution"
+      ],
+      [
+       "c43",
+       "select",
+       "keep:option:Bachelors"
+      ],
+      [
+       "c44",
+       "select",
+       "keep:option:Electrical Engineering"
+      ],
+      [
+       "c47",
+       "write",
+       "keep:education[1].start_date.year"
+      ],
+      [
+       "c48",
+       "write",
+       "keep:education[1].end_date.year"
+      ],
+      [
+       "c52",
+       "select",
+       "keep:file:resume"
+      ],
+      [
+       "c54",
+       "write",
+       "keep:links.linkedin"
+      ],
+      [
+       "c56",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c4",
+       "control": "checkbox 'I currently work here #1'",
+       "kind": "select",
+       "answer": "keep:employment[0].current",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "on",
+       "source": "fact:employment[0].current"
+      },
+      {
+       "id": "c35",
+       "control": "button 'Degree Masters Required'",
+       "kind": "select",
+       "answer": "keep:option:Masters",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Masters",
+       "source": "choice"
+      },
+      {
+       "id": "c36",
+       "control": "textbox 'Field of Study #1'",
+       "kind": "select",
+       "answer": "keep:option:Artificial Intelligence and Robotics",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Artificial Intelligence and Robotics",
+       "source": "choice"
+      },
+      {
+       "id": "c43",
+       "control": "button 'Degree Bachelors Required'",
+       "kind": "select",
+       "answer": "keep:option:Bachelors",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Bachelors",
+       "source": "choice"
+      },
+      {
+       "id": "c44",
+       "control": "textbox 'Field of Study #2'",
+       "kind": "select",
+       "answer": "keep:option:Electrical Engineering",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Electrical Engineering",
+       "source": "choice"
+      },
+      {
+       "id": "c52",
+       "control": "button 'Select files'",
+       "kind": "select",
+       "answer": "keep:file:resume",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Select files",
+       "source": "fact:file:resume"
+      },
+      {
+       "id": "c1",
+       "control": "textbox 'Job Title #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Senior Data Scientist",
+       "source": "fact:employment[0].title"
+      },
+      {
+       "id": "c2",
+       "control": "textbox 'Company #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Aria Intelligent Solutions",
+       "source": "fact:employment[0].employer"
+      },
+      {
+       "id": "c3",
+       "control": "textbox 'Location #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[0].location"
+      },
+      {
+       "id": "c5",
+       "control": "spinbutton 'Month #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].start_date.month",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "12",
+       "source": "fact:employment[0].start_date.month"
+      },
+      {
+       "id": "c6",
+       "control": "spinbutton 'Year #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2023",
+       "source": "fact:employment[0].start_date.year"
+      },
+      {
+       "id": "c8",
+       "control": "textbox 'Role Description #1'",
+       "kind": "write",
+       "answer": "keep:employment[0].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decom",
+       "source": "fact:employment[0].summary"
+      },
+      {
+       "id": "c10",
+       "control": "textbox 'Job Title #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Applied Scientist I",
+       "source": "fact:employment[1].title"
+      },
+      {
+       "id": "c11",
+       "control": "textbox 'Company #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Amazon Development Centre (India) Pvt. Ltd.",
+       "source": "fact:employment[1].employer"
+      },
+      {
+       "id": "c12",
+       "control": "textbox 'Location #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[1].location"
+      },
+      {
+       "id": "c14",
+       "control": "spinbutton 'Month #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].start_date.month",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "10",
+       "source": "fact:employment[1].start_date.month"
+      },
+      {
+       "id": "c15",
+       "control": "spinbutton 'Year #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2022",
+       "source": "fact:employment[1].start_date.year"
+      },
+      {
+       "id": "c17",
+       "control": "spinbutton 'Month #3'",
+       "kind": "write",
+       "answer": "keep:employment[1].end_date.month",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "6",
+       "source": "fact:employment[1].end_date.month"
+      },
+      {
+       "id": "c18",
+       "control": "spinbutton 'Year #3'",
+       "kind": "write",
+       "answer": "keep:employment[1].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2023",
+       "source": "fact:employment[1].end_date.year"
+      },
+      {
+       "id": "c20",
+       "control": "textbox 'Role Description #2'",
+       "kind": "write",
+       "answer": "keep:employment[1].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detec",
+       "source": "fact:employment[1].summary"
+      },
+      {
+       "id": "c22",
+       "control": "textbox 'Job Title #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].title",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Computer Vision Engineer",
+       "source": "fact:employment[2].title"
+      },
+      {
+       "id": "c23",
+       "control": "textbox 'Company #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].employer",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Beltech AI Pvt. Ltd.",
+       "source": "fact:employment[2].employer"
+      },
+      {
+       "id": "c24",
+       "control": "textbox 'Location #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].location",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "India",
+       "source": "fact:employment[2].location"
+      },
+      {
+       "id": "c26",
+       "control": "spinbutton 'Month #4'",
+       "kind": "write",
+       "answer": "keep:employment[2].start_date.month",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "7",
+       "source": "fact:employment[2].start_date.month"
+      },
+      {
+       "id": "c27",
+       "control": "spinbutton 'Year #4'",
+       "kind": "write",
+       "answer": "keep:employment[2].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2021",
+       "source": "fact:employment[2].start_date.year"
+      },
+      {
+       "id": "c29",
+       "control": "spinbutton 'Month #5'",
+       "kind": "write",
+       "answer": "keep:employment[2].end_date.month",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "9",
+       "source": "fact:employment[2].end_date.month"
+      },
+      {
+       "id": "c30",
+       "control": "spinbutton 'Year #5'",
+       "kind": "write",
+       "answer": "keep:employment[2].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2022",
+       "source": "fact:employment[2].end_date.year"
+      },
+      {
+       "id": "c32",
+       "control": "textbox 'Role Description #3'",
+       "kind": "write",
+       "answer": "keep:employment[2].summary",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precisi",
+       "source": "fact:employment[2].summary"
+      },
+      {
+       "id": "c34",
+       "control": "textbox 'School or University #1'",
+       "kind": "write",
+       "answer": "keep:education[0].institution",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Indian Institute of Technology, Jodhpur",
+       "source": "fact:education[0].institution"
+      },
+      {
+       "id": "c39",
+       "control": "spinbutton 'Year #6'",
+       "kind": "write",
+       "answer": "keep:education[0].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2019",
+       "source": "fact:education[0].start_date.year"
+      },
+      {
+       "id": "c40",
+       "control": "spinbutton 'Year #7'",
+       "kind": "write",
+       "answer": "keep:education[0].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2021",
+       "source": "fact:education[0].end_date.year"
+      },
+      {
+       "id": "c42",
+       "control": "textbox 'School or University #2'",
+       "kind": "write",
+       "answer": "keep:education[1].institution",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "Sikkim Manipal Institute of Technology",
+       "source": "fact:education[1].institution"
+      },
+      {
+       "id": "c47",
+       "control": "spinbutton 'Year #8'",
+       "kind": "write",
+       "answer": "keep:education[1].start_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2015",
+       "source": "fact:education[1].start_date.year"
+      },
+      {
+       "id": "c48",
+       "control": "spinbutton 'Year #9'",
+       "kind": "write",
+       "answer": "keep:education[1].end_date.year",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "2019",
+       "source": "fact:education[1].end_date.year"
+      },
+      {
+       "id": "c54",
+       "control": "textbox 'Share your LinkedIn Profile site'",
+       "kind": "write",
+       "answer": "keep:links.linkedin",
+       "how": "keep",
+       "ok": true,
+       "kept": true,
+       "shown": "https://www.linkedin.com/in/sunil4832sharma",
+       "source": "fact:links.linkedin"
+      }
+     ]
+    }
+   ],
+   "acted": {
+    "button 'Add Another #1'": {
+     "id": "c12",
+     "control": "button 'Add Another #1'",
+     "kind": "select",
+     "answer": "add:2",
+     "how": "add",
+     "ok": true,
+     "shown": "added 2 block(s)",
+     "source": "add"
+    },
+    "button 'Add Another #2'": {
+     "id": "c20",
+     "control": "button 'Add Another #2'",
+     "kind": "select",
+     "answer": "add:1",
+     "how": "add",
+     "ok": true,
+     "shown": "added 1 block(s)",
+     "source": "add"
+    },
+    "button 'Add'": {
+     "id": "c21",
+     "control": "button 'Add'",
+     "kind": "select",
+     "answer": "add:1",
+     "how": "add",
+     "ok": true,
+     "shown": "added 1 block(s)",
+     "source": "add"
+    },
+    "checkbox 'I currently work here'": {
+     "id": "c4",
+     "control": "checkbox 'I currently work here'",
+     "kind": "select",
+     "answer": "employment[0].current",
+     "how": "fact",
+     "ok": true,
+     "shown": "checked",
+     "source": "fact:employment[0].current"
+    },
+    "button 'Degree Select One Required'": {
+     "id": "c43",
+     "control": "button 'Degree Select One Required'",
+     "kind": "select",
+     "answer": "option:Bachelors",
+     "how": "chain",
+     "ok": true,
+     "shown": "Bachelors",
+     "source": "choice"
+    },
+    "textbox 'Field of Study'": {
+     "id": "c15",
+     "control": "textbox 'Field of Study'",
+     "kind": "select",
+     "answer": "search:\\bArtificial Intelligence\\b; ^Artificial; ^A",
+     "how": "search",
+     "ok": false,
+     "error": "searched: what the list holds for each term goes back to the map",
+     "offered": {
+      "\\bArtificial Intelligence\\b": [
+       "Artificial Intelligence and Robotics"
+      ],
+      "^Artificial": [
+       "Artificial Intelligence and Robotics"
+      ],
+      "^A": [
+       "Accounting",
+       "Actuarial Science",
+       "Advertising",
+       "Aerospace Engineering",
+       "African-American Studies",
+       "African Languages, Literatures, and Linguistics",
+       "African Studies",
+       "Agricultural/Biological Engineering and Bioengineering",
+       "Agricultural Business and Management",
+       "Agricultural Economics",
+       "Agricultural Education",
+       "Agricultural Journalism",
+       "Agricultural Mechanization",
+       "Agricultural Technology Management",
+       "Agriculture",
+       "Agronomy and Crop Science",
+       "Air Traffic Control",
+       "American History",
+       "American Literature",
+       "American Sign Language",
+       "American Studies",
+       "Anatomy",
+       "Ancient Studies",
+       "Animal Behavior and Ethology",
+       "Animal Science"
+      ]
+     }
+    },
+    "button 'Select files'": {
+     "id": "c52",
+     "control": "button 'Select files'",
+     "kind": "select",
+     "answer": "keep:file:resume",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Select files",
+     "source": "fact:file:resume"
+    },
+    "textbox 'Job Title'": {
+     "id": "c1",
+     "control": "textbox 'Job Title'",
+     "kind": "write",
+     "answer": "employment[0].title",
+     "how": "fact",
+     "ok": true,
+     "shown": "Senior Data Scientist",
+     "source": "fact:employment[0].title"
+    },
+    "textbox 'Company'": {
+     "id": "c2",
+     "control": "textbox 'Company'",
+     "kind": "write",
+     "answer": "employment[0].employer",
+     "how": "fact",
+     "ok": true,
+     "shown": "Aria Intelligent Solutions",
+     "source": "fact:employment[0].employer"
+    },
+    "textbox 'Location'": {
+     "id": "c3",
+     "control": "textbox 'Location'",
+     "kind": "write",
+     "answer": "employment[0].location",
+     "how": "fact",
+     "ok": true,
+     "shown": "India",
+     "source": "fact:employment[0].location"
+    },
+    "spinbutton 'Month #1'": {
+     "id": "c5",
+     "control": "spinbutton 'Month #1'",
+     "kind": "write",
+     "answer": "keep:employment[0].start_date.month",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "12",
+     "source": "fact:employment[0].start_date.month"
+    },
+    "spinbutton 'Year #1'": {
+     "id": "c6",
+     "control": "spinbutton 'Year #1'",
+     "kind": "write",
+     "answer": "keep:employment[0].start_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2023",
+     "source": "fact:employment[0].start_date.year"
+    },
+    "textbox 'Role Description'": {
+     "id": "c11",
+     "control": "textbox 'Role Description'",
+     "kind": "write",
+     "answer": "employment[0].summary",
+     "how": "fact",
+     "ok": true,
+     "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions). Built IngestIQ, autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running end-to-end ETL from a natural-language task. Built an automated evaluation framework benchmarking the agent fleet at 86% exact-pass and 0.86 mean F1.",
+     "source": "fact:employment[0].summary"
+    },
+    "textbox 'School or University'": {
+     "id": "c13",
+     "control": "textbox 'School or University'",
+     "kind": "write",
+     "answer": "education[0].institution",
+     "how": "fact",
+     "ok": true,
+     "shown": "Indian Institute of Technology, Jodhpur",
+     "source": "fact:education[0].institution"
+    },
+    "spinbutton 'Year #3'": {
+     "id": "c18",
+     "control": "spinbutton 'Year #3'",
+     "kind": "write",
+     "answer": "keep:employment[1].end_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2023",
+     "source": "fact:employment[1].end_date.year"
+    },
+    "spinbutton 'Year #4'": {
+     "id": "c27",
+     "control": "spinbutton 'Year #4'",
+     "kind": "write",
+     "answer": "keep:employment[2].start_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2021",
+     "source": "fact:employment[2].start_date.year"
+    },
+    "textbox 'Share your LinkedIn Profile site'": {
+     "id": "c54",
+     "control": "textbox 'Share your LinkedIn Profile site'",
+     "kind": "write",
+     "answer": "keep:links.linkedin",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "https://www.linkedin.com/in/sunil4832sharma",
+     "source": "fact:links.linkedin"
+    },
+    "checkbox 'I currently work here #1'": {
+     "id": "c4",
+     "control": "checkbox 'I currently work here #1'",
+     "kind": "select",
+     "answer": "keep:employment[0].current",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "on",
+     "source": "fact:employment[0].current"
+    },
+    "button 'Degree Masters Required'": {
+     "id": "c35",
+     "control": "button 'Degree Masters Required'",
+     "kind": "select",
+     "answer": "keep:option:Masters",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Masters",
+     "source": "choice"
+    },
+    "textbox 'Field of Study #1'": {
+     "id": "c36",
+     "control": "textbox 'Field of Study #1'",
+     "kind": "select",
+     "answer": "keep:option:Artificial Intelligence and Robotics",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Artificial Intelligence and Robotics",
+     "source": "choice"
+    },
+    "textbox 'Field of Study #2'": {
+     "id": "c44",
+     "control": "textbox 'Field of Study #2'",
+     "kind": "select",
+     "answer": "keep:option:Electrical Engineering",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Electrical Engineering",
+     "source": "choice"
+    },
+    "textbox 'Certification'": {
+     "id": "c51",
+     "control": "textbox 'Certification'",
+     "kind": "select",
+     "answer": "search:Large Language Models; ^DeepLearning; ^D",
+     "how": "search",
+     "ok": false,
+     "error": "searched: what the list holds for each term goes back to the map",
+     "offered": {
+      "Large Language Models": [],
+      "^DeepLearning": [],
+      "^D": [
+       "DPM"
+      ]
+     }
+    },
+    "button 'Select files #2'": {
+     "id": "c64",
+     "control": "button 'Select files #2'",
+     "kind": "select",
+     "answer": "keep:file:resume",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Select files",
+     "source": "fact:file:resume"
+    },
+    "textbox 'Job Title #1'": {
+     "id": "c1",
+     "control": "textbox 'Job Title #1'",
+     "kind": "write",
+     "answer": "keep:employment[0].title",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Senior Data Scientist",
+     "source": "fact:employment[0].title"
+    },
+    "textbox 'Company #1'": {
+     "id": "c2",
+     "control": "textbox 'Company #1'",
+     "kind": "write",
+     "answer": "keep:employment[0].employer",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Aria Intelligent Solutions",
+     "source": "fact:employment[0].employer"
+    },
+    "textbox 'Location #1'": {
+     "id": "c3",
+     "control": "textbox 'Location #1'",
+     "kind": "write",
+     "answer": "keep:employment[0].location",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "India",
+     "source": "fact:employment[0].location"
+    },
+    "textbox 'Role Description #1'": {
+     "id": "c8",
+     "control": "textbox 'Role Description #1'",
+     "kind": "write",
+     "answer": "keep:employment[0].summary",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decom",
+     "source": "fact:employment[0].summary"
+    },
+    "textbox 'Job Title #2'": {
+     "id": "c10",
+     "control": "textbox 'Job Title #2'",
+     "kind": "write",
+     "answer": "keep:employment[1].title",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Applied Scientist I",
+     "source": "fact:employment[1].title"
+    },
+    "textbox 'Company #2'": {
+     "id": "c11",
+     "control": "textbox 'Company #2'",
+     "kind": "write",
+     "answer": "keep:employment[1].employer",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Amazon Development Centre (India) Pvt. Ltd.",
+     "source": "fact:employment[1].employer"
+    },
+    "textbox 'Location #2'": {
+     "id": "c12",
+     "control": "textbox 'Location #2'",
+     "kind": "write",
+     "answer": "keep:employment[1].location",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "India",
+     "source": "fact:employment[1].location"
+    },
+    "spinbutton 'Month #2'": {
+     "id": "c14",
+     "control": "spinbutton 'Month #2'",
+     "kind": "write",
+     "answer": "keep:employment[1].start_date.month",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "10",
+     "source": "fact:employment[1].start_date.month"
+    },
+    "spinbutton 'Year #2'": {
+     "id": "c15",
+     "control": "spinbutton 'Year #2'",
+     "kind": "write",
+     "answer": "keep:employment[1].start_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2022",
+     "source": "fact:employment[1].start_date.year"
+    },
+    "spinbutton 'Month #3'": {
+     "id": "c17",
+     "control": "spinbutton 'Month #3'",
+     "kind": "write",
+     "answer": "keep:employment[1].end_date.month",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "6",
+     "source": "fact:employment[1].end_date.month"
+    },
+    "textbox 'Role Description #2'": {
+     "id": "c20",
+     "control": "textbox 'Role Description #2'",
+     "kind": "write",
+     "answer": "keep:employment[1].summary",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detec",
+     "source": "fact:employment[1].summary"
+    },
+    "textbox 'Job Title #3'": {
+     "id": "c22",
+     "control": "textbox 'Job Title #3'",
+     "kind": "write",
+     "answer": "keep:employment[2].title",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Computer Vision Engineer",
+     "source": "fact:employment[2].title"
+    },
+    "textbox 'Company #3'": {
+     "id": "c23",
+     "control": "textbox 'Company #3'",
+     "kind": "write",
+     "answer": "keep:employment[2].employer",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Beltech AI Pvt. Ltd.",
+     "source": "fact:employment[2].employer"
+    },
+    "textbox 'Location #3'": {
+     "id": "c24",
+     "control": "textbox 'Location #3'",
+     "kind": "write",
+     "answer": "keep:employment[2].location",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "India",
+     "source": "fact:employment[2].location"
+    },
+    "spinbutton 'Month #4'": {
+     "id": "c26",
+     "control": "spinbutton 'Month #4'",
+     "kind": "write",
+     "answer": "keep:employment[2].start_date.month",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "7",
+     "source": "fact:employment[2].start_date.month"
+    },
+    "spinbutton 'Month #5'": {
+     "id": "c29",
+     "control": "spinbutton 'Month #5'",
+     "kind": "write",
+     "answer": "keep:employment[2].end_date.month",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "9",
+     "source": "fact:employment[2].end_date.month"
+    },
+    "spinbutton 'Year #5'": {
+     "id": "c30",
+     "control": "spinbutton 'Year #5'",
+     "kind": "write",
+     "answer": "keep:employment[2].end_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2022",
+     "source": "fact:employment[2].end_date.year"
+    },
+    "textbox 'Role Description #3'": {
+     "id": "c32",
+     "control": "textbox 'Role Description #3'",
+     "kind": "write",
+     "answer": "keep:employment[2].summary",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precisi",
+     "source": "fact:employment[2].summary"
+    },
+    "textbox 'School or University #1'": {
+     "id": "c34",
+     "control": "textbox 'School or University #1'",
+     "kind": "write",
+     "answer": "keep:education[0].institution",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Indian Institute of Technology, Jodhpur",
+     "source": "fact:education[0].institution"
+    },
+    "spinbutton 'Year #6'": {
+     "id": "c39",
+     "control": "spinbutton 'Year #6'",
+     "kind": "write",
+     "answer": "keep:education[0].start_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2019",
+     "source": "fact:education[0].start_date.year"
+    },
+    "spinbutton 'Year #7'": {
+     "id": "c40",
+     "control": "spinbutton 'Year #7'",
+     "kind": "write",
+     "answer": "keep:education[0].end_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2021",
+     "source": "fact:education[0].end_date.year"
+    },
+    "textbox 'School or University #2'": {
+     "id": "c42",
+     "control": "textbox 'School or University #2'",
+     "kind": "write",
+     "answer": "keep:education[1].institution",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Sikkim Manipal Institute of Technology",
+     "source": "fact:education[1].institution"
+    },
+    "spinbutton 'Year #8'": {
+     "id": "c47",
+     "control": "spinbutton 'Year #8'",
+     "kind": "write",
+     "answer": "keep:education[1].start_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2015",
+     "source": "fact:education[1].start_date.year"
+    },
+    "spinbutton 'Year #9'": {
+     "id": "c48",
+     "control": "spinbutton 'Year #9'",
+     "kind": "write",
+     "answer": "keep:education[1].end_date.year",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "2019",
+     "source": "fact:education[1].end_date.year"
+    },
+    "button 'Degree Bachelors Required'": {
+     "id": "c43",
+     "control": "button 'Degree Bachelors Required'",
+     "kind": "select",
+     "answer": "keep:option:Bachelors",
+     "how": "keep",
+     "ok": true,
+     "kept": true,
+     "shown": "Bachelors",
+     "source": "choice"
+    },
+    "button 'Delete #4'": {
+     "id": "c50",
+     "control": "button 'Delete #4'",
+     "kind": "select",
+     "answer": "press",
+     "how": "press",
+     "ok": true,
+     "shown": "pressed",
+     "source": "press"
+    }
+   },
+   "tried": [
+    "- textbox 'Field of Study' — searched: '\\\\bArtificial Intelligence\\\\b' -> [Artificial Intelligence and Robotics]; '^Artificial' -> [Artificial Intelligence and Robotics]; '^A' -> [Accounting, Actuarial Science, Advertising, Aerospace Engineering, African-American Studies, \"African Languages, Literatures, and Linguistics\", African Studies, Agricultural/Biological Engineering and Bioengineering, Agricultural Business and Management, Agricultural Economics, Agricultural Education, Agricultural Journalism, Agricultural Mechanization, Agricultural Technology Management, Agriculture, Agronomy and Crop Science, Air Traffic Control, American History, American Literature, American Sign Language, American Studies, Anatomy, Ancient Studies, Animal Behavior and Ethology, Animal Science]",
+    "- textbox 'Field of Study #2' — searched: '\\\\bElectronics and Communication\\\\b' -> []; '^Electronics' -> []; '^E' -> [Early Childhood Education, East Asian Studies, East European Studies, Ecology, Economics, Education, Education Administration, Educational Psychology, Education of the Deaf, Electrical Engineering, Elementary Education, Engineering Mechanics, Engineering Physics, English, English Composition, English Literature, Entomology, Entrepreneurship, Environmental/Environmental Health Engineering, Environmental Design/Architecture, Environmental Science, Epidemiology, Equine Studies, Ethnic Studies, European History]",
+    "- textbox 'Certification' — searched: 'Large Language Models' -> []; '^DeepLearning' -> []; '^D' -> [DPM]",
+    "- (no row) c51 textbox 'Certification' — it is marked required and has no row — answer it: keep: when it already shows the right value, the fact key, or the question itself when no fact answers it",
+    "- button 'Delete #4' in 'Certifications 1' was pressed: that block was removed on purpose (its required list does not hold the fact) — do not add it again"
+   ]
+  },
+  {
+   "step": "application questions",
+   "rounds": [
+    {
+     "round": 1,
+     "rows": [
+      [
+       "c1",
+       "select",
+       "screening.over_18"
+      ],
+      [
+       "c6",
+       "select",
+       "learned:90"
+      ],
+      [
+       "c7",
+       "select",
+       "screening.agree_to_background_check"
+      ],
+      [
+       "c8",
+       "select",
+       "work_authorization.us.authorized_without_sponsorship"
+      ],
+      [
+       "c9",
+       "select",
+       "location.willing_to_relocate"
+      ],
+      [
+       "c10",
+       "select",
+       "work_authorization.us.requires_sponsorship"
+      ],
+      [
+       "c12",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c1",
+       "control": "button 'Select One Required #1'",
+       "kind": "select",
+       "answer": "screening.over_18",
+       "how": "fact",
+       "ok": true,
+       "shown": "Yes",
+       "source": "fact:screening.over_18"
+      },
+      {
+       "id": "c6",
+       "control": "checkbox 'I have not worked for Adobe in the past.'",
+       "kind": "select",
+       "answer": "learned:90",
+       "how": "fact",
+       "ok": true,
+       "shown": "checked",
+       "source": "fact:learned:90"
+      },
+      {
+       "id": "c7",
+       "control": "button 'Select One Required #2'",
+       "kind": "select",
+       "answer": "screening.agree_to_background_check",
+       "how": "fact",
+       "ok": true,
+       "shown": "Yes",
+       "source": "fact:screening.agree_to_background_check"
+      },
+      {
+       "id": "c8",
+       "control": "button 'Select One Required #3'",
+       "kind": "select",
+       "answer": "work_authorization.us.authorized_without_sponsorship",
+       "how": "fact",
+       "ok": true,
+       "shown": "No",
+       "source": "fact:work_authorization.us.authorized_without_sponsorship"
+      },
+      {
+       "id": "c9",
+       "control": "button 'Select One Required #4'",
+       "kind": "select",
+       "answer": "location.willing_to_relocate",
+       "how": "fact",
+       "ok": true,
+       "shown": "Yes",
+       "source": "fact:location.willing_to_relocate"
+      },
+      {
+       "id": "c10",
+       "control": "button 'Select One Required #5'",
+       "kind": "select",
+       "answer": "work_authorization.us.requires_sponsorship",
+       "how": "fact",
+       "ok": true,
+       "shown": "Yes",
+       "source": "fact:work_authorization.us.requires_sponsorship"
+      }
+     ]
+    }
+   ],
+   "acted": {
+    "button 'Select One Required #1'": {
+     "id": "c1",
+     "control": "button 'Select One Required #1'",
+     "kind": "select",
+     "answer": "screening.over_18",
+     "how": "fact",
+     "ok": true,
+     "shown": "Yes",
+     "source": "fact:screening.over_18"
+    },
+    "checkbox 'I have not worked for Adobe in the past.'": {
+     "id": "c6",
+     "control": "checkbox 'I have not worked for Adobe in the past.'",
+     "kind": "select",
+     "answer": "learned:90",
+     "how": "fact",
+     "ok": true,
+     "shown": "checked",
+     "source": "fact:learned:90"
+    },
+    "button 'Select One Required #2'": {
+     "id": "c7",
+     "control": "button 'Select One Required #2'",
+     "kind": "select",
+     "answer": "screening.agree_to_background_check",
+     "how": "fact",
+     "ok": true,
+     "shown": "Yes",
+     "source": "fact:screening.agree_to_background_check"
+    },
+    "button 'Select One Required #3'": {
+     "id": "c8",
+     "control": "button 'Select One Required #3'",
+     "kind": "select",
+     "answer": "work_authorization.us.authorized_without_sponsorship",
+     "how": "fact",
+     "ok": true,
+     "shown": "No",
+     "source": "fact:work_authorization.us.authorized_without_sponsorship"
+    },
+    "button 'Select One Required #4'": {
+     "id": "c9",
+     "control": "button 'Select One Required #4'",
+     "kind": "select",
+     "answer": "location.willing_to_relocate",
+     "how": "fact",
+     "ok": true,
+     "shown": "Yes",
+     "source": "fact:location.willing_to_relocate"
+    },
+    "button 'Select One Required #5'": {
+     "id": "c10",
+     "control": "button 'Select One Required #5'",
+     "kind": "select",
+     "answer": "work_authorization.us.requires_sponsorship",
+     "how": "fact",
+     "ok": true,
+     "shown": "Yes",
+     "source": "fact:work_authorization.us.requires_sponsorship"
+    }
+   },
+   "tried": []
+  },
+  {
+   "step": "voluntary disclosures",
+   "rounds": [
+    {
+     "round": 1,
+     "rows": [
+      [
+       "c1",
+       "select",
+       "option:I AM NOT A VETERAN"
+      ],
+      [
+       "c2",
+       "select",
+       "eeo.gender"
+      ],
+      [
+       "c3",
+       "select",
+       "option:Declined to State (United States of America)"
+      ],
+      [
+       "c4",
+       "select",
+       "screening.confirm_form_statements"
+      ],
+      [
+       "c6",
+       "select",
+       "next"
+      ]
+     ],
+     "problems": [],
+     "outcomes": [
+      {
+       "id": "c1",
+       "control": "button 'Please select your veteran status. Select One Required'",
+       "kind": "select",
+       "answer": "option:I AM NOT A VETERAN",
+       "how": "chain",
+       "ok": true,
+       "shown": "I AM NOT A VETERAN",
+       "source": "choice"
+      },
+      {
+       "id": "c2",
+       "control": "button 'Please select your gender. Select One Required'",
+       "kind": "select",
+       "answer": "eeo.gender",
+       "how": "fact",
+       "ok": true,
+       "shown": "Male",
+       "source": "fact:eeo.gender"
+      },
+      {
+       "id": "c3",
+       "control": "button 'Please select your ethnicity. Select One Required'",
+       "kind": "select",
+       "answer": "option:Declined to State (United States of America)",
+       "how": "chain",
+       "ok": true,
+       "shown": "Declined to State (United States of America)",
+       "source": "choice"
+      },
+      {
+       "id": "c4",
+       "control": "checkbox 'Check this box to confirm the statement above.'",
+       "kind": "select",
+       "answer": "screening.confirm_form_statements",
+       "how": "fact",
+       "ok": true,
+       "shown": "checked",
+       "source": "fact:screening.confirm_form_statements"
+      }
+     ]
+    }
+   ],
+   "acted": {
+    "button 'Please select your veteran status. Select One Required'": {
+     "id": "c1",
+     "control": "button 'Please select your veteran status. Select One Required'",
+     "kind": "select",
+     "answer": "option:I AM NOT A VETERAN",
+     "how": "chain",
+     "ok": true,
+     "shown": "I AM NOT A VETERAN",
+     "source": "choice"
+    },
+    "button 'Please select your gender. Select One Required'": {
+     "id": "c2",
+     "control": "button 'Please select your gender. Select One Required'",
+     "kind": "select",
+     "answer": "eeo.gender",
+     "how": "fact",
+     "ok": true,
+     "shown": "Male",
+     "source": "fact:eeo.gender"
+    },
+    "button 'Please select your ethnicity. Select One Required'": {
+     "id": "c3",
+     "control": "button 'Please select your ethnicity. Select One Required'",
+     "kind": "select",
+     "answer": "option:Declined to State (United States of America)",
+     "how": "chain",
+     "ok": true,
+     "shown": "Declined to State (United States of America)",
+     "source": "choice"
+    },
+    "checkbox 'Check this box to confirm the statement above.'": {
+     "id": "c4",
+     "control": "checkbox 'Check this box to confirm the statement above.'",
+     "kind": "select",
+     "answer": "screening.confirm_form_statements",
+     "how": "fact",
+     "ok": true,
+     "shown": "checked",
+     "source": "fact:screening.confirm_form_statements"
+    }
+   },
+   "tried": []
+  },
+  {
+   "step": "review",
+   "rounds": [
+    {
+     "round": 1,
+     "rows": [
+      [
+       "c2",
+       "select",
+       "submit"
+      ]
+     ],
+     "problems": [],
+     "outcomes": []
+    }
+   ],
+   "acted": {},
+   "tried": []
+  }
+ ],
+ "placeholders": {
+  "What's their name or email address? — How Did You Hear About Us?": {
+   "value": "To be confirmed",
+   "options": [],
+   "kind": "text",
+   "answer": null,
+   "field": "textbox \"What's their name or email address?\"",
+   "page": "my information",
+   "note": "nothing stored: filled in for now — your answer is needed"
+  }
+ },
+ "submit": "Submit",
+ "attempts": [],
+ "filed_at": "2026-09-28T07:20:03",
+ "outcome": "stopped",
+ "why": "'my information': \"What's their name or email address? — How Did You Hear About Us?\" has no answer of yours — filled with 'To be confirmed' for now"
+}

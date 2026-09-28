@@ -13,6 +13,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("slug", help="the application folder under applications/")
     ap.add_argument("--url", help="override the apply URL")
+    ap.add_argument("--model", help="the map's model for this run (default: config llm.map)")
+    ap.add_argument("--effort", help="the map's effort for this run (default: config llm.map)")
     a = ap.parse_args()
     answers = load("answers.yaml")
     preflight(answers)
@@ -26,7 +28,8 @@ def main():
                  f"never automated (README rule 1).")
     market = detect_market(meta.get("Location", ""), jd_text)
     ctx = {"market": market, "company": meta.get("Company", a.slug), "role": meta.get("Role / Title", ""),
-           "portal": portal, "location": meta.get("Location", ""), "url": url, "company_slug": a.slug}
+           "portal": portal, "location": meta.get("Location", ""), "url": url, "company_slug": a.slug,
+           "map_model": a.model, "map_effort": a.effort}
     explore(ctx, answers, load_learned(), {"expected_text": pay_text(answers, market)})
 
 

@@ -16,7 +16,10 @@ maps are kept per tenant (company_key) and reused across its roles.
     is_last(step)           Review: exploration stops there, submit presses Submit
 
 Every button's name comes from the page map (Claude reads it off the page), so
-nothing here knows how a tenant words "Next" or "Apply".
+nothing here knows how a tenant words "Next" or "Apply". The gate's forms are sent
+the way a person sends them — the form's own submit button, else Enter in the
+password box — because a tenant may hide that button from assistive technology
+(aria-hidden) while the page header carries a visible "Sign In" of the same name.
 
 Credentials: ~/.config/jobbot/env (WORKDAY_EMAIL / WORKDAY_PASSWORD), never
 printed and never shown to Claude.
@@ -101,7 +104,7 @@ def _click(frame, name):
     if loc is None:
         return False
     loc.click(timeout=5000)
-    frame.wait_for_timeout(1500)
+    frame.wait_for_timeout(400)
     return True
 
 
@@ -120,14 +123,36 @@ def _box(frame, pattern):
 
 def _quiet(page):
     from jobpilot.apply.explore.browser import wait_quiet
-    wait_quiet(page.main_frame, max_s=10, quiet=2)
+    wait_quiet(page.main_frame, max_s=10, quiet=4)
+
+
+def _send(frame, box):
+    """Send the form `box` sits in: its own submit button (even one hidden from assistive
+    technology), else Enter in the box. Never a button found by name elsewhere on the page."""
+    try:
+        form = box.locator("xpath=ancestor::form[1]")
+        if form.count():
+            btn = form.locator('button[type="submit"], input[type="submit"]')
+            if btn.count():
+                btn.first.click(force=True, timeout=5000)
+                frame.wait_for_timeout(1500)
+                return
+    except Exception:
+        pass
+    box.press("Enter")
+    frame.wait_for_timeout(1500)
+
+
+def _said(frame):
+    from jobpilot.apply.explore import see
+    return " ".join(see.errors(frame))
 
 
 # ---------------------------------------------------------------- the interface
 
 def step(page):
-    """The progress bar's current step, lower case ('my information'); '' when none."""
-    _quiet(page)
+    """The progress bar's current step, lower case ('my information'); '' when none.
+    Read as it is: the callers wait for the page where a wait is due."""
     try:
         t = page.evaluate("""() => {
           const cur = document.querySelector('[aria-current="step"], [data-automation-id="progressBarActiveStep"]');
@@ -139,6 +164,21 @@ def step(page):
     return t
 
 
+def at_gate(page):
+    """Is the account gate showing — the tenant's Sign In / Create Account step, its sign-in
+    chooser (Apple, Google, email), or the email and password boxes? Code passes it (start);
+    an agent never gets the credentials."""
+    f = page.main_frame
+    try:
+        if re.search(r"sign in|create account", step(page)):
+            return True
+        if _find(f, "Sign in with email") is not None:
+            return True
+        return bool(_box(f, r"^email") and _box(f, r"^password"))
+    except Exception:
+        return False
+
+
 def is_last(step_name):
     return (step_name or "").startswith("review")
 
@@ -148,9 +188,10 @@ def next_page(page, step_name, name):
     from jobpilot.apply.explore import see
     if not _click(page.main_frame, name):
         return False, [f"no {name!r} button"]
-    _quiet(page)
-    if step(page) != step_name:
-        return True, []
+    for _ in range(6):                                    # the page saves, then moves on: give it time — an
+        _quiet(page)                                      # alert (a status like "file uploaded") is no reason to stop waiting
+        if step(page) != step_name:
+            return True, []
     return False, see.errors(page.main_frame) or ["the page did not move on and showed no error"]
 
 
@@ -194,29 +235,38 @@ def _gate(page, ctx, log):
     creating = _box(f, r"verify.*password") is not None
     if not creating:
         _box(f, r"^email").fill(email)
-        _box(f, r"^password").fill(pw)
-        _click(f, "Sign In")
+        pw_box = _box(f, r"^password")
+        pw_box.fill(pw)
+        _send(f, pw_box)
         _quiet(page)
         if not _box(f, r"^password"):
             log("    [workday] signed in")
             return True
-        from jobpilot.apply.explore import see
-        said = " ".join(see.errors(f))
+        said = _said(f)
         if WRONG_PASSWORD.search(said):
             log(f"    [workday] STOPPED — the stored password does not open this tenant's account ({said[:100]}); "
                 "reset it on the employer's Workday before retrying")
             return False
-        if not _click(f, "Create Account"):
-            log(f"    [workday] could not sign in: {said[:120] or 'no message'}")
+        log(f"    [workday] sign-in refused: {said[:120] or 'no message'} — creating the account")
+        if not _click(f, "Create Account") or not _box(f, r"verify.*password"):
+            log(f"    [workday] could not sign in and found no account form: {said[:120] or 'no message'}")
             return False
     _box(f, r"^email").fill(email)
     _box(f, r"^password").fill(pw)
-    _box(f, r"verify.*password").fill(pw)
+    verify_box = _box(f, r"verify.*password")
+    verify_box.fill(pw)
     for cb in f.get_by_role("checkbox").all():            # the terms box
         if cb.is_visible() and not cb.is_checked():
             cb.check(force=True)
-    _click(f, "Create Account")
+    _send(f, verify_box)
     _quiet(page)
+    if _box(f, r"verify.*password"):                     # still on the account form: it was refused
+        said = _said(f)
+        log(f"    [workday] account not created: {said[:160] or 'no message'}")
+        if re.search(r"already (exists|in use|registered|have an account)|account exists", said, re.I):
+            if _click(f, "Sign In") or _click(f, "Back to Sign In"):
+                return True                               # the loop signs in on its next pass
+        return False
     body = (f.inner_text("body") or "").lower()
     if "verif" in body and "email" in body:
         from jobpilot.review.ask import ask

@@ -1,0 +1,1006 @@
+Map one page of a job-application form. Everything you need is in this prompt,
+in this order: the rules for your reply (next), the applicant's stored FACTS, the
+page's CONTROLS still to map, and last the page's full SNAPSHOT as a screen reader
+reads it.
+
+Each control still to map has an id (c1, c2, ...). The id is in the CONTROLS list
+and also written into the control's own line of the SNAPSHOT ("- [c7] radio "No""),
+so you can see every control in place: its label, the question above it, the text
+right after it (a checkbox is often labelled by the text or link that follows it),
+the group and section it sits in. Read the SNAPSHOT to know what each id is.
+
+The SNAPSHOT is the whole page as it is at this moment. It may already be partly
+filled — by the site (a resume parse, a saved draft), or by an earlier round on this
+page — so a value it shows is what the page holds now.
+
+Reply with one row per control that needs something done: [id, kind, answer]
+  id    the control's id, exactly as given ("c7"). Never a name, never an id
+        that is not in the CONTROLS list. One row per id.
+  kind  one of two:
+          write    you type the answer into it (a text box, a text area, a
+                   number or date part)
+          select   you pick, tick or press it: a list or menu, a search box
+                   whose value is an entry picked from the list it shows, a
+                   radio, a checkbox, a choice button (Yes / No), a file
+                   picker, a page button
+        The CONTROLS line says what its HTML is ("a button that opens a list",
+        "a search box", "a file input in its field", "checkbox: not checked"):
+        use it, with the SNAPSHOT, to tell which. A plain "a text box" / "a text
+        area" / "a number box" line is write — whatever its answer is (a name,
+        an email, a city, a fact key) — unless the SNAPSHOT shows a list of
+        entries that belongs to it (then it is a search box: select).
+  answer  what goes in — and first, whether anything needs doing. A control that
+        already shows the right value still gets its row (keep:...): the row is
+        what records which fact or choice it holds. Leaving a row out means "not a
+        question of this form", never "already done".
+        keep:<the answer below>  the control ALREADY shows the right value (its
+            "shows:" in CONTROLS, its value in the SNAPSHOT) — the value the
+            answer means, in the page's own wording ("India (+91)" for the fact
+            +91, "Delhi" for location.state = Delhi): nothing is done to it. Write
+            the answer it stands for after keep: (keep:personal.first_name,
+            keep:option:Social Media › LinkedIn) so the record knows what it is.
+        <the answer below>  the control is empty, or shows something else (a
+            placeholder, "Select One", another value): it is set to the answer.
+        keep only when the shown value says the SAME thing in full, differing at
+        most in form: spaces, case, a leading zero ("6" for 06), a phone written
+        with spaces ("096412 98471" for 9641298471), a ticked box for Yes, the
+        list's own wording of the same entry. Not kept — set instead: a shorter or
+        partial value ("Indian Institute of Technology" for "Indian Institute of
+        Technology, Jodhpur"), a different entry, or a text box / text area whose
+        text differs from the fact's (a resume parser's own wording is replaced by
+        the stored fact). When unsure, give the answer: it is set again.
+        a question the applicant's FACTS answer: the fact's KEY, copied exactly
+            from the FACTS list — character for character, never shortened,
+            extended or guessed ("work_authorization.us..." stays "us", not "usa";
+            no ".<company>" added to a key that does not have it). If no listed key
+            answers it, it is a question no fact answers (below).
+        a question no fact answers: the question itself as a person reads it,
+            without "*", "Select One" or a shown value, naming its section when the
+            page repeats it ("Field of Study — Education 2 (Sikkim Manipal
+            Institute of Technology)"). The applicant is asked it. Do not stretch
+            a fact to fit. A question about someone else (who referred you, a
+            relative who works there) is never answered with the applicant's
+            own facts: ask it.
+        a select control that shows its choices ("choices: [a, b, c]" — each
+            entry as the page words it; an entry that itself holds a comma is in
+            quotes; a CATEGORY, an entry that opens a list of its own, is shown
+            with its entries: "Social Media › [LinkedIn, X, Instagram]"):
+            option:<the choice that means the same as the applicant's fact>,
+            copied exactly. Same meaning in other words is a match, not a guess:
+            "No German speaker" -> None, "Decline to self-identify" -> "Declined
+            to State (United States of America)", "I am not a protected veteran"
+            -> "I AM NOT A VETERAN", M.Tech -> Masters.
+        nested lists: the whole chain, category first, down to an entry that
+            opens nothing more — option:Social Media › LinkedIn. It is acted on in
+            one go (open the list, pick Social Media, pick LinkedIn). A category
+            alone only opens its list and is never an answer. A category shown
+            with a bare "›" (its entries could not be read): the chain to the entry
+            you expect there, in the page's words.
+        a select control marked "a long list" / "fills in as you type" / "only
+            the first entries", when the entry you want is not shown:
+            search:<regex>; <regex>; <regex> — 2-3 regular expressions, most
+            specific first: the entry's whole word(s) (\bIndia\b), then its first
+            letters (^Ind), then its first letter (^I). Each is matched, case
+            aside, against every entry of the list (a nested list: against each
+            whole chain, "Social Media › LinkedIn"); a box that fills in as you
+            type gets each one's plain letters typed and the regex run over what
+            appears. What each matches comes back under LAST ACT, and you pick.
+        when no choice means the same as the fact — or nothing is stored for it:
+            guess:<choice 1>; <choice 2>; ... | <the question>
+            — the top 5 most probable choices at most, each copied exactly from the
+            list — for a nested list the top 5 most probable CHAINS
+            (guess:Social Media › LinkedIn; Job Board › Indeed; ... | How did you
+            hear about us?) — the most likely first. Choice 1 is filled in for now
+            so the form can go on; the applicant is asked the question with these
+            choices, in this order. Fewer than 5 when fewer are plausible; never a
+            choice the page does not show. (A fact that means the same as one
+            choice is option:, not guess:.)
+        radios, checkboxes, choice buttons — a row means "tick / press THIS one",
+            by ITS id. Give a row only for a choice that is TRUE for the applicant:
+            its label says what the applicant's facts say. The answer is the fact
+            key whose value makes this very label true, or option:<its label>, or
+            guess:<its label>; <next most likely label>; ... | <the question>
+            (the row's id is choice 1's). Every other choice of the same
+            question gets no row — a related key is not a reason to tick it
+            ("Have you worked at Adobe as: Employee / Intern / ... / I have not
+            worked for Adobe": the facts say never employed there -> one row, for
+            "I have not worked for Adobe", and none for Employee). A single
+            checkbox that the facts leave unticked: no row.
+        a file picker: file:resume on the form's own resume field only (not an
+            "autofill from your resume" box, which only pre-fills the form;
+            not a cover letter unless FACTS hold one).
+        a page button — at most one of each on a page:
+            next     saves this page and moves on (Next, Continue, Save and
+                     Continue); never Back, never a button inside a field. A
+                     one-page form has no next.
+            submit   sends the application
+            start    opens the application form: on the posting its Apply; in a
+                     "how do you want to apply" choice, the one that opens a
+                     blank form to fill in by hand (not autofill, not reuse of a
+                     past application, not Close)
+            add:<n>  a repeated section's Add / Add Another when FACTS hold n
+                     more blocks than the page shows (Work Experience 1 only,
+                     FACTS hold employment[0], [1], [2] -> add:2)
+
+Leave out (no row): the page header, navigation and footer (language pickers, the
+site's search, Sign In), a cookie or consent banner, a date box's calendar button,
+Back, Previous, Close, Cancel, Delete, Remove — these are never rows, whatever the
+answer would be — an Add the facts have nothing more for, the page's
+error summary ("Errors Found" and its links), anything that is part of another
+control (a picker's own search box, an "items selected" list, a hidden box behind a
+choice button), and an optional box that collects tags (skills, interests) when no
+fact lists them.
+
+LAST ACT (below the CONTROLS) is what the last round on this page could not finish:
+a search's matches for each of your regexes, a choice its list did not hold (with what
+it holds), an error. Answer each of those controls again, found by its name in
+CONTROLS: option:<one of the matches, copied exactly> when one is the answer, else
+guess:<up to 5 of them, most likely first> | <the question>, else a new search with
+other regexes. Empty the first time a page is seen.
+
+PLACEHOLDERS (below the CONTROLS) are values put into this page earlier only so the
+form could go on — choice 1 of an earlier guess, or "To be confirmed" in a box. The
+SNAPSHOT shows them in their controls, but they are NOT the applicant's answers and
+not facts: never answer another control from a placeholder. A control holding one
+that is listed in CONTROLS again is answered afresh: option: when a FACT now matches
+one of its choices (or a chain of a nested list), else the same guess row (the same
+candidates, most likely first) unless the page now offers different choices.
+
+Before you reply, check each row: its id is in CONTROLS; its answer is a key copied
+from FACTS, option: with a label (or a path of labels) the page shows, guess: with
+up to 5 such labels most likely first, search:, file:resume, a page button's word, or
+the question; no category alone as an answer; no row for Back / Close / Cancel; for a question with
+several choices, only the true one has a row; every box a FACT answers has a row — keep:
+when it already shows that value, else the answer.
+Reply with only the JSON array, no prose, and use no tools:
+[["<id>", "<write|select>", "<[keep:]fact key, [keep:]option:<choice or path>, guess:<choice 1>; <choice 2>; ... | <question>, search:<regex>; <regex>, file:resume, next, submit, start, add:<n>, or the question>"], ...]
+
+FACTS (key: value)
+job.company: Anthropic
+job.location: San Francisco, CA | New York City, NY
+job.market: usa
+personal.first_name: Sunil
+personal.middle_name: Kumar
+personal.last_name: Sharma
+personal.full_name: Sunil Kumar Sharma
+personal.preferred_name: Sunil
+personal.email: sunil4832sharma@gmail.com
+personal.phone: +91-9641298471
+personal.phone_country_code: +91
+personal.phone_national: 9641298471
+location.city: Delhi
+location.state: Delhi
+location.country: India
+location.postal_code: 110019
+location.address_line_1: Delhi
+location.willing_to_relocate: Yes
+location.preferred_locations: UAE, Saudi Arabia, Singapore, US, Remote
+links.linkedin: https://www.linkedin.com/in/sunil4832sharma
+links.github: https://github.com/sunil448832
+links.huggingface: https://huggingface.co/sunil448832
+work_authorization.citizenship: India
+work_authorization.current_work_country: India
+work_authorization.us.authorized_without_sponsorship: No
+work_authorization.us.requires_sponsorship: Yes
+work_authorization.uk.authorized_without_sponsorship: No
+work_authorization.uk.requires_sponsorship: Yes
+work_authorization.eu.authorized_without_sponsorship: No
+work_authorization.eu.requires_sponsorship: Yes
+work_authorization.uae.authorized_without_sponsorship: No
+work_authorization.uae.requires_sponsorship: Yes
+work_authorization.saudi_arabia.authorized_without_sponsorship: No
+work_authorization.saudi_arabia.requires_sponsorship: Yes
+work_authorization.australia.authorized_without_sponsorship: No
+work_authorization.australia.requires_sponsorship: Yes
+work_authorization.netherlands.authorized_without_sponsorship: No
+work_authorization.netherlands.requires_sponsorship: Yes
+work_authorization.india.authorized_without_sponsorship: Yes
+work_authorization.india.requires_sponsorship: No
+work_authorization.visa_status_note: Indian citizen, currently in India. Require employment visa sponsorship to work onsite outside India. Available immediately for fully-remote roles, engaged as a
+work_authorization.remote_from_india_note: For fully-remote roles I work from India as a contractor or via an EOR (Deel / Remote.com / Oyster), invoiced in the company's currency.
+availability.notice_period: 2 months
+availability.notice_period_days: 60
+availability.earliest_start_date: 2 months from offer acceptance
+availability.earliest_start_iso: 2026-11-04
+availability.earliest_start_iso.year: 2026
+availability.earliest_start_iso.month: 11
+availability.earliest_start_iso.day: 04
+availability.currently_employed: Yes
+compensation.current_ctc: Prefer to discuss — targeting the local market rate for the role
+compensation.never_quote_inr: Yes
+compensation.salary_flexible_note: Open to discussing based on total package and level. Prioritising role scope, team, and the sponsorship/remote arrangement over base alone.
+compensation.by_market.usa.currency: USD
+compensation.by_market.usa.expected_annual: 200000
+compensation.by_market.usa.expected_text: USD 200,000 base (open on total comp / equity mix)
+compensation.by_market.usa.note: Base ask. US total comp usually adds equity on top.
+experience_summary.total_years: 5
+experience_summary.total_years_phrase: 5+ years
+experience_summary.current_title: Senior Data Scientist
+experience_summary.target_title: Senior Machine Learning Engineer
+experience_summary.highest_degree: Master's Degree
+experience_summary.employment_gap_explanation: Took a planned break between roles in 2023 to focus full-time on generative-AI and LLM upskilling, including freelance vision-language model work (LLaVA/BLIP fi
+skill_years.default: 5
+skill_years.python: 5
+skill_years.machine_learning: 5
+skill_years.deep_learning: 5
+skill_years.pytorch: 5
+skill_years.computer_vision: 5
+skill_years.nlp: 5
+skill_years.aws: 5
+skill_years.sql: 5
+skill_years.docker: 4
+skill_years.generative_ai: 3
+skill_years.llm: 3
+skill_years.agentic_ai: 3
+skill_years.rag: 3
+skill_years.langchain: 3
+skill_years.vector_databases: 3
+skill_years.vllm: 2
+skill_years.kubernetes: 2
+skill_years.fine_tuning: 3
+skill_years.lora: 3
+skill_years.reinforcement_learning: 1
+skill_years.rlhf: 1
+skill_years.post_training: 1
+employment[0].employer: Aria Intelligent Solutions
+employment[0].title: Senior Data Scientist
+employment[0].location: India
+employment[0].start_date: 2023-12
+employment[0].start_date.year: 2023
+employment[0].start_date.month: 12
+employment[0].current: Yes
+employment[0].summary: Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end
+employment[1].employer: Amazon Development Centre (India) Pvt. Ltd.
+employment[1].title: Applied Scientist I
+employment[1].location: India
+employment[1].start_date: 2022-10
+employment[1].start_date.year: 2022
+employment[1].start_date.month: 10
+employment[1].end_date: 2023-06
+employment[1].end_date.year: 2023
+employment[1].end_date.month: 06
+employment[1].current: No
+employment[1].summary: Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting
+employment[2].employer: Beltech AI Pvt. Ltd.
+employment[2].title: Computer Vision Engineer
+employment[2].location: India
+employment[2].start_date: 2021-07
+employment[2].start_date.year: 2021
+employment[2].start_date.month: 07
+employment[2].end_date: 2022-09
+employment[2].end_date.year: 2022
+employment[2].end_date.month: 09
+employment[2].current: No
+employment[2].summary: Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extract
+education[0].institution: Indian Institute of Technology, Jodhpur
+education[0].degree: Master of Technology (M.Tech)
+education[0].field_of_study: Artificial Intelligence
+education[0].start_date: 2019-07
+education[0].start_date.year: 2019
+education[0].start_date.month: 07
+education[0].end_date: 2021-06
+education[0].end_date.year: 2021
+education[0].end_date.month: 06
+education[1].institution: Sikkim Manipal Institute of Technology
+education[1].degree: Bachelor of Technology (B.Tech)
+education[1].field_of_study: Electronics and Communication Engineering
+education[1].start_date: 2015-07
+education[1].start_date.year: 2015
+education[1].start_date.month: 07
+education[1].end_date: 2019-06
+education[1].end_date.year: 2019
+education[1].end_date.month: 06
+certifications: DeepLearning.AI — Generative AI with Large Language Models
+questions.how_did_you_hear: LinkedIn
+questions.greatest_strength: Taking research-stage models to low-latency production. I have shipped LLM and vision systems end to end — Phi-3 Vision via vLLM at 20 ms median latency, a Qdra
+questions.reason_for_leaving: Looking for a role with international scope and deeper ownership of generative-AI systems at scale.
+eeo.gender: Male
+eeo.race_ethnicity: Decline to self-identify
+eeo.hispanic_latino: Decline to self-identify
+eeo.veteran_status: I am not a protected veteran
+eeo.disability_status: No, I do not have a disability
+eeo.requires_accommodation: No
+screening.over_18: Yes
+screening.can_perform_essential_functions: Yes
+screening.previously_employed_here: No
+screening.related_to_current_employee: No
+screening.previously_employed_overrides.amazon: Yes
+screening.previously_employed_overrides.amazon web services: Yes
+screening.previously_employed_overrides.aws: Yes
+screening.previously_employed_overrides.amazon development centre: Yes
+screening.previously_employed_detail.amazon: Applied Scientist I, Amazon Development Centre (India), Oct 2022 - Jun 2023
+screening.non_compete_restrictions: No
+screening.agree_to_background_check: Yes
+screening.agree_to_drug_test: Yes
+screening.confirm_form_statements: Yes
+screening.willing_to_travel: Yes
+screening.travel_percentage_ok: up to 25%
+screening.remote_or_onsite_preference: Open — onsite, hybrid, or remote
+learned:0: answer to 'confirm whether any of the below applies to you sanctions cuba iran north korea ': None of the above
+learned:1: answer to 'us person status citizen permanent resident asylum refugee': Not applicable (I selected “none of the 
+learned:2: answer to 'export control restrictions': No
+learned:3: answer to 'which of the following core spark and production engineering concepts do you hav': Production ETL/ELT pipelines (Batch & St
+learned:4: answer to 'do you have hands-on experience owning end-to-end data and ai architectures in p': Yes. I own end-to-end data and AI archit
+learned:5: answer to 'have you ever been convicted of a crime': No
+learned:6: answer to 'do you have a valid passport': Yes
+learned:7: answer to 'by checking this box, i agree to allow catawiki to store and process my data for': By checking this box, I agree to allow C
+learned:8: answer to 'briefly describe a project where you had to deploy ml models serving real-time r': At Aria I deployed Phi-3 Vision behind v
+learned:9: answer to "could you please list the standard and widespread ml techniques you're most comf": Supervised and unsupervised learning, de
+learned:10: answer to 'at remote, we are committed to transparency, innovation, and care for our employ': Yes
+learned:11: answer to 'have you ever been hired through remote as a third party?': No. I have never been engaged through Re
+learned:12: answer to 'do you have experience working with multiple programming languages?': Yes — Python, SQL and C++. Python is my 
+learned:13: answer to 'have you implemented ai workflows or ai-powered solutions in production or at cu': Yes, in production. I built IngestIQ, a 
+learned:14: answer to 'have you held a customer-facing technical role (solutions engineer, post-sales e': No. I have not held a formal customer-fa
+learned:15: answer to 'are you able to travel approximately ~10% for customer engagement and in-person ': Yes. I am comfortable with approximately
+learned:16: answer to 'why are you interested in the forward deployed engineer role, and what about rem': The half of my work I want more of is th
+learned:17: answer to 'do you identify as part of the lesbian, bisexual, gay, transgender, queer, inter': No
+learned:18: answer to 'do you have any relatives currently working for airwallex?': No
+learned:19: answer to 'how did you first hear about airwallex?': LinkedIn
+learned:20: answer to 'are you based in melbourne, australia?': No — I'm currently based in India. This 
+learned:21: answer to 'point of data transfer': Acknowledge
+learned:22: answer to 'current or most recent company?': Aria Intelligent Solutions
+learned:23: answer to 'would you like to stay up to date with mongodb culture and careers content?': No, thank you. Please use my details for
+learned:24: answer to 'if you answered mongodb employee, mongodb event, or other, please specify here:': Other - I found this role through the jo
+learned:25: answer to 'tell us about yourself': I am a Senior Data Scientist at Aria Int
+learned:26: answer to 'links': LinkedIn: https://www.linkedin.com/in/su
+learned:27: answer to 'do you have professional experience reading cutting-edge ai research papers and ': Yes. I post-trained Qwen3-4B with GRPO a
+learned:28: answer to 'do you have experience operating with a high degree of autonomy to solve complex': Yes. As Senior Data Scientist at Aria In
+learned:29: answer to 'for dutch citizens: which culture was alongside the dutch significant in your up': Not applicable — I am an Indian citizen,
+learned:30: answer to 'do you identify as having a mental or physical health condition?': No.
+learned:31: answer to 'do you identify as neurodiverse (eg attention deficit disorder, dyslexia, autism': No.
+learned:32: answer to 'are you open to working in-person in one of our offices 25% of the time?': Yes, I'm open to being in the Zurich off
+learned:33: answer to 'ai policy for application': Yes
+learned:34: answer to 'why anthropic?': I want to work on post-training where th
+learned:35: answer to 'have you ever interviewed at anthropic before?': No, this is my first time applying/inter
+learned:36: answer to 'when is the earliest you would want to start working with us?': My notice period is 2 months, so I could
+learned:37: answer to 'do you have any deadlines or timeline considerations we should be aware of?': No hard deadlines on my end — my notice 
+learned:38: answer to 'what is the address from which you plan on working? if you would need to relocat': relocating
+learned:39: answer to 'visa sponsorship': Yes
+learned:40: answer to 'what makes you excited to join deepjudge? what are the most interesting componen': DeepJudge sits exactly where my last two
+learned:41: answer to 'what did you own, what were you trying to improve, and what was the outcome? if ': I owned an evaluation service meant to r
+learned:42: answer to 'i am based in or within a reasonable commuting distance of zurich (able to be in': I live outside commuting distance and re
+learned:43: answer to 'do you have a proven track record of writing clean, efficient, and scalable code': Yes
+learned:44: answer to 'please email me about future job openings': No
+learned:45: answer to 'us export control laws 2026: are you a citizen, national or permanent resident o': No
+learned:46: answer to 'us export control laws 2026: do you hold an additional citizenship, nationality,': No
+learned:47: answer to 'us export control laws 2026: in which country did you obtain citizenship, nation': India
+learned:48: answer to 'in your current role, do you engage with mastercard employees to negotiate, infl': No.
+learned:49: answer to 'are you related to anyone who has the authority to influence and/or sign commerc': No
+learned:50: answer to 'are you or were you recently (in the last six months) an employee of a governmen': No
+learned:51: answer to 'do you have a close personal relationship with a current mastercard employee? [e': No
+learned:52: answer to 'are you currently engaged in any outside employment or activity that you would l': No
+learned:53: answer to 'except where consent is not required by applicable privacy law, i consent to the': Yes
+learned:54: answer to 'how soon can you start full-time?': About 2 months out, to complete a standa
+learned:55: answer to 'office location of choice': San Francisco
+learned:56: answer to 'if this role or future roles require relocation:': I am willing to relocate and will self r
+learned:57: answer to 'palo alto networks prides itself on being a military friendly employer. this inf': No
+learned:58: answer to 'are you in the reserves?': No
+learned:59: answer to 'would you like to be considered for future opportunities?': Yes
+learned:60: answer to 'integrity is a foundational core value at palo alto networks, reflected in our c': I agree
+learned:61: answer to 'i have read and agree to the candidate confidentiality agreement policy linked h': i agree to be bound by the candidate con
+learned:62: answer to 'are you available to work 5 days from our munich office?': Yes
+learned:63: answer to 'what is your proficiency in german?': No German speaker
+learned:64: answer to 'data privacy statement:': yes
+learned:65: answer to 'please describe a model you built or significantly contributed to that was deplo': For a Roche retrieval system, I owned th
+learned:66: answer to 'by checking this box, i consent to mongodb collecting, storing, and processing m': By checking this box, I consent to Mongo
+learned:67: answer to 'have you signed any agreement with any prior or existing employer which includes': No
+learned:68: answer to 'by selecting the checkbox, you agree to our terms and conditions and applicant p': By selecting the checkbox, you agree to 
+learned:69: answer to 'do you identify as one of the following protected veterans (disabled veteran, re': i am not a veteran
+learned:70: answer to 'do you meet all of the basic qualifications for this role as specified in the jo': Yes
+learned:71: answer to 'do you have any relatives employed by capital one? (a relative can include a spo': No
+learned:72: answer to 'please answer the next two questions to the best of your knowledge. for purposes': No
+learned:73: answer to 'are you related to a senior government official?': No
+learned:74: answer to 'do you have a second job, outside business, or other employment that you will co': No
+learned:75: answer to 'all capital one associates must follow the code of conduct. the code requires th': Yes
+learned:76: answer to 'are you age 18 or over?': Yes
+learned:77: answer to 'do you meet the preferred qualifications for this role as specified in the job d': Yes, All
+learned:78: answer to 'are you currently under any form of agreement or policy, with your current or pr': No
+learned:79: answer to 'are you a spouse or partner of someone serving, or who served in the armed force': No
+learned:80: answer to 'prefix': Mr
+learned:81: answer to 'school or university': Indian Institute of Technology Jodhpur (
+learned:82: answer to 'how did you hear about us?': career site - corporate
+learned:83: answer to 'f7b33932-2c60-40cc-82e9-fdd3a07d1abb__systemfield_eeoc_gender': Male
+learned:84: answer to 'why do you want to join figma?': I want to bring RL and generative AI res
+learned:85: answer to 'from where do you intend to work?': Remote from India, with the understandin
+learned:86: answer to '(optional) personal preferences': No specific preferences — open to any of
+learned:87: answer to 'additional information': I mention this because it doesn't fit ne
+learned:88: answer to 'please read the arbitration agreement below': i will read the arbitration agreement be
+learned:89: answer to 'agreement to arbitrate': i understand and agree to the terms of t
+learned:90: answer to 'have you been employed by adobe in the past?': No
+learned:91: answer to 'proficiency in german': B1 / B2
+learned:92: answer to 'field of study': Electronics and Communication Engineerin
+learned:93: answer to 'please select your ethnicity.': Declined to State (United States of Amer
+file:resume: (the resume file)
+
+PAGE: form
+CONTROLS (the others are already mapped)
+c1  button 'Apply'   [a button]   shows: 'Apply'
+c2  textbox 'First Name'   [a text box, required]
+c3  textbox 'Last Name'   [a text box, required]
+c4  textbox 'Email'   [a text box, required]
+c5  combobox 'Country'   [a search box: type, then pick from the list that appears, required]
+c6  button 'Toggle flyout #1'   [a button]
+c7  button 'Select country'   [a button that opens a list]
+c8  combobox 'Search'   [a search box: type, then pick from the list that appears, placeholder 'Search']
+c9  button 'Clear search'   [a button]
+c10  textbox 'Phone'   [a text box type=tel, required]
+c11  button 'Attach #1'   [a file picker]   shows: 'Attach'
+c12  button 'Attach #2'   [a file picker]
+c13  button 'Dropbox #1'   [a file picker]   shows: 'Dropbox'
+c14  button 'Google Drive #1'   [a file picker]   shows: 'Google Drive'
+c15  button 'Enter manually #1'   [a file picker]   shows: 'Enter manually'
+c16  button 'Attach #3'   [a file picker]   shows: 'Attach'
+c17  button 'Attach #4'   [a file picker]
+c18  button 'Dropbox #2'   [a file picker]   shows: 'Dropbox'
+c19  button 'Google Drive #2'   [a file picker]   shows: 'Google Drive'
+c20  button 'Enter manually #2'   [a file picker]   shows: 'Enter manually'
+c21  textbox 'Website'   [a text box]
+c22  textbox 'LinkedIn Profile'   [a text box]
+c23  textbox 'Publications (e.g. Google Scholar) URL'   [a text box]
+c24  textbox 'GitHub URL'   [a text box]
+c25  textbox 'Other Useful URLs (e.g. Blog Posts)'   [a text box]
+c26  textbox 'When is the earliest you would want to start working with us?'   [a text box]
+c27  textbox 'Do you have any deadlines or timeline considerations we should be aware of?'   [a text box]
+c28  textbox 'What is the address from which you plan on working?'   [a text box, required]
+c29  combobox 'Are you open to relocation for this role?'   [a search box: type, then pick from the list that appears, required]
+c30  button 'Toggle flyout #2'   [a button]
+c31  textbox '(Optional) Personal Preferences'   [a text box]
+c32  combobox 'Are you open to working in-person in one of our offices 25% of the time?'   [a search box: type, then pick from the list that appears, required]
+c33  button 'Toggle flyout #3'   [a button]
+c34  combobox 'AI Policy for Application'   [a search box: type, then pick from the list that appears, required]
+c35  button 'Toggle flyout #4'   [a button]
+c36  textbox 'Why Anthropic?'   [a text area, required]
+c37  combobox "Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?"   [a search box: type, then pick from the list that appears, required]
+c38  button 'Toggle flyout #5'   [a button]
+c39  combobox 'Have you ever interviewed at Anthropic before?'   [a search box: type, then pick from the list that appears, required]
+c40  button 'Toggle flyout #6'   [a button]
+c41  textbox 'Additional Information'   [a text area]
+c42  combobox 'Please read the arbitration agreement below'   [a search box: type, then pick from the list that appears, required]
+c43  button 'Toggle flyout #7'   [a button]
+c44  combobox 'Agreement to Arbitrate'   [a search box: type, then pick from the list that appears, required]
+c45  button 'Toggle flyout #8'   [a button]
+c46  combobox 'Gender'   [a search box: type, then pick from the list that appears]
+c47  button 'Toggle flyout #9'   [a button]
+c48  combobox 'Are you Hispanic/Latino?'   [a search box: type, then pick from the list that appears]
+c49  button 'Toggle flyout #10'   [a button]
+c50  combobox 'Veteran Status'   [a search box: type, then pick from the list that appears]
+c51  button 'Toggle flyout #11'   [a button]
+c52  button 'Submit application'   [a button]   shows: 'Submit application'
+
+LAST ACT ON THIS PAGE
+(none)
+
+PLACEHOLDERS ON THIS PAGE (not the applicant's answers)
+(none)
+
+SNAPSHOT
+- main:
+  - link "Anthropic Logo":
+    - /url: https://www.anthropic.com/jobs
+    - img "Anthropic Logo"
+  - link "Back to jobs":
+    - /url: https://job-boards.greenhouse.io/anthropic
+    - img
+    - text: Back to jobs
+  - heading "Research Engineer, Machine Learning (Reinforcement Learning)" [level=1]
+  - img
+  - text: San Francisco, CA | New York City, NY
+  - [c1] button "Apply"
+  - heading "About Anthropic" [level=2]:
+    - strong: About Anthropic
+  - paragraph: Anthropic’s mission is to create reliable, interpretable, and steerable AI systems. We want AI to be safe and beneficial for our users and for society as a whole. Our team is a quickly growing group of committed researchers, engineers, policy experts, and business leaders working together to build beneficial AI systems.
+  - heading "About the teams" [level=2]
+  - paragraph: "Our Reinforcement Learning teams lead Anthropic's reinforcement learning research and development, playing a critical role in advancing our AI systems. We've contributed to all Claude models, with significant impacts on the autonomy and coding capabilities of Claude Sonnet 4.5 and Opus 4.5. Our work spans several key areas:"
+  - list:
+    - listitem: Developing systems that enable models to use computers effectively
+    - listitem: Advancing code generation through reinforcement learning
+    - listitem: Pioneering fundamental RL research for large language models
+    - listitem: Building scalable RL infrastructure and training methodologies
+    - listitem: Enhancing model reasoning capabilities
+  - paragraph: We collaborate closely with Anthropic's alignment and frontier red teams to ensure our systems are both capable and safe. We partner with the applied production training team to bring research innovations into deployed models, and are dedicated to implement our research at scale. Our Reinforcement Learning teams sit at the intersection of cutting-edge research and engineering excellence, with a deep commitment to building high-quality, scalable systems that push the boundaries of what AI can accomplish.
+  - heading "About the Role" [level=2]
+  - paragraph: As a Research Engineer within Reinforcement Learning, you will collaborate with a diverse group of researchers and engineers to advance the capabilities and safety of large language models. This role blends research and engineering responsibilities, requiring you to both implement novel approaches and contribute to the research direction. You'll work on fundamental research in reinforcement learning, creating 'agentic' models via tool use for open-ended tasks such as computer use and autonomous software generation, improving reasoning abilities in areas such as mathematics, and developing prototypes for internal use, productivity, and evaluation.
+  - heading "Representative projects:" [level=2]
+  - list:
+    - listitem: Architect and optimize core reinforcement learning infrastructure, from clean training abstractions to distributed experiment management across GPU clusters. Help scale our systems to handle increasingly complex research workflows.
+    - listitem: Design, implement, and test novel training environments, evaluations, and methodologies for reinforcement learning agents which push the state of the art for the next generation of models.
+    - listitem: Drive performance improvements across our stack through profiling, optimization, and benchmarking. Implement efficient caching solutions and debug distributed systems to accelerate both training and evaluation workflows.
+    - listitem: Collaborate across research and engineering teams to develop automated testing frameworks, design clean APIs, and build scalable infrastructure that accelerates AI research.
+  - heading "You may be a good fit if you:" [level=2]
+  - list:
+    - listitem: Are proficient in Python and async/concurrent programming with frameworks like Trio
+    - listitem: Have experience with machine learning frameworks (PyTorch, TensorFlow, JAX)
+    - listitem: Have industry experience in machine learning research
+    - listitem: Can balance research exploration with engineering implementation
+    - listitem: Enjoy pair programming (we love to pair!)
+    - listitem: Care about code quality, testing, and performance
+    - listitem: Have strong systems design and communication skills
+    - listitem: Are passionate about the potential impact of AI and are committed to developing safe and beneficial systems
+  - heading "Strong candidates may have:" [level=2]
+  - list:
+    - listitem: Familiarity with LLM architectures and training methodologies
+    - listitem: Experience with reinforcement learning techniques and environments
+    - listitem: Experience with virtualization and sandboxed code execution environments
+    - listitem: Experience with Kubernetes
+    - listitem: Experience with distributed systems or high-performance computing
+    - listitem: Experience with Rust and/or C++
+  - heading "Strong candidates need not have:" [level=2]
+  - list:
+    - listitem: Formal certifications or education credentials
+    - listitem: Academic research experience or publication history
+  - paragraph:
+    - strong: "Deadline to apply:"
+    - text: None. Applications will be reviewed on a rolling basis.
+  - paragraph: The annual compensation range for this role is listed below.
+  - paragraph: For sales roles, the range provided is the role’s On Target Earnings ("OTE") range, meaning that the range includes both the sales commissions/sales bonuses target and annual base salary for the role.
+  - paragraph: "Annual Salary:"
+  - paragraph: $500,000 - $850,000 USD
+  - heading "Logistics" [level=2]:
+    - strong: Logistics
+  - paragraph:
+    - strong: "Minimum education:"
+    - text: Bachelor’s degree or an equivalent combination of education, training, and/or experience
+  - paragraph:
+    - strong: "Required field of study:"
+    - text: A field relevant to the role as demonstrated through coursework, training, or professional experience
+  - paragraph:
+    - strong: "Minimum years of experience:"
+    - text: Years of experience required will correlate with the internal job level requirements for the position
+  - paragraph:
+    - strong: "Location-based hybrid policy:"
+    - text: Currently, we expect all staff to be in one of our offices at least 25% of the time. However, some roles may require more time in our offices.
+  - paragraph:
+    - strong: "Visa sponsorship:"
+    - text: We do sponsor visas! However, we aren't able to successfully sponsor visas for every role and every candidate. But if we make you an offer, we will make every reasonable effort to get you a visa, and we retain an immigration lawyer to help with this.
+  - paragraph:
+    - strong: We encourage you to apply even if you do not believe you meet every single qualification.
+    - text: Not all strong candidates will meet every single qualification as listed. Research shows that people who identify as being from underrepresented groups are more prone to experiencing imposter syndrome and doubting the strength of their candidacy, so we urge you not to exclude yourself prematurely and to submit an application if you're interested in this work. We think AI systems like the ones we're building have enormous social and ethical implications. We think this makes representation even more important, and we strive to include a range of diverse perspectives on our team.
+    - strong: Your safety matters to us.
+    - text: To protect yourself from potential scams, remember that Anthropic recruiters only contact you from @anthropic.com email addresses. In some cases, we may partner with vetted recruiting agencies who will identify themselves as working on behalf of Anthropic. Be cautious of emails from other domains. Legitimate Anthropic recruiters will never ask for money, fees, or banking information before your first day. If you're ever unsure about a communication, don't click any links—visit
+    - link "anthropic.com/careers":
+      - /url: http://anthropic.com/careers
+    - text: directly for confirmed position openings.
+  - heading "How we're different" [level=2]:
+    - strong: How we're different
+  - paragraph: We believe that the highest-impact AI research will be big science. At Anthropic we work as a single cohesive team on just a few large-scale research efforts. And we value impact — advancing our long-term goals of steerable, trustworthy AI — rather than work on smaller and more specific puzzles. We view AI research as an empirical science, which has as much in common with physics and biology as with traditional efforts in computer science. We're an extremely collaborative group, and we host frequent research discussions to ensure that we are pursuing the highest-impact work at any given time. As such, we greatly value communication skills.
+  - paragraph: "The easiest way to understand our research directions is to read our recent research. This research continues many of the directions our team worked on prior to Anthropic, including: GPT-3, Circuit-Based Interpretability, Multimodal Neurons, Scaling Laws, AI & Compute, Concrete Problems in AI Safety, and Learning from Human Preferences."
+  - heading "Come work with us!" [level=2]:
+    - strong: Come work with us!
+  - paragraph:
+    - text: Anthropic is a public benefit corporation headquartered in San Francisco. We offer competitive compensation and benefits, optional equity donation matching, generous vacation and parental leave, flexible working hours, and a lovely office space in which to collaborate with colleagues.
+    - strong: "Guidance on Candidates' AI Usage:"
+    - text: Learn about
+    - link "our policy":
+      - /url: https://www.anthropic.com/candidate-ai-guidance
+    - text: for using AI in our application process.
+  - img
+  - paragraph: Create a Job Alert
+  - paragraph: Interested in building your career at Anthropic? Get future opportunities sent straight to your email.
+  - link "Create alert":
+    - /url: https://my.greenhouse.io/users/sign_in?job_board=anthropic&source=job_alert_post
+  - separator
+  - heading "Apply for this job" [level=2]
+  - paragraph: "*"
+  - paragraph: indicates a required field
+  - text: First Name
+  - [c2] textbox "First Name"
+  - text: Last Name
+  - [c3] textbox "Last Name"
+  - text: Email
+  - [c4] textbox "Email"
+  - group "Phone":
+    - text: Phone Country
+    - log
+    - [c5] combobox "Country"
+    - [c6] button "Toggle flyout":
+      - img
+    - text: Phone
+    - [c7] button "Select country"
+    - dialog:
+      - [c8] combobox "Search" [expanded]
+      - [c9] button "Clear search"
+      - text: 244 results found
+      - listbox "List of countries":
+        - option "Afghanistan+93"
+        - option "Åland Islands+358"
+        - option "Albania+355"
+        - option "Algeria+213"
+        - option "American Samoa+1"
+        - option "Andorra+376"
+        - option "Angola+244"
+        - option "Anguilla+1"
+        - option "Antigua & Barbuda+1"
+        - option "Argentina+54"
+        - option "Armenia+374"
+        - option "Aruba+297"
+        - option "Ascension Island+247"
+        - option "Australia+61"
+        - option "Austria+43"
+        - option "Azerbaijan+994"
+        - option "Bahamas+1"
+        - option "Bahrain+973"
+        - option "Bangladesh+880"
+        - option "Barbados+1"
+        - option "Belarus+375"
+        - option "Belgium+32"
+        - option "Belize+501"
+        - option "Benin+229"
+        - option "Bermuda+1"
+        - option "Bhutan+975"
+        - option "Bolivia+591"
+        - option "Bosnia & Herzegovina+387"
+        - option "Botswana+267"
+        - option "Brazil+55"
+        - option "British Indian Ocean Territory+246"
+        - option "British Virgin Islands+1"
+        - option "Brunei+673"
+        - option "Bulgaria+359"
+        - option "Burkina Faso+226"
+        - option "Burundi+257"
+        - option "Cambodia+855"
+        - option "Cameroon+237"
+        - option "Canada+1"
+        - option "Cape Verde+238"
+        - option "Caribbean Netherlands+599"
+        - option "Cayman Islands+1"
+        - option "Central African Republic+236"
+        - option "Chad+235"
+        - option "Chile+56"
+        - option "China+86"
+        - option "Christmas Island+61"
+        - option "Cocos (Keeling) Islands+61"
+        - option "Colombia+57"
+        - option "Comoros+269"
+        - option "Congo - Brazzaville+242"
+        - option "Congo - Kinshasa+243"
+        - option "Cook Islands+682"
+        - option "Costa Rica+506"
+        - option "Côte d’Ivoire+225"
+        - option "Croatia+385"
+        - option "Cuba+53"
+        - option "Curaçao+599"
+        - option "Cyprus+357"
+        - option "Czechia+420"
+        - option "Denmark+45"
+        - option "Djibouti+253"
+        - option "Dominica+1"
+        - option "Dominican Republic+1"
+        - option "Ecuador+593"
+        - option "Egypt+20"
+        - option "El Salvador+503"
+        - option "Equatorial Guinea+240"
+        - option "Eritrea+291"
+        - option "Estonia+372"
+        - option "Eswatini+268"
+        - option "Ethiopia+251"
+        - option "Falkland Islands+500"
+        - option "Faroe Islands+298"
+        - option "Fiji+679"
+        - option "Finland+358"
+        - option "France+33"
+        - option "French Guiana+594"
+        - option "French Polynesia+689"
+        - option "Gabon+241"
+        - option "Gambia+220"
+        - option "Georgia+995"
+        - option "Germany+49"
+        - option "Ghana+233"
+        - option "Gibraltar+350"
+        - option "Greece+30"
+        - option "Greenland+299"
+        - option "Grenada+1"
+        - option "Guadeloupe+590"
+        - option "Guam+1"
+        - option "Guatemala+502"
+        - option "Guernsey+44"
+        - option "Guinea+224"
+        - option "Guinea-Bissau+245"
+        - option "Guyana+592"
+        - option "Haiti+509"
+        - option "Honduras+504"
+        - option "Hong Kong SAR China+852"
+        - option "Hungary+36"
+        - option "Iceland+354"
+        - option "India+91"
+        - option "Indonesia+62"
+        - option "Iran+98"
+        - option "Iraq+964"
+        - option "Ireland+353"
+        - option "Isle of Man+44"
+        - option "Israel+972"
+        - option "Italy+39"
+        - option "Jamaica+1"
+        - option "Japan+81"
+        - option "Jersey+44"
+        - option "Jordan+962"
+        - option "Kazakhstan+7"
+        - option "Kenya+254"
+        - option "Kiribati+686"
+        - option "Kosovo+383"
+        - option "Kuwait+965"
+        - option "Kyrgyzstan+996"
+        - option "Laos+856"
+        - option "Latvia+371"
+        - option "Lebanon+961"
+        - option "Lesotho+266"
+        - option "Liberia+231"
+        - option "Libya+218"
+        - option "Liechtenstein+423"
+        - option "Lithuania+370"
+        - option "Luxembourg+352"
+        - option "Macao SAR China+853"
+        - option "Madagascar+261"
+        - option "Malawi+265"
+        - option "Malaysia+60"
+        - option "Maldives+960"
+        - option "Mali+223"
+        - option "Malta+356"
+        - option "Marshall Islands+692"
+        - option "Martinique+596"
+        - option "Mauritania+222"
+        - option "Mauritius+230"
+        - option "Mayotte+262"
+        - option "Mexico+52"
+        - option "Micronesia+691"
+        - option "Moldova+373"
+        - option "Monaco+377"
+        - option "Mongolia+976"
+        - option "Montenegro+382"
+        - option "Montserrat+1"
+        - option "Morocco+212"
+        - option "Mozambique+258"
+        - option "Myanmar (Burma)+95"
+        - option "Namibia+264"
+        - option "Nauru+674"
+        - option "Nepal+977"
+        - option "Netherlands+31"
+        - option "New Caledonia+687"
+        - option "New Zealand+64"
+        - option "Nicaragua+505"
+        - option "Niger+227"
+        - option "Nigeria+234"
+        - option "Niue+683"
+        - option "Norfolk Island+672"
+        - option "North Korea+850"
+        - option "North Macedonia+389"
+        - option "Northern Mariana Islands+1"
+        - option "Norway+47"
+        - option "Oman+968"
+        - option "Pakistan+92"
+        - option "Palau+680"
+        - option "Palestinian Territories+970"
+        - option "Panama+507"
+        - option "Papua New Guinea+675"
+        - option "Paraguay+595"
+        - option "Peru+51"
+        - option "Philippines+63"
+        - option "Poland+48"
+        - option "Portugal+351"
+        - option "Puerto Rico+1"
+        - option "Qatar+974"
+        - option "Réunion+262"
+        - option "Romania+40"
+        - option "Russia+7"
+        - option "Rwanda+250"
+        - option "Samoa+685"
+        - option "San Marino+378"
+        - option "São Tomé & Príncipe+239"
+        - option "Saudi Arabia+966"
+        - option "Senegal+221"
+        - option "Serbia+381"
+        - option "Seychelles+248"
+        - option "Sierra Leone+232"
+        - option "Singapore+65"
+        - option "Sint Maarten+1"
+        - option "Slovakia+421"
+        - option "Slovenia+386"
+        - option "Solomon Islands+677"
+        - option "Somalia+252"
+        - option "South Africa+27"
+        - option "South Korea+82"
+        - option "South Sudan+211"
+        - option "Spain+34"
+        - option "Sri Lanka+94"
+        - option "St. Barthélemy+590"
+        - option "St. Helena+290"
+        - option "St. Kitts & Nevis+1"
+        - option "St. Lucia+1"
+        - option "St. Martin+590"
+        - option "St. Pierre & Miquelon+508"
+        - option "St. Vincent & Grenadines+1"
+        - option "Sudan+249"
+        - option "Suriname+597"
+        - option "Svalbard & Jan Mayen+47"
+        - option "Sweden+46"
+        - option "Switzerland+41"
+        - option "Syria+963"
+        - option "Taiwan+886"
+        - option "Tajikistan+992"
+        - option "Tanzania+255"
+        - option "Thailand+66"
+        - option "Timor-Leste+670"
+        - option "Togo+228"
+        - option "Tokelau+690"
+        - option "Tonga+676"
+        - option "Trinidad & Tobago+1"
+        - option "Tunisia+216"
+        - option "Turkey+90"
+        - option "Turkmenistan+993"
+        - option "Turks & Caicos Islands+1"
+        - option "Tuvalu+688"
+        - option "U.S. Virgin Islands+1"
+        - option "Uganda+256"
+        - option "Ukraine+380"
+        - option "United Arab Emirates+971"
+        - option "United Kingdom+44"
+        - option "United States+1"
+        - option "Uruguay+598"
+        - option "Uzbekistan+998"
+        - option "Vanuatu+678"
+        - option "Vatican City+39"
+        - option "Venezuela+58"
+        - option "Vietnam+84"
+        - option "Wallis & Futuna+681"
+        - option "Western Sahara+212"
+        - option "Yemen+967"
+        - option "Zambia+260"
+        - option "Zimbabwe+263"
+    - [c10] textbox "Phone"
+  - group "Resume/CV*":
+    - text: Resume/CV*
+    - [c11] button "Attach"
+    - text: Attach
+    - [c12] button "Attach"
+    - [c13] button "Dropbox"
+    - [c14] button "Google Drive"
+    - [c15] button "Enter manually"
+    - text: Enter manually
+    - paragraph: "Accepted file types: pdf, doc, docx, txt, rtf"
+  - group "Cover Letter":
+    - text: Cover Letter
+    - [c16] button "Attach"
+    - text: Attach
+    - [c17] button "Attach"
+    - [c18] button "Dropbox"
+    - [c19] button "Google Drive"
+    - [c20] button "Enter manually"
+    - text: Enter manually
+    - paragraph: "Accepted file types: pdf, doc, docx, txt, rtf"
+  - separator
+  - text: Website
+  - [c21] textbox "Website"
+  - text: LinkedIn Profile
+  - [c22] textbox "LinkedIn Profile"
+  - paragraph:
+    - text: Please ensure to provide
+    - emphasis: either
+    - text: your LinkedIn profile or Resume, we require at least one of the two.
+  - text: Publications (e.g. Google Scholar) URL
+  - [c23] textbox "Publications (e.g. Google Scholar) URL"
+  - text: GitHub URL
+  - [c24] textbox "GitHub URL"
+  - text: Other Useful URLs (e.g. Blog Posts)
+  - [c25] textbox "Other Useful URLs (e.g. Blog Posts)"
+  - text: When is the earliest you would want to start working with us?
+  - [c26] textbox "When is the earliest you would want to start working with us?"
+  - text: Do you have any deadlines or timeline considerations we should be aware of?
+  - [c27] textbox "Do you have any deadlines or timeline considerations we should be aware of?"
+  - text: What is the address from which you plan on working?
+  - [c28] textbox "What is the address from which you plan on working?"
+  - paragraph: If you would need to relocate, please answer in the text box below.
+  - text: Are you open to relocation for this role?
+  - log
+  - text: Select...
+  - [c29] combobox "Are you open to relocation for this role?"
+  - [c30] button "Toggle flyout":
+    - img
+  - text: (Optional) Personal Preferences
+  - [c31] textbox "(Optional) Personal Preferences"
+  - paragraph: How do you pronounce your name?
+  - text: Are you open to working in-person in one of our offices 25% of the time?
+  - log
+  - text: Select...
+  - [c32] combobox "Are you open to working in-person in one of our offices 25% of the time?"
+  - [c33] button "Toggle flyout":
+    - img
+  - text: AI Policy for Application
+  - log
+  - text: Select...
+  - [c34] combobox "AI Policy for Application"
+  - [c35] button "Toggle flyout":
+    - img
+  - paragraph:
+    - text: We believe that AI will have a transformative impact on the world, and we’re seeking exceptional candidates who collaborate thoughtfully with Claude to realize this vision. At the same time, we want to understand your unique skills, expertise, and perspective through our hiring process. We invite you to review our
+    - link "AI partnership guidelines for candidates":
+      - /url: https://www.anthropic.com/candidate-ai-guidance
+    - text: and confirm your understanding by selecting “Yes.”
+  - text: Why Anthropic?
+  - [c36] textbox "Why Anthropic?"
+  - paragraph: Why do you want to work at Anthropic? (We value this response highly - great answers are often 200-400 words.)
+  - text: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?
+  - log
+  - text: Select...
+  - [c37] combobox "Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?"
+  - [c38] button "Toggle flyout":
+    - img
+  - text: Have you ever interviewed at Anthropic before?
+  - log
+  - text: Select...
+  - [c39] combobox "Have you ever interviewed at Anthropic before?"
+  - [c40] button "Toggle flyout":
+    - img
+  - text: Additional Information
+  - [c41] textbox "Additional Information"
+  - paragraph: Add anything else you want to share.
+  - text: Please read the arbitration agreement below
+  - log
+  - text: Select...
+  - [c42] combobox "Please read the arbitration agreement below"
+  - [c43] button "Toggle flyout":
+    - img
+  - paragraph
+  - paragraph:
+    - strong:
+      - emphasis: Agreement to Arbitrate
+  - paragraph:
+    - emphasis: I understand and agree that both Anthropic and I waive our respective rights to trial by jury in connection with any claims covered by this agreement to arbitrate. Instead, any disputes arising out of or related to my application for employment with Anthropic shall be settled by final and binding arbitration pursuant to the Federal Arbitration Act. I understand and agree that Anthropic’s employees/agents, Anthropic’s clients, and their employees/agents are third-party beneficiaries to this agreement.
+  - paragraph:
+    - emphasis: The arbitration shall be conducted in accordance with the Employment Arbitration Rules & Procedures of Judicial Arbitration and Mediation Services, Inc. (“JAMS Rules”), available via the internet at
+    - link "https://www.jamsadr.com/rules-employment-arbitration":
+      - /url: https://www.jamsadr.com/rules-employment-arbitration
+      - emphasis: https://www.jamsadr.com/rules-employment-arbitration
+    - emphasis: or by searching for “JAMS Employment Arbitration Rules” in an online search service such as
+    - link "www.google.com":
+      - /url: http://www.google.com/
+      - emphasis: www.google.com
+    - emphasis: . To the extent the JAMS Rules are inconsistent with the terms of this Agreement, this Agreement shall govern to the extent permitted by law. The parties will select one neutral arbitrator, who will have the authority to award all relief in law or equity that is requested by the parties and supported by credible, relevant, and admissible evidence. The arbitrator shall allow adequate discovery and issue a written, signed, and reasoned award. Judgement may be entered on the arbitrator’s award in any court having jurisdiction, and the award shall be subject to correction, confirmation, or vacation as provided by the applicable law concerning judicial review of arbitration awards. Anthropic will bear the costs that are particular to the arbitration, such as the arbitrator fees. The arbitrator will apply the substantive law of the state in which I sought employment with Anthropic. The arbitrator will determine the arbitration venue, based on fairness and convenience to the parties and witnesses, unless otherwise mutually agreed upon by the parties. The Party initiating a claim under this Agreement must make a written demand for arbitration to the other Party. The demand for arbitration shall identify the claims asserted, the facts upon which such claims are based, and any relief or remedy sought. Written demand for arbitration to Anthropic must be sent to Anthropic PBC at
+    - link "arbdemands@anthropic.com":
+      - /url: mailto:arbdemands@anthropic.com
+      - emphasis: arbdemands@anthropic.com
+    - emphasis: . Anthropic’s demand for arbitration shall be sent to the most recent mailing address and/or email address that Anthropic has on file for you.
+  - paragraph:
+    - emphasis: This agreement to arbitrate does not apply to claims for workers’ compensation, unemployment compensation benefits, claims or charges before any administrative agency having jurisdiction over such claims, or any other claim that is not subject to arbitration under federal law. If any claims are deemed non-arbitrable, then those claims will be stayed until resolution of any arbitrable claims.
+  - paragraph:
+    - emphasis: I understand and agree that, except where prohibited by federal law, all claims subject to this agreement to arbitrate must be pursued on an individual basis, and that both I and Anthropic waive any right to bring or be a party to any class or collective action. I agree that any issues pertaining to the enforceability, application or validity of this agreement to arbitrate shall be decided only by a court of competent jurisdiction and not by an arbitrator. This agreement to arbitrate applies only in the United States.
+  - text: Agreement to Arbitrate
+  - log
+  - text: Select...
+  - [c44] combobox "Agreement to Arbitrate"
+  - [c45] button "Toggle flyout":
+    - img
+  - separator
+  - heading "Voluntary Self-Identification" [level=2]
+  - paragraph: For government reporting purposes, we ask candidates to respond to the below self-identification survey. Completion of the form is entirely voluntary. Whatever your decision, it will not be considered in the hiring process or thereafter. Any information that you do provide will be recorded and maintained in a confidential file.
+  - paragraph: As set forth in Anthropic’s Equal Employment Opportunity policy, we do not discriminate on the basis of any protected group status under any applicable law.
+  - text: Gender
+  - log
+  - text: Select...
+  - [c46] combobox "Gender"
+  - [c47] button "Toggle flyout":
+    - img
+  - text: Are you Hispanic/Latino?
+  - log
+  - text: Select...
+  - [c48] combobox "Are you Hispanic/Latino?"
+  - [c49] button "Toggle flyout":
+    - img
+  - link "Race & Ethnicity Definitions":
+    - /url: https://job-boards.cdn.greenhouse.io/docs/2023/RaceEthnicityDefinitions.pdf
+  - paragraph: "If you believe you belong to any of the categories of protected veterans listed below, please indicate by making the appropriate selection. As a government contractor subject to the Vietnam Era Veterans Readjustment Assistance Act (VEVRAA), we request this information in order to measure the effectiveness of the outreach and positive recruitment efforts we undertake pursuant to VEVRAA. Classification of protected categories is as follows:"
+  - paragraph: "A \"disabled veteran\" is one of the following: a veteran of the U.S. military, ground, naval or air service who is entitled to compensation (or who but for the receipt of military retired pay would be entitled to compensation) under laws administered by the Secretary of Veterans Affairs; or a person who was discharged or released from active duty because of a service-connected disability."
+  - paragraph: A "recently separated veteran" means any veteran during the three-year period beginning on the date of such veteran's discharge or release from active duty in the U.S. military, ground, naval, or air service.
+  - paragraph: An "active duty wartime or campaign badge veteran" means a veteran who served on active duty in the U.S. military, ground, naval or air service during a war, or in a campaign or expedition for which a campaign badge has been authorized under the laws administered by the Department of Defense.
+  - paragraph: An "Armed forces service medal veteran" means a veteran who, while serving on active duty in the U.S. military, ground, naval or air service, participated in a United States military operation for which an Armed Forces service medal was awarded pursuant to Executive Order 12985.
+  - text: Veteran Status
+  - log
+  - text: Select...
+  - [c50] combobox "Veteran Status"
+  - [c51] button "Toggle flyout":
+    - img
+  - [c52] button "Submit application"
+- contentinfo:
+  - paragraph: Powered by
+  - link "Greenhouse logo":
+    - /url: https://www.greenhouse.com
+    - img "Greenhouse logo"
+- iframe

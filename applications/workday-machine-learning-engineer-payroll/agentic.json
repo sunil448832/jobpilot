@@ -1,0 +1,156 @@
+{
+ "slug": "workday-machine-learning-engineer-payroll",
+ "platform": "workday",
+ "at": "2026-09-28T13:32:05",
+ "outcome": "last-page",
+ "note": "Replay redid My Information and My Experience. Application Questions 1-2 and Voluntary Disclosures filled; guesses set for Workday-system use, US govt employee, related-to-customer, Ernst & Young. Today's date day field: tried to set 28 (was 20) but it shows empty; page moved on anyway — verify date on review.",
+ "pages": [
+  "Careers at Workday",
+  "my information",
+  "my experience",
+  "application questions 1 of 2",
+  "application questions 2 of 2",
+  "voluntary disclosures",
+  "review"
+ ],
+ "filled": {
+  "my information :: radio 'No'": "false",
+  "my information :: button 'Country / Territory India Required'": "India",
+  "my information :: button 'Phone Device Type Mobile Required'": "Mobile",
+  "my information :: textbox 'Country / Territory Phone Code'": "1 item selected, India (+91); India (+91)",
+  "my information :: textbox 'Given Name(s)'": "Sunil",
+  "my information :: textbox 'Middle Name'": "Kumar",
+  "my information :: textbox 'Family Name'": "Sharma",
+  "my information :: textbox 'Local Given Name(s)'": "Sunil",
+  "my information :: textbox 'Local Middle Name'": "Kumar",
+  "my information :: textbox 'Local Family Name'": "Sharma",
+  "my information :: textbox 'Address Line 1'": "Delhi",
+  "my information :: textbox 'City'": "Delhi",
+  "my information :: textbox 'Postal Code'": "110019",
+  "my information :: textbox 'Phone Number'": "096412 98471",
+  "my experience :: checkbox 'I currently work here #1'": "on",
+  "my experience :: textbox 'School or University #1'": "1 item selected, Indian Institute of Technology, Jodhpur; Indian Institute of Te",
+  "my experience :: textbox 'Field of Study #1'": "1 item selected, Artificial Intelligence and Robotics; Artificial Intelligence a",
+  "my experience :: textbox 'School or University #2'": "1 item selected, Sikkim Manipal Institute of Technology; Sikkim Manipal Institut",
+  "my experience :: button 'Degree Bachelor of Engineering Required'": "Bachelor of Engineering",
+  "my experience :: textbox 'Field of Study #2'": "1 item selected, Electrical Engineering; Electrical Engineering",
+  "my experience :: button 'Delete sunil_resume.docx'": "",
+  "my experience :: textbox 'Job Title #1'": "Senior Data Scientist",
+  "my experience :: textbox 'Company #1'": "Aria Intelligent Solutions",
+  "my experience :: textbox 'Location #1'": "India",
+  "my experience :: spinbutton 'Month #1'": "12",
+  "my experience :: spinbutton 'Year #1'": "2023",
+  "my experience :: textbox 'Role Description #1'": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing t",
+  "my experience :: textbox 'Job Title #2'": "Applied Scientist I",
+  "my experience :: textbox 'Company #2'": "Amazon Development Centre (India) Pvt. Ltd.",
+  "my experience :: textbox 'Location #2'": "India",
+  "my experience :: spinbutton 'Month #2'": "10",
+  "my experience :: spinbutton 'Year #2'": "2022",
+  "my experience :: spinbutton 'Month #3'": "6",
+  "my experience :: spinbutton 'Year #3'": "2023",
+  "my experience :: textbox 'Role Description #2'": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; in",
+  "my experience :: textbox 'Job Title #3'": "Computer Vision Engineer",
+  "my experience :: textbox 'Company #3'": "Beltech AI Pvt. Ltd.",
+  "my experience :: textbox 'Location #3'": "India",
+  "my experience :: spinbutton 'Month #4'": "7",
+  "my experience :: spinbutton 'Year #4'": "2021",
+  "my experience :: spinbutton 'Month #5'": "9",
+  "my experience :: spinbutton 'Year #5'": "2022",
+  "my experience :: textbox 'Role Description #3'": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gall",
+  "my experience :: textbox 'URL #1'": "https://huggingface.co/sunil448832",
+  "my experience :: textbox 'URL #2'": "https://github.com/sunil448832",
+  "my experience :: textbox 'LinkedIn'": "https://www.linkedin.com/in/sunil4832sharma",
+  "application questions 1 of 2 :: button 'Yes, I would consider relocating for this role Required'": "Yes, I would consider relocating for this role",
+  "application questions 1 of 2 :: button 'No Required #1'": "No",
+  "application questions 1 of 2 :: button 'No Required #2'": "No",
+  "application questions 1 of 2 :: button 'Yes Required #1'": "Yes",
+  "application questions 1 of 2 :: button 'No Required #4'": "No",
+  "application questions 1 of 2 :: button 'No Required #5'": "No",
+  "application questions 1 of 2 :: button 'Yes Required #2'": "Yes",
+  "application questions 2 of 2 :: button 'I have read and agree to the Non Disclosure Agreement Required'": "I have read and agree to the Non Disclosure Agreement",
+  "application questions 2 of 2 :: button 'I have read and agree to the Mutual Arbitration Agreement Required'": "I have read and agree to the Mutual Arbitration Agreement",
+  "application questions 2 of 2 :: textbox ''": "Sunil Kumar Sharma",
+  "application questions 2 of 2 :: spinbutton 'Month'": "9",
+  "application questions 2 of 2 :: spinbutton 'Day'": "left empty (optional, nothing stored)",
+  "application questions 2 of 2 :: spinbutton 'Year'": "2026",
+  "voluntary disclosures :: button 'Gender: Male'": "Male",
+  "voluntary disclosures :: button 'Ethnicity (Single Selection): Decline to Answer (United States of America)'": "Decline to Answer (United States of America)",
+  "voluntary disclosures :: button 'Veterans Status I AM NOT A VETERAN'": "I AM NOT A VETERAN",
+  "voluntary disclosures :: checkbox 'I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy.'": "checked"
+ },
+ "placeholders": {
+  "How Did You Hear About Us?": {
+   "used": "Socially",
+   "field": "textbox 'How Did You Hear About Us?'",
+   "candidates": [
+    "Socially",
+    "Website",
+    "Advertisement"
+   ],
+   "page": "my information"
+  },
+  "Degree — Education 1 (Indian Institute of Technology, Jodhpur)": {
+   "used": "Master of Science",
+   "field": "button 'Degree Master of Science Required'",
+   "candidates": [
+    "Master of Science",
+    "Post Graduate Diploma",
+    "Graduate Diploma"
+   ],
+   "page": "my experience"
+  },
+  "In your current job, do you use or work on the Workday system?": {
+   "used": "No, I do not use the Workday system in my current job",
+   "field": "button 'No, I do not use the Workday system in my current job Required'",
+   "candidates": [
+    "No, I do not use the Workday system in my current job",
+    "Yes, I occasionally use the Workday system in my current job (to complete items such as: review benefit elections, retrieve paystubs and compensation details, submit payroll and time-tracking requirements, and other typical worker tasks)"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "Are you a current or former employee of the United States government?": {
+   "used": "No",
+   "field": "button 'No Required #3'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "To the best of your knowledge, are you related to an employee of a customer, or a government official, who has direct business interactions with Workday?": {
+   "used": "No",
+   "field": "button 'No Required #6'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions 1 of 2"
+  },
+  "Are you a current or recent former employee of Ernst & Young, LLP, or a current or former partner or principal of Ernst & Young, LLP?": {
+   "used": "No",
+   "field": "button 'No Required #7'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions 1 of 2"
+  }
+ },
+ "submit_control": {
+  "page": "review",
+  "role": "button",
+  "name": "Submit",
+  "nth": 1,
+  "group": "",
+  "above": "I acknowledge Workday’s Recruitment Privacy Statement and VIBE Philosophy. Yes",
+  "qn": 1
+ },
+ "calls": "applications/workday-machine-learning-engineer-payroll/calls.json",
+ "tool_calls": 16,
+ "seconds": 314,
+ "model": "opus",
+ "effort": "low",
+ "turns": 17,
+ "cost_usd": 0.2467752,
+ "transcript": "tests/maps/workday-machine-learning-engineer-payroll/agentic-0928-1326.log"
+}

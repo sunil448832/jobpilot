@@ -1,0 +1,1 @@
+[["c1","select","screening.over_18"],["c7","select","option:I have not worked for Adobe in the past."],["c8","select","screening.agree_to_background_check"],["c10","select","work_authorization.us.authorized_without_sponsorship"],["c12","select","location.willing_to_relocate"],["c14","select","work_authorization.us.requires_sponsorship"],["c17","select","next"]]

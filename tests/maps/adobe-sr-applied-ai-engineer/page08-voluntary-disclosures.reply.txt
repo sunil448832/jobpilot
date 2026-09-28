@@ -1,0 +1,1 @@
+[["c1", "select", "eeo.veteran_status"], ["c3", "select", "eeo.gender"], ["c5", "select", "option:Declined to State (United States of America)"], ["c7", "select", "screening.confirm_form_statements"], ["c9", "select", "next"]]

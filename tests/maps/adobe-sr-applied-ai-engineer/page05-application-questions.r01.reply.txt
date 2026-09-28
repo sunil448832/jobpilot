@@ -1,0 +1,1 @@
+[["c1","select","screening.over_18"],["c6","select","screening.previously_employed_here"],["c7","select","screening.agree_to_background_check"],["c8","select","work_authorization.us.authorized_without_sponsorship"],["c9","select","location.willing_to_relocate"],["c10","select","work_authorization.us.requires_sponsorship"],["c12","select","next"]]

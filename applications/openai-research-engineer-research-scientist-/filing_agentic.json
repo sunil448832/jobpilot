@@ -1,0 +1,28 @@
+{
+ "slug": "openai-research-engineer-research-scientist-",
+ "mode": "submit",
+ "outcome": "refused",
+ "why": "autofill key application fields.\n\nUpload file\nThis job has application limits\n\nPlease Note: we have set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span.\n\nLegal",
+ "redo": {
+  "redone": [],
+  "at": "Research Engineer / Research Scientist- Personal AGI (Post T",
+  "end": false,
+  "why": "it differs from the record",
+  "differs": [
+   "c18 button 'Yes': should hold 'Yes', holds 'on'"
+  ]
+ },
+ "agent": "resume",
+ "agent_cost_usd": 0.181,
+ "screenshot": "data/queue/openai-research-engineer-research-scientist--submitted-0928-1518.png",
+ "seconds": 64,
+ "new_placeholders": {},
+ "presses": [
+  {
+   "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
+   "button": "Submit Application",
+   "outcome": "refused",
+   "detail": "autofill key application fields.\n\nUpload file\nThis job has application limits\n\nPlease Note: we have set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span.\n\nLegal"
+  }
+ ]
+}

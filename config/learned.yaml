@@ -1069,3 +1069,50 @@ answers:
   - technology
   answer: Electrical Engineering
   source: answered by Sunil on the Adobe form, 2026-09-28
+- match: would you now or at any time require employer sponsorship to work in switzerland?
+  keywords:
+  - would
+  - now
+  - time
+  - require
+  - employer
+  - sponsorship
+  - work
+  - switzerland
+  answer: 'Yes'
+  source: answered by Sunil on the Sonarsource form, 2026-09-28
+- match: are you eligible to work in switzerland or would you require sponsorship?
+  keywords:
+  - eligible
+  - work
+  - switzerland
+  - would
+  - require
+  - sponsorship
+  answer: I require sponsorship
+  source: answered by Sunil on the Sonarsource form, 2026-09-28
+- match: are you willing to work from the geneva office 3-4 days a week (5 days during the
+    1st onboarding month)?
+  keywords:
+  - willing
+  - work
+  - from
+  - geneva
+  - office
+  - 3-4
+  - days
+  - week
+  answer: 'Yes'
+  source: answered by Sunil on the Sonarsource form, 2026-09-28
+- match: are you able to work from our us office three days per week?
+  keywords:
+  - able
+  - work
+  - from
+  - our
+  - office
+  - three
+  - days
+  - per
+  answer: 'Yes'
+  source: answered by Sunil on the Openai form, 2026-09-28

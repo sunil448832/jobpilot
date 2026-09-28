@@ -196,7 +196,7 @@ def scaffold(company, jd, force=False, market=None):
     print(f"  [scaffold] JD.md written ({len(jd['text'])} chars)")
     # The application's exploration record (explore/record.py): exploration writes
     # each page's map and actions into it, submit replays them.
-    from jobpilot.apply.explore import record
+    from jobpilot.apply.explore_agentic import record
     record.ensure(company, jd["apply_url"], portal)
     print("  [scaffold] explore.json")
     set_location(dest, market)

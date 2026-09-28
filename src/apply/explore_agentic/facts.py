@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """
-facts.py — the applicant's facts for ONE job, by key: what the map (mapper.py)
+facts.py — the applicant's facts for ONE job, by key: what the form agent (session.py)
 may point a form's question at. A key, never a value, goes through Claude; the
 value is looked up here when the code acts.
 
     answers.yaml, flattened     personal.first_name, work_authorization.eu.requires_sponsorship, ...
     job.company / job.location / job.market
-                                the job itself, so the map picks the right row
+                                the job itself, so the agent picks the right row
                                 (a Germany job -> the eu row) — no rules in code
+    job.today (.year .month .day)   the day the form is filled or filed
     learned:<n>                 an answer he gave on an earlier form (learned.yaml)
     file:resume                 the resume file built for this application
 
 Salary rows of other markets are left out: only this market's asking figure applies.
 """
+import datetime as dt
 import re
 
 SKIP = re.compile(r"^(portal_routing\.|files\.)|(password|token|secret|api_?key)", re.I)
@@ -47,6 +49,9 @@ def job_facts(answers, ctx, learned=None, resume=None):
     own = f"compensation.by_market.{market}." if market in by_market else "compensation.default."
     facts = {"job.company": ctx.get("company", ""), "job.location": ctx.get("location", ""),
              "job.market": market}
+    today = dt.date.today()                      # "today's date" on a form: the day it is filled or filed
+    facts.update({"job.today": today.isoformat(), "job.today.year": str(today.year),
+                  "job.today.month": f"{today.month:02d}", "job.today.day": f"{today.day:02d}"})
     for k, v in flatten(answers).items():
         if SKIP.search(k) or NOT_A_VALUE.match(v):
             continue
@@ -71,13 +76,6 @@ def pay_text(answers, market):
     """This market's asking salary, as the review page shows it."""
     comp = answers.get("compensation") or {}
     return ((comp.get("by_market") or {}).get(market) or comp.get("default") or {}).get("expected_text", "")
-
-
-def keys_for_prompt(facts, learned=None):
-    """Only the keys of the answers file and the job — for a correction round, where
-    each error already quotes the value in question. Learned answers are left out:
-    a correction fixes a kind, a name or a choice, not which answer applies."""
-    return "\n".join(k for k in facts if not k.startswith("learned:"))
 
 
 def for_prompt(facts, learned=None):

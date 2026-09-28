@@ -1,4 +1,4 @@
-"""tests/test_agents.py — the agents folder (src/agents) and the facts the map agent sees.
+"""tests/test_agents.py — the agents folder (src/agents) and the facts the form agent sees.
 
   1. every agent renders: no unfilled param; tools and flags resolve
   2. facts for one job: the answers file flattened, only this market's salary, no
@@ -10,7 +10,7 @@ import sys
 from jobpilot.core import agents
 from jobpilot.core.paths import TRACKING
 from jobpilot.core import answers as autofill
-from jobpilot.apply.explore import facts
+from jobpilot.apply.explore_agentic import facts
 
 fails = []
 
@@ -27,7 +27,6 @@ CASES = {
     "tailor": dict(appdir="/a", report="r", policy="p", jd="j", tracking=TRACKING),
     "draft_answers": dict(appdir="/a", qfile="/tmp/q.json", resume="/a/ats.md", answers_file="/c/answers.yaml",
                           policy="p", jd="j", tracking=TRACKING),
-    "map": dict(step="My Information", snapshot="- textbox \"Email*\"", todo="- textbox 'Email*'", facts="personal.email: x"),
 }
 names = sorted(d for d in os.listdir(agents.ROOT) if os.path.isdir(os.path.join(agents.ROOT, d)))
 check(names == sorted(CASES), f"one folder per agent: {names}")
@@ -38,10 +37,8 @@ for name, kw in CASES.items():
     tools_ok = ("--allowedTools" not in argv) if not ag.spec.get("allowed_tools") else \
         ("{" not in argv[argv.index("--allowedTools") + 1])
     check(not any("{%s}" % x in p for x in ag.spec.get("params", [])) and tools_ok, f"{name}: renders, tools resolve")
-check("--max-turns" in agents.get("map").argv("claude", "p") and "1" in agents.get("map").argv("claude", "p"),
-      "map: one turn")
 try:
-    agents.get("map").render(step="s")
+    agents.get("screen").render(resume="R")
     check(False, "a missing param is refused")
 except KeyError:
     check(True, "a missing param is refused")

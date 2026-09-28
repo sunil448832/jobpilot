@@ -1,9 +1,9 @@
 {
  "slug": "openai-research-engineer-research-scientist-",
  "platform": "ashby",
- "at": "2026-09-28T12:03:15",
+ "at": "2026-09-28T15:12:22",
  "outcome": "last-page",
- "note": "Single-page Ashby form filled; not submitted. Placeholder to confirm: 'Are you able to work from our US office three days per week?' (set Yes).",
+ "note": "All fields filled. Placeholder to confirm with applicant: 'Are you able to work from our US office three days per week?' (set Yes for now).",
  "pages": [
   "Research Engineer / Research Scientist- Personal AGI (Post T"
  ],
@@ -34,11 +34,23 @@
    "page": "Research Engineer / Research Scientist- Personal AGI (Post T"
   }
  },
+ "submit_control": {
+  "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
+  "role": "button",
+  "name": "Submit Application",
+  "nth": 1,
+  "group": "",
+  "above": "I decline to self-identify for protected veteran status",
+  "qn": 0
+ },
+ "calls": "applications/openai-research-engineer-research-scientist-/calls.json",
  "tool_calls": 4,
- "seconds": 74,
+ "seconds": 84,
  "model": "opus",
  "effort": "low",
  "turns": 5,
- "cost_usd": 0.2091832,
- "transcript": "tests/maps/openai-research-engineer-research-scientist-/agentic-0928-1202.log"
+ "cost_usd": 0.20793520000000004,
+ "transcript": "tests/maps/openai-research-engineer-research-scientist-/agentic-0928-1510.log",
+ "screenshot": "data/queue/openai-research-engineer-research-scientist--0928-1510.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/openai-research-engineer-research-scientist-/sunil_resume.docx"
 }

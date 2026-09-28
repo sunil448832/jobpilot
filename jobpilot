@@ -6,7 +6,7 @@
 #   ./jobpilot <command>    run one
 #
 # Layout (see paths.py for how the two trees are found):
-#   src/<stage>/   code: core discover rank screen tailor apply (platforms explore draft submit) review outreach  (imported as jobpilot.<stage>)
+#   src/<stage>/   code: core discover rank screen tailor apply (platforms explore_agentic draft) review outreach  (imported as jobpilot.<stage>)
 #   config/   what you edit      data/  machine-written      applications/  per-role output
 #   tracking repo: resume/ applications/ tracking/ target-companies/  (config.yaml paths.tracking_repo)
 # ============================================================================
@@ -169,8 +169,8 @@ case "$cmd" in
               echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok" ;;
   queue)      py review.bot --status ;;
   submit)     # ./jobpilot submit [N]  — file the approved items (oldest first); N caps how many today
-              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.submit.replay --limit "$1"
-              else py apply.submit.replay; fi ;;
+              if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.explore_agentic.replay --limit "$1"
+              else py apply.explore_agentic.replay; fi ;;
   log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
   intake)     py discover.intake "$@" ;;
@@ -190,7 +190,7 @@ case "$cmd" in
   add)        [ $# -ge 1 ] || { echo "  usage: ./jobpilot add <url> [url...]   (company-site apply links you found; skips rank+screen)"; exit 1; }
               py discover.inbox "$@" ;;
   inbox)      py discover.inbox --list ;;
-  explore|fill) [ $# -ge 1 ] || { echo "  usage: ./jobpilot explore <slug>"; exit 1; }; py apply.explore "$1" ;;
+  explore|fill) [ $# -ge 1 ] || { echo "  usage: ./jobpilot explore <slug>"; exit 1; }; py apply.explore_agentic "$@" ;;
   dedupe)     py core.dedupe "$@" ;;
   keywords)   py rank.keyword_learn "$@" ;;
   careers)    [ $# -ge 1 ] || { echo "  usage: ./jobpilot careers <url>"; exit 1; }; py discover.careers --add "$1" ;;

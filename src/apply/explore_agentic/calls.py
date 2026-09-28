@@ -16,10 +16,10 @@
 import json
 import os
 
-from jobpilot.apply.explore import act as A, record as R
+from jobpilot.apply.explore_agentic import act as A, record as R
 
 CHANGES = ("act", "clear", "press")
-NOT_CHECKED = ("add", "file", "press", "button", "search")
+NOT_CHECKED = ("add", "file", "search", "press", "button")   # press / button: rows of older records
 
 
 def calls_path(slug):
@@ -39,11 +39,12 @@ def load(slug):
     return rec, calls
 
 
-def save(slug, calls, former, finished):
-    """The record now: this session's calls; while it has not finished, then the former
-    record's calls on pages this session has not reached."""
+def save(slug, calls, former):
+    """The record now: this session's calls, then the former record's calls on pages this
+    session has not reached — a page a portal shows only some days (Workday's "Start Your
+    Application" before a draft exists) stays known."""
     reached = {c.get("page") for c in calls if c["tool"] in CHANGES}
-    rest = [] if finished else [c for c in former if c.get("page") not in reached]
+    rest = [c for c in former if c.get("page") not in reached]
     with open(calls_path(slug), "w", encoding="utf-8") as f:
         json.dump([{**c, "n": i + 1} for i, c in enumerate(calls + rest)], f, indent=1, ensure_ascii=False)
 
@@ -88,6 +89,19 @@ class Redo:
             return row[2] if self.dry else None          # not filing: on with what stood in
         return ("option:" if row[1] == "select" else "text:") + mine
 
+    @staticmethod
+    def choice(o, ident):
+        return o.get("nature") in ("tick", "press") or (not o.get("nature") and ident["role"] in ("radio", "checkbox", "button"))
+
+    def his_choice(self, c, ans):
+        """The choice his answer names: this control when its label is his answer, else the
+        nearest control of the same role labelled with it. None when there is none."""
+        want = A.plain(ans.split(":", 1)[1] if ans.lower().startswith(("option:", "text:")) else ans)
+        if A.plain(c.name) == want:
+            return c
+        same = [x for x in self.form.all_controls if x.id and x.role == c.role and A.plain(x.name) == want]
+        return min(same, key=lambda x: abs(x.line - c.line)) if same else None
+
     def last_acts(self, page):
         """For each control acted on in this page: its last row's outcome, with the identity it
         had then."""
@@ -119,8 +133,8 @@ class Redo:
                 rows, then = [], {}
                 for row in call["args"].get("rows") or []:
                     o, c = outs.get(row[0]), found.get(row[0])
-                    if o is None or o.get("how") == "search":
-                        continue                          # not on the page then, or only searched
+                    if o is None or o.get("how") in ("search", "button"):
+                        continue                          # not on the page then, only searched, or a page button
                     if c is None:
                         differs.append(f"{row[0]} ({call['controls'].get(row[0], {}).get('name')!r}: {row[2]}) "
                                        "is not on the page")
@@ -129,6 +143,11 @@ class Redo:
                             (f.section_count(o.get("section")) or 0) >= o["section_count"]:
                         continue                          # the section has its blocks already
                     ans = self.answer(row, o)
+                    if ans is not None and o.get("question") and self.choice(o, call["controls"][row[0]]):
+                        c = self.his_choice(c, ans)           # his answer names another of the choices
+                        if c is None:
+                            differs.append(f"no choice {ans!r} for {o['question']!r} on the page")
+                            continue
                     if ans is not None:
                         rows.append([c.id, row[1], ans] + list(row[3:]))
                         then[c.id] = o
@@ -142,6 +161,9 @@ class Redo:
                 c = found.get(call["args"].get("id"))
                 if c is None:
                     continue                              # gone already (a draft kept it so)
+                if call["tool"] == "press" and call.get("section") and \
+                        f.section_count(call["section"]) == call.get("section_count"):
+                    continue                              # its section is as the press left it (a Delete done)
                 f.clear(c.id) if call["tool"] == "clear" else f.press(c.id)
                 f.read()
             f.calls.append({k: v for k, v in call.items() if k != "n"})   # redone: part of the new record
@@ -156,6 +178,8 @@ class Redo:
             if c is None or o.get("reads") is None:
                 continue
             q = o.get("question")
+            if q and (o.get("nature") in ("tick", "press") or ident["role"] in ("radio", "checkbox", "button")):
+                continue                                  # a choice holds a state, not his answer's text: act's ok says it
             want = self.approved.get(R.norm(q), o["reads"]) if q else o["reads"]
             now = A.current(frame, c)
             if now is None:
@@ -193,6 +217,8 @@ class Redo:
         for _ in range(40):
             f.read()
             page = f.step
+            if page not in self.pages and (page == self.submit_page or f.is_last(page)):
+                return stop("the record's last page", end=True)   # nothing to redo on it (a Review)
             if page not in self.pages:
                 return stop("the record does not know this page")
             if page not in self.redone:
@@ -230,3 +256,94 @@ class Redo:
                 f"{self.approved.get(R.norm(o['question']), o['answer']) if o.get('question') else o['answer']}"
                 for i, o in acts.values()))
         return "\n".join(out)
+
+
+# ---------------------------------------------------------------- for the phone card
+
+SOURCE = {"fact": "fact", "file": "fact", "chain": "pick", "guess": "you", "question": "you", "keep": "shown"}
+
+
+def job_facts(slug):
+    """The facts a filing of this job acts on — as form.Form builds them: the answers file,
+    the job, learned answers, then his approved answers for this form."""
+    from jobpilot.core.answers import load as load_yaml, load_learned, read_jd, detect_market
+    from jobpilot.apply.explore_agentic import browser as B, facts as F
+    meta, jd = read_jd(slug)
+    answers = load_yaml("answers.yaml")
+    approved = [{"match": q, "answer": p["answer"]} for q, p in (R.load(slug).get("placeholders") or {}).items()
+                if (p.get("answer") or "").strip()]
+    ctx = {"market": detect_market(meta.get("Location", ""), jd), "company": meta.get("Company", slug),
+           "location": meta.get("Location", "")}
+    return F.job_facts(answers, ctx, list(load_learned() or []) + approved, B.resume_path(answers, slug))
+
+
+def plain_in(value, name):
+    """Is the value part of the control's name (a list button's name grows with its pick)?"""
+    return A.plain(value) in A.plain(name)
+
+
+def values_by_page(slug):
+    """What a filing will enter, page by page, from the record: each control's last act, its
+    label (a choice's question; its section when it has one), the value the filing will give
+    it — the fact looked up again, the choice, his answer — and where that comes from (fact /
+    pick / you / shown): the phone card's list of values. [{"page", "rows": [{"label", "value", "src"}]}]."""
+    rec, calls = load(slug)
+    approved = approved_answers(slug, rec)
+    held = {R.norm(q): p for q, p in {**(rec.get("placeholders") or {}), **(R.load(slug).get("placeholders") or {})}.items()}
+    facts = job_facts(slug)
+
+    def value_of(answer):
+        a = str(answer or "").strip()
+        a = a[5:].strip() if a.lower().startswith("keep:") else a
+        low = a.lower()
+        if low.startswith(("option:", "text:")):
+            return a.split(":", 1)[1].strip()
+        if low == "file:resume":
+            return os.path.basename(str(facts.get("file:resume") or ""))
+        return facts.get(a)
+
+    pages, order = {}, []
+    for call in calls:
+        if call["tool"] != "act":
+            continue
+        page = call["page"]
+        if page not in pages:
+            pages[page] = {}
+            order.append(page)
+        for o in call.get("outcomes") or []:
+            ident = call["controls"].get(o["id"])
+            if ident and o.get("how") not in ("search", "button", "add"):
+                pages[page][(ident["role"], ident["name"], ident["nth"], ident["group"])] = (ident, o)
+    out = []
+    for page in order:
+        rows = []
+        for ident, o in pages[page].values():
+            name, group = ident["name"].rstrip("* "), ident.get("group") or ""
+            q = o.get("question")
+            given = value_of(o.get("answer"))
+            nat = o.get("nature") or ("tick" if ident["role"] in ("radio", "checkbox", "switch") else
+                                      "press" if ident["role"] == "button" and given and
+                                      plain_in(given, ident["name"]) is False else "")
+            if nat == "tick" and str(o.get("reads") or "").lower() in ("off", "false"):
+                continue                                  # a choice left unticked: nothing to list
+            question = group or ident.get("above") or name
+            if q:
+                label = q
+                stood = (held.get(R.norm(q)) or {}).get("used") or o.get("shown")
+                value = approved.get(R.norm(q)) or f"{stood} (to be answered)"
+            elif o.get("how") == "file":
+                label, value = question if ident["role"] == "button" else name, given or ""
+            elif nat == "tick" and ident["role"] == "checkbox" and not group:
+                label, value = name, "ticked"             # a lone checkbox ("I currently work here")
+            elif nat in ("tick", "press"):
+                label, value = question, name             # a choice: the question, and the one chosen
+            elif ident["role"] == "button":
+                label, value = question, given or str(o.get("reads") or "")   # a list button
+            else:
+                own = name or ident.get("above") or ""           # a box with no name of its own: its question
+                label = f"{group} · {own}" if group and group not in own else own
+                value = given or str(o.get("reads") or o.get("shown") or "")
+            rows.append({"label": label[:120], "value": str(value)[:300], "src": SOURCE.get(o.get("how"), "")})
+        if rows:
+            out.append({"page": str(page).title(), "rows": rows})
+    return out

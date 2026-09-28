@@ -47,7 +47,8 @@ an added block) are filled. Explore a list or search box on its own (options, se
 you pick, when you are unsure it holds the entry. Press Next only when every field that
 needs an answer shows one; when Next is refused, read what the page says and fix those
 fields. On the job posting press its Apply; in a "how do you want to apply" choice, the one
-that opens a blank form to fill in by hand.
+that opens a blank form to fill in by hand (not autofill from a resume, not a past
+application, not Close) — never the site's own menus (Search for Jobs, Sign In, Careers).
 
 This session never sends the application: the form's last page is the one see marks LAST
 PAGE, or a page whose way forward is a button that sends the application (Submit, Submit
@@ -87,7 +88,7 @@ A row of act: [id, kind, answer] — one per control you act on
           select   you pick, tick or press it: a list or menu, a search box
                    whose value is an entry picked from the list it shows, a
                    radio, a checkbox, a choice button (Yes / No), a file
-                   picker, a page button
+                   picker, a repeated section's Add
         The CONTROLS line says what its HTML is ("a button that opens a list",
         "a search box", "a file input in its field", "checkbox: not checked"):
         use it, with the SNAPSHOT, to tell which. A plain "a text box" / "a text
@@ -155,13 +156,13 @@ A row of act: [id, kind, answer] — one per control you act on
             aside, against every entry of the list (a nested list: against each
             whole chain, "Social Media › LinkedIn"); a box that fills in as you
             type gets each one's plain letters typed and the regex run over what
-            appears. What each matches comes back under LAST ACT, and you pick.
-            A list is searched at most twice for one answer: when LAST ACT shows
-            two searches for it found nothing near, the list does not hold it —
-            decide: guess:<the nearest entries the searches did find> | <the
+            appears. act reports what each matches, and you pick (or use the
+            search tool first). A list is searched at most twice for one answer:
+            when two searches for it found nothing near, the list does not hold
+            it — decide: guess:<the nearest entries the searches did find> | <the
             question> when some are near, else (a block you added for this fact,
-            whose required list cannot hold it) remove that block with press on
-            its own Delete / Remove button.
+            whose required list cannot hold it) remove that block: press its own
+            Delete / Remove button.
         when no choice means the same as the fact — or nothing is stored for it:
             guess:<choice 1>; <choice 2>; ... | <the question>
             — the top 5 most probable choices at most, each copied exactly from the
@@ -179,7 +180,7 @@ A row of act: [id, kind, answer] — one per control you act on
             radio labelled "No" (keep: when it is already checked); the radio
             labelled "Yes" gets no row — a key is never put on a choice its value
             does not name. A question's radios take exactly one row between them,
-            also when LAST ACT says the question is still invalid: then give that
+            also when the page says the question is still invalid: then give that
             one radio's row again. The answer is the fact
             key whose value makes this very label true, or option:<its label>, or
             guess:<its label>; <next most likely label>; ... | <the question>
@@ -192,34 +193,20 @@ A row of act: [id, kind, answer] — one per control you act on
         a file picker: file:resume on the form's own resume field only (not an
             "autofill from your resume" box, which only pre-fills the form;
             not a cover letter unless FACTS hold one).
-        a page button — at most one of each on a page:
-            next     saves this page and moves on (Next, Continue, Save and
-                     Continue); never Back, never a button inside a field. A
-                     one-page form has no next.
-            submit   sends the application
-            start    opens the application form: on the posting its Apply; in a
-                     "how do you want to apply" choice, the one that opens a
-                     blank form to fill in by hand (not autofill, not reuse of a
-                     past application, not Close). Only such a button: the site's
-                     own navigation (Search for Jobs, Sign In, a language, Home,
-                     Careers) is never start — a page with no Apply and no such
-                     choice gets no start row. A page still loading, or one
-                     showing only the site's own menus, has nothing to map: []
-                     (an empty array) is a valid reply.
-            add:<n>  a repeated section's Add / Add Another button — always this
-                     for an Add, never press — when FACTS hold n more blocks than
-                     the page shows (Work Experience 1 only, FACTS hold
-                     employment[0], [1], [2] -> add:2; Certifications showing only
-                     its Add, FACTS holding one certification -> add:1). The new
-                     blocks show on the next round, to be filled then.
-            press    a block's own Delete / Remove, when that block cannot be filled
-                     — only that: never an Add, never Next / Submit / Start. A
-                     block removed this way (EARLIER ON THIS PAGE says so) stays
-                     removed: no add: for it again, whatever FACTS hold.
+        a repeated section's Add / Add Another button: add:<n> — when FACTS hold n
+            more blocks than the page shows (Work Experience 1 only, FACTS hold
+            employment[0], [1], [2] -> add:2; Certifications showing only its Add,
+            FACTS holding one certification -> add:1). act reports the new blocks'
+            fields: fill them. A block removed with press (it could not be filled)
+            stays removed: no add: for it again, whatever FACTS hold.
+
+Page buttons are not rows: Apply, Next / Continue / Save and Continue, a block's Delete /
+Remove are pressed with press; the button that sends the application is never pressed
+here (finish names it).
 
 Leave out (no row): the page header, navigation and footer (language pickers, the
 site's search, Sign In), a cookie or consent banner, a date box's calendar button,
-Back, Previous, Close, Cancel — never rows; Delete / Remove only as press, above — whatever the
+Back, Previous, Close, Cancel, every page button (press them with press) — whatever the
 answer would be — an Add the facts have nothing more for, the page's
 error summary ("Errors Found" and its links), anything that is part of another
 control (a picker's own search box, an "items selected" list, a hidden box behind a

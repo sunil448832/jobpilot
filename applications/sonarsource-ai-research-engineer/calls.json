@@ -1,0 +1,923 @@
+[
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c9",
+     "select",
+     "file:resume"
+    ],
+    [
+     "c11",
+     "write",
+     "personal.full_name"
+    ],
+    [
+     "c12",
+     "write",
+     "personal.email"
+    ],
+    [
+     "c13",
+     "write",
+     "personal.phone"
+    ],
+    [
+     "c14",
+     "write",
+     "location.city"
+    ],
+    [
+     "c15",
+     "write",
+     "employment[0].employer"
+    ],
+    [
+     "c16",
+     "write",
+     "links.linkedin"
+    ],
+    [
+     "c17",
+     "select",
+     "guess:Yes; No | Would you now or at any time require employer sponsorship to work in Switzerland?"
+    ],
+    [
+     "c18",
+     "write",
+     "availability.notice_period"
+    ],
+    [
+     "c20",
+     "select",
+     "location.willing_to_relocate"
+    ],
+    [
+     "c22",
+     "select",
+     "guess:I require sponsorship; I am eligible to work in this country (e.g., I am a local citizen or have a visa) | Are you eligible to work in Switzerland or would you require sponsorship?"
+    ],
+    [
+     "c23",
+     "write",
+     "availability.notice_period"
+    ],
+    [
+     "c24",
+     "select",
+     "guess:Yes; No | Are you willing to work from the Geneva office 3-4 days a week (5 days during the 1st onboarding month)?"
+    ],
+    [
+     "c28",
+     "select",
+     "eeo.gender"
+    ],
+    [
+     "c30",
+     "select",
+     "eeo.race_ethnicity"
+    ],
+    [
+     "c31",
+     "select",
+     "option:I am not a veteran"
+    ],
+    [
+     "c47",
+     "select",
+     "eeo.gender"
+    ]
+   ]
+  },
+  "page": "AI Research Engineer",
+  "controls": {
+   "c9": {
+    "role": "link",
+    "name": "ATTACH RESUME/CV Resume/CV ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Resume/CV ✱",
+    "qn": 0
+   },
+   "c11": {
+    "role": "textbox",
+    "name": "Full name ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Full name ✱",
+    "qn": 0
+   },
+   "c12": {
+    "role": "textbox",
+    "name": "Email ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Email ✱",
+    "qn": 0
+   },
+   "c13": {
+    "role": "textbox",
+    "name": "Phone ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Phone ✱",
+    "qn": 0
+   },
+   "c14": {
+    "role": "textbox",
+    "name": "Current location ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Current location ✱",
+    "qn": 0
+   },
+   "c15": {
+    "role": "textbox",
+    "name": "Current company",
+    "nth": 1,
+    "group": "",
+    "above": "Current company",
+    "qn": 0
+   },
+   "c16": {
+    "role": "textbox",
+    "name": "LinkedIn URL ✱",
+    "nth": 1,
+    "group": "",
+    "above": "LinkedIn URL ✱",
+    "qn": 0
+   },
+   "c17": {
+    "role": "combobox",
+    "name": "",
+    "nth": 1,
+    "group": "",
+    "above": "Would you now or at any time require employer sponsorship to work in the country this role is located? ✱",
+    "qn": 0
+   },
+   "c18": {
+    "role": "textbox",
+    "name": "Type your response",
+    "nth": 1,
+    "group": "",
+    "above": "What is your current notice period? ✱",
+    "qn": 0
+   },
+   "c20": {
+    "role": "combobox",
+    "name": "",
+    "nth": 2,
+    "group": "",
+    "above": "If you are not currently a resident of the location in which the job is advertised, would you be willing to relocate? ✱",
+    "qn": 0
+   },
+   "c22": {
+    "role": "radio",
+    "name": "I require sponsorship",
+    "nth": 1,
+    "group": "",
+    "above": "I am eligible to work in this country (e.g., I am a local citizen or have a visa)",
+    "qn": 0
+   },
+   "c23": {
+    "role": "textbox",
+    "name": "Type your response",
+    "nth": 2,
+    "group": "",
+    "above": "How long is your current notice period? ✱",
+    "qn": 0
+   },
+   "c24": {
+    "role": "radio",
+    "name": "Yes",
+    "nth": 1,
+    "group": "",
+    "above": "Are you willing to work from the office 3-4 days a week (5 days during the 1st onboarding month)? ✱",
+    "qn": 0
+   },
+   "c28": {
+    "role": "combobox",
+    "name": "Gender",
+    "nth": 1,
+    "group": "",
+    "above": "Gender",
+    "qn": 0
+   },
+   "c30": {
+    "role": "combobox",
+    "name": "Race Click to see details about each option.",
+    "nth": 1,
+    "group": "",
+    "above": "Race",
+    "qn": 0
+   },
+   "c31": {
+    "role": "combobox",
+    "name": "Veteran status",
+    "nth": 1,
+    "group": "",
+    "above": "Veteran status",
+    "qn": 0
+   },
+   "c47": {
+    "role": "radio",
+    "name": "Male",
+    "nth": 1,
+    "group": "",
+    "above": "Female",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c9",
+    "kind": "select",
+    "answer": "file:resume",
+    "how": "file",
+    "nature": "file",
+    "ok": true,
+    "shown": "sunil_resume.docx",
+    "question": null,
+    "reads": "SUNIL_RESUME.DOCX"
+   },
+   {
+    "id": "c17",
+    "kind": "select",
+    "answer": "guess:Yes; No | Would you now or at any time require employer sponsorship to work in Switzerland?",
+    "how": "guess",
+    "nature": "select",
+    "ok": true,
+    "shown": "Yes",
+    "question": "Would you now or at any time require employer sponsorship to work in Switzerland?",
+    "reads": "Yes"
+   },
+   {
+    "id": "c20",
+    "kind": "select",
+    "answer": "location.willing_to_relocate",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Yes",
+    "question": null,
+    "reads": "Yes"
+   },
+   {
+    "id": "c22",
+    "kind": "select",
+    "answer": "guess:I require sponsorship; I am eligible to work in this country (e.g., I am a local citizen or have a visa) | Are you eligible to work in Switzerland or would you require sponsorship?",
+    "how": "guess",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": "Are you eligible to work in Switzerland or would you require sponsorship?",
+    "reads": "on"
+   },
+   {
+    "id": "c24",
+    "kind": "select",
+    "answer": "guess:Yes; No | Are you willing to work from the Geneva office 3-4 days a week (5 days during the 1st onboarding month)?",
+    "how": "guess",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": "Are you willing to work from the Geneva office 3-4 days a week (5 days during the 1st onboarding month)?",
+    "reads": "on"
+   },
+   {
+    "id": "c28",
+    "kind": "select",
+    "answer": "eeo.gender",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Male",
+    "question": null,
+    "reads": "Male"
+   },
+   {
+    "id": "c30",
+    "kind": "select",
+    "answer": "eeo.race_ethnicity",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Decline to self-identify",
+    "question": null,
+    "reads": "Decline to self-identify"
+   },
+   {
+    "id": "c31",
+    "kind": "select",
+    "answer": "option:I am not a veteran",
+    "how": "chain",
+    "nature": "select",
+    "ok": true,
+    "shown": "I am not a veteran",
+    "question": null,
+    "reads": "I am not a veteran"
+   },
+   {
+    "id": "c47",
+    "kind": "select",
+    "answer": "eeo.gender",
+    "how": "fact",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c11",
+    "kind": "write",
+    "answer": "personal.full_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sunil Kumar Sharma",
+    "question": null,
+    "reads": "Sunil Kumar Sharma"
+   },
+   {
+    "id": "c12",
+    "kind": "write",
+    "answer": "personal.email",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "sunil4832sharma@gmail.com",
+    "question": null,
+    "reads": "sunil4832sharma@gmail.com"
+   },
+   {
+    "id": "c13",
+    "kind": "write",
+    "answer": "personal.phone",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "+91-9641298471",
+    "question": null,
+    "reads": "+91-9641298471"
+   },
+   {
+    "id": "c14",
+    "kind": "write",
+    "answer": "location.city",
+    "how": "fact",
+    "nature": "list",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c15",
+    "kind": "write",
+    "answer": "employment[0].employer",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Aria Intelligent Solutions",
+    "question": null,
+    "reads": "Aria Intelligent Solutions"
+   },
+   {
+    "id": "c16",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null,
+    "reads": "https://www.linkedin.com/in/sunil4832sharma"
+   },
+   {
+    "id": "c18",
+    "kind": "write",
+    "answer": "availability.notice_period",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "2 months",
+    "question": null,
+    "reads": "2 months"
+   },
+   {
+    "id": "c23",
+    "kind": "write",
+    "answer": "availability.notice_period",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "2 months",
+    "question": null,
+    "reads": "2 months"
+   }
+  ],
+  "result": "c9  ok  link 'ATTACH RESUME/CV Resume/CV ✱': shows 'sunil_resume.docx'\nc17  ok  combobox ' #1': shows 'Yes'   (a placeholder: 'Yes', asked later)\nc20  ok  combobox ' #2': shows 'Yes'\nc22  ok  radio 'I require sponsorship': shows 'checked'   (a placeholder: 'I require sponsorship', asked later)\nc24  ok  radio 'Yes': shows 'checked'   (a placeholder: 'Yes', asked later)\nc28  ok  combobox 'Gender': shows 'Male'\nc30  ok  combobox 'Race Click to see details about each option.': shows 'Decline to self-identify'\nc31  ok  combobox 'Veteran status': shows 'I am not a veteran'\nc47  ok  radio 'Male': shows 'checked'\nc11  ok  textbox 'Full name ✱': shows 'Sunil Kumar Sharma'\nc12  ok  textbox 'Email ✱': shows 'sunil4832sharma@gmail.com'\nc13  ok  textbox 'Phone ✱': shows '+91-9641298471'\nc14  ok  textbox 'Current location ✱': shows 'Delhi'\nc15  ok  textbox 'Current company': shows 'Aria Intelligent Solutions'\nc16  ok  textbox 'LinkedIn URL ✱': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc18  ok  textbox 'Type your response #1': shows '2 months'\nc23  ok  textbox 'Type your response #2': shows '2 months'\n\nPAGE: AI Research Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- combobox ' #1' holds 'Yes' — asked as 'Would you now or at any time require employer sponsorship to work in Switzerland?'\n- radio 'I require sponsorship' holds 'I require sponsorship' — asked as 'Are you eligible to work in Switzerland or would you require sponsorship?'\n- radio",
+  "n": 1
+ },
+ {
+  "n": 2,
+  "tool": "see",
+  "args": {
+   "snapshot": true
+  },
+  "page": "AI Research Engineer",
+  "controls": {},
+  "result": "PAGE: AI Research Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Sonar logo'   [a link]\nc2  link 'apply for this job #1'   [a link]\nc3  link ''   [a link]\nc4  link 'hiring@sonarsource.com'   [a link]\nc5  link 'apply for this job #2'   [a link]\nc6  link 'Sonar Home Page'   [a link]\nc7  link 'Jobs powered by Lever logo'   [a link]\n\nSNAPSHOT\n- [c1] link \"Sonar logo\":\n  - /url: https://jobs.lever.co/sonarsource\n  - img \"Sonar logo\"\n- heading \"AI Research Engineer\" [level=2]\n- text: Geneva Product Development – Data & Agentic / Employee / Full-Time / On-site\n- [c2] link \"apply for this job\":\n  - /url: https://jobs.lever.co/sonarsource/a0535931-bce3-4159-b43d-15ca3eb4d17f/apply\n- heading \"Who is Sonar?\" [level=3]:\n  - strong: Who is Sonar?\n- paragraph: \"Sonar is driving the future of agent-centric software development. As the leader in AI code verification and governance, we solve a critical problem: ensuring that software generated by AI-assisted developers or autonomous agents is reliable, secure, and maintainable.\"\n- paragraph: Integrating seamlessly with Claude Code, Codex, Cursor, GitHub Copilot, Gemini, and Devin, we help over 75% of the Fortune 100 build trusted, reliable, compliant software. Customers who use Sonar are 44% less likely to report an outage due to AI-generated code.\n- paragraph:\n  - text: We believe code verification is the critical missing link in the Agent-Centric Development Cycle (AC/DC). In"
+ },
+ {
+  "n": 3,
+  "tool": "press",
+  "args": {
+   "id": "c2"
+  },
+  "page": "AI Research Engineer",
+  "controls": {
+   "c2": {
+    "role": "link",
+    "name": "apply for this job",
+    "nth": 1,
+    "group": "",
+    "above": "Geneva Product Development – Data & Agentic / Employee / Full-Time / On-site",
+    "qn": 0
+   }
+  },
+  "moved_to": null,
+  "section": "",
+  "section_count": null,
+  "result": "still on page 'AI Research Engineer'. It shows no error message. see it for what changed."
+ },
+ {
+  "n": 4,
+  "tool": "replay",
+  "args": {},
+  "page": "AI Research Engineer",
+  "controls": {},
+  "result": "redone: (no page); now on page 'AI Research Engineer' — the record's last page\nthis is where the record ends: see the page, fill what is left, and carry on."
+ },
+ {
+  "n": 5,
+  "tool": "see",
+  "args": {},
+  "page": "AI Research Engineer",
+  "controls": {},
+  "result": "PAGE: AI Research Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc8  link 'Sonar logo'   [a link]\nc9  link 'ATTACH RESUME/CV Resume/CV ✱'   [a file picker]\nc11  textbox 'Full name ✱'   [a text box, required]\nc12  textbox 'Email ✱'   [a text box type=email, required]\nc13  textbox 'Phone ✱'   [a text box, required]\nc14  textbox 'Current location ✱'   [a text box with an icon, required]\nc15  textbox 'Current company'   [a text box]\nc16  textbox 'LinkedIn URL ✱'   [a text box, required]\nc17  combobox ' #1'   [a <select>, required]   choices: [Select..., Yes, No]\nc18  textbox 'Type your response #1'   [a text box, required, placeholder 'Type your response']\nc19  textbox ''   [a text area]\nc20  combobox ' #2'   [a <select>, required]   choices: [Select..., Yes, No]\nc21  radio 'I am eligible to work in this country (e.g., I am a local citizen or have a visa)'   [radio: not checked, required]\nc22  radio 'I require sponsorship'   [radio: not checked, required]\nc23  textbox 'Type your response #2'   [a text box, required, placeholder 'Type your response']\nc24  radio 'Yes'   [radio: not checked, required]\nc25  radio 'No'   [radio: not checked, required]\nc26  radio 'N/A: I am applying for a remote position'   [radio: not checked, required]\nc27  textbox 'Type your response #3'   [a text box, placeholder 'Type your response']\nc28  combobox 'Gender'   [a <select>]   choices: [Select ..., Male, Female, Decline to self-identify]\nc29  lin"
+ },
+ {
+  "n": 6,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c9",
+     "select",
+     "file:resume"
+    ],
+    [
+     "c11",
+     "write",
+     "personal.full_name"
+    ],
+    [
+     "c12",
+     "write",
+     "personal.email"
+    ],
+    [
+     "c13",
+     "write",
+     "personal.phone"
+    ],
+    [
+     "c14",
+     "write",
+     "location.city"
+    ],
+    [
+     "c15",
+     "write",
+     "employment[0].employer"
+    ],
+    [
+     "c16",
+     "write",
+     "links.linkedin"
+    ],
+    [
+     "c17",
+     "select",
+     "learned:98"
+    ],
+    [
+     "c18",
+     "write",
+     "availability.notice_period"
+    ],
+    [
+     "c20",
+     "select",
+     "location.willing_to_relocate"
+    ],
+    [
+     "c22",
+     "select",
+     "learned:99"
+    ],
+    [
+     "c23",
+     "write",
+     "availability.notice_period"
+    ],
+    [
+     "c24",
+     "select",
+     "learned:100"
+    ],
+    [
+     "c28",
+     "select",
+     "eeo.gender"
+    ],
+    [
+     "c30",
+     "select",
+     "eeo.race_ethnicity"
+    ],
+    [
+     "c31",
+     "select",
+     "option:I am not a veteran"
+    ],
+    [
+     "c47",
+     "select",
+     "eeo.gender"
+    ]
+   ]
+  },
+  "page": "AI Research Engineer",
+  "controls": {
+   "c9": {
+    "role": "link",
+    "name": "ATTACH RESUME/CV Resume/CV ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Resume/CV ✱",
+    "qn": 0
+   },
+   "c11": {
+    "role": "textbox",
+    "name": "Full name ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Full name ✱",
+    "qn": 0
+   },
+   "c12": {
+    "role": "textbox",
+    "name": "Email ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Email ✱",
+    "qn": 0
+   },
+   "c13": {
+    "role": "textbox",
+    "name": "Phone ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Phone ✱",
+    "qn": 0
+   },
+   "c14": {
+    "role": "textbox",
+    "name": "Current location ✱",
+    "nth": 1,
+    "group": "",
+    "above": "Current location ✱",
+    "qn": 0
+   },
+   "c15": {
+    "role": "textbox",
+    "name": "Current company",
+    "nth": 1,
+    "group": "",
+    "above": "Current company",
+    "qn": 0
+   },
+   "c16": {
+    "role": "textbox",
+    "name": "LinkedIn URL ✱",
+    "nth": 1,
+    "group": "",
+    "above": "LinkedIn URL ✱",
+    "qn": 0
+   },
+   "c17": {
+    "role": "combobox",
+    "name": "",
+    "nth": 1,
+    "group": "",
+    "above": "Would you now or at any time require employer sponsorship to work in the country this role is located? ✱",
+    "qn": 0
+   },
+   "c18": {
+    "role": "textbox",
+    "name": "Type your response",
+    "nth": 1,
+    "group": "",
+    "above": "What is your current notice period? ✱",
+    "qn": 0
+   },
+   "c20": {
+    "role": "combobox",
+    "name": "",
+    "nth": 2,
+    "group": "",
+    "above": "If you are not currently a resident of the location in which the job is advertised, would you be willing to relocate? ✱",
+    "qn": 0
+   },
+   "c22": {
+    "role": "radio",
+    "name": "I require sponsorship",
+    "nth": 1,
+    "group": "",
+    "above": "I am eligible to work in this country (e.g., I am a local citizen or have a visa)",
+    "qn": 0
+   },
+   "c23": {
+    "role": "textbox",
+    "name": "Type your response",
+    "nth": 2,
+    "group": "",
+    "above": "How long is your current notice period? ✱",
+    "qn": 0
+   },
+   "c24": {
+    "role": "radio",
+    "name": "Yes",
+    "nth": 1,
+    "group": "",
+    "above": "Are you willing to work from the office 3-4 days a week (5 days during the 1st onboarding month)? ✱",
+    "qn": 0
+   },
+   "c28": {
+    "role": "combobox",
+    "name": "Gender",
+    "nth": 1,
+    "group": "",
+    "above": "Gender",
+    "qn": 0
+   },
+   "c30": {
+    "role": "combobox",
+    "name": "Race Click to see details about each option.",
+    "nth": 1,
+    "group": "",
+    "above": "Race",
+    "qn": 0
+   },
+   "c31": {
+    "role": "combobox",
+    "name": "Veteran status",
+    "nth": 1,
+    "group": "",
+    "above": "Veteran status",
+    "qn": 0
+   },
+   "c47": {
+    "role": "radio",
+    "name": "Male",
+    "nth": 1,
+    "group": "",
+    "above": "Female",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c9",
+    "kind": "select",
+    "answer": "file:resume",
+    "how": "file",
+    "nature": "file",
+    "ok": true,
+    "shown": "sunil_resume.docx",
+    "question": null,
+    "reads": "SUNIL_RESUME.DOCX"
+   },
+   {
+    "id": "c17",
+    "kind": "select",
+    "answer": "learned:98",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Yes",
+    "question": null,
+    "reads": "Yes"
+   },
+   {
+    "id": "c20",
+    "kind": "select",
+    "answer": "location.willing_to_relocate",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Yes",
+    "question": null,
+    "reads": "Yes"
+   },
+   {
+    "id": "c22",
+    "kind": "select",
+    "answer": "learned:99",
+    "how": "fact",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c24",
+    "kind": "select",
+    "answer": "learned:100",
+    "how": "fact",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c28",
+    "kind": "select",
+    "answer": "eeo.gender",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Male",
+    "question": null,
+    "reads": "Male"
+   },
+   {
+    "id": "c30",
+    "kind": "select",
+    "answer": "eeo.race_ethnicity",
+    "how": "fact",
+    "nature": "select",
+    "ok": true,
+    "shown": "Decline to self-identify",
+    "question": null,
+    "reads": "Decline to self-identify"
+   },
+   {
+    "id": "c31",
+    "kind": "select",
+    "answer": "option:I am not a veteran",
+    "how": "chain",
+    "nature": "select",
+    "ok": true,
+    "shown": "I am not a veteran",
+    "question": null,
+    "reads": "I am not a veteran"
+   },
+   {
+    "id": "c47",
+    "kind": "select",
+    "answer": "eeo.gender",
+    "how": "fact",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c11",
+    "kind": "write",
+    "answer": "personal.full_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sunil Kumar Sharma",
+    "question": null,
+    "reads": "Sunil Kumar Sharma"
+   },
+   {
+    "id": "c12",
+    "kind": "write",
+    "answer": "personal.email",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "sunil4832sharma@gmail.com",
+    "question": null,
+    "reads": "sunil4832sharma@gmail.com"
+   },
+   {
+    "id": "c13",
+    "kind": "write",
+    "answer": "personal.phone",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "+91-9641298471",
+    "question": null,
+    "reads": "+91-9641298471"
+   },
+   {
+    "id": "c14",
+    "kind": "write",
+    "answer": "location.city",
+    "how": "fact",
+    "nature": "list",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c15",
+    "kind": "write",
+    "answer": "employment[0].employer",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Aria Intelligent Solutions",
+    "question": null,
+    "reads": "Aria Intelligent Solutions"
+   },
+   {
+    "id": "c16",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null,
+    "reads": "https://www.linkedin.com/in/sunil4832sharma"
+   },
+   {
+    "id": "c18",
+    "kind": "write",
+    "answer": "availability.notice_period",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "2 months",
+    "question": null,
+    "reads": "2 months"
+   },
+   {
+    "id": "c23",
+    "kind": "write",
+    "answer": "availability.notice_period",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "2 months",
+    "question": null,
+    "reads": "2 months"
+   }
+  ],
+  "result": "c9  ok  link 'ATTACH RESUME/CV Resume/CV ✱': shows 'sunil_resume.docx'\nc17  ok  combobox ' #1': shows 'Yes'\nc20  ok  combobox ' #2': shows 'Yes'\nc22  ok  radio 'I require sponsorship': shows 'checked'\nc24  ok  radio 'Yes': shows 'checked'\nc28  ok  combobox 'Gender': shows 'Male'\nc30  ok  combobox 'Race Click to see details about each option.': shows 'Decline to self-identify'\nc31  ok  combobox 'Veteran status': shows 'I am not a veteran'\nc47  ok  radio 'Male': shows 'checked'\nc11  ok  textbox 'Full name ✱': shows 'Sunil Kumar Sharma'\nc12  ok  textbox 'Email ✱': shows 'sunil4832sharma@gmail.com'\nc13  ok  textbox 'Phone ✱': shows '+91-9641298471'\nc14  ok  textbox 'Current location ✱': shows 'Delhi'\nc15  ok  textbox 'Current company': shows 'Aria Intelligent Solutions'\nc16  ok  textbox 'LinkedIn URL ✱': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc18  ok  textbox 'Type your response #1': shows '2 months'\nc23  ok  textbox 'Type your response #2': shows '2 months'\n\nPAGE: AI Research Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+ },
+ {
+  "n": 7,
+  "tool": "finish",
+  "args": {
+   "outcome": "last-page",
+   "note": "Lever form filled as the record has it, using the applicant's own answers for sponsorship and working from the Geneva office.",
+   "submit_id": "c52"
+  },
+  "page": "AI Research Engineer",
+  "controls": {
+   "c52": {
+    "role": "button",
+    "name": "Submit application",
+    "nth": 1,
+    "group": "",
+    "above": "Yes, Sonar can contact me about future job opportunities for up to 3 years",
+    "qn": 0
+   }
+  },
+  "result": "finished."
+ },
+ {
+  "n": 8,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: AI Research Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Sonar logo'   [a link]\nc2  link 'apply for this job #1'   [a link]\nc3  link ''   [a link]\nc4  link 'hiring@sonarsource.com'   [a link]\nc5  link 'apply for this job #2'   [a link]\nc6  link 'Sonar Home Page'   [a link]\nc7  link 'Jobs powered by Lever logo'   [a link]\n\nSNAPSHOT\n- [c1] link \"Sonar logo\":\n  - /url: https://jobs.lever.co/sonarsource\n  - img \"Sonar logo\"\n- heading \"AI Research Engineer\" [level=2]\n- text: Geneva Product Development – Data & Agentic / Employee / Full-Time / On-site\n- [c2] link \"apply for this job\":\n  - /url: https://jobs.lever.co/sonarsource/a0535931-bce3-4159-b43d-15ca3eb4d17f/apply\n- heading \"Who is Sonar?\" [level=3]:\n  - strong: Who is Sonar?\n- paragraph: \"Sonar is driving the future of agent-centric software development. As the leader in AI code verification and governance, we solve a critical problem: ensuring that software generated by AI-assisted developers or autonomous agents is reliable, secure, and maintainable.\"\n- paragraph: Integrating seamlessly with Claude Code, Codex, Cursor, GitHub Copilot, Gemini, and Devin, we help over 75% of the Fortune 100 build trusted, reliable, compliant software. Customers who use Sonar are 44% less likely to report an outage due to AI-generated code.\n- paragraph:\n  - text: We believe code verification is the critical missing link in the Agent-Centric Development Cycle (AC/DC). In"
+ }
+]

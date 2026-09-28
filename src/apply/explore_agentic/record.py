@@ -1,19 +1,12 @@
-"""record.py — one application's record, applications/<slug>/explore.json.
+"""record.py — one application's record of his answers, applications/<slug>/explore.json:
 
-Written by exploration, read by submit:
+    {"url", "platform", "reached_end",
+     "placeholders": {question: {"used", "field", "candidates", "page", "answer": his or absent}},
+     "attempts": [{"at", "outcome", "why"}]}
 
-    {"url", "platform", "company", "explored_at", "reached_end",
-     "pages": [{"step", "entries": [[name, kind, fact, question]...], "menus": {question: tree},
-                "actions": [{"kind", "name", "source", "value", "path"}], "rounds": [...]}],
-     "placeholders": {question: {"value": used, "options": [...], "answer": his or null}},
-     "submit": "Submit", "attempts": [...]}
-
-An action's `source` says where its value comes from on the submit pass:
-    fact:<key>           the fact, looked up again for this job
-    placeholder:<q>      his answer to question q (approval) — never the placeholder
-    button               nothing to fill (a click)
-Submit replays `actions` page by page; nothing in the record is a DOM index or a
-selector, only role/kind + name, so a re-rendered page is found again.
+Written by exploration (session.keep_placeholders), answered from the phone (apply_answers:
+review/serve.py, review/bot.py), read by filing (calls.approved_answers), each submit
+attempt noted (note_attempt). What the agent did is calls.json (calls.py), not this file.
 """
 import datetime as dt
 import json
@@ -50,9 +43,9 @@ def save(slug, doc):
 
 
 def ensure(slug, url=None, platform=None):
-    """A skeleton record when the application is scaffolded (tailor/apply.py)."""
+    """A skeleton record when the application is scaffolded (tailor/scaffold.py)."""
     if not os.path.isfile(path_for(slug)):
-        save(slug, {"url": url, "platform": platform, "pages": [], "placeholders": {}, "attempts": []})
+        save(slug, {"url": url, "platform": platform, "placeholders": {}, "attempts": []})
     return path_for(slug)
 
 
@@ -74,11 +67,6 @@ def apply_answers(item, answered):
         doc["placeholders"] = ph
         save(slug, doc)
     return n
-
-
-def unanswered(doc):
-    """Placeholders still without his answer: the submit must not open while any exist."""
-    return [q for q, p in (doc.get("placeholders") or {}).items() if not (p.get("answer") or "").strip()]
 
 
 def note_attempt(slug, outcome, **extra):

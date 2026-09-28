@@ -421,7 +421,10 @@ def values_by_page(item):
     try:
         rec = json.load(open(os.path.join(TOOL, item["replay"])))
     except (KeyError, OSError, ValueError):
-        return []
+        rec = {}
+    if not rec.get("pages") and item.get("company_slug"):      # an agent's record: its calls
+        from jobpilot.apply.explore_agentic.calls import values_by_page as from_calls
+        return from_calls(item["company_slug"])
     out = []
     for p in rec.get("pages", []):
         rows = []

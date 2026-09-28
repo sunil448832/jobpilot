@@ -7,7 +7,7 @@ fail=0; ok(){ printf "  %-34s %s\n" "$1" "$2"; }; bad(){ printf "  %-34s FAIL %s
 n=$("$PY" - <<'PY' 2>&1
 import importlib, pkgutil, jobpilot
 bad=[];n=0
-for pkg in ("core","discover","rank","screen","tailor","apply","apply.platforms","apply.explore","apply.draft","apply.submit","review","outreach"):
+for pkg in ("core","discover","rank","screen","tailor","apply","apply.platforms","apply.explore_agentic","apply.draft","review","outreach"):
     p=importlib.import_module(f"jobpilot.{pkg}")
     for m in pkgutil.iter_modules(p.__path__):
         n+=1
@@ -24,15 +24,13 @@ pg=$(pdfinfo "$T/applications/$s/sunil_resume.pdf" 2>/dev/null | awk '/Pages/{pr
 a=$("$PY" -m jobpilot.tailor.autotailor --limit 1 --dry-run 2>&1 | grep -c 'would scaffold'); [ "$a" -ge 0 ] && ok "autotailor --dry-run" "$a candidate(s)"
 sc=$("$PY" -m jobpilot.screen.screen --dry-run 2>&1 | head -1 | sed 's/^ *//'); ok "screen --dry-run" "$sc"
 dg=$("$PY" -m jobpilot.core.daily --digest-only --no-telegram --no-submit 2>&1 | grep -oE 'digest-only: [0-9]+ pending'); [ -n "$dg" ] && ok "daily --digest-only" "$dg" || bad "daily --digest-only" "no digest line"
-# the see / map / act engine on local imitation forms, headless Chrome, no network, no LLM:
-# explore -> approve -> submit on a Workday-style wizard and a Greenhouse-style page,
-# saved page maps reused, standard fields shared. The agents folder and the job facts.
+# the agents folder and the job facts the form agent sees.
 TD=$(mktemp -d)
-for t in test_engine test_agents; do
+for t in test_agents; do
   ( timeout 400 "$PY" "$T/tests/$t.py" > "$TD/$t.log" 2>&1 ) &
 done
 wait
-for t in test_engine test_agents; do
+for t in test_agents; do
   r=$(tail -1 "$TD/$t.log"); case "$r" in "ALL PASSED") ok "tests/$t.py" "$r";; *) bad "tests/$t.py" "$r";; esac
 done
 rm -rf "$TD"

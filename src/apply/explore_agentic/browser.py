@@ -10,12 +10,11 @@ browser.py — the browser and what surrounds a fill, platform-independent:
     enter_verification_code   a portal that emails a code at submit: ask him, type it
     notify_outcome(item)      one Telegram line per submit attempt
 
-Exploration is explore/walk.py, submit is submit/replay.py.
+Exploring is session.py, filing is replay.py.
 """
 import os
 import re
 import time
-from contextlib import contextmanager
 
 from jobpilot.core.config import cfg
 from jobpilot.core.paths import TOOL, DATA, RESUME
@@ -108,18 +107,6 @@ def open_browser(pw):
     return pw.chromium.launch_persistent_context(PROFILE_DIR, **kw)
 
 
-@contextmanager
-def session():
-    """A browser for one explore / submit run, closed afterwards."""
-    from playwright.sync_api import sync_playwright
-    with sync_playwright() as pw:
-        br = open_browser(pw)
-        try:
-            yield br
-        finally:
-            br.close()
-
-
 # ---------------------------------------------------------------- around the form
 
 def resume_path(answers, company_slug):
@@ -179,6 +166,24 @@ def dead_posting(page, wait_s=15):
 
 CODE_INPUTS = ('input[autocomplete="one-time-code"], input[maxlength="1"], '
                'input[name*="code" i], input[id*="code" i], input[aria-label*="code" i]')
+
+
+CAPTCHA_FRAMES = re.compile(r"hcaptcha|recaptcha|challenges\.cloudflare|arkoselabs|funcaptcha", re.I)
+
+
+def captcha(page):
+    """A captcha challenge showing on the page (a frame of a captcha service, drawn large
+    enough to be a puzzle, not its invisible badge): only a person can go on."""
+    for fr in page.frames:
+        if fr is page.main_frame or not CAPTCHA_FRAMES.search(fr.url or ""):
+            continue
+        try:
+            box = fr.frame_element().bounding_box()
+        except Exception:
+            continue
+        if box and box["width"] > 150 and box["height"] > 150:
+            return True
+    return False
 
 
 def enter_verification_code(frame, it, press_submit):

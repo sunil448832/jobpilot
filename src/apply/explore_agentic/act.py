@@ -1,16 +1,9 @@
-"""act.py — do what the map says, control by control, and read each one back.
+"""act.py — the agent's rows done on the page, control by control, each read back.
 
-    act_rows(frame, controls, rows, facts, resume) -> [outcome]
+    act_rows(frame, controls, rows, facts, resume) -> [outcome]     (form.act, the act tool)
 
-The loop is see -> map -> act -> see:
-    see     see.describe: the page's controls, each with an id, its HTML facts, its lists
-    map     Claude: one row per control — [id, write|select, answer]
-    act     this module: each row on its control, found by its id (the control see read,
-            pinned in the page), checked by reading the control back
-    see     again, by the caller: what still shows empty, what a pick put on the page, and
-            the placeholders set here, go to the next map round
-
-An answer, as the map writes it:
+A row is [id, write|select, answer]; the control is the one see read (see.describe), found
+by the pin see put on it. An answer:
     <fact key>                     the fact's value
     option:<choice>                a choice the control offers
     option:<a> › <b> › <c>         a CHAIN in a nested list: opened once, each step picked
@@ -19,18 +12,14 @@ An answer, as the map writes it:
                                    not sure: chain 1 is picked as a PLACEHOLDER so the form
                                    can go on; the question and every candidate are kept to
                                    ask the applicant
-    search:<regex>; <regex>        the map's own patterns, most specific first (\bIndia\b, ^I):
-                                   each run over the list's entries (a nested list's chains),
-                                   what each matches goes back to the map (nothing picked)
+    search:<regex>; <regex>        the agent's patterns, most specific first (\bIndia\b, ^I):
+                                   each run over the list's entries (a nested list's chains);
+                                   what each matches is reported, nothing picked
     file:resume                    the resume file
-    next / submit / start          the page's own buttons: not pressed here (the walk
-                                   presses them once the page is filled)
-    add:<n>                        a repeated section's Add, pressed n times
-    press                          any other button the map wants pressed once (a block's Delete)
+    add:<n>                        a repeated section's Add, pressed n times, each checked
     <the question itself>          nothing stored: a required box gets a placeholder text
-    text:<value>                   a literal value — the applicant's approved answer, given at replay
-    keep:<any answer above>        the map saw the control already showing the right value:
-                                   nothing is done to it (the answer is kept for the record)
+    text:<value>                   a literal value — the applicant's approved answer, at filing
+    keep:<any answer above>        the control already shows the right value: nothing is done
 
 Which routine acts on a control comes from what its HTML says (see.facts_of): a box is
 typed into, a date part keyed digit by digit, a <select> selected, a radio / checkbox
@@ -41,7 +30,7 @@ import os
 import re
 import time
 
-from jobpilot.apply.explore import see as S
+from jobpilot.apply.explore_agentic import see as S
 
 WAIT = 5000
 PLACEHOLDER_TEXT = "To be confirmed"
@@ -59,9 +48,9 @@ def chain_of(text):
 
 
 def read_answer(answer, facts, resume):
-    """(how, what) for one map answer:
+    """(how, what) for one answer:
         ("fact", (key, value))  ("chain", [steps])  ("guess", {"candidates": [chains], "question"})
-        ("search", [terms])     ("file", path)      ("button", word)   ("add", n)
+        ("search", [terms])     ("file", path)      ("add", n)          ("keep", (how, what))
         ("question", text)"""
     a = str(answer or "").strip()
     low = a.lower()
@@ -79,10 +68,6 @@ def read_answer(answer, facts, resume):
         return "search", [t.strip() for t in a[7:].split(";") if t.strip()][:3]
     if low == "file:resume":
         return "file", resume
-    if low in ("next", "submit", "start"):
-        return "button", low
-    if low == "press":
-        return "press", None
     if low.startswith("add:"):
         n = "".join(ch for ch in a[4:] if ch.isdigit())
         return "add", int(n or 0)
@@ -195,7 +180,7 @@ def current(frame, c):
 
 def holds(frame, c, entry):
     """Does the control now show exactly the entry that was picked (case, spaces and
-    punctuation aside)? Whether a shown value is the RIGHT answer is the map's to judge —
+    punctuation aside)? Whether a shown value is the RIGHT answer is the agent's to judge —
     it answers keep: — never code."""
     want = plain(entry)
     return bool(want) and any(want == plain(s) for s in shows(frame, c))
@@ -216,9 +201,37 @@ def focus(el):
 
 
 def type_into(frame, el, value):
+    """Typed as a person types it (a long text is set at once), then the box is left. A box
+    that offers suggestions as you type takes the one that is the value, else the first that
+    starts with it; one that drops the value when left (it wanted a suggestion picked) is
+    reported, not taken as done."""
+    text = str(value)
+    listed = lambda: [e[0] for e in (frame.evaluate(S.ENTRIES_JS) or {}).get("entries", [])]
     focus(el)
-    el.fill(str(value), timeout=WAIT)
+    before = set(listed())
+    el.fill("", timeout=WAIT)
+    if len(text) <= 80:
+        el.press_sequentially(text, delay=15)
+    else:
+        el.fill(text, timeout=WAIT)
+    offered = lambda: [x for x in listed() if x not in before]
+    if _wait_for(frame, offered, 0.8):
+        now, want = offered(), plain(text)
+        pick = next((x for x in now if plain(x) == want), None) or next((x for x in now if plain(x).startswith(want)), None)
+        if pick:
+            _entry(frame, pick).first.click(timeout=WAIT)
+        else:
+            S._close(frame)
+    typed = el.input_value()
+    try:
+        el.blur()
+        frame.wait_for_timeout(250)
+    except Exception:
+        pass
     got = el.input_value()
+    if typed.strip() and not got.strip():
+        return {"ok": False, "shown": got, "error": f"the box dropped {text!r} when left — it wants an entry picked "
+                                                     "from its suggestions: search it"}
     return {"ok": plain(got) == plain(value), "shown": got}
 
 
@@ -388,7 +401,7 @@ def pick_chain(frame, c, chain):
 
 
 def pattern(term):
-    """The map's regex, matched case-insensitively; one that does not compile is its text."""
+    """The agent's regex, matched case-insensitively; one that does not compile is its text."""
     try:
         return re.compile(term, re.I)
     except re.error:
@@ -436,7 +449,7 @@ def add_blocks(frame, c, n, wait_s=4.0):
 
 
 def search_list(frame, c, terms, limit=25):
-    """What each of the map's patterns matches in the control's list — nothing picked. First
+    """What each of the agent's patterns matches in the control's list — nothing picked. First
     the list as it can be read whole: its tree (see.read_list; a nested list chain by chain,
     "Social Media › LinkedIn", so an entry under two categories stays two answers), or a list
     that draws only the rows on screen, read by scrolling it end to end. A pattern that finds
@@ -527,61 +540,47 @@ def clear_field(frame, c, tries=8):
 # ---------------------------------------------------------------- one row, and a page of rows
 
 def act_row(frame, c, kind, answer, facts, resume):
-    """Do one map row on its control. The outcome: ok, what the control shows, where the
-    value came from, and — when it was not the applicant's answer — the placeholder to ask
-    about; or what the list offered, for the next map round. `acted`: something was done to
-    the page (typed, picked, ticked, pressed, a file given, a block added) — a round in which
-    nothing was acted, nothing failed and nothing was turned back leaves the page as it is."""
+    """Do one row on its control. The outcome: ok, what the control shows, what was wanted
+    and — when it was not the applicant's answer — the placeholder to ask about; or, for a
+    search, what the list holds for each pattern."""
     how, what = read_answer(answer, facts, resume)
     out = {"id": c.id, "control": f"{c.role} {c.ref!r}", "kind": kind, "answer": answer, "how": how,
-           "group": c.group or ""}
-    if how == "button":
-        return {**out, "ok": True, "button": what, "shown": "left for the walk"}
-    if how == "keep":                                     # the map judged it already right
-        inner, value = what
-        src = {"fact": lambda: f"fact:{value[0]}", "chain": lambda: "choice", "file": lambda: "fact:file:resume"}
-        return {**out, "ok": True, "kept": True, "shown": "; ".join(shows(frame, c))[:80],
-                "source": src.get(inner, lambda: "shown")()}
-    if how == "press":
-        S.tap(locate(frame, c))
-        frame.wait_for_timeout(300)
-        return {**out, "ok": True, "acted": True, "shown": "pressed", "source": "press"}
+           "nature": nature(c)}
+    if how == "keep":
+        return {**out, "ok": True, "shown": "; ".join(shows(frame, c))[:80]}
     if how == "add":
-        return {**out, **add_blocks(frame, c, what), "source": "add", "acted": True}
+        return {**out, **add_blocks(frame, c, what)}
     if how == "search":
         return {**out, "ok": False, "offered": search_list(frame, c, what),
-                "error": "searched: what the list holds for each term goes back to the map"}
-    el, n = locate(frame, c), nature(c)
+                "error": "searched: what the list holds for each pattern"}
+    el, n = locate(frame, c), out["nature"]
     if how == "file":
         if not what:
             return {**out, "ok": False, "error": "no resume file built for this application"}
-        return {**out, **give_file(frame, el, what), "source": "fact:file:resume", "acted": True}
+        return {**out, **give_file(frame, el, what)}
 
-    placeholder, source = None, None
+    placeholder = None
     if how == "fact":
-        key, value = what
-        source = f"fact:{key}"
-        target = chain_of(value) if n in ("list", "select") else value
+        target = chain_of(what[1]) if n in ("list", "select") else what[1]
     elif how == "chain":
-        target, source = what, "choice"
+        target = what
     elif how == "guess":
         cands = what["candidates"]
         if not cands:
             return {**out, "ok": False, "error": "a guess without candidates"}
-        target, source = cands[0], f"placeholder:{what['question']}"
+        target = cands[0]
         placeholder = {"question": what["question"], "candidates": [" › ".join(x) for x in cands],
                        "used": " › ".join(cands[0])}
     else:                                                 # the question itself: nothing stored
         if n in ("type", "digits") and (c.facts or {}).get("required"):
-            target, source = PLACEHOLDER_TEXT if n == "type" else "1", f"placeholder:{what}"
+            target = PLACEHOLDER_TEXT if n == "type" else "1"
             placeholder = {"question": what, "candidates": [], "used": target}
         else:
             return {**out, "ok": True, "shown": "left empty (optional, nothing stored)", "question": what}
 
     if placeholder and n in ("type", "list", "select") and holds(frame, c, placeholder["used"].split(" › ")[-1]):
-        # it already holds the placeholder an earlier round put there: settled, still to be asked
-        return {**out, "ok": True, "kept": True, "shown": "; ".join(shows(frame, c))[:80], "source": source,
-                "placeholder": placeholder, "nature": n}
+        # it already holds the placeholder an earlier act put there: settled, still to be asked
+        return {**out, "ok": True, "shown": "; ".join(shows(frame, c))[:80], "placeholder": placeholder}
     if n == "tick":
         # a row on a radio, or on one of several choices of a question, means: pick THIS one;
         # only a lone checkbox ("I currently work here") is set either way by a Yes / No fact
@@ -601,7 +600,7 @@ def act_row(frame, c, kind, answer, facts, resume):
     else:
         r = type_into(frame, el, " › ".join(target) if isinstance(target, list) else target)
     wanted = " › ".join(target) if isinstance(target, list) else str(target)
-    return {**out, **r, "source": source, "placeholder": placeholder, "nature": n, "acted": True, "wanted": wanted}
+    return {**out, **r, "placeholder": placeholder, "wanted": wanted}
 
 
 def list_open(frame):
@@ -617,7 +616,7 @@ ORDER = {"select": 1, "write": 2}          # Add first, then choices (they may a
 
 
 def act_rows(frame, controls, rows, facts, resume, log=print):
-    """Every map row on its control, in order: Add buttons, then picks, then typing. Each
+    """Every row on its control, in order: Add buttons, then picks, then typing. Each
     control is pinned by its DOM id first, so it is found again after its name changes with
     what it shows. Returns an outcome per row."""
     by_id = {c.id: c for c in controls if getattr(c, "id", "")}

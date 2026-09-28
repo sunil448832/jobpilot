@@ -1,8 +1,7 @@
 """
 platforms/workday.py — Workday: link recognition, the JD from the tenant's JSON API,
-and what only Workday needs BETWEEN its pages. Everything on a page is mapped and
-filled by the generic see / map / act engine (explore/walk.py); a tenant's page
-maps are kept per tenant (company_key) and reused across its roles.
+and what only Workday needs BETWEEN its pages. Everything on a page is filled by the
+form agent (explore_agentic), like any form.
 
     start(page, ctx, log, press_start)
                             the posting -> the first wizard page, through the account
@@ -122,7 +121,7 @@ def _box(frame, pattern):
 
 
 def _quiet(page):
-    from jobpilot.apply.explore.browser import wait_quiet
+    from jobpilot.apply.explore_agentic.browser import wait_quiet
     wait_quiet(page.main_frame, max_s=10, quiet=4)
 
 
@@ -144,7 +143,7 @@ def _send(frame, box):
 
 
 def _said(frame):
-    from jobpilot.apply.explore import see
+    from jobpilot.apply.explore_agentic import see
     return " ".join(see.errors(frame))
 
 
@@ -185,7 +184,7 @@ def is_last(step_name):
 
 def next_page(page, step_name, name):
     """Press the page's `next` button (its name from the map). (moved on, [the page's errors])."""
-    from jobpilot.apply.explore import see
+    from jobpilot.apply.explore_agentic import see
     if not _click(page.main_frame, name):
         return False, [f"no {name!r} button"]
     for _ in range(6):                                    # the page saves, then moves on: give it time — an

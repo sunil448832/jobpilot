@@ -1,16 +1,15 @@
 {
  "slug": "sonarsource-ai-research-engineer",
  "platform": "lever",
- "at": "2026-09-28T11:58:22",
+ "at": "2026-09-28T15:13:15",
  "outcome": "last-page",
- "note": "Lever form filled up to Submit (not sent). Placeholders to confirm: Switzerland sponsorship (c17, c22) — no Swiss work-authorization fact; guessed \"requires sponsorship\".",
+ "note": "Single-page Lever form filled. Placeholders to confirm: Swiss sponsorship (select + radio), willingness to be in the Geneva office 3-4 days/week. Optional fields (age, ethnicity checkboxes, comments, job alerts) left empty.",
  "pages": [
   "AI Research Engineer"
  ],
  "filled": {
   "AI Research Engineer :: link 'ATTACH RESUME/CV Resume/CV ✱'": "sunil_resume.docx",
   "AI Research Engineer :: combobox ' #2'": "Yes",
-  "AI Research Engineer :: radio 'Yes'": "checked",
   "AI Research Engineer :: combobox 'Gender'": "Male",
   "AI Research Engineer :: combobox 'Race Click to see details about each option.'": "Decline to self-identify",
   "AI Research Engineer :: combobox 'Veteran status'": "I am not a veteran",
@@ -25,7 +24,7 @@
   "AI Research Engineer :: textbox 'Type your response #2'": "2 months"
  },
  "placeholders": {
-  "Would you now or at any time require employer sponsorship to work in the country this role is located (Switzerland)?": {
+  "Would you now or at any time require employer sponsorship to work in Switzerland?": {
    "used": "Yes",
    "field": "combobox ' #1'",
    "candidates": [
@@ -34,7 +33,7 @@
    ],
    "page": "AI Research Engineer"
   },
-  "Are you eligible to work in this country (Switzerland) or would you require sponsorship?": {
+  "Are you eligible to work in Switzerland or would you require sponsorship?": {
    "used": "I require sponsorship",
    "field": "radio 'I require sponsorship'",
    "candidates": [
@@ -42,13 +41,34 @@
     "I am eligible to work in this country (e.g., I am a local citizen or have a visa)"
    ],
    "page": "AI Research Engineer"
+  },
+  "Are you willing to work from the Geneva office 3-4 days a week (5 days during the 1st onboarding month)?": {
+   "used": "Yes",
+   "field": "radio 'Yes'",
+   "candidates": [
+    "Yes",
+    "No"
+   ],
+   "page": "AI Research Engineer"
   }
  },
- "tool_calls": 10,
- "seconds": 73,
+ "submit_control": {
+  "page": "AI Research Engineer",
+  "role": "button",
+  "name": "Submit application",
+  "nth": 1,
+  "group": "",
+  "above": "Yes, Sonar can contact me about future job opportunities for up to 3 years",
+  "qn": 0
+ },
+ "calls": "applications/sonarsource-ai-research-engineer/calls.json",
+ "tool_calls": 5,
+ "seconds": 52,
  "model": "opus",
  "effort": "low",
- "turns": 11,
- "cost_usd": 0.28378139999999996,
- "transcript": "tests/maps/sonarsource-ai-research-engineer/agentic-0928-1157.log"
+ "turns": 6,
+ "cost_usd": 0.23522420000000002,
+ "transcript": "tests/maps/sonarsource-ai-research-engineer/agentic-0928-1512.log",
+ "screenshot": "data/queue/sonarsource-ai-research-engineer-0928-1512.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/sonarsource-ai-research-engineer/sunil_resume.docx"
 }

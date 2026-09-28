@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jobpilot"
 version = "0.2.1"
-description = "Sunil's job-application pipeline: discover, rank, screen, tailor, apply (explore, draft, submit), review."
+description = "Sunil's job-application pipeline: discover, rank, screen, tailor, apply (agentic explore and submit, draft), review."
 requires-python = ">=3.11"
 dependencies = ["pyyaml", "requests", "openpyxl", "playwright", "python-docx"]
 
 # src/ is the package itself (src/core, src/rank, ...), imported as jobpilot.<stage>.
 [tool.setuptools]
 package-dir = {"jobpilot" = "src"}
-packages = ["jobpilot", "jobpilot.core", "jobpilot.discover", "jobpilot.apply", "jobpilot.apply.explore", "jobpilot.apply.platforms", "jobpilot.apply.draft", "jobpilot.apply.submit", "jobpilot.apply.explore_agentic", "jobpilot.outreach", "jobpilot.rank", "jobpilot.review", "jobpilot.screen", "jobpilot.tailor"]
+packages = ["jobpilot", "jobpilot.core", "jobpilot.discover", "jobpilot.apply", "jobpilot.apply.platforms", "jobpilot.apply.draft", "jobpilot.apply.explore_agentic", "jobpilot.outreach", "jobpilot.rank", "jobpilot.review", "jobpilot.screen", "jobpilot.tailor"]

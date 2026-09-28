@@ -13,6 +13,8 @@ sending is replaced by this:
                               finish("refused", note); never press again
                 UNCLEAR       no confirmation and no error — it may have been sent: call
                               finish("unclear", note); never press again
+                CAPTCHA       a captcha opened: nothing is sent until a person solves it —
+                              call finish("captcha", note); never press again
               Code checks every press: it refuses when a placeholder was set in this session,
               after 3 presses, and after any press that ended as submitted, refused or
               unclear.

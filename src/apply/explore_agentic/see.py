@@ -1,10 +1,9 @@
 """see.py — a page as a screen reader reads it, and what Claude is shown of it.
 
     snapshot(frame)              the page's text, as Playwright prints it
-    describe(frame, entries, peek)
-                                 what Claude is given: every control a person can reach
-                                 that the stored map does NOT fit (reuse.page_map), each
-                                 with an id (c1, c2, ...), what its HTML says about it,
+    describe(frame, open_lists, chrome)
+                                 what the agent is given: every control a person can
+                                 reach, each with an id (c1, c2, ...), what its HTML says about it,
                                  what it shows now, and for a list its choices — and the
                                  snapshot with each id written into its control's line.
                                  Nothing is decided here beyond "can a person reach it":
@@ -12,18 +11,9 @@
                                  question it answers, which button moves on — Claude
                                  decides, and answers each control by its id.
 
-Reading the snapshot against the stored map is reuse.py's (parse / match / page_map):
-a page whose map still fits needs no Claude; what the map does not fit is listed here.
+The snapshot read as controls is controls.py's (parse / shown).
 """
-from jobpilot.apply.explore.reuse import parse, shown, page_map, CHROME, FORM_ROLES
-
-
-def snapshot(frame):
-    """The frame's accessibility snapshot, or '' when it cannot be read."""
-    try:
-        return frame.locator("body").aria_snapshot(timeout=8000)
-    except Exception:
-        return ""
+from jobpilot.apply.explore_agentic.controls import snapshot, parse, shown, CHROME, FORM_ROLES  # noqa: F401
 
 
 # ---------------------------------------------------------------- the live element behind a line
@@ -482,8 +472,8 @@ def forget_lists(c=None):
 
 
 def read_list_once(frame, c):
-    """read_list, remembered for the page: a list's entries do not change from one round
-    to the next, and reading a long or nested list takes time."""
+    """read_list, remembered for the page: a list's entries do not change while the page
+    is filled, and reading a long or nested list takes time."""
     key = list_key(frame, c)
     if key not in LISTS:
         LISTS[key] = read_list(frame, c)
@@ -588,10 +578,9 @@ def compact(opts):
 SELECT_SHOWN = 300          # a <select>'s entries are in its HTML: shown whole up to this many
 
 
-def describe(frame, entries=None, open_lists=False, chrome=False):
-    """(controls, fitted, text, snap): the page read against the stored map (`entries`,
-    reuse.page_map). `fitted`: the map's entries that fit a control — no Claude needed.
-    Every other control a person can reach gets an id (c1, c2, ...) and
+def describe(frame, open_lists=False, chrome=False):
+    """(controls, text, snap): the page read. Every control a person can reach gets an id
+    (c1, c2, ...) and
         text   one line each: id, role, name, what its HTML says, what it shows, and for
                a list its choices — a <select>'s from its HTML; with `open_lists`, any
                other list opened and read whole, categories and their entries
@@ -601,7 +590,7 @@ def describe(frame, entries=None, open_lists=False, chrome=False):
                before and after it — and answers it by its id, never by a name of its own.
     Page chrome (header, navigation, footer) is left out unless `chrome`."""
     snap = snapshot(frame)
-    controls, fitted, todo = page_map(snap, entries or [])
+    controls = parse(snap)
     lines = snap.splitlines()
     for c in controls:
         c.facts = facts_of(frame, c)
@@ -610,7 +599,7 @@ def describe(frame, entries=None, open_lists=False, chrome=False):
     has_main = any(c.region == "main" for c in controls)
     link_ok = lambda c: c.region in ("main", "dialog") or (not has_main and c.region not in CHROME)
     out, n = [], 0
-    for c in todo:
+    for c in controls:
         if c.role == "listbox" or not reachable(c.facts) or (not chrome and c.region in CHROME):
             continue
         if c.role == "link" and not link_ok(c):
@@ -640,7 +629,7 @@ def describe(frame, entries=None, open_lists=False, chrome=False):
         out.append(line)
         if 0 <= c.line < len(lines):
             lines[c.line] = lines[c.line].replace("- ", f"- [{c.id}] ", 1)
-    return controls, fitted, "\n".join(out) or "(none)", "\n".join(lines)
+    return controls, "\n".join(out) or "(none)", "\n".join(lines)
 
 
 # ---------------------------------------------------------------- the frame and the page state
@@ -692,7 +681,7 @@ ERRORS_JS = r"""() => {
 def errors(frame):
     """What the page itself marks as wrong, by ARIA alone — live regions and alerts, and
     invalid controls named by their label. What the page SAYS in words is in its snapshot,
-    which the map reads for itself when a page is refused."""
+    which the agent reads for itself when a page is refused."""
     try:
         return list(frame.evaluate(ERRORS_JS) or [])[:12]
     except Exception:

@@ -16,41 +16,47 @@ no Claude while the pages are as they were, and let the agent take over only whe
                 itself — at most 3 presses in all; SUBMITTED only on the portal's confirmation;
                 REFUSED or UNCLEAR are never pressed again
 
-    python -m jobpilot.apply.explore_agentic.replay <slug> [--submit [--item=<queue id>]] [--model= --effort=]
+    python -m jobpilot.apply.explore_agentic.replay [--limit N]             file every approved card
+    python -m jobpilot.apply.explore_agentic.replay <slug> --submit [--item=<id>]   file one job
+    python -m jobpilot.apply.explore_agentic.replay <slug>                  a dry run
+    [--model= --effort=]
 
-Without --submit it is a dry run: it goes to the last page and presses nothing there. With it,
-the item is the slug's newest approved queue item unless --item names one.
+A dry run goes to the last page and presses nothing there. Filing one job takes its newest
+approved card unless --item names one. After a submission: the outcome to his phone
+(browser.notify_outcome), the attempt in the record, and referral targets for the company.
 Written: calls.json (saved after every call: a filing stopped anywhere resumes from it),
 applications/<slug>/filing_agentic.json (what happened, each press), tests/maps/<slug>/replay-<time>.log.
 """
+import argparse
 import asyncio
 import concurrent.futures as cf
 import datetime as dt
 import json
 import os
+import subprocess
 import sys
 import time
 
 from jobpilot.core.answers import load, load_learned
+from jobpilot.core.config import cfg
 from jobpilot.core.paths import TOOL
-from jobpilot.apply.explore import browser as B, record as R
+from jobpilot.apply.explore_agentic import browser as B, record as R
 from jobpilot.apply.explore_agentic.form import Form
-from jobpilot.apply.explore_agentic import calls as C, session as SS
+from jobpilot.apply.explore_agentic import calls as C, card as K, session as SS
+
+
+class Skip(Exception):
+    """A filing that does not open: why."""
 
 
 def queue_item(slug, item_id=None):
-    """The queue item to file: the one named, else the slug's newest approved one."""
+    """The card to file: the one named, else the slug's newest approved one."""
     if item_id:
-        return json.load(open(os.path.join(B.QUEUE_DIR, item_id + ".json")))
-    items = []
-    for name in sorted(os.listdir(B.QUEUE_DIR)):
-        if name.endswith(".json"):
-            it = json.load(open(os.path.join(B.QUEUE_DIR, name)))
-            if it.get("company_slug") == slug and it.get("status") == "approved":
-                items.append(it)
+        return K.load(item_id)
+    items = K.approved(slug)
     if not items:
-        sys.exit(f"{slug}: no approved queue item — nothing opened, nothing sent")
-    return max(items, key=lambda it: it.get("created") or it["id"])
+        raise Skip(f"{slug}: no approved card — nothing opened, nothing sent")
+    return items[0]
 
 
 def first_press(form, rec):
@@ -92,26 +98,29 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
 
     rec, calls = C.load(slug)
     if not calls:
-        sys.exit(f"{slug}: no record (calls.json) — explore it first")
+        raise Skip(f"{slug}: no record (calls.json) — explore it first")
     item = None
     if submit:
         item = queue_item(slug, item_id)
         if item.get("status") != "approved" or item.get("submitted_at"):
-            sys.exit(f"{item['id']} is not approved ({item.get('status')}) — nothing opened, nothing sent")
+            raise Skip(f"{item['id']} is not approved ({item.get('status')}) — nothing opened, nothing sent")
+        if rec.get("at") and (item.get("created") or "") < rec["at"]:
+            raise Skip(f"{item['id']} was approved before the exploration it would file ({rec['at']}) — "
+                       "explore it again for a card of this record; nothing opened, nothing sent")
         if item.get("submit_presses"):
-            sys.exit(f"{item['id']}: Submit was pressed before ({item['submit_presses']}) — check the email for a "
+            raise Skip(f"{item['id']}: Submit was pressed before ({item['submit_presses']}) — check the email for a "
                      "confirmation; nothing opened, nothing sent")
     approved = C.approved_answers(slug, rec)
     open_qs = [q for q in (rec.get("placeholders") or {}) if R.norm(q) not in approved]
     if submit and open_qs:
-        sys.exit(f"{len(open_qs)} question(s) still without his answer: {open_qs[:4]} — nothing opened, nothing sent")
+        raise Skip(f"{len(open_qs)} question(s) still without his answer: {open_qs[:4]} — nothing opened, nothing sent")
     if submit and not rec.get("submit_control"):
-        sys.exit("the record names no submit button — explore it again")
+        raise Skip("the record names no submit button — explore it again")
 
     form = Form(slug, load("answers.yaml"), load_learned(), log, mode="submit" if submit else "dry-run")
     form.item, form.submit_control = item, rec.get("submit_control")
     form.redo = redo = C.Redo(form, rec, calls, approved, not submit, log)
-    form.save_calls = lambda cs: C.save(slug, cs, calls, finished=False)
+    form.save_calls = lambda cs: C.save(slug, cs, calls)
     pool = cf.ThreadPoolExecutor(1)
     on_browser = lambda fn, *a: asyncio.get_running_loop().run_in_executor(pool, fn, *a)
     out = {"slug": slug, "mode": "submit" if submit else "dry-run", "outcome": None, "why": None}
@@ -129,7 +138,8 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
         reached = r["end"]
         if not reached:                                   # the agent resumes from where the redo stopped
             out["agent"] = "resume"
-            await SS.agent(form, on_browser, resume_task(redo.text(r), submit), model, effort, 120, log, logf)
+            _, res = await SS.agent(form, on_browser, resume_task(redo.text(r), submit), model, effort, 120, log, logf)
+            out["agent_cost_usd"] = round((out.get("agent_cost_usd") or 0) + (getattr(res, "total_cost_usd", 0) or 0), 3)
             reached = (form.done or ("",))[0] == "last-page"
             if not reached and not form.sent:
                 out["outcome"], out["why"] = "stuck", (form.done or ("", "the agent did not reach the last page"))[1]
@@ -144,7 +154,8 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
             if not form.sent and not said.startswith("refused"):
                 form.done = None
                 out["agent"] = "fix"
-                await SS.agent(form, on_browser, fix_task(said), model, effort, 80, log, logf)
+                _, res = await SS.agent(form, on_browser, fix_task(said), model, effort, 80, log, logf)
+                out["agent_cost_usd"] = round((out.get("agent_cost_usd") or 0) + (getattr(res, "total_cost_usd", 0) or 0), 3)
             if not form.sent:
                 done = form.done or ("stuck", said)
                 out["outcome"] = "needs-answers" if done[0] == "needs-answer" else "not-sent"
@@ -163,33 +174,68 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
         out["seconds"] = round(time.time() - t0)
         out["new_placeholders"] = form.placeholders
         out["presses"] = form.presses
-        C.save(slug, form.calls, calls, finished=out["outcome"] == "submitted")
+        C.save(slug, form.calls, calls)
         with open(os.path.join(os.path.dirname(R.path_for(slug)), "filing_agentic.json"), "w", encoding="utf-8") as f:
             json.dump(out, f, indent=1, ensure_ascii=False)
         if item is not None:
             now = dt.datetime.now().isoformat(timespec="seconds")
             if out["outcome"] == "submitted":
                 item.update(status="submitted", submitted_at=now, fail_reason=None, submit_screenshot=out.get("screenshot"))
+            elif out["outcome"] == "captcha":             # not sent: a person has to submit it
+                item.update(status="failed", fail_reason="the portal asks for a captcha at Submit — every field is filled "
+                            f"as you approved; submit it by hand: {item.get('url')}", submit_screenshot=out.get("screenshot"))
             elif out["outcome"] == "unclear":             # maybe sent: never pressed again by a rerun
                 item.update(status="unconfirmed", fail_reason=out["why"], submit_screenshot=out.get("screenshot"))
             elif out["outcome"] == "needs-answers":
                 item.update(status="needs_input", fail_reason=out["why"])
             else:
                 item.update(status="failed", fail_reason=(out["why"] or out["outcome"] or "unknown")[:300])
-            with open(os.path.join(B.QUEUE_DIR, item["id"] + ".json"), "w") as f:
-                json.dump(item, f, indent=2)
+            K.save(item)
+            R.note_attempt(slug, item["status"], why=out.get("why"))
+            B.notify_outcome(item)
         log(f"\nFILING: {out['outcome']}" + (f" — {out['why']}" if out.get("why") else "")
-            + f" | {out['seconds']}s | agent: {out.get('agent') or 'not needed'} | presses {len(form.presses)}")
+            + f" | {out['seconds']}s | agent: {out.get('agent') or 'not needed'}"
+            + (f" (${out['agent_cost_usd']})" if out.get("agent_cost_usd") else "") + f" | presses {len(form.presses)}")
         logf.close()
     return out
 
 
+def referrals(slug):
+    """An application in an ATS queue is the weakest form of applying: line up referrals now."""
+    try:
+        subprocess.run([sys.executable, "-m", "jobpilot.outreach.referral_tracker", "--for", slug], cwd=TOOL, timeout=300)
+    except Exception as e:
+        print(f"    [warn] referral targets: {type(e).__name__}")
+
+
+def file_one(slug, submit, item_id, model, effort):
+    try:
+        out = asyncio.run(file(slug, submit, item_id, model, effort))
+    except Skip as e:
+        print(f"  [skip] {e}")
+        return None
+    if out.get("outcome") == "submitted":
+        referrals(slug)
+    return out
+
+
 def main():
-    slug = next((a for a in sys.argv[1:] if not a.startswith("--")), None)
-    if not slug:
-        sys.exit(__doc__)
-    flag = lambda k, d=None: next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith(f"--{k}=")), d)
-    asyncio.run(file(slug, "--submit" in sys.argv, flag("item"), flag("model", "opus"), flag("effort", "low")))
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("slug", nargs="?", help="one job (a dry run unless --submit); none: every approved card")
+    ap.add_argument("--submit", action="store_true")
+    ap.add_argument("--item", help="the card to file (default: the job's newest approved one)")
+    ap.add_argument("--limit", type=int, help="file at most N approved cards")
+    ap.add_argument("--model", default=cfg("llm.form_agent.model", "opus"))
+    ap.add_argument("--effort", default=cfg("llm.form_agent.effort", "low"))
+    a = ap.parse_args()
+    if a.slug:
+        out = file_one(a.slug, a.submit, a.item, a.model, a.effort)
+        sys.exit(0 if out else 1)
+    todo = K.approved()[:a.limit] if a.limit else K.approved()
+    print(f"  {len(todo)} approved card(s) to file")
+    for it in todo:
+        print(f"\n=== {it['id']}")
+        file_one(it["company_slug"], True, it["id"], a.model, a.effort)
 
 
 if __name__ == "__main__":

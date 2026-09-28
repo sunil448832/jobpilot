@@ -37,9 +37,10 @@ from claude_agent_sdk import (tool, create_sdk_mcp_server, ClaudeAgentOptions, C
                               UserMessage, ResultMessage, TextBlock, ToolUseBlock, ToolResultBlock, ToolAnnotations)
 
 from jobpilot.core.answers import load, load_learned
+from jobpilot.core.config import cfg
 from jobpilot.core.paths import TOOL
 from jobpilot.tailor.autotailor import AUTO_CWD
-from jobpilot.apply.explore import facts as F, record as R
+from jobpilot.apply.explore_agentic import facts as F, record as R
 from jobpilot.apply.explore_agentic.form import Form
 from jobpilot.apply.explore_agentic import calls as C
 
@@ -57,6 +58,26 @@ def system_prompt(form):
                  "control each answers takes it (its learned: key) before any other fact; it is his answer,\n"
                  "not a guess:\n" + "\n".join(f"- {k}: {q!r} -> {a!r}" for k, q, a in form.approved))
     return text + "\n\nFACTS (key: value)\n" + F.for_prompt(form.facts, form.learned) + "\n"
+
+
+def keep_placeholders(slug, form):
+    """The session's placeholders into the application's record (explore.json), where the
+    phone's answers are written (record.apply_answers) and the filing reads them: an answer he
+    gave already stays; a placeholder no longer asked goes, unless he answered it."""
+    doc = R.load(slug)
+    old = doc.get("placeholders") or {}
+    by_norm = {R.norm(q): p for q, p in old.items()}
+    now = {}
+    for q, p in form.placeholders.items():
+        prev = by_norm.get(R.norm(q)) or {}
+        now[q] = {**p, **{k: prev[k] for k in ("answer", "answered_at") if prev.get(k)}}
+    for q, p in old.items():
+        if (p.get("answer") or "").strip() and R.norm(q) not in {R.norm(x) for x in now}:
+            now[q] = p
+    for old in ("pages", "submit", "explored_at", "company"):     # the old engine's record: calls.json now
+        doc.pop(old, None)
+    doc.update(placeholders=now, platform=form.pid, reached_end=(form.done or ("",))[0] == "last-page")
+    R.save(slug, doc)
 
 
 def reply(text):
@@ -195,12 +216,12 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
         form.redo = C.Redo(form, rec, former, C.approved_answers(slug, rec), True, log)
     else:
         former = []
-    form.save_calls = lambda cs: C.save(slug, cs, former, finished=False)
+    form.save_calls = lambda cs: C.save(slug, cs, former)
     pool = cf.ThreadPoolExecutor(1)                              # the browser's own thread
     on_browser = lambda fn, *a: asyncio.get_running_loop().run_in_executor(pool, fn, *a)
     open(base + ".system.txt", "w", encoding="utf-8").write(system_prompt(form))
     closed = await on_browser(form.open)
-    calls, result = 0, None
+    calls, result, shot = 0, None, None
     if closed:
         log(closed)
         form.done = ("stuck", closed)
@@ -210,6 +231,11 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
             task = "The browser shows the job posting. Fill the application." + (
                 " A former session's record exists: start with replay (see RESUMING)." if form.redo else "")
             calls, result = await agent(form, on_browser, task, model, effort, max_turns, log, logf)
+            shot = os.path.join("data", "queue", f"{slug}-{stamp}.png")
+            try:                                          # the page it ended on, for the phone card
+                await on_browser(lambda: form.page.screenshot(path=os.path.join(TOOL, shot), full_page=True))
+            except Exception:
+                shot = None
         finally:
             await on_browser(form.close)
     pool.shutdown()
@@ -222,10 +248,11 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
            "calls": os.path.relpath(C.calls_path(slug), TOOL),
            "tool_calls": calls, "seconds": round(secs), "model": model, "effort": effort,
            "turns": getattr(result, "num_turns", None), "cost_usd": getattr(result, "total_cost_usd", None),
-           "transcript": os.path.relpath(base + ".log", TOOL)}
+           "transcript": os.path.relpath(base + ".log", TOOL), "screenshot": shot, "resume": form.resume}
     with open(os.path.join(os.path.dirname(R.path_for(slug)), "agentic.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
-    C.save(slug, form.calls, former, finished=out["outcome"] == "last-page")
+    C.save(slug, form.calls, former)
+    keep_placeholders(slug, form)
     log(f"\nDONE: {out['outcome']} | {out['note'][:300]} | tool calls {calls} | {secs:.0f}s"
         + (f" | turns {out['turns']} | cost ${out['cost_usd'] or 0:.2f}" if result else ""))
     for q, p in form.placeholders.items():
@@ -239,7 +266,8 @@ def main():
     if not slug:
         sys.exit(__doc__)
     flag = lambda k, d: next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith(f"--{k}=")), d)
-    asyncio.run(run(slug, flag("model", "opus"), flag("effort", "low"), int(flag("max-turns", "200")),
+    asyncio.run(run(slug, flag("model", cfg("llm.form_agent.model", "opus")),
+                    flag("effort", cfg("llm.form_agent.effort", "low")), int(flag("max-turns", "200")),
                     "--fresh" in sys.argv))
 
 

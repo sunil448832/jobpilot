@@ -1,0 +1,92 @@
+"""explore_agentic/card.py — the phone's card for an application (data/queue/<id>.json): what
+an exploration left for his approval, and the queue the filing takes approved cards from.
+
+    write(slug, out, answers)   the card for a finished exploration (session.run's result):
+                                what was filled, the questions only he can answer (the
+                                placeholders, with the agent's candidates), the last page's
+                                screenshot; earlier unsent cards of the job are superseded
+    questions_from(record)      the record's unanswered placeholders as the card's questions
+    save(item) / load(id)       one card
+    approved(slug=None)         approved cards, oldest first (one job's newest, with a slug)
+"""
+import datetime as dt
+import json
+import os
+
+from jobpilot.core.answers import read_jd, detect_market
+from jobpilot.core.paths import TOOL
+from jobpilot.apply.explore_agentic import browser as B, facts as F, record as R
+
+QUEUE = B.QUEUE_DIR
+
+
+def save(item):
+    os.makedirs(QUEUE, exist_ok=True)
+    with open(os.path.join(QUEUE, f"{item['id']}.json"), "w") as f:
+        json.dump(item, f, indent=2)
+
+
+def load(item_id):
+    with open(os.path.join(QUEUE, item_id + ".json")) as f:
+        return json.load(f)
+
+
+def cards():
+    for name in sorted(os.listdir(QUEUE)) if os.path.isdir(QUEUE) else []:
+        if name.endswith(".json") and not name.startswith("_"):
+            try:
+                yield json.load(open(os.path.join(QUEUE, name)))
+            except (OSError, ValueError):
+                continue
+
+
+def approved(slug=None):
+    """Approved cards not yet sent, oldest first; with a slug, that job's newest only."""
+    out = [it for it in cards() if it.get("status") == "approved" and not it.get("submitted_at")
+           and (slug is None or it.get("company_slug") == slug)]
+    out.sort(key=lambda it: it.get("created") or it["id"])
+    return out[-1:] if slug else out
+
+
+def questions_from(record):
+    """The unanswered placeholders as the card's questions: the agent's candidates (whole
+    chains for a nested list) and what stood in while exploring."""
+    out = []
+    for i, (q, p) in enumerate((record.get("placeholders") or {}).items()):
+        if (p.get("answer") or "").strip():
+            continue
+        cands = list(p.get("candidates") or [])
+        out.append({"qid": i, "label": q, "options": cands, "kind": "select" if cands else "text",
+                    "required": True, "status": "open", "page": p.get("page") or "", "field": p.get("field") or "",
+                    "value": str(p.get("used") or ""),
+                    "note": f"explored with placeholder {str(p.get('used'))[:40]!r} — needs your answer"})
+    return out
+
+
+def write(slug, out, answers):
+    """The card for a finished exploration. One that did not reach the last page is failed."""
+    meta, jd = read_jd(slug)
+    market = detect_market(meta.get("Location", ""), jd)
+    record = R.load(slug)
+    reached = out["outcome"] == "last-page"
+    questions = questions_from(record)
+    for it in cards():                                   # one card per job on the phone: this run's
+        if it.get("company_slug") == slug and it.get("status") not in ("submitted", "superseded") \
+                and not it.get("submitted_at"):
+            it["status"] = "superseded"
+            save(it)
+    item = {
+        "id": f"{slug}-{dt.datetime.now():%m%d%H%M}", "company": meta.get("Company", slug), "company_slug": slug,
+        "role": meta.get("Role / Title", ""), "location": meta.get("Location", ""),
+        "url": meta.get("Apply URL") or meta.get("Link"), "portal": out.get("platform"), "market": market,
+        "salary_quoted": F.pay_text(answers, market), "score": None, "resume": out.get("resume"),
+        "screenshot": out.get("screenshot"), "fields": {k.split(" :: ", 1)[-1]: v for k, v in (out.get("filled") or {}).items()},
+        "warnings": [out["note"]] if out.get("note") else [], "questions": questions,
+        "pages": len(out.get("pages") or []), "reached_end": reached,
+        "replay": os.path.relpath(R.path_for(slug), TOOL),
+        "status": ("needs_input" if questions else "pending") if reached else "failed",
+        "fail_reason": None if reached else f"exploration did not reach the last page — {out.get('note', '')[:200]}",
+        "created": dt.datetime.now().isoformat(timespec="seconds"),
+    }
+    save(item)
+    return item

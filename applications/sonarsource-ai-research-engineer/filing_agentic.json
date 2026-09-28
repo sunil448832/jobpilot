@@ -1,0 +1,44 @@
+{
+ "slug": "sonarsource-ai-research-engineer",
+ "mode": "submit",
+ "outcome": "unclear",
+ "why": "no confirmation and no error; the submit button is still there, page 'AI Research Engineer'",
+ "redo": {
+  "redone": [],
+  "at": "AI Research Engineer",
+  "end": false,
+  "why": "it differs from the record",
+  "differs": [
+   "c9 ('ATTACH RESUME/CV Resume/CV ✱': file:resume) is not on the page",
+   "c11 ('Full name ✱': personal.full_name) is not on the page",
+   "c12 ('Email ✱': personal.email) is not on the page",
+   "c13 ('Phone ✱': personal.phone) is not on the page",
+   "c14 ('Current location ✱': location.city) is not on the page",
+   "c15 ('Current company': employment[0].employer) is not on the page",
+   "c16 ('LinkedIn URL ✱': links.linkedin) is not on the page",
+   "c17 ('': guess:Yes; No | Would you now or at any time require employer sponsorship to work in Switzerland?) is not on the page",
+   "c18 ('Type your response': availability.notice_period) is not on the page",
+   "c20 ('': location.willing_to_relocate) is not on the page",
+   "c22 ('I require sponsorship': guess:I require sponsorship; I am eligible to work in this country (e.g., I am a local citizen or have a visa) | Are you eligible to work in Switzerland or would you require sponsorship?) is not on the page",
+   "c23 ('Type your response': availability.notice_period) is not on the page",
+   "c24 ('Yes': guess:Yes; No | Are you willing to work from the Geneva office 3-4 days a week (5 days during the 1st onboarding month)?) is not on the page",
+   "c28 ('Gender': eeo.gender) is not on the page",
+   "c30 ('Race Click to see details about each option.': eeo.race_ethnicity) is not on the page",
+   "c31 ('Veteran status': option:I am not a veteran) is not on the page",
+   "c47 ('Male': eeo.gender) is not on the page"
+  ]
+ },
+ "agent": "resume",
+ "agent_cost_usd": 0.225,
+ "screenshot": "data/queue/sonarsource-ai-research-engineer-submitted-0928-1521.png",
+ "seconds": 106,
+ "new_placeholders": {},
+ "presses": [
+  {
+   "page": "AI Research Engineer",
+   "button": "Submit application",
+   "outcome": "unclear",
+   "detail": "no confirmation and no error; the submit button is still there, page 'AI Research Engineer'"
+  }
+ ]
+}

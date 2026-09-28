@@ -307,7 +307,7 @@ class H(BaseHTTPRequestHandler):
         record's placeholders and what was learned from it. Not once it is being
         filed or was filed."""
         from jobpilot.apply.draft import learn as L
-        from jobpilot.apply.explore import record as R
+        from jobpilot.apply.explore_agentic import record as R
         with LOCK:
             item = json.load(open(p))
             u = item.get("undo")
@@ -495,7 +495,7 @@ class H(BaseHTTPRequestHandler):
         # Write his answers into the application's record (explore.json) straight
         # away, so the submit replays the real values, not the placeholders.
         from jobpilot.apply.draft import learn as L
-        from jobpilot.apply.explore import record as R
+        from jobpilot.apply.explore_agentic import record as R
         try:
             rec_before = {q: v.get("answer") for q, v in
                           (R.load(item["company_slug"]).get("placeholders") or {}).items()}
@@ -529,7 +529,7 @@ class H(BaseHTTPRequestHandler):
 
         if reexplore:
             try:
-                subprocess.Popen([sys.executable, "-m", "jobpilot.apply.explore", item["company_slug"]],
+                subprocess.Popen([sys.executable, "-m", "jobpilot.apply.explore_agentic", item["company_slug"]],
                                  cwd=TOOL, stdout=open(os.path.join(DATA, "reexplore.log"), "a"),
                                  stderr=subprocess.STDOUT, start_new_session=True)
                 print(f"  [re-explore] {item_id} — exploration started")

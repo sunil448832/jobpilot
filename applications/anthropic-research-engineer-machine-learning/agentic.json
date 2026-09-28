@@ -1,9 +1,9 @@
 {
  "slug": "anthropic-research-engineer-machine-learning",
  "platform": "greenhouse",
- "at": "2026-09-28T11:44:36",
+ "at": "2026-09-28T15:10:58",
  "outcome": "last-page",
- "note": "Single-page Greenhouse form filled; Submit not pressed.",
+ "note": "All fields filled on single-page Greenhouse form; phone country shows +91 (India). Resume attached.",
  "pages": [
   "Research Engineer, Machine Learning (Reinforcement Learning)"
  ],
@@ -25,7 +25,6 @@
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'Phone'": "96412 98471",
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'LinkedIn Profile'": "https://www.linkedin.com/in/sunil4832sharma",
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'GitHub URL'": "https://github.com/sunil448832",
-  "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'Other Useful URLs (e.g. Blog Posts)'": "https://huggingface.co/sunil448832",
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'When is the earliest you would want to start working with us?'": "My notice period is 2 months, so I could start roughly 2 months after an offer.",
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'Do you have any deadlines or timeline considerations we should be aware of?'": "No hard deadlines on my end — my notice period is 2 months, which is the main timeline constraint.",
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'What is the address from which you plan on working?'": "relocating",
@@ -34,11 +33,23 @@
   "Research Engineer, Machine Learning (Reinforcement Learning) :: textbox 'Additional Information'": "I mention this because it doesn't fit neatly elsewhere on the form: outside of GRPO post-training, I've also built and s"
  },
  "placeholders": {},
+ "submit_control": {
+  "page": "Research Engineer, Machine Learning (Reinforcement Learning)",
+  "role": "button",
+  "name": "Submit application",
+  "nth": 1,
+  "group": "",
+  "above": "I am not a protected veteran",
+  "qn": 2
+ },
+ "calls": "applications/anthropic-research-engineer-machine-learning/calls.json",
  "tool_calls": 3,
- "seconds": 63,
+ "seconds": 72,
  "model": "opus",
  "effort": "low",
  "turns": 4,
- "cost_usd": 0.2658396,
- "transcript": "tests/maps/anthropic-research-engineer-machine-learning/agentic-0928-1143.log"
+ "cost_usd": 0.2639306,
+ "transcript": "tests/maps/anthropic-research-engineer-machine-learning/agentic-0928-1509.log",
+ "screenshot": "data/queue/anthropic-research-engineer-machine-learning-0928-1509.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/anthropic-research-engineer-machine-learning/sunil_resume.docx"
 }

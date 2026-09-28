@@ -456,7 +456,7 @@ def process_role(p, cli, tag=""):
         + (" (below target — real gap, reported not chased)" if best["match_rate"] < target else ""))
 
     with FILL_LOCK:                       # one browser session at a time
-        ok, out = run([sys.executable, "-m", "jobpilot.apply.explore", p["slug"]], timeout=900)
+        ok, out = run([sys.executable, "-m", "jobpilot.apply.explore_agentic", p["slug"]], timeout=900)
     if not ok and "not supported for autofill" in out:
         # No form the walker could find (LinkedIn, an account wall, a JS shell):
         # hand him the content instead of dropping it.

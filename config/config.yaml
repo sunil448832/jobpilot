@@ -37,14 +37,9 @@ llm:
   screen:    {model: sonnet, effort: low}
   tailor:    {model: sonnet, effort: medium}
   questions: {model: sonnet, effort: low}
-  # map       the SEE step of exploration: reads one page's accessibility snapshot
-  #           and returns [name, kind, fact] per control (fill/mapper.py). Only for
-  #           pages and questions no cached map covers; ~1-2K tokens in, <100 out.
-  map:       {model: sonnet, effort: low}
-  # map_correct  a correction round of the map: a few failed controls with the page's
-  #           own words on why (choices offered, the real kind). Small prompts, where a
-  #           careless pick ("Mother tongue / C2" for "No German speaker") costs most.
-  map_correct: {model: sonnet, effort: medium}
+  # form_agent  the agent that fills an application form (apply/explore_agentic): one
+  #           session per application, tools on the live page; exploring and filing.
+  form_agent: {model: opus, effort: low}
   # Turn cap (claude --max-turns) for every Claude session in exploration and
   # submit: platform learning, application-hooks refine, submit resolve, answer
   # drafting. One turn is one tool call; a session that hits the cap stops, and
@@ -194,21 +189,6 @@ server:
   port: 8765
   # Left blank = detected from `tailscale status` at runtime.
   tailscale_host: ""
-
-fill:
-  # Exploration is see / map / act (docs/exploration-plan.md): code reads each
-  # page, a cached map is applied, and only the controls no map covers go to
-  # Claude (llm.map). Its map is checked against the live page and the failures
-  # go back to it, at most map_rounds times per page.
-  map_rounds: 6
-  # At most this many Claude calls per page, corrections included. What is still
-  # unmapped after that is not guessed: the page stops, the reason is reported.
-  map_calls_per_page: 5
-  # A list control's choices go to the map with it when it holds this many or fewer;
-  # a longer one is searched (the map gives 2-3 terms, the top hits come back).
-  choices_shown: 30
-  # Submit replays the recorded actions by code. A page whose recorded actions
-  # no longer fit is re-mapped (the same see / map / act) and the replay goes on.
 
 browser:
   # A multi-page form is walked page by page; this caps how far.

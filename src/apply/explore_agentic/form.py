@@ -12,14 +12,16 @@ API cannot run inside the agent's event loop; session.py hands each call to that
     submit(id)                        FILING only (mode "submit"): press the button that sends
                                       the application, behind code checks, and watch what the
                                       portal does — at most MAX_PRESSES presses in a filing
+    (replay)                          when a record exists: calls.Redo.forward, via session.py
 
-Every step that changes the page (act, press, clear) is RECORDED with the control's lasting
-identity — role, name, which one of that name, its section, the question above it — and the
-answer as given, so replay.py can do it again in a later session, where ids mean nothing.
+Every tool call goes through call(): done, and RECORDED — the tool, its arguments, the page,
+the lasting identity of each control it names (role, name, which one of that name, its
+group, the question above it) and what it did — into calls.json, which calls.py redoes in a
+later session, where ids mean nothing.
 
 Ids are stable: an element keeps its id (data-agent-id) while it is on the page, so acting
-on one field never renumbers the others; a field that appears gets the next free id. The
-engines are the explore package's: see.describe reads the page, act.act_rows acts.
+on one field never renumbers the others; a field that appears gets the next free id.
+see.describe reads the page, act.act_rows acts.
 """
 import datetime as dt
 import re
@@ -28,10 +30,16 @@ import time
 from jobpilot.core.answers import read_jd, detect_market
 from jobpilot.core.config import cfg
 from jobpilot.apply import platforms
-from jobpilot.apply.explore import browser as B, see as S, act as A, facts as F, record as R
-from jobpilot.apply.explore.reuse import LINE, unquote
+from jobpilot.apply.explore_agentic import browser as B, see as S, act as A, facts as F, record as R
+from jobpilot.apply.explore_agentic.controls import LINE, unquote
 
 MAX_PRESSES = 3
+# what a portal says after a press: taken, or refused for good (the filing's watch)
+CONFIRMED_RX = re.compile(r"thank(s| you) for (applying|your application)|application (has been )?(submitted|received)|"
+                          r"successfully submitted|we('ve| have) received your application|congratulations|"
+                          r"your application (was|has been) (successfully )?(submitted|sent|received)", re.I)
+REFUSED_RX = re.compile(r"(couldn.t|could not|cannot|can.t|unable to) (submit|process) (your )?application|"
+                        r"may not apply more than|application limit|already applied|you have already applied", re.I)
 ID_IN_LINE = re.compile(r"^(\s*- )\[(c\d+)\] ")
 SECTIONS = ("group", "heading", "dialog", "region", "form", "radiogroup")
 
@@ -218,7 +226,7 @@ class Form:
             frame.evaluate("() => document.querySelectorAll('[data-jp]').forEach(e => e.removeAttribute('data-jp'))")
         except Exception:
             pass
-        controls, _, text, snap = S.describe(frame, entries=[], open_lists=True, chrome=fields < 2)
+        controls, text, snap = S.describe(frame, open_lists=True, chrome=fields < 2)
         # describe numbered the controls c1, c2 ... for this read: each gets its lasting id instead
         try:
             got = frame.evaluate(AGENT_IDS_JS, self.next_id)
@@ -255,14 +263,22 @@ class Form:
                 "qn": next((i for i, x in enumerate(same) if x is c), 0)}
 
     def find(self, ident):
-        """The control of the latest read that a recorded identity names: the same role, name
-        and number; else the same role under the same question and section (a list button's
-        name grows with what it shows), the same one of those. None when it is not there."""
+        """The control of the latest read that a recorded identity names, looked for where it
+        was: the same role and name in the same group (block); else the same role under the
+        same question in that group, the same one of those (a list button's name grows with
+        what it shows). Only a control in no group (Next, Apply) is taken by its name and
+        number on the page alone. None when it is not there."""
         cs = [c for c in self.all_controls if c.id]
-        hit = next((c for c in cs if c.role == ident["role"] and c.name == ident["name"] and c.nth == ident["nth"]), None)
-        if hit is None and (ident.get("above") or ident.get("group")):
-            same = [c for c in cs if c.role == ident["role"] and c.group == ident.get("group") and c.above == ident.get("above")]
-            hit = same[ident.get("qn", 0)] if len(same) > ident.get("qn", 0) else None
+        g, above = ident.get("group") or "", ident.get("above")
+        named = [c for c in cs if c.role == ident["role"] and c.name == ident["name"]]
+        here = [c for c in named if c.group == g]
+        hit = next((c for c in here if c.nth == ident["nth"]), None) or (here[0] if len(here) == 1 else None)
+        if hit is None and (g or above):
+            same = [c for c in cs if c.role == ident["role"] and c.group == g and c.above == above]
+            q = ident.get("qn", 0)
+            hit = same[q] if len(same) > q else None
+        if hit is None and not g:
+            hit = next((c for c in named if c.nth == ident["nth"]), None)
         return hit
 
     def section_count(self, name):
@@ -302,6 +318,9 @@ class Form:
             entry["outcomes"] = self.outcomes
         if tool == "press":
             entry["moved_to"] = self.step if self.step != page else None
+            if not entry["moved_to"] and named:          # a Delete / Add: its section's size after it
+                sec = next(iter(named.values())).get("group")
+                entry["section"], entry["section_count"] = sec, self.section_count(sec)
         entry["result"] = str(result)[:1500]
         self.calls.append(entry)
         if self.save_calls:                              # saved after every call: resumable anywhere
@@ -353,7 +372,8 @@ class Form:
             if o.get("id") not in acting:
                 continue
             c, row = acting[o["id"]]
-            done = {"id": o["id"], "kind": row[1], "answer": row[2], "how": o.get("how"), "ok": bool(o.get("ok")),
+            done = {"id": o["id"], "kind": row[1], "answer": row[2], "how": o.get("how"), "nature": o.get("nature"),
+                    "ok": bool(o.get("ok")),
                     "shown": str(o.get("shown") or "")[:300], "question": (o.get("placeholder") or {}).get("question")}
             if o.get("how") == "add":
                 done["section"], done["section_count"] = c.group, self.section_count(c.group)
@@ -384,7 +404,7 @@ class Form:
         if p:
             self.placeholders[p["question"] or o.get("control", "")] = {
                 "used": p["used"], "field": o.get("control", ""), "candidates": p.get("candidates") or [], "page": self.step}
-        elif o.get("ok") and o.get("how") not in ("button", "search", "add", "press"):
+        elif o.get("ok") and o.get("how") not in ("search", "add"):
             self.filled[f"{self.step} :: {o.get('control', '')}"] = str(o.get("shown") or "")[:120]
         offered, wanted, shown = o.get("offered"), o.get("wanted"), str(o.get("shown") or "")
         check = not o.get("ok") and not offered and not o.get("error") and wanted and shown.strip()
@@ -476,20 +496,26 @@ class Form:
         why = self.submit_refused(c)
         if why:
             return "refused: " + why
-        from jobpilot.apply.submit.replay import _save
+        from jobpilot.apply.explore_agentic.card import save as _save
         page_was = self.step
         self.item.setdefault("submit_presses", []).append(dt.datetime.now().isoformat(timespec="seconds"))
         _save(self.item)                                 # written BEFORE the press: a rerun never presses blind
+        standing = self.page_lines()                     # what the page said before: never read as its answer
         S.tap(A.locate(self.frame(), c))
         self.log(f"  submit {c.name!r} (press {len(self.presses) + 1} of {MAX_PRESSES})")
-        outcome, detail = self.watch(page_was, c)
+        outcome, detail = self.watch(page_was, c, standing)
         self.presses.append({"page": page_was, "button": c.name, "outcome": outcome, "detail": detail})
-        if outcome in ("submitted", "refused", "unclear"):
+        if outcome == "captcha":                         # certainly not sent: the press does not block a later filing
+            self.item["submit_presses"].pop()
+            self.item.setdefault("captcha_at", []).append(dt.datetime.now().isoformat(timespec="seconds"))
+            _save(self.item)
+        if outcome in ("submitted", "refused", "unclear", "captcha"):
             self.sent = (outcome, detail)
         self.log(f"  submit -> {outcome}: {detail[:300]}")
         return {"submitted": "SUBMITTED: the portal confirmed it. call finish('submitted', note).",
                 "refused": f"the portal REFUSED it: {detail}. Do not press again; call finish('refused', note).",
                 "unclear": f"UNCLEAR: {detail}. It may have been sent: do not press again; call finish('unclear', note).",
+                "captcha": f"CAPTCHA: {detail}. Do not press again; call finish('captcha', note).",
                 }.get(outcome, f"NOT ACCEPTED: {detail}. see the page, fix what it says, then submit again "
                                f"({MAX_PRESSES - len(self.presses)} press(es) left).")
 
@@ -511,18 +537,25 @@ class Form:
             return f"{c.name!r} is not the button that sends the application"
         return None
 
-    def watch(self, page_was, c):
+    def page_lines(self):
+        """Every line of text the page's frames show now."""
+        return {ln.strip() for fr in self.page.frames for ln in S.body_text(fr, 20000).splitlines() if ln.strip()}
+
+    def watch(self, page_was, c, standing=frozenset()):
         """What the portal did after the press: (submitted | refused | not-accepted | unclear,
-        detail). Not accepted only when the form is plainly still there — errors on it, or sent
-        back to an earlier page; anything else without a confirmation is unclear."""
-        from jobpilot.apply.submit.replay import CONFIRMED_RX, REFUSED_RX
+        detail), read only from text that was NOT on the page before the press (`standing`: a
+        banner about application limits is not a refusal). Not accepted only when the form is
+        plainly still there — errors on it, or sent back to an earlier page; anything else
+        without a confirmation is unclear."""
         page, ident = self.page, self.identity(c)
         page.wait_for_timeout(2500)
         if B.enter_verification_code(self.frame(), self.item, lambda: S.tap(A.locate(self.frame(), c))):
             page.wait_for_timeout(2500)
         erred = 0
         for _ in range(int(cfg("browser.submit_poll_s", 30))):
-            text = " ".join(S.body_text(fr, 4000) for fr in page.frames)
+            if B.captcha(page):
+                return "captcha", "the portal shows a captcha after Submit: nothing is sent until a person solves it"
+            text = "\n".join(ln for ln in self.page_lines() if ln not in standing)
             m = REFUSED_RX.search(text)
             if m:
                 return "refused", text[max(0, m.start() - 60):m.end() + 140].strip()

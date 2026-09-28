@@ -147,6 +147,7 @@ class Form:
         self.calls, self.outcomes, self.submit_control = [], None, None   # the record replay.py replays
         self.item, self.presses, self.sent = None, [], None              # filing: its queue item, the presses
         self.redo, self.save_calls = None, None      # a former record to redo (calls.Redo); the record's saver
+        self.watching, self.gate_failed = False, False   # a Submit being watched; a sign-in that failed
 
     # ------------------------------------------------------------ the browser
     def open(self):
@@ -201,12 +202,17 @@ class Form:
 
     def pass_gate(self):
         """A platform's account gate (Workday's sign-in / create account) is passed by code,
-        with credentials the agent never sees."""
+        with credentials the agent never sees. Never after a sign-in failed in this session
+        (another try can lock the account), and never while a Submit is being watched (the
+        outcome is read, not signed into)."""
+        if self.watching or self.gate_failed:
+            return False
         if not (self.mod and hasattr(self.mod, "at_gate") and self.mod.at_gate(self.page)):
             return False
         self.log("  [platform] account gate: signing in")
         ok = self.mod.start(self.page, self.ctx, self.log, lambda p: False)
-        self.log(f"  [platform] account gate {'passed' if ok else 'NOT passed'}")
+        self.gate_failed = not ok
+        self.log(f"  [platform] account gate {'passed' if ok else 'NOT passed — no more sign-in tries in this session'}")
         return ok
 
     # ------------------------------------------------------------ reading the page
@@ -285,6 +291,14 @@ class Form:
         """How many controls the section of this name holds now (a repeated section's blocks)."""
         rng = section_range(self.snap, name) if name else None
         return sum(1 for c in self.all_controls if c.id and rng and rng[0] <= c.line < rng[1]) if rng else None
+
+    def blocks(self, name):
+        """How many numbered blocks of a repeated section show now ("Websites 1", "Websites 2" ...
+        for "Websites")."""
+        if not name:
+            return None
+        pre = name.strip() + " "
+        return len({c.group for c in self.all_controls if c.group.startswith(pre) and c.group[len(pre):].strip().isdigit()})
 
     def values(self):
         """{id: what the control shows} for the controls of the latest read."""
@@ -377,6 +391,7 @@ class Form:
                     "shown": str(o.get("shown") or "")[:300], "question": (o.get("placeholder") or {}).get("question")}
             if o.get("how") == "add":
                 done["section"], done["section_count"] = c.group, self.section_count(c.group)
+                done["blocks"] = self.blocks(c.group)   # the section's numbered blocks after the Add
             elif o["id"] in self.controls:               # read back as a later check reads it
                 done["reads"] = A.current(frame, self.controls[o["id"]])
             self.outcomes.append(done)
@@ -501,21 +516,26 @@ class Form:
         self.item.setdefault("submit_presses", []).append(dt.datetime.now().isoformat(timespec="seconds"))
         _save(self.item)                                 # written BEFORE the press: a rerun never presses blind
         standing = self.page_lines()                     # what the page said before: never read as its answer
+        self.watching = True
         S.tap(A.locate(self.frame(), c))
         self.log(f"  submit {c.name!r} (press {len(self.presses) + 1} of {MAX_PRESSES})")
-        outcome, detail = self.watch(page_was, c, standing)
+        try:
+            outcome, detail = self.watch(page_was, c, standing)
+        finally:
+            self.watching = False
         self.presses.append({"page": page_was, "button": c.name, "outcome": outcome, "detail": detail})
-        if outcome == "captcha":                         # certainly not sent: the press does not block a later filing
+        if outcome in ("captcha", "code-needed"):        # certainly not sent: the press does not block a later filing
             self.item["submit_presses"].pop()
             self.item.setdefault("captcha_at", []).append(dt.datetime.now().isoformat(timespec="seconds"))
             _save(self.item)
-        if outcome in ("submitted", "refused", "unclear", "captcha"):
+        if outcome in ("submitted", "refused", "unclear", "captcha", "code-needed"):
             self.sent = (outcome, detail)
         self.log(f"  submit -> {outcome}: {detail[:300]}")
         return {"submitted": "SUBMITTED: the portal confirmed it. call finish('submitted', note).",
                 "refused": f"the portal REFUSED it: {detail}. Do not press again; call finish('refused', note).",
                 "unclear": f"UNCLEAR: {detail}. It may have been sent: do not press again; call finish('unclear', note).",
                 "captcha": f"CAPTCHA: {detail}. Do not press again; call finish('captcha', note).",
+                "code-needed": f"CODE NEEDED: {detail}. Do not press again; call finish('code-needed', note).",
                 }.get(outcome, f"NOT ACCEPTED: {detail}. see the page, fix what it says, then submit again "
                                f"({MAX_PRESSES - len(self.presses)} press(es) left).")
 
@@ -549,13 +569,18 @@ class Form:
         without a confirmation is unclear."""
         page, ident = self.page, self.identity(c)
         page.wait_for_timeout(2500)
-        if B.enter_verification_code(self.frame(), self.item, lambda: S.tap(A.locate(self.frame(), c))):
-            page.wait_for_timeout(2500)
-        erred = 0
+        erred, coded = 0, False
         for _ in range(int(cfg("browser.submit_poll_s", 30))):
             if B.captcha(page):
                 return "captcha", "the portal shows a captcha after Submit: nothing is sent until a person solves it"
             text = "\n".join(ln for ln in self.page_lines() if ln not in standing)
+            if not coded and B.CODE_RX.search(text):      # an emailed code, asked for after the press
+                coded = True
+                if not B.enter_verification_code(self.frame(), self.item, lambda: S.tap(A.locate(self.frame(), c))):
+                    return "code-needed", "the portal asks for the code it emailed, and none came: nothing is sent"
+                page.wait_for_timeout(2500)
+                standing = standing | {ln for ln in text.splitlines() if CONFIRMED_RX.search(ln) is None}
+                continue
             m = REFUSED_RX.search(text)
             if m:
                 return "refused", text[max(0, m.start() - 60):m.end() + 140].strip()
@@ -569,12 +594,13 @@ class Form:
                     ("; ".join(S.errors(self.frame())[:6]) or "no message shown")
             errs = S.errors(frame)
             erred = erred + 1 if errs else 0
-            if erred >= 3:                               # errors that stay: the form was not taken
-                self.read()
-                still = self.find(ident) is not None
-                if still:
-                    return "not-accepted", "the page says: " + "; ".join(errs[:6])
+            if erred >= 3 and self.still_there(ident):   # errors that stay: the form was not taken
+                return "not-accepted", "the page says: " + "; ".join(errs[:6])
             page.wait_for_timeout(1000)
         self.read()
         return "unclear", ("no confirmation and no error; the submit button is " +
-                           ("still there" if self.find(ident) is not None else "gone") + f", page {self.step!r}")
+                           ("still there" if self.still_there(ident) else "gone") + f", page {self.step!r}")
+
+    def still_there(self, ident):
+        """Is the button still on the page — greyed out (disabled) or not?"""
+        return any(x.role == ident["role"] and x.name == ident["name"] for x in S.parse(S.snapshot(self.frame())))

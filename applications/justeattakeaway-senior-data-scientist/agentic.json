@@ -1,0 +1,65 @@
+{
+ "slug": "justeattakeaway-senior-data-scientist",
+ "platform": "workday",
+ "at": "2026-09-28T16:10:41",
+ "outcome": "last-page",
+ "note": "On Review page; all fields filled. Placeholders to confirm by phone: How Did You Hear About Us? (Career site - Corporate; LinkedIn not offered), Phone Device Type (Mobile).",
+ "pages": [
+  "page",
+  "Start Your Application",
+  "my information",
+  "my experience",
+  "review"
+ ],
+ "filled": {
+  "my information :: button 'Country Netherlands Required'": "India",
+  "my information :: textbox 'Country Phone Code'": "1 item selected, India (+91); India (+91)",
+  "my information :: textbox 'Given Name(s)'": "Sunil",
+  "my information :: textbox 'Family Name'": "Sharma",
+  "my information :: textbox 'Address Line 1'": "Delhi",
+  "my information :: textbox 'City'": "Delhi",
+  "my information :: textbox 'Postal Code'": "110019",
+  "my information :: textbox 'Email'": "sunil4832sharma@gmail.com",
+  "my information :: textbox 'Phone Number'": "9641298471",
+  "my experience :: button 'Select files'": "sunil_resume.docx"
+ },
+ "placeholders": {
+  "How Did You Hear About Us?": {
+   "used": "Career site - Corporate",
+   "field": "button 'How Did You Hear About Us? Select One Required'",
+   "candidates": [
+    "Career site - Corporate",
+    "Employee referral"
+   ],
+   "page": "my information"
+  },
+  "Phone Device Type": {
+   "used": "Mobile",
+   "field": "button 'Phone Device Type Select One Required'",
+   "candidates": [
+    "Mobile",
+    "Landline"
+   ],
+   "page": "my information"
+  }
+ },
+ "submit_control": {
+  "page": "review",
+  "role": "button",
+  "name": "Submit",
+  "nth": 1,
+  "group": "",
+  "above": "URL https://huggingface.co/sunil448832",
+  "qn": 1
+ },
+ "calls": "applications/justeattakeaway-senior-data-scientist/calls.json",
+ "tool_calls": 15,
+ "seconds": 469,
+ "model": "opus",
+ "effort": "low",
+ "turns": 16,
+ "cost_usd": 0.3114482,
+ "transcript": "tests/maps/justeattakeaway-senior-data-scientist/agentic-0928-1602.log",
+ "screenshot": "data/queue/justeattakeaway-senior-data-scientist-0928-1602.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/justeattakeaway-senior-data-scientist/sunil_resume.docx"
+}

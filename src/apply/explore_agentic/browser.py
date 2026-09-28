@@ -186,12 +186,13 @@ def captcha(page):
     return False
 
 
+CODE_RX = re.compile(r"verification code|security code|code (was|has been) sent|enter the .{0,12}code", re.I)
+
+
 def enter_verification_code(frame, it, press_submit):
-    """If the portal is waiting on an emailed code: ask him on Telegram, type it,
-    press the same Submit again (`press_submit()`). True when a code was entered."""
-    body = (frame.inner_text("body") or "").lower()
-    if not re.search(r"verification code|security code|code (was|has been) sent|enter the .{0,12}code", body):
-        return False
+    """The portal is waiting on an emailed code (the caller saw CODE_RX in what the page
+    newly says): ask him on Telegram, type it, press the same Submit again (`press_submit()`).
+    True when a code was entered; False when none came (or there is no box for it)."""
     from jobpilot.review.ask import ask
     code = re.sub(r"\s+", "", ask(f"code-{it['id']}",
                                   f"{it['company']} — {it['role']}: the portal emailed a verification code. "

@@ -1,0 +1,26 @@
+{
+ "slug": "turing-senior-research-engineer",
+ "mode": "submit",
+ "outcome": "unclear",
+ "why": "no confirmation and no error; the submit button is gone, page 'Senior Research Engineer, SWE'",
+ "redo": {
+  "redone": [
+   "Senior Research Engineer, SWE"
+  ],
+  "at": "Senior Research Engineer, SWE",
+  "end": true,
+  "why": "the record's last page",
+  "differs": []
+ },
+ "screenshot": "data/queue/turing-senior-research-engineer-submitted-0928-1659.png",
+ "seconds": 996,
+ "new_placeholders": {},
+ "presses": [
+  {
+   "page": "Senior Research Engineer, SWE",
+   "button": "Submit application",
+   "outcome": "unclear",
+   "detail": "no confirmation and no error; the submit button is gone, page 'Senior Research Engineer, SWE'"
+  }
+ ]
+}

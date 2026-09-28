@@ -15,6 +15,8 @@ sending is replaced by this:
                               finish("unclear", note); never press again
                 CAPTCHA       a captcha opened: nothing is sent until a person solves it —
                               call finish("captcha", note); never press again
+                CODE NEEDED   the portal asked for a code it emailed and none came — call
+                              finish("code-needed", note); never press again
               Code checks every press: it refuses when a placeholder was set in this session,
               after 3 presses, and after any press that ended as submitted, refused or
               unclear.

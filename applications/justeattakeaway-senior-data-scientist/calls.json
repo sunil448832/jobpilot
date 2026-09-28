@@ -1,0 +1,763 @@
+[
+ {
+  "tool": "press",
+  "args": {
+   "id": "c9"
+  },
+  "page": "page",
+  "controls": {
+   "c9": {
+    "role": "button",
+    "name": "Apply",
+    "nth": 1,
+    "group": "",
+    "above": "Senior Data Scientist",
+    "qn": 0
+   }
+  },
+  "moved_to": "Start Your Application",
+  "result": "moved on: now on page 'Start Your Application'. see it.",
+  "n": 1
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c17"
+  },
+  "page": "Start Your Application",
+  "controls": {
+   "c17": {
+    "role": "button",
+    "name": "Apply Manually",
+    "nth": 1,
+    "group": "",
+    "above": "Senior Data Scientist",
+    "qn": 1
+   }
+  },
+  "moved_to": "my information",
+  "result": "moved on: now on page 'my information'. see it.",
+  "n": 2
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c29",
+     "select",
+     "location.country"
+    ]
+   ]
+  },
+  "page": "my information",
+  "controls": {
+   "c29": {
+    "role": "button",
+    "name": "Country Netherlands Required",
+    "nth": 1,
+    "group": "",
+    "above": "Country",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c29",
+    "kind": "select",
+    "answer": "location.country",
+    "how": "fact",
+    "nature": "list",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   }
+  ],
+  "result": "c29  ok  button 'Country Netherlands Required': shows 'India'\n\nOTHER FIELDS THE PAGE CHANGED (not acted on):\nc40  textbox 'Country Phone Code'   [a search box: type, then pick from the list that appears, required, placeholder 'Search']   shows: 'India (+91)'   choices: [Afghanistan (+93), Åland Islands (+358), Albania (+355), Algeria (+213), American Samoa (+1), Andorra (+376), Angola (+244), Anguilla (+1), Antigua and Barbuda (+1), Argentina (+54), Armenia (+374), Aruba (+297), Australia (+61), Austria (+43), Azerbaijan (+994)]   (only the first entries of a longer list: an entry not among them — search:<term>)   (was 'Netherlands (+31)')\n\nNEW FIELDS:\nc45  textbox 'Local Given Name(s)'   [a text box]\nc46  textbox 'Local Family Name'   [a text box]\n\nFIELDS GONE: ['c32', 'c35']\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 3
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c28",
+     "select",
+     "guess:Career site - Corporate; Employee referral | How Did You Hear About Us?"
+    ],
+    [
+     "c30",
+     "write",
+     "personal.first_name"
+    ],
+    [
+     "c31",
+     "write",
+     "personal.last_name"
+    ],
+    [
+     "c34",
+     "write",
+     "location.address_line_1"
+    ],
+    [
+     "c36",
+     "write",
+     "location.city"
+    ],
+    [
+     "c37",
+     "write",
+     "location.postal_code"
+    ],
+    [
+     "c38",
+     "write",
+     "personal.email"
+    ],
+    [
+     "c39",
+     "select",
+     "guess:Mobile; Landline | Phone Device Type"
+    ],
+    [
+     "c40",
+     "select",
+     "keep:personal.phone_country_code"
+    ],
+    [
+     "c42",
+     "write",
+     "personal.phone_national"
+    ]
+   ]
+  },
+  "page": "my information",
+  "controls": {
+   "c28": {
+    "role": "button",
+    "name": "How Did You Hear About Us? Select One Required",
+    "nth": 1,
+    "group": "",
+    "above": "How Did You Hear About Us?",
+    "qn": 0
+   },
+   "c30": {
+    "role": "textbox",
+    "name": "Given Name(s)",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Given Name(s)",
+    "qn": 0
+   },
+   "c31": {
+    "role": "textbox",
+    "name": "Family Name",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Family Name",
+    "qn": 0
+   },
+   "c34": {
+    "role": "textbox",
+    "name": "Address Line 1",
+    "nth": 1,
+    "group": "Address",
+    "above": "Address Line 1",
+    "qn": 0
+   },
+   "c36": {
+    "role": "textbox",
+    "name": "City",
+    "nth": 1,
+    "group": "Address",
+    "above": "City",
+    "qn": 0
+   },
+   "c37": {
+    "role": "textbox",
+    "name": "Postal Code",
+    "nth": 1,
+    "group": "Address",
+    "above": "Postal Code",
+    "qn": 0
+   },
+   "c38": {
+    "role": "textbox",
+    "name": "Email",
+    "nth": 1,
+    "group": "Email Address",
+    "above": "Email",
+    "qn": 0
+   },
+   "c39": {
+    "role": "button",
+    "name": "Phone Device Type Select One Required",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Device Type",
+    "qn": 0
+   },
+   "c40": {
+    "role": "textbox",
+    "name": "Country Phone Code",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Country Phone Code",
+    "qn": 0
+   },
+   "c42": {
+    "role": "textbox",
+    "name": "Phone Number",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Number",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c28",
+    "kind": "select",
+    "answer": "guess:Career site - Corporate; Employee referral | How Did You Hear About Us?",
+    "how": "guess",
+    "nature": "list",
+    "ok": true,
+    "shown": "Career site - Corporate",
+    "question": "How Did You Hear About Us?",
+    "reads": "Career site - Corporate"
+   },
+   {
+    "id": "c39",
+    "kind": "select",
+    "answer": "guess:Mobile; Landline | Phone Device Type",
+    "how": "guess",
+    "nature": "list",
+    "ok": true,
+    "shown": "Mobile",
+    "question": "Phone Device Type",
+    "reads": "Mobile"
+   },
+   {
+    "id": "c40",
+    "kind": "select",
+    "answer": "keep:personal.phone_country_code",
+    "how": "keep",
+    "nature": "list",
+    "ok": true,
+    "shown": "1 item selected, India (+91); India (+91)",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c30",
+    "kind": "write",
+    "answer": "personal.first_name",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c31",
+    "kind": "write",
+    "answer": "personal.last_name",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c34",
+    "kind": "write",
+    "answer": "location.address_line_1",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c36",
+    "kind": "write",
+    "answer": "location.city",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c37",
+    "kind": "write",
+    "answer": "location.postal_code",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c38",
+    "kind": "write",
+    "answer": "personal.email",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c42",
+    "kind": "write",
+    "answer": "personal.phone_national",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   }
+  ],
+  "result": "c28  ok  button 'How Did You Hear About Us? Select One Required': shows 'Career site - Corporate'   (a placeholder: 'Career site - Corporate', asked later)\nc39  ok  button 'Phone Device Type Select One Required': shows 'Mobile'   (a placeholder: 'Mobile', asked later)\nc40  ok  textbox 'Country Phone Code': shows '1 item selected, India (+91); India (+91)'\nc30  NOT DONE  textbox 'Given Name(s)': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc31  NOT DONE  textbox 'Family Name': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc34  NOT DONE  textbox 'Address Line 1': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc36  NOT DONE  textbox 'City': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc37  NOT DONE  textbox 'Postal Code': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc38  NOT DONE  textbox 'Email': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc42  NOT DONE  textbox 'Phone Number': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\n\nNEW FIELDS:\nc47  textbox 'Given Name(s)'   [a text box, required]   shows: 'Sunil'\nc48  textbox 'Family Name'   [a text box]   shows: 'Sharma'\nc49  textbox 'Address Line 1'   [a text box]   shows: 'Delhi'\nc50  textbox 'City'   [a text box]   shows: 'Delhi'\nc51  textbox 'Postal Code'   [a text box]   shows: '110019'\nc52  textbox 'Email'   [a text box, required]   shows: 'sunil4832sharma@gmail.com'\nc53  textbox 'Phone Number'   [a text box, required]   ",
+  "n": 4
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c47",
+     "write",
+     "keep:personal.first_name"
+    ],
+    [
+     "c48",
+     "write",
+     "keep:personal.last_name"
+    ],
+    [
+     "c49",
+     "write",
+     "keep:location.address_line_1"
+    ],
+    [
+     "c50",
+     "write",
+     "keep:location.city"
+    ],
+    [
+     "c51",
+     "write",
+     "keep:location.postal_code"
+    ],
+    [
+     "c52",
+     "write",
+     "keep:personal.email"
+    ],
+    [
+     "c53",
+     "write",
+     "keep:personal.phone_national"
+    ]
+   ]
+  },
+  "page": "my information",
+  "controls": {
+   "c47": {
+    "role": "textbox",
+    "name": "Given Name(s)",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Given Name(s)",
+    "qn": 0
+   },
+   "c48": {
+    "role": "textbox",
+    "name": "Family Name",
+    "nth": 1,
+    "group": "Legal Name",
+    "above": "Family Name",
+    "qn": 0
+   },
+   "c49": {
+    "role": "textbox",
+    "name": "Address Line 1",
+    "nth": 1,
+    "group": "Address",
+    "above": "Address Line 1",
+    "qn": 0
+   },
+   "c50": {
+    "role": "textbox",
+    "name": "City",
+    "nth": 1,
+    "group": "Address",
+    "above": "City",
+    "qn": 0
+   },
+   "c51": {
+    "role": "textbox",
+    "name": "Postal Code",
+    "nth": 1,
+    "group": "Address",
+    "above": "Postal Code",
+    "qn": 0
+   },
+   "c52": {
+    "role": "textbox",
+    "name": "Email",
+    "nth": 1,
+    "group": "Email Address",
+    "above": "Email",
+    "qn": 0
+   },
+   "c53": {
+    "role": "textbox",
+    "name": "Phone Number",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Number",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c47",
+    "kind": "write",
+    "answer": "keep:personal.first_name",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sunil",
+    "question": null,
+    "reads": "Sunil"
+   },
+   {
+    "id": "c48",
+    "kind": "write",
+    "answer": "keep:personal.last_name",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sharma",
+    "question": null,
+    "reads": "Sharma"
+   },
+   {
+    "id": "c49",
+    "kind": "write",
+    "answer": "keep:location.address_line_1",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": "Delhi"
+   },
+   {
+    "id": "c50",
+    "kind": "write",
+    "answer": "keep:location.city",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": "Delhi"
+   },
+   {
+    "id": "c51",
+    "kind": "write",
+    "answer": "keep:location.postal_code",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "110019",
+    "question": null,
+    "reads": "110019"
+   },
+   {
+    "id": "c52",
+    "kind": "write",
+    "answer": "keep:personal.email",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "sunil4832sharma@gmail.com",
+    "question": null,
+    "reads": "sunil4832sharma@gmail.com"
+   },
+   {
+    "id": "c53",
+    "kind": "write",
+    "answer": "keep:personal.phone_national",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "9641298471",
+    "question": null,
+    "reads": "9641298471"
+   }
+  ],
+  "result": "c47  ok  textbox 'Given Name(s)': shows 'Sunil'\nc48  ok  textbox 'Family Name': shows 'Sharma'\nc49  ok  textbox 'Address Line 1': shows 'Delhi'\nc50  ok  textbox 'City': shows 'Delhi'\nc51  ok  textbox 'Postal Code': shows '110019'\nc52  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc53  ok  textbox 'Phone Number': shows '9641298471'\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'How Did You Hear About Us? Select One Required' holds 'Career site - Corporate' — asked as 'How Did You Hear About Us?'\n- button 'Phone Device Type Select One Required' holds 'Mobile' — asked as 'Phone Device Type'",
+  "n": 5
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c44"
+  },
+  "page": "my information",
+  "controls": {
+   "c44": {
+    "role": "button",
+    "name": "Next",
+    "nth": 1,
+    "group": "",
+    "above": "Phone Extension",
+    "qn": 0
+   }
+  },
+  "moved_to": "my experience",
+  "result": "moved on: now on page 'my experience'. see it.",
+  "n": 6
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c54",
+     "select",
+     "file:resume"
+    ],
+    [
+     "c55",
+     "select",
+     "add:3"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c54": {
+    "role": "button",
+    "name": "Select files",
+    "nth": 1,
+    "group": "Resume/CV",
+    "above": "Upload a file (5MB max) Drop files here or",
+    "qn": 0
+   },
+   "c55": {
+    "role": "button",
+    "name": "Add",
+    "nth": 1,
+    "group": "Websites",
+    "above": "Add any relevant websites.",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c55",
+    "kind": "select",
+    "answer": "add:3",
+    "how": "add",
+    "nature": "press",
+    "ok": true,
+    "shown": "added 3 block(s)",
+    "question": null,
+    "section": "Websites",
+    "section_count": 7
+   },
+   {
+    "id": "c54",
+    "kind": "select",
+    "answer": "file:resume",
+    "how": "file",
+    "nature": "file",
+    "ok": true,
+    "shown": "sunil_resume.docx",
+    "question": null,
+    "reads": "Select files"
+   }
+  ],
+  "result": "c55  ok  button 'Add': shows 'added 3 block(s)'\nc54  ok  button 'Select files': shows 'sunil_resume.docx'\n\nNEW FIELDS:\nc57  button 'Delete sunil_resume.docx'   [a file picker]\nc58  button 'Delete #1'   [a button]   shows: 'Delete'\nc59  textbox 'URL #1'   [a text box, required]\nc60  button 'Delete #2'   [a button]   shows: 'Delete'\nc61  textbox 'URL #2'   [a text box, required]\nc62  button 'Delete #3'   [a button]   shows: 'Delete'\nc63  textbox 'URL #3'   [a text box, required]\n\nFIELDS GONE: ['c24', 'c25', 'c26']\n\nPAGE: my experience\nPAGE ERRORS: sunil_resume.docx successfully uploaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 7
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c59",
+     "write",
+     "links.linkedin"
+    ],
+    [
+     "c61",
+     "write",
+     "links.github"
+    ],
+    [
+     "c63",
+     "write",
+     "links.huggingface"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c59": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   },
+   "c61": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   },
+   "c63": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 3,
+    "group": "Websites 3",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c59",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c61",
+    "kind": "write",
+    "answer": "links.github",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c63",
+    "kind": "write",
+    "answer": "links.huggingface",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   }
+  ],
+  "result": "c59  NOT DONE  textbox 'URL #1': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc61  NOT DONE  textbox 'URL #2': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc63  NOT DONE  textbox 'URL #3': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\n\nNEW FIELDS:\nc64  textbox 'URL #1'   [a text box, required]   shows: 'https://www.linkedin.com/in/sunil4832sharma'\nc65  textbox 'URL #2'   [a text box, required]   shows: 'https://github.com/sunil448832'\nc66  textbox 'URL #3'   [a text box, required]   shows: 'https://huggingface.co/sunil448832'\n\nFIELDS GONE: ['c59', 'c61', 'c63']\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 8
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c44"
+  },
+  "page": "my experience",
+  "controls": {
+   "c44": {
+    "role": "button",
+    "name": "Next",
+    "nth": 1,
+    "group": "",
+    "above": "URL",
+    "qn": 1
+   }
+  },
+  "moved_to": "review",
+  "result": "moved on: now on page 'review' — the form's LAST PAGE. see it.",
+  "n": 9
+ },
+ {
+  "n": 10,
+  "tool": "see",
+  "args": {
+   "scope": "page"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc21  button 'Decline'   [a button]   shows: 'Decline'\nc22  button 'Accept Cookies'   [a button]   shows: 'Accept Cookies'\nc24  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [Deutsch (‏Deutschland), English, Français (‏France), Polski (‏Polska), Română (‏România), עברית (‏ישראל)]\nc25  button 'Sign In'   [a button]   shows: 'Sign In'\nc26  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc27  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc56  button 'Back'   [a button]   shows: 'Back'\nc44  button 'Submit'   [a button]   shows: 'Submit'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- paragraph:\n  - text: Just Eat Takeaway.com uses cookies. These small files keeping temporarily track of the chosen settings and visited pages may not be as delicious as actual cookies, but they help us make sure you get the tastiest experience on our website, improving our functionalities and presenting relevant ads.Navigating on Takeaway.com means you agree to our cookie policy. More details on our cookie policy\n  - link \"here\":\n    - /url: https://www.takeaway.com/jobs/cookies\n  - text: .\n- [c21] button \"Decline\"\n- [c22] button \"Accept Cookies\"\n- banner:\n  - link \"Logo search for jobs\":\n    - /url: /en-US/recruiting/takeaway/"
+ },
+ {
+  "n": 11,
+  "tool": "finish",
+  "args": {
+   "outcome": "last-page",
+   "note": "On the Review page (last page); all fields match facts and approved answers.",
+   "submit_id": "c44"
+  },
+  "page": "review",
+  "controls": {
+   "c44": {
+    "role": "button",
+    "name": "Submit",
+    "nth": 1,
+    "group": "",
+    "above": "URL https://huggingface.co/sunil448832",
+    "qn": 1
+   }
+  },
+  "result": "finished."
+ },
+ {
+  "n": 12,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: page\nPAGE ERRORS: Senior Data Scientist page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Skip to main content'   [a link]\nc2  link 'here'   [a link]\nc3  button 'Decline'   [a button]   shows: 'Decline'\nc4  button 'Accept Cookies'   [a button]   shows: 'Accept Cookies'\nc6  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [Deutsch (‏Deutschland), English, Français (‏France), Polski (‏Polska), Română (‏România), עברית (‏ישראל)]\nc7  button 'Sign In'   [a button]   shows: 'Sign In'\nc8  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc9  button 'Apply'   [a button]   shows: 'Apply'\nc10  link 'Senior Data Engineer'   [a link]\nc11  link 'Senior Machine Learning Engineer'   [a link]\nc12  link 'Senior FinOps Analyst'   [a link]\nc13  button 'View All 5 Jobs'   [a button]   shows: 'View All 5 Jobs'\nc14  button 'Read More'   [a button]   shows: 'Read More'\n\nSNAPSHOT\n- [c1] link \"Skip to main content\":\n  - /url: \"\"\n- paragraph:\n  - text: Just Eat Takeaway.com uses cookies. These small files keeping temporarily track of the chosen settings and visited pages may not be as delicious as actual cookies, but they help us make sure you get the tastiest experience on our website, improving our functionalities and presenting relevant ads.Navigating on Takeaway.com means you agree to our cookie policy. More details on our cookie policy\n  - [c2] link \"here\":\n    - /url: https://www.t"
+ },
+ {
+  "n": 13,
+  "tool": "see",
+  "args": {},
+  "page": "review",
+  "controls": {},
+  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc21  button 'Decline'   [a button]   shows: 'Decline'\nc22  button 'Accept Cookies'   [a button]   shows: 'Accept Cookies'\nc24  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [Deutsch (‏Deutschland), English, Français (‏France), Polski (‏Polska), Română (‏România), עברית (‏ישראל)]\nc25  button 'Sign In'   [a button]   shows: 'Sign In'\nc26  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc27  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc56  button 'Back'   [a button]   shows: 'Back'\nc44  button 'Submit'   [a button]   shows: 'Submit'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- paragraph:\n  - text: Just Eat Takeaway.com uses cookies. These small files keeping temporarily track of the chosen settings and visited pages may not be as delicious as actual cookies, but they help us make sure you get the tastiest experience on our website, improving our functionalities and presenting relevant ads.Navigating on Takeaway.com means you agree to our cookie policy. More details on our cookie policy\n  - link \"here\":\n    - /url: https://www.takeaway.com/jobs/cookies\n  - text: .\n- [c21] button \"Decline\"\n- [c22] button \"Accept Cookies\"\n- banner:\n  - link \"Logo search for jobs\":\n    - /url: /en-US/recruiting/takeaway/"
+ },
+ {
+  "n": 14,
+  "tool": "finish",
+  "args": {
+   "outcome": "last-page",
+   "submit_id": "c44",
+   "note": "On Review page; all fields filled. Placeholders to confirm by phone: How Did You Hear About Us? (Career site - Corporate; LinkedIn not offered), Phone Device Type (Mobile)."
+  },
+  "page": "review",
+  "controls": {
+   "c44": {
+    "role": "button",
+    "name": "Submit",
+    "nth": 1,
+    "group": "",
+    "above": "URL https://huggingface.co/sunil448832",
+    "qn": 1
+   }
+  },
+  "result": "finished."
+ }
+]

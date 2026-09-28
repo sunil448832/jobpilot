@@ -1,8 +1,8 @@
 {
  "slug": "sonarsource-ai-research-engineer",
  "mode": "submit",
- "outcome": "unclear",
- "why": "no confirmation and no error; the submit button is still there, page 'AI Research Engineer'",
+ "outcome": "stuck",
+ "why": "Sonar Lever form (the last page, Submit application = c52): every field is filled except the required 'Current location' (c14). Its location suggestions list comes back empty for Delhi / New Delhi / India, and the box drops typed text that isn't picked from a suggestion. The Lever location lookup may be down. Retry later. The sponsorship dropdown c17 is now set to Yes.",
  "redo": {
   "redone": [],
   "at": "AI Research Engineer",
@@ -25,20 +25,16 @@
    "c28 ('Gender': eeo.gender) is not on the page",
    "c30 ('Race Click to see details about each option.': eeo.race_ethnicity) is not on the page",
    "c31 ('Veteran status': option:I am not a veteran) is not on the page",
-   "c47 ('Male': eeo.gender) is not on the page"
+   "c47 ('Male': eeo.gender) is not on the page",
+   "c17 (learned:98) took then, not now: shows ''",
+   "c14 (location.city) took then, not now: shows ''",
+   "c17 combobox '': should hold 'Yes', holds 'Select...'"
   ]
  },
  "agent": "resume",
- "agent_cost_usd": 0.225,
- "screenshot": "data/queue/sonarsource-ai-research-engineer-submitted-0928-1521.png",
- "seconds": 106,
+ "agent_cost_usd": 0.255,
+ "screenshot": "data/queue/sonarsource-ai-research-engineer-submitted-0928-1656.png",
+ "seconds": 199,
  "new_placeholders": {},
- "presses": [
-  {
-   "page": "AI Research Engineer",
-   "button": "Submit application",
-   "outcome": "unclear",
-   "detail": "no confirmation and no error; the submit button is still there, page 'AI Research Engineer'"
-  }
- ]
+ "presses": []
 }

@@ -1,0 +1,26 @@
+{
+ "slug": "anthropic-research-engineer-machine-learning",
+ "mode": "submit",
+ "outcome": "submitted",
+ "why": "Thank you for applying",
+ "redo": {
+  "redone": [
+   "Research Engineer, Machine Learning (Reinforcement Learning)"
+  ],
+  "at": "Research Engineer, Machine Learning (Reinforcement Learning)",
+  "end": true,
+  "why": "the record's last page",
+  "differs": []
+ },
+ "screenshot": "data/queue/anthropic-research-engineer-machine-learning-submitted-0928-1654.png",
+ "seconds": 81,
+ "new_placeholders": {},
+ "presses": [
+  {
+   "page": "Research Engineer, Machine Learning (Reinforcement Learning)",
+   "button": "Submit application",
+   "outcome": "submitted",
+   "detail": "Thank you for applying"
+  }
+ ]
+}

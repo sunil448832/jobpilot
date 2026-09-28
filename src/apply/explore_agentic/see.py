@@ -688,6 +688,43 @@ def errors(frame):
         return []
 
 
+# the texts drawn in a box's own field (the nearest box around it holding no other control):
+# a type-ahead that draws its suggestions as plain elements, not as an ARIA list, shows them
+# here. Each is marked (data-jp-sugg) so the one wanted can be clicked.
+FIELD_TEXTS_JS = r"""el => {
+  const CTRL = 'input:not([type="hidden"]), textarea, select, button, [role="combobox"], [role="textbox"]';
+  let box = el;
+  for (let i = 0; i < 5 && box.parentElement; i++) {
+    const p = box.parentElement;
+    if ([...p.querySelectorAll(CTRL)].some(x => x !== el && !el.contains(x))) break;
+    box = p;
+  }
+  box.querySelectorAll('[data-jp-sugg]').forEach(n => n.removeAttribute('data-jp-sugg'));
+  const out = [];
+  for (const n of box.querySelectorAll('*')) {
+    if (n === el || n.contains(el) || !n.getClientRects().length || getComputedStyle(n).visibility === 'hidden') continue;
+    if ([...n.children].some(ch => (ch.innerText || '').trim())) continue;       // the innermost text only
+    const t = (n.innerText || '').replace(/\s+/g, ' ').trim();
+    if (!t) continue;
+    n.setAttribute('data-jp-sugg', String(out.length));
+    out.push(t);
+  }
+  return out;
+}"""
+
+
+def field_texts(el):
+    """The texts drawn in a box's own field now (each marked to be clicked: suggestion(frame, i))."""
+    try:
+        return el.evaluate(FIELD_TEXTS_JS) or []
+    except Exception:
+        return []
+
+
+def suggestion(frame, i):
+    return frame.locator(f'[data-jp-sugg="{i}"]').first
+
+
 def body_text(frame, limit=6000):
     try:
         return (frame.inner_text("body") or "")[:limit]

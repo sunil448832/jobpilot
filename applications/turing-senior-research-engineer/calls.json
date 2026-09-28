@@ -1,0 +1,349 @@
+[
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c9",
+     "write",
+     "personal.first_name"
+    ],
+    [
+     "c10",
+     "write",
+     "personal.last_name"
+    ],
+    [
+     "c11",
+     "write",
+     "personal.email"
+    ],
+    [
+     "c12",
+     "select",
+     "option:India +91"
+    ],
+    [
+     "c14",
+     "write",
+     "personal.phone_national"
+    ],
+    [
+     "c15",
+     "select",
+     "search:\\bDelhi\\b; ^Del; ^D"
+    ],
+    [
+     "c17",
+     "select",
+     "file:resume"
+    ],
+    [
+     "c27",
+     "write",
+     "links.linkedin"
+    ],
+    [
+     "c29",
+     "write",
+     "location.country"
+    ],
+    [
+     "c30",
+     "select",
+     "work_authorization.india.requires_sponsorship"
+    ],
+    [
+     "c32",
+     "select",
+     "option:I am authorized to work in the country due to my nationality."
+    ]
+   ]
+  },
+  "page": "Senior Research Engineer, SWE",
+  "controls": {
+   "c9": {
+    "role": "textbox",
+    "name": "First Name",
+    "nth": 1,
+    "group": "",
+    "above": "First Name",
+    "qn": 0
+   },
+   "c10": {
+    "role": "textbox",
+    "name": "Last Name",
+    "nth": 1,
+    "group": "",
+    "above": "Last Name",
+    "qn": 0
+   },
+   "c11": {
+    "role": "textbox",
+    "name": "Email",
+    "nth": 1,
+    "group": "",
+    "above": "Email",
+    "qn": 0
+   },
+   "c12": {
+    "role": "combobox",
+    "name": "Country",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Country",
+    "qn": 0
+   },
+   "c14": {
+    "role": "textbox",
+    "name": "Phone",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone",
+    "qn": 0
+   },
+   "c15": {
+    "role": "combobox",
+    "name": "Location (City)",
+    "nth": 1,
+    "group": "",
+    "above": "Location (City)",
+    "qn": 0
+   },
+   "c17": {
+    "role": "button",
+    "name": "Attach",
+    "nth": 1,
+    "group": "Resume/CV",
+    "above": "Resume/CV",
+    "qn": 0
+   },
+   "c27": {
+    "role": "textbox",
+    "name": "LinkedIn Profile",
+    "nth": 1,
+    "group": "",
+    "above": "LinkedIn Profile",
+    "qn": 0
+   },
+   "c29": {
+    "role": "textbox",
+    "name": "Your country of residence",
+    "nth": 1,
+    "group": "",
+    "above": "Your country of residence",
+    "qn": 0
+   },
+   "c30": {
+    "role": "combobox",
+    "name": "Will you require sponsorship or other assistance or support to be authorized to, or otherwise, work from your country of residence?",
+    "nth": 1,
+    "group": "",
+    "above": "Select...",
+    "qn": 0
+   },
+   "c32": {
+    "role": "combobox",
+    "name": "Your authorization to work in the country where you live.",
+    "nth": 1,
+    "group": "",
+    "above": "Select...",
+    "qn": 1
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c12",
+    "kind": "select",
+    "answer": "option:India +91",
+    "how": "chain",
+    "nature": "list",
+    "ok": false,
+    "shown": "+91",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c15",
+    "kind": "select",
+    "answer": "search:\\bDelhi\\b; ^Del; ^D",
+    "how": "search",
+    "nature": "list",
+    "ok": false,
+    "shown": "",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c17",
+    "kind": "select",
+    "answer": "file:resume",
+    "how": "file",
+    "nature": "file",
+    "ok": true,
+    "shown": "sunil_resume.docx",
+    "question": null
+   },
+   {
+    "id": "c30",
+    "kind": "select",
+    "answer": "work_authorization.india.requires_sponsorship",
+    "how": "fact",
+    "nature": "list",
+    "ok": true,
+    "shown": "No",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c32",
+    "kind": "select",
+    "answer": "option:I am authorized to work in the country due to my nationality.",
+    "how": "chain",
+    "nature": "list",
+    "ok": true,
+    "shown": "I am authorized to work in the country due to my nationality.",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c9",
+    "kind": "write",
+    "answer": "personal.first_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sunil",
+    "question": null,
+    "reads": "Sunil"
+   },
+   {
+    "id": "c10",
+    "kind": "write",
+    "answer": "personal.last_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sharma",
+    "question": null,
+    "reads": "Sharma"
+   },
+   {
+    "id": "c11",
+    "kind": "write",
+    "answer": "personal.email",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "sunil4832sharma@gmail.com",
+    "question": null,
+    "reads": "sunil4832sharma@gmail.com"
+   },
+   {
+    "id": "c14",
+    "kind": "write",
+    "answer": "personal.phone_national",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "96412 98471",
+    "question": null,
+    "reads": "96412 98471"
+   },
+   {
+    "id": "c27",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null,
+    "reads": "https://www.linkedin.com/in/sunil4832sharma"
+   },
+   {
+    "id": "c29",
+    "kind": "write",
+    "answer": "location.country",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   }
+  ],
+  "result": "c12  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc15  NOT DONE  combobox 'Location (City)': searched: '\\\\bDelhi\\\\b' -> [\"Delhi, India\", \"New Delhi, Delhi, India\", \"Delhi Cantonment, Delhi, India\", \"Delhi, California, United States\", \"Delhi, Ontario, Canada\", \"Delhi Hills, Ohio, United States\", \"Delhi Hills, Ohio, United States\", \"Town of Delhi, New York, United States\", \"Delhi, Madhya Pradesh, India\", \"Delhi, New York, United States\"]; '^Del' -> [\"Delhi, India\", \"Delmas, Ouest, Haiti\", \"Delmas 73, Ouest, Haiti\"]; '^D' -> [\"Dalian, Liaoning, China\", \"Département d’ Abidjan, Abidjan, Ivory Coast\", \"Dongguan, Guangdong, China\", \"Dar es Salaam, Tanzania\", \"Delhi, India\", \"Dhaka, Bangladesh\", \"Dubai, United Arab Emirates\"]\nc17  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc30  ok  combobox 'Will you require sponsorship or other assistance or support to be authorized to, or otherwise, work from your country of residence?': shows 'No'\nc32  ok  combobox 'Your authorization to work in the country where you live.': shows 'I am authorized to work in the country due to my nationality.'\nc9  ok  textbox 'First Name': shows 'Sunil'\nc10  ok  textbox 'Last Name': shows 'Sharma'\nc11  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc14  ok  textbox 'Phone': shows '96412 98471'\nc27  ok  textbox 'LinkedIn Profile': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc29  ok  textbox 'You",
+  "n": 1
+ },
+ {
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c15",
+     "select",
+     "option:Delhi, India"
+    ],
+    [
+     "c12",
+     "select",
+     "keep:option:India +91"
+    ]
+   ]
+  },
+  "page": "Senior Research Engineer, SWE",
+  "controls": {
+   "c15": {
+    "role": "combobox",
+    "name": "Location (City)",
+    "nth": 1,
+    "group": "",
+    "above": "Location (City)",
+    "qn": 0
+   },
+   "c12": {
+    "role": "combobox",
+    "name": "Country",
+    "nth": 1,
+    "group": "Phone",
+    "above": "+91",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c15",
+    "kind": "select",
+    "answer": "option:Delhi, India",
+    "how": "chain",
+    "nature": "list",
+    "ok": true,
+    "shown": "Delhi, India",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c12",
+    "kind": "select",
+    "answer": "keep:option:India +91",
+    "how": "keep",
+    "nature": "list",
+    "ok": true,
+    "shown": "+91",
+    "question": null,
+    "reads": ""
+   }
+  ],
+  "result": "c15  ok  combobox 'Location (City)': shows 'Delhi, India'\nc12  ok  combobox 'Country': shows '+91'\n\nNEW FIELDS:\nc39  button 'Clear selections #1'   [a button]\n\nPAGE: Senior Research Engineer, SWE\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 2
+ },
+ {
+  "n": 3,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: Senior Research Engineer, SWE\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Turing Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'www.turing.com'   [a link]\nc5  link 'Ece Kamar'   [a link]\nc6  link \"Turing's GDPR notice here\"   [a link]\nc7  link 'Create alert'   [a link]\nc8  button 'Autofill my application'   [a button]   shows: 'Autofill my application'\nc9  textbox 'First Name'   [a text box, required]\nc10  textbox 'Last Name'   [a text box, required]\nc11  textbox 'Email'   [a text box, required]\nc12  combobox 'Country'   [a search box: type, then pick from the list that appears, required]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +1, Central African Republic +236, Chad +235, Chile +56, China"
+ }
+]

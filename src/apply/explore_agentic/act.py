@@ -205,22 +205,22 @@ def type_into(frame, el, value):
     that offers suggestions as you type takes the one that is the value, else the first that
     starts with it; one that drops the value when left (it wanted a suggestion picked) is
     reported, not taken as done."""
-    text = str(value)
-    listed = lambda: [e[0] for e in (frame.evaluate(S.ENTRIES_JS) or {}).get("entries", [])]
+    text, picked = str(value), None
     focus(el)
-    before = set(listed())
-    el.fill("", timeout=WAIT)
-    if len(text) <= 80:
-        el.press_sequentially(text, delay=15)
-    else:
+    if len(text) > 80:                                   # a long text: set at once, no suggestions to wait for
         el.fill(text, timeout=WAIT)
-    offered = lambda: [x for x in listed() if x not in before]
-    if _wait_for(frame, offered, 0.8):
-        now, want = offered(), plain(text)
-        pick = next((x for x in now if plain(x) == want), None) or next((x for x in now if plain(x).startswith(want)), None)
-        if pick:
-            _entry(frame, pick).first.click(timeout=WAIT)
-        else:
+    else:
+        el.fill("", timeout=WAIT)
+        before = offered_now(frame, el)
+        el.press_sequentially(text, delay=15)
+        want = plain(text)
+        now = suggestions_after(frame, el, before, want)
+        best = next((x for x in now if plain(x[0]) == want), None) or \
+            next((x for x in now if plain(x[0]).startswith(want)), None)
+        if best:
+            best[1].click(timeout=WAIT)
+            picked = best[0]
+        elif now:
             S._close(frame)
     typed = el.input_value()
     try:
@@ -232,7 +232,36 @@ def type_into(frame, el, value):
     if typed.strip() and not got.strip():
         return {"ok": False, "shown": got, "error": f"the box dropped {text!r} when left — it wants an entry picked "
                                                      "from its suggestions: search it"}
-    return {"ok": plain(got) == plain(value), "shown": got}
+    return {"ok": plain(got) == plain(value) or (picked is not None and plain(got) == plain(picked)), "shown": got}
+
+
+def offered_now(frame, el):
+    """What is on offer before typing: the open ARIA list's entries, the field's own texts."""
+    return ({e[0] for e in (frame.evaluate(S.ENTRIES_JS) or {}).get("entries", [])}, set(S.field_texts(el)))
+
+
+def suggestions_after(frame, el, before, want, wait_s=2.5):
+    """The suggestions typing brought: entries of an ARIA list that opened, else texts that
+    newly appeared in the box's own field (a type-ahead drawn as plain elements). Read until
+    one is the wanted value or starts with it ("Loading" first, results after); nothing new
+    within 0.8s: none. [(text, locator to click)]."""
+    listed, drawn = before
+
+    def now():
+        aria = [e[0] for e in (frame.evaluate(S.ENTRIES_JS) or {}).get("entries", []) if e[0] not in listed]
+        if aria:
+            return [(t, _entry(frame, t).first) for t in aria]
+        return [(t, S.suggestion(frame, i)) for i, t in enumerate(S.field_texts(el)) if t not in drawn]
+
+    got, t0 = [], time.time()
+    while time.time() - t0 < wait_s:
+        frame.wait_for_timeout(200)
+        got = now()
+        if not got and time.time() - t0 > 0.8:
+            break                                        # nothing offered: a plain box
+        if any(plain(t).startswith(want) for t, _ in got):
+            break
+    return got
 
 
 def key_digits(frame, el, value):
@@ -481,10 +510,15 @@ def search_list(frame, c, terms, limit=25):
         got = opened
         if text:
             el.fill("")
+            drawn = set(S.field_texts(el))
             el.press_sequentially(text, delay=20)
             now = lambda: [e[0] for e in S._entries(frame, before)[0]]
             _wait_for(frame, lambda: now() and now() != opened, 2.5)
             got = now()
+            if not got:                                   # a type-ahead drawn as plain elements in the field
+                fresh = lambda: [t for t in S.field_texts(el) if t not in drawn]
+                _wait_for(frame, lambda: any(rx.search(t) for t in fresh()), 2.5)
+                got = fresh()
             if not got or got == opened:                  # typing filtered nothing: a box that searches on Enter
                 el.press("Enter")
                 _wait_for(frame, lambda: now() and now() != opened, 2.5)

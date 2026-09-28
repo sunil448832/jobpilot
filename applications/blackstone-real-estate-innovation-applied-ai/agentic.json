@@ -1,0 +1,266 @@
+{
+ "slug": "blackstone-real-estate-innovation-applied-ai",
+ "platform": "workday",
+ "at": "2026-09-28T16:54:24",
+ "outcome": "last-page",
+ "note": "Reached Review. Fixed experience dates/education; placeholders to confirm: schools (IIT Jodhpur, Sikkim Manipal IT not listed), fields of study, degrees, GPAs, 'Why Blackstone', political contribution / relatives / outside activity questions, business group interest. The resume was accidentally deleted and then uploaded again.",
+ "pages": [
+  "page",
+  "my information",
+  "my experience",
+  "application questions",
+  "voluntary disclosures",
+  "review"
+ ],
+ "filled": {
+  "my information :: button 'Country India Required'": "India",
+  "my information :: button 'How Did You Hear About Us? LinkedIn – Applied directly myself Required'": "LinkedIn – Applied directly myself",
+  "my information :: button 'Phone Device Type Mobile Required'": "Mobile",
+  "my information :: textbox 'Country Phone Code'": "1 item selected, India (+91); India (+91)",
+  "my information :: textbox 'Given Name(s)'": "Sunil",
+  "my information :: textbox 'Family Name'": "Sharma",
+  "my information :: textbox 'Address Line 1'": "Delhi",
+  "my information :: textbox 'City'": "Delhi",
+  "my information :: textbox 'Postal Code'": "110019",
+  "my information :: textbox 'Phone Number'": "9641298471",
+  "my experience :: button 'Select files'": "sunil_resume.docx",
+  "my experience :: checkbox 'I currently work here #1'": "on",
+  "my experience :: button 'Degree Select One Required #1'": "Masters of Engineering (M.Eng)",
+  "my experience :: button 'Degree Select One Required #2'": "Bachelor of Technology (B.T.)",
+  "my experience :: spinbutton 'Month #1'": "12",
+  "my experience :: spinbutton 'Year #1'": "2023",
+  "my experience :: textbox 'Role Description #1'": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decom",
+  "my experience :: spinbutton 'Month #3'": "6",
+  "my experience :: spinbutton 'Year #3'": "2023",
+  "my experience :: spinbutton 'Month #4'": "7",
+  "my experience :: spinbutton 'Year #4'": "2021",
+  "my experience :: textbox 'Role Description #2'": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detec",
+  "my experience :: spinbutton 'Month #5'": "9",
+  "my experience :: spinbutton 'Year #5'": "2022",
+  "my experience :: spinbutton 'Month #6'": "9",
+  "my experience :: spinbutton 'Year #6'": "2019",
+  "my experience :: textbox 'Role Description #3'": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precisi",
+  "my experience :: spinbutton 'Year #7'": "2021",
+  "my experience :: spinbutton 'Year #8'": "2015",
+  "my experience :: spinbutton 'Year #9'": "2019",
+  "my experience :: spinbutton 'Year #10'": "2019",
+  "my experience :: button 'Delete sunil_resume.docx'": "",
+  "my experience :: textbox 'Job Title #1'": "Senior Data Scientist",
+  "my experience :: textbox 'Company #1'": "Aria Intelligent Solutions",
+  "my experience :: textbox 'Location #1'": "India",
+  "my experience :: textbox 'Job Title #2'": "Applied Scientist I",
+  "my experience :: textbox 'Company #2'": "Amazon Development Centre (India) Pvt. Ltd.",
+  "my experience :: textbox 'Location #2'": "India",
+  "my experience :: spinbutton 'Month #2'": "10",
+  "my experience :: spinbutton 'Year #2'": "2022",
+  "my experience :: textbox 'Job Title #3'": "Computer Vision Engineer",
+  "my experience :: textbox 'Company #3'": "Beltech AI Pvt. Ltd.",
+  "my experience :: textbox 'Location #3'": "India",
+  "my experience :: textbox 'URL #1'": "https://www.linkedin.com/in/sunil4832sharma",
+  "my experience :: textbox 'URL #2'": "https://github.com/sunil448832",
+  "my experience :: textbox 'URL #3'": "https://huggingface.co/sunil448832",
+  "application questions :: button 'Select One Required #1'": "No",
+  "application questions :: button 'Select One Required #2'": "Yes",
+  "application questions :: button 'Select One Required #9'": "No",
+  "application questions :: button 'Select One Required #10'": "No",
+  "application questions :: textbox ' #2'": "USD 200,000 base (open on total comp / equity mix)",
+  "application questions :: textbox ' #3'": "Indian citizen, currently in India. Require employment visa sponsorship to work onsite outside India. Available immediat",
+  "voluntary disclosures :: button 'Please select your gender: Select One Required'": "Male",
+  "voluntary disclosures :: button 'Please select the ethnicity which most accurately describes how you identify yourself: Select One Required'": "Preferred Not to Self-Identify (United States of America)",
+  "voluntary disclosures :: button 'Veteran Status: Select One'": "I am not a Veteran",
+  "voluntary disclosures :: checkbox 'Yes, I have read and consent to the terms and conditions'": "checked"
+ },
+ "placeholders": {
+  "Degree — Education 1 (Indian Institute of Technology, Jodhpur)": {
+   "used": "Masters of Engineering (M.Eng)",
+   "field": "button 'Degree Masters of Engineering (M.Eng) Required'",
+   "candidates": [
+    "Masters of Engineering (M.Eng)",
+    "Master of Science (M.S.)",
+    "Other"
+   ],
+   "page": "my experience"
+  },
+  "Degree — Education 2 (Sikkim Manipal Institute of Technology)": {
+   "used": "Bachelor of Technology (B.T.)",
+   "field": "button 'Degree Bachelor of Technology (B.T.) Required'",
+   "candidates": [
+    "Bachelor of Technology (B.T.)",
+    "Bachelor of Engineering (B.Eng)",
+    "Other"
+   ],
+   "page": "my experience"
+  },
+  "Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)": {
+   "used": "To be confirmed",
+   "field": "textbox 'Overall Result (GPA) #1'",
+   "candidates": [],
+   "page": "my experience"
+  },
+  "Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)": {
+   "used": "To be confirmed",
+   "field": "textbox 'Overall Result (GPA) #2'",
+   "candidates": [],
+   "page": "my experience"
+  },
+  "School or University — Education 1 (Indian Institute of Technology, Jodhpur)": {
+   "used": "Indian Institute Of Technology",
+   "field": "textbox 'School or University #1'",
+   "candidates": [
+    "Indian Institute Of Technology"
+   ],
+   "page": "my experience"
+  },
+  "Field of Study — Education 1 (Indian Institute of Technology, Jodhpur)": {
+   "used": "Artificial Intelligence and Robotics",
+   "field": "textbox 'Field of Study #1'",
+   "candidates": [
+    "Artificial Intelligence and Robotics",
+    "Computer Sciences"
+   ],
+   "page": "my experience"
+  },
+  "Field of Study — Education 2 (Sikkim Manipal Institute of Technology)": {
+   "used": "Electronics",
+   "field": "textbox 'Field of Study #2'",
+   "candidates": [
+    "Electronics",
+    "Electrical Engineering"
+   ],
+   "page": "my experience"
+  },
+  "School or University — Education 2 (Sikkim Manipal Institute of Technology)": {
+   "used": "Sikkim Manipal University",
+   "field": "textbox 'School or University #2'",
+   "candidates": [
+    "Sikkim Manipal University",
+    "Manipal University"
+   ],
+   "page": "my experience"
+  },
+  "In the past two years, have you donated to, or engaged in volunteer work for, a state or local political campaign?": {
+   "used": "No",
+   "field": "button 'Select One Required #3'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "In the past two years, has your spouse donated to, or engaged in volunteer work for a state or local political campaign?": {
+   "used": "No",
+   "field": "button 'Select One Required #4'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "In the past two years, have you donated to or volunteered for a federal candidate holding state/local office?": {
+   "used": "No",
+   "field": "button 'Select One Required #5'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "In the past two years, has your spouse donated to or volunteered for a federal candidate holding state/local office?": {
+   "used": "No",
+   "field": "button 'Select One Required #6'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "In the past two years, have you donated to, or engaged in volunteer work for any political party or PAC?": {
+   "used": "No",
+   "field": "button 'Select One Required #7'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "In the past two years, has your spouse donated to, or engaged in volunteer work for any political party or PAC?": {
+   "used": "No",
+   "field": "button 'Select One Required #8'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "Are any of your relatives or members of your household employed by Deloitte?": {
+   "used": "No",
+   "field": "button 'Select One Required #11'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "Does your spouse, sibling, parent(s) or child serve with, invest in, or have a business relationship with any portfolio company, competitor, supplier, client or investor of Blackstone?": {
+   "used": "No",
+   "field": "button 'Select One Required #12'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "Are you (or any relative) related to or affiliated with Blackstone personnel, and/or a Government Official?": {
+   "used": "No",
+   "field": "button 'Select One Required #13'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "Are you currently involved in any other outside business activities (board affiliations, consulting, other employment)?": {
+   "used": "No",
+   "field": "button 'Select One Required #14'",
+   "candidates": [
+    "No",
+    "Yes"
+   ],
+   "page": "application questions"
+  },
+  "Which Blackstone business groups are you most interested in?": {
+   "used": "Real Estate",
+   "field": "checkbox 'Real Estate'",
+   "candidates": [
+    "Real Estate",
+    "Technology"
+   ],
+   "page": "application questions"
+  },
+  "Why do you want to apply for this role at Blackstone?": {
+   "used": "To be confirmed",
+   "field": "textbox ' #1'",
+   "candidates": [],
+   "page": "application questions"
+  }
+ },
+ "submit_control": {
+  "page": "review",
+  "role": "button",
+  "name": "Submit",
+  "nth": 1,
+  "group": "",
+  "above": "Yes, I have read and consent to the terms and conditions Yes",
+  "qn": 1
+ },
+ "calls": "applications/blackstone-real-estate-innovation-applied-ai/calls.json",
+ "tool_calls": 21,
+ "seconds": 1068,
+ "model": "opus",
+ "effort": "low",
+ "turns": 22,
+ "cost_usd": 0.7014142,
+ "transcript": "tests/maps/blackstone-real-estate-innovation-applied-ai/agentic-0928-1636.log",
+ "screenshot": "data/queue/blackstone-real-estate-innovation-applied-ai-0928-1636.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/blackstone-real-estate-innovation-applied-ai/sunil_resume.docx"
+}

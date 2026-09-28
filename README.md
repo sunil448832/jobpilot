@@ -382,7 +382,11 @@ page → the agent fixes it and submits again with its `submit` tool (`filing.md
 change the meaning of his answer, never invent one) — at most 3 presses; a captcha →
 `failed`, nothing sent, the card says to submit by hand; anything else → `unconfirmed`,
 never pressed again. The page is judged only by text that appeared after the press (a
-standing "application limits" banner is not a refusal). A clicked button is not a submission. After a
+standing "application limits" banner is not a refusal). An emailed code asked for after the
+press is requested on Telegram; none in time → `code-needed`, not sent, filed again later. The
+account gate is never signed into while a Submit is watched, and never tried twice in a
+session after a refused sign-in (a retry can lock the account). A clicked button is not a
+submission. After a
 submission: the outcome to his phone, the attempt in `explore.json`, referral targets.
 
 **`tracker.py`** — syncs `job-tracker.xlsx` using its existing columns and Stage

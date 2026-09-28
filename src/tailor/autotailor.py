@@ -210,7 +210,7 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         (floor, max(limit * 8, 60))).fetchall()
     held = {_cokey(c) for c in (cfg("apply.hold_companies", []) or [])}
     quota = quota_state()
-    out, seen, roles = [], {}, set()
+    out, seen, roles, urls = [], {}, set(), set()
     for k, co, title, loc, url, mk, sc, fit, src in rows:
         ck = _cokey(co)
         inbox = src == "inbox"
@@ -226,8 +226,8 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         if mx and u + sum(1 for o in out if _cokey(o["company"]) == ck) >= mx:
             continue                       # portal application cap reached
         slug = slugify(f"{co}-{title}")[:44]
-        if norm_url(url) in handled:
-            continue
+        if norm_url(url) in handled or norm_url(url) in urls:
+            continue                       # queued already, or picked this run under another title
         if (co.strip().lower(), title.strip().lower()[:40]) in handled_titles:
             continue
         if os.path.isdir(os.path.join(APPLICATIONS, slug)):
@@ -238,6 +238,7 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         if seen.get(co, 0) >= per_company and not inbox:   # his own picks are never capped per company
             continue
         seen[co] = seen.get(co, 0) + 1
+        urls.add(norm_url(url))
         out.append({"key": k, "company": co, "title": title, "location": loc,
                     "url": url, "market": mk, "score": sc, "fit": fit, "slug": slug,
                     "source": src,
@@ -456,7 +457,8 @@ def process_role(p, cli, tag=""):
         + (" (below target — real gap, reported not chased)" if best["match_rate"] < target else ""))
 
     with FILL_LOCK:                       # one browser session at a time
-        ok, out = run([sys.executable, "-m", "jobpilot.apply.explore_agentic", p["slug"]], timeout=900)
+        ok, out = run([sys.executable, "-m", "jobpilot.apply.explore_agentic", p["slug"]],
+                      timeout=cfg("pipeline.explore_timeout_s", 2400))
     if not ok and "not supported for autofill" in out:
         # No form the walker could find (LinkedIn, an account wall, a JS shell):
         # hand him the content instead of dropping it.

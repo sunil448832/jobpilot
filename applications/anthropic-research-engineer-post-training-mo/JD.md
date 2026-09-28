@@ -1,0 +1,106 @@
+# Job Description
+
+- **Company:** Anthropic
+- **Role / Title:** Research Engineer, Post-Training Model Evaluations
+- **Location:** San Francisco, CA | Seattle, WA
+- **Platform / How applying:** greenhouse — ATS-critical, use the .docx
+- **Autofill route:** mobile
+- **Visa sponsorship:** unclear — CHECK the JD text below
+- **Salary range:**
+- **Link:** https://job-boards.greenhouse.io/anthropic/jobs/5198255008
+- **Apply URL:** https://job-boards.greenhouse.io/anthropic/jobs/5198255008
+- **Date applied:**
+
+## Full JD text
+
+About Anthropic
+
+Anthropic’s mission is to create reliable, interpretable, and steerable AI systems. We want AI to be safe and beneficial for our users and for society as a whole. Our team is a quickly growing group of committed researchers, engineers, policy experts, and business leaders working together to build beneficial AI systems.
+About the role 
+
+Anthropic's production models undergo sophisticated post-training processes to enhance their capabilities, alignment, and safety. Decisions in production training depend on knowing how the model is really behaving. Our team's mission is to have the best observability into production post-training runs at Anthropic: to be the clearest, most trusted view of model quality during training. We shape what gets measured, keep the signal trustworthy and timely, and get to the bottom of surprising results to inform post-training and release decisions.
+
+In this role you will lead the science of how we evaluate production training runs. You'll work out which measurements tell us something real about the model, notice when they stop doing so, and find what we should be measuring but aren't. You'll partner with research teams across every RL domain, bringing their priorities into what we measure and setting the standard for what makes an eval trustworthy across post-training. You'll also be hands-on with the eval fleet day to day, because the best questions about measurement come from watching real results come in during a live run.
+
+Responsibilities
+
+Steer the eval strategy for production Claude models: study and optimize the eval mix so it gives the most accurate and complete assessment of model quality
+
+Run and monitor the eval fleet live to understand how each Claude model is developing as it trains 
+
+Advise teams across post-training on eval methodology, and help eval authors bring new evals up to the bar for production
+
+Investigate regressions in production runs and inform training interventions when appropriate
+
+Build the dashboards, alerts, and reports that researchers and leadership use to track model quality
+
+You may be a good fit if you
+
+Have designed, run, and analyzed evaluations for ML models at scale
+
+Care deeply about measurement quality, thinking twice before trusting a number
+
+Can turn ambiguous results into clear recommendations, and are comfortable influencing direction across teams
+
+Have strong Python skills and are comfortable working with production systems
+
+Maintain clarity and rigor when debugging complex, time-sensitive issues
+
+Thrive in controlled chaos and are energized, rather than overwhelmed, when juggling multiple urgent priorities during a live training run
+
+Care about the societal impacts of your work and about shipping frontier models responsibly
+
+Strong candidates may also have
+
+Hands-on experience post-training large language models
+
+Research experience in ML evaluation or benchmarking
+
+Background in statistics and experimental design
+
+Experience developing robust evaluation metrics for ML systems
+
+The annual compensation range for this role is listed below. 
+
+For sales roles, the range provided is the role’s On Target Earnings ("OTE") range, meaning that the range includes both the sales commissions/sales bonuses target and annual base salary for the role.
+Annual Salary:
+$500,000
+—
+$850,000 USD
+Logistics
+
+Minimum education: 
+Bachelor’s degree or an equivalent combination of education, training, and/or experience
+
+Required field of study: 
+A field relevant to the role as demonstrated through coursework, training, or professional experience
+
+Minimum years of experience: 
+Years of experience required will correlate with the internal job level requirements for the position
+
+Location-based hybrid policy:
+ Currently, we expect all staff to be in one of our offices at least 25% of the time. However, some roles may require more time in our offices.
+
+Visa sponsorship:
+ We do sponsor visas! However, we aren't able to successfully sponsor visas for every role and every candidate. But if we make you an offer, we will make every reasonable effort to get you a visa, and we retain an immigration lawyer to help with this.
+
+We encourage you to apply even if you do not believe you meet every single qualification.
+ Not all strong candidates will meet every single qualification as listed.  Research shows that people who identify as being from underrepresented groups are more prone to experiencing imposter syndrome and doubting the strength of their candidacy, so we urge you not to exclude yourself prematurely and to submit an application if you're interested in this work. We think AI systems like the ones we're building have enormous social and ethical implications. We think this makes representation even more important, and we strive to include a range of diverse perspectives on our team.
+Your safety matters to us.
+ To protect yourself from potential scams, remember that Anthropic recruiters only contact you from @anthropic.com email addresses. In some cases, we may partner with vetted recruiting agencies who will identify themselves as working on behalf of Anthropic. Be cautious of emails from other domains. Legitimate Anthropic recruiters will never ask for money, fees, or banking information before your first day. If you're ever unsure about a communication, don't click any links—visit 
+anthropic.com/careers
+ directly for confirmed position openings.
+
+How we're different
+
+We believe that the highest-impact AI research will be big science. At Anthropic we work as a single cohesive team on just a few large-scale research efforts. And we value impact — advancing our long-term goals of steerable, trustworthy AI — rather than work on smaller and more specific puzzles. We view AI research as an empirical science, which has as much in common with physics and biology as with traditional efforts in computer science. We're an extremely collaborative group, and we host frequent research discussions to ensure that we are pursuing the highest-impact work at any given time. As such, we greatly value communication skills.
+
+The easiest way to understand our research directions is to read our recent research. This research continues many of the directions our team worked on prior to Anthropic, including: GPT-3, Circuit-Based Interpretability, Multimodal Neurons, Scaling Laws, AI & Compute, Concrete Problems in AI Safety, and Learning from Human Preferences.
+
+Come work with us!
+
+Anthropic is a public benefit corporation headquartered in San Francisco. We offer competitive compensation and benefits, optional equity donation matching, generous vacation and parental leave, flexible working hours, and a lovely office space in which to collaborate with colleagues. 
+Guidance on Candidates' AI Usage:
+ Learn about 
+our policy
+ for using AI in our application process.

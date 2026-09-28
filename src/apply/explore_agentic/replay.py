@@ -184,6 +184,9 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
             elif out["outcome"] == "captcha":             # not sent: a person has to submit it
                 item.update(status="failed", fail_reason="the portal asks for a captcha at Submit — every field is filled "
                             f"as you approved; submit it by hand: {item.get('url')}", submit_screenshot=out.get("screenshot"))
+            elif out["outcome"] == "code-needed":         # not sent: filed again when he can give the code
+                item.update(status="approved", fail_reason="Not sent: the portal asked for the code it emailed you and "
+                            "none came on Telegram in time. It is filed again on the next submit run.")
             elif out["outcome"] == "unclear":             # maybe sent: never pressed again by a rerun
                 item.update(status="unconfirmed", fail_reason=out["why"], submit_screenshot=out.get("screenshot"))
             elif out["outcome"] == "needs-answers":

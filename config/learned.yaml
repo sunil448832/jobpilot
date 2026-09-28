@@ -973,8 +973,8 @@ answers:
   - did
   - hear
   - about
-  answer: career site - corporate
-  source: answered by Sunil on the Takeaway form, 2026-09-24
+  answer: Career site - Corporate
+  source: answered by Sunil on the Takeaway form, 2026-09-28
 - match: f7b33932-2c60-40cc-82e9-fdd3a07d1abb__systemfield_eeoc_gender
   keywords:
   - f7b33932-2c60-40cc-82e9-fdd3a07d1abb
@@ -1067,8 +1067,8 @@ answers:
   - manipal
   - institute
   - technology
-  answer: Electrical Engineering
-  source: answered by Sunil on the Adobe form, 2026-09-28
+  answer: Electronics
+  source: answered by Sunil on the Blackstone form, 2026-09-28
 - match: would you now or at any time require employer sponsorship to work in switzerland?
   keywords:
   - would
@@ -1116,3 +1116,261 @@ answers:
   - per
   answer: 'Yes'
   source: answered by Sunil on the Openai form, 2026-09-28
+- match: phone device type
+  keywords:
+  - phone
+  - device
+  - type
+  answer: Mobile
+  source: answered by Sunil on the Takeaway form, 2026-09-28
+- match: why are you interested in working at exa? (can be short)
+  keywords:
+  - why
+  - interested
+  - working
+  - exa
+  - can
+  - short
+  answer: 'Exa''s FDE role matches how I already like to work: I''ve spent the last three
+    years shipping production LLM/agentic systems end to end at Aria (an Orchestrator Agent,
+    autonomous ETL agents, an evaluation API) and I want to pair that with direct customer
+    contact instead of staying purely backend.'
+  source: answered by Sunil on the Exa form, 2026-09-28
+- match: what's something you worked on that you were proud of?
+  keywords:
+  - something
+  - worked
+  - were
+  - proud
+  answer: 'A personal project: I implemented Group Relative Policy Optimization with verifiable
+    rewards from scratch in PyTorch, then used it to RL-post-train Qwen3-4B on competition
+    math with QLoRA on a single 48GB GPU. Over 280 steps I took the pass rate from 38.6% to
+    41.0% while solutions got 16% shorter, and I had to build the whole RL systems layer myself
+    (colocated vLLM rollouts, LoRA hot-swap, adaptive resampling of zero-signal prompts) since
+    none of that comes for free.'
+  source: answered by Sunil on the Exa form, 2026-09-28
+- match: what motivates you?
+  keywords:
+  - motivates
+  answer: Taking something from research-stage to production and watching it survive real
+    traffic. I optimize for what actually holds up under load, not just a benchmark number.
+  source: answered by Sunil on the Exa form, 2026-09-28
+- match: degree — education 1 (indian institute of technology, jodhpur)
+  keywords:
+  - degree
+  - education
+  - indian
+  - institute
+  - technology
+  - jodhpur
+  answer: Masters of Engineering (M.Eng)
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: degree — education 2 (sikkim manipal institute of technology)
+  keywords:
+  - degree
+  - education
+  - sikkim
+  - manipal
+  - institute
+  - technology
+  answer: Bachelor of Technology (B.T.)
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: overall result (gpa) — education 1 (indian institute of technology, jodhpur)
+  keywords:
+  - overall
+  - result
+  - gpa
+  - education
+  - indian
+  - institute
+  - technology
+  - jodhpur
+  answer: '3.3'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: overall result (gpa) — education 2 (sikkim manipal institute of technology)
+  keywords:
+  - overall
+  - result
+  - gpa
+  - education
+  - sikkim
+  - manipal
+  - institute
+  - technology
+  answer: '3.5'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: school or university — education 1 (indian institute of technology, jodhpur)
+  keywords:
+  - school
+  - university
+  - education
+  - indian
+  - institute
+  - technology
+  - jodhpur
+  answer: Indian Institute Of Technology
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: field of study — education 1 (indian institute of technology, jodhpur)
+  keywords:
+  - field
+  - study
+  - education
+  - indian
+  - institute
+  - technology
+  - jodhpur
+  answer: Artificial Intelligence and Robotics
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: school or university — education 2 (sikkim manipal institute of technology)
+  keywords:
+  - school
+  - university
+  - education
+  - sikkim
+  - manipal
+  - institute
+  - technology
+  answer: Sikkim Manipal University
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: in the past two years, have you donated to, or engaged in volunteer work for, a state
+    or local political campaign?
+  keywords:
+  - past
+  - two
+  - years
+  - donated
+  - engaged
+  - volunteer
+  - work
+  - state
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: in the past two years, has your spouse donated to, or engaged in volunteer work for
+    a state or local political campaign?
+  keywords:
+  - past
+  - two
+  - years
+  - has
+  - spouse
+  - donated
+  - engaged
+  - volunteer
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: in the past two years, have you donated to or volunteered for a federal candidate
+    holding state/local office?
+  keywords:
+  - past
+  - two
+  - years
+  - donated
+  - volunteered
+  - federal
+  - candidate
+  - holding
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: in the past two years, has your spouse donated to or volunteered for a federal candidate
+    holding state/local office?
+  keywords:
+  - past
+  - two
+  - years
+  - has
+  - spouse
+  - donated
+  - volunteered
+  - federal
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: in the past two years, have you donated to, or engaged in volunteer work for any
+    political party or pac?
+  keywords:
+  - past
+  - two
+  - years
+  - donated
+  - engaged
+  - volunteer
+  - work
+  - political
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: in the past two years, has your spouse donated to, or engaged in volunteer work for
+    any political party or pac?
+  keywords:
+  - past
+  - two
+  - years
+  - has
+  - spouse
+  - donated
+  - engaged
+  - volunteer
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: are any of your relatives or members of your household employed by deloitte?
+  keywords:
+  - relatives
+  - members
+  - household
+  - employed
+  - deloitte
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: does your spouse, sibling, parent(s) or child serve with, invest in, or have a business
+    relationship with any portfolio company, competitor, supplier, client or investor of blackstone?
+  keywords:
+  - does
+  - spouse
+  - sibling
+  - parent
+  - child
+  - serve
+  - invest
+  - business
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: are you (or any relative) related to or affiliated with blackstone personnel, and/or
+    a government official?
+  keywords:
+  - relative
+  - related
+  - affiliated
+  - blackstone
+  - personnel
+  - government
+  - official
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: are you currently involved in any other outside business activities (board affiliations,
+    consulting, other employment)?
+  keywords:
+  - currently
+  - involved
+  - other
+  - outside
+  - business
+  - activities
+  - board
+  - affiliations
+  answer: 'No'
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: which blackstone business groups are you most interested in?
+  keywords:
+  - blackstone
+  - business
+  - groups
+  - most
+  - interested
+  answer: Real Estate
+  source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: why do you want to apply for this role at blackstone?
+  keywords:
+  - why
+  - want
+  - role
+  - blackstone
+  answer: For better opportunity.
+  source: answered by Sunil on the Blackstone form, 2026-09-28

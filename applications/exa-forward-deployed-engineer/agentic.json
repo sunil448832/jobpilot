@@ -1,0 +1,61 @@
+{
+ "slug": "exa-forward-deployed-engineer",
+ "platform": "ashby",
+ "at": "2026-09-28T16:31:16",
+ "outcome": "last-page",
+ "note": "Single-page Ashby form filled. Placeholders for applicant: why Exa, proud project, motivation. Sponsorship answered Yes (US).",
+ "pages": [
+  "Forward Deployed Engineer"
+ ],
+ "filled": {
+  "Forward Deployed Engineer :: button 'Upload File'": "sunil_resume.docx",
+  "Forward Deployed Engineer :: radio 'Open to relocating'": "checked",
+  "Forward Deployed Engineer :: textbox 'Full Name*'": "Sunil Kumar Sharma",
+  "Forward Deployed Engineer :: textbox 'Email*'": "sunil4832sharma@gmail.com",
+  "Forward Deployed Engineer :: textbox \"Earliest month you'd be able to join*\"": "2 months from offer acceptance",
+  "Forward Deployed Engineer :: textbox 'LinkedIn*'": "https://www.linkedin.com/in/sunil4832sharma",
+  "Forward Deployed Engineer :: textbox 'Github'": "https://github.com/sunil448832",
+  "Forward Deployed Engineer :: textbox 'Other Links'": "https://huggingface.co/sunil448832",
+  "Forward Deployed Engineer :: textbox 'Do you require Visa sponsorship to work in your selected location? If so, which one? And when does your Visa expire?*'": "Yes",
+  "Forward Deployed Engineer :: textbox 'How did you hear about Exa?*'": "LinkedIn"
+ },
+ "placeholders": {
+  "Why are you interested in working at Exa? (can be short)": {
+   "used": "To be confirmed",
+   "field": "textbox 'Why are you interested in working at Exa? (can be short)*'",
+   "candidates": [],
+   "page": "Forward Deployed Engineer"
+  },
+  "What's something you worked on that you were proud of?": {
+   "used": "To be confirmed",
+   "field": "textbox \"What's something you worked on that you were proud of?*\"",
+   "candidates": [],
+   "page": "Forward Deployed Engineer"
+  },
+  "What motivates you?": {
+   "used": "To be confirmed",
+   "field": "textbox 'What motivates you?*'",
+   "candidates": [],
+   "page": "Forward Deployed Engineer"
+  }
+ },
+ "submit_control": {
+  "page": "Forward Deployed Engineer",
+  "role": "button",
+  "name": "Submit Application",
+  "nth": 1,
+  "group": "",
+  "above": "Are you applying to work on something specific at Exa? (1 sentence, leave blank if you're open to anything)",
+  "qn": 0
+ },
+ "calls": "applications/exa-forward-deployed-engineer/calls.json",
+ "tool_calls": 3,
+ "seconds": 60,
+ "model": "opus",
+ "effort": "low",
+ "turns": 4,
+ "cost_usd": 0.1675518,
+ "transcript": "tests/maps/exa-forward-deployed-engineer/agentic-0928-1630.log",
+ "screenshot": "data/queue/exa-forward-deployed-engineer-0928-1630.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/exa-forward-deployed-engineer/sunil_resume.docx"
+}

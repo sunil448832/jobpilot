@@ -1,14 +1,5 @@
 [
  {
-  "n": 1,
-  "tool": "see",
-  "args": {},
-  "page": null,
-  "controls": {},
-  "result": "PAGE: Research Engineer, Machine Learning (Reinforcement Learning)\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'anthropic.com/careers'   [a link]\nc5  link 'our policy'   [a link]\nc6  link 'Create alert'   [a link]\nc7  textbox 'First Name'   [a text box, required]\nc8  textbox 'Last Name'   [a text box, required]\nc9  textbox 'Email'   [a text box, required]\nc10  combobox 'Country'   [a search box: type, then pick from the list that appears, required]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +1, Central African Republic +236, Chad +235, Chile +56, China +86, Christmas Island +61, Cocos (Keeling) Islands +61, Colombia +57, Comoros +269, Congo - "
- },
- {
-  "n": 2,
   "tool": "act",
   "args": {
    "rows": [
@@ -594,27 +585,15 @@
     "reads": "I mention this because it doesn't fit neatly elsewhere on the form: outside of GRPO post-training, I've also built and shipped a low-latency inference service (20ms median) and a Qdrant retrieval index compressed 8x via TurboQuant 4-bit quantization at nDCG/Recall parity across 8 BEIR datasets — systems-level ML work that I think maps well to what this RL Engineering role needs."
    }
   ],
-  "result": "c10  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc13  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc31  ok  combobox 'Are you open to relocation for this role?': shows 'Yes'\nc34  ok  combobox 'Are you open to working in-person in one of our offices 25% of the time?': shows 'Yes'\nc36  ok  combobox 'AI Policy for Application': shows 'Yes'\nc40  ok  combobox \"Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?\": shows 'Yes'\nc42  ok  combobox 'Have you ever interviewed at Anthropic before?': shows 'No'\nc45  ok  combobox 'Please read the arbitration agreement below': shows 'I will read the arbitration agreement below.'\nc50  ok  combobox 'Agreement to Arbitrate': shows 'I understand and agree to the terms of the Agreement to Arbitrate set forth above.'\nc52  ok  combobox 'Gender': shows 'Male'\nc54  ok  combobox 'Are you Hispanic/Latino?': shows 'Decline To Self Identify'\nc57  ok  combobox 'Veteran Status': shows 'I am not a protected veteran'\nc7  ok  textbox 'First Name': shows 'Sunil'\nc8  ok  textbox 'Last Name': shows 'Sharma'\nc9  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc12  ok  textbox 'Phone': shows '96412 98471'\nc24  ok  textbox 'LinkedIn Profile': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc26  ok  textbox 'GitHub URL': shows 'https://github.com/sunil448832'\n"
+  "result": "c10  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc13  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc31  ok  combobox 'Are you open to relocation for this role?': shows 'Yes'\nc34  ok  combobox 'Are you open to working in-person in one of our offices 25% of the time?': shows 'Yes'\nc36  ok  combobox 'AI Policy for Application': shows 'Yes'\nc40  ok  combobox \"Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?\": shows 'Yes'\nc42  ok  combobox 'Have you ever interviewed at Anthropic before?': shows 'No'\nc45  ok  combobox 'Please read the arbitration agreement below': shows 'I will read the arbitration agreement below.'\nc50  ok  combobox 'Agreement to Arbitrate': shows 'I understand and agree to the terms of the Agreement to Arbitrate set forth above.'\nc52  ok  combobox 'Gender': shows 'Male'\nc54  ok  combobox 'Are you Hispanic/Latino?': shows 'Decline To Self Identify'\nc57  ok  combobox 'Veteran Status': shows 'I am not a protected veteran'\nc7  ok  textbox 'First Name': shows 'Sunil'\nc8  ok  textbox 'Last Name': shows 'Sharma'\nc9  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc12  ok  textbox 'Phone': shows '96412 98471'\nc24  ok  textbox 'LinkedIn Profile': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc26  ok  textbox 'GitHub URL': shows 'https://github.com/sunil448832'\n",
+  "n": 1
  },
  {
-  "n": 3,
-  "tool": "finish",
-  "args": {
-   "outcome": "last-page",
-   "note": "All fields filled on single-page Greenhouse form; phone country shows +91 (India). Resume attached.",
-   "submit_id": "c59"
-  },
-  "page": "Research Engineer, Machine Learning (Reinforcement Learning)",
-  "controls": {
-   "c59": {
-    "role": "button",
-    "name": "Submit application",
-    "nth": 1,
-    "group": "",
-    "above": "I am not a protected veteran",
-    "qn": 2
-   }
-  },
-  "result": "finished."
+  "n": 2,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: Research Engineer, Machine Learning (Reinforcement Learning)\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'anthropic.com/careers'   [a link]\nc5  link 'our policy'   [a link]\nc6  link 'Create alert'   [a link]\nc7  textbox 'First Name'   [a text box, required]\nc8  textbox 'Last Name'   [a text box, required]\nc9  textbox 'Email'   [a text box, required]\nc10  combobox 'Country'   [a search box: type, then pick from the list that appears, required]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +1, Central African Republic +236, Chad +235, Chile +56, China +86, Christmas Island +61, Cocos (Keeling) Islands +61, Colombia +57, Comoros +269, Congo - "
  }
 ]

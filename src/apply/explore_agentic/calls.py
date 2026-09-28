@@ -122,12 +122,13 @@ class Redo:
         """Redo one page's calls (not its Next). Returns [what differs]."""
         f = self.form
         f.read()
-        differs = []
+        differs, missing = [], []
         nav = self.nav(page)
         for call in self.pages.get(page, []):
             if call is nav:
                 continue
             found = {old: f.find(ident) for old, ident in call["controls"].items()}
+            did = False
             if call["tool"] == "act":
                 outs = {o["id"]: o for o in call.get("outcomes") or []}
                 rows, then = [], {}
@@ -135,13 +136,18 @@ class Redo:
                     o, c = outs.get(row[0]), found.get(row[0])
                     if o is None or o.get("how") in ("search", "button"):
                         continue                          # not on the page then, only searched, or a page button
-                    if c is None:
-                        differs.append(f"{row[0]} ({call['controls'].get(row[0], {}).get('name')!r}: {row[2]}) "
-                                       "is not on the page")
+                    if c is None:                         # judged once the page is redone: a later call may reach it
+                        missing.append((call["controls"].get(row[0]), f"{row[0]} ({call['controls'].get(row[0], {}).get('name')!r}: "
+                                                                     f"{row[2]}) is not on the page"))
                         continue
-                    if o.get("how") == "add" and o.get("section_count") is not None and \
+                    if o.get("how") == "add" and o.get("blocks"):   # only the blocks still missing
+                        need = o["blocks"] - (f.blocks(o.get("section")) or 0)
+                        if need <= 0:
+                            continue                      # the section has its blocks already (a draft)
+                        row = [row[0], row[1], f"add:{need}"] + list(row[3:])
+                    elif o.get("how") == "add" and o.get("section_count") is not None and \
                             (f.section_count(o.get("section")) or 0) >= o["section_count"]:
-                        continue                          # the section has its blocks already
+                        continue                          # (a record from before blocks were counted)
                     ans = self.answer(row, o)
                     if ans is not None and o.get("question") and self.choice(o, call["controls"][row[0]]):
                         c = self.his_choice(c, ans)           # his answer names another of the choices
@@ -153,6 +159,7 @@ class Redo:
                         then[c.id] = o
                 if rows:
                     f.act(rows)
+                    did = True
                     for o in f.outcomes or []:
                         was = then.get(o["id"])
                         if was and was["ok"] and not o["ok"] and o.get("how") not in NOT_CHECKED:
@@ -166,7 +173,11 @@ class Redo:
                     continue                              # its section is as the press left it (a Delete done)
                 f.clear(c.id) if call["tool"] == "clear" else f.press(c.id)
                 f.read()
-            f.calls.append({k: v for k, v in call.items() if k != "n"})   # redone: part of the new record
+                did = True
+            if did:                                       # redone: part of the new record (a call that found nothing is not)
+                f.calls.append({k: v for k, v in call.items() if k != "n"})
+        f.read()
+        differs = [why for ident, why in missing if ident is None or f.find(ident) is None] + differs
         return differs + self.check(page)
 
     def check(self, page):

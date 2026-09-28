@@ -47,6 +47,10 @@ llm:
   max_turns: 20
 
 pipeline:
+  # One application's exploration, at most (seconds). A Workday form on a new tenant (account
+  # created, several pages, repeated job / education blocks) takes 10-20 minutes; a run cut
+  # off resumes from its record (calls.json) on the next explore.
+  explore_timeout_s: 2400
   # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
   # dial: 6 x 3 scans/day = up to 18/day.
   tailor_limit: 6

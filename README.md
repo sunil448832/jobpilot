@@ -344,7 +344,11 @@ Every decision keeps what it changed, so the card's **Undo** takes it back — s
 answers, the record, what `learned.yaml` learned — until the item is being filed. No
 Telegram message per decision: the card says it was saved. The list has **Review now**
 and **For later review** (cards kept with *Later*), then Approved, *Filing now*,
-Submitted. A re-exploration replaces every earlier unsent card of that application. Stable
+Submitted. At the top, **Needs you now** lists what a filing is waiting on this minute (an
+emailed code, a Workday email verification), each with its answer box and the time the wait
+ends; the Telegram message for it is a card (🔐 *Filing needs you*: the job, the question, the
+deadline) linking there. **Sent? — check your email** lists cards whose Submit was pressed
+but not confirmed; they are never pressed again, and the queue dedupe never removes them. A re-exploration replaces every earlier unsent card of that application. Stable
 token in `~/.config/jobbot/env`. It runs as `jobpilot-form.service`: restart it after
 changing code, or it keeps serving the old version.
 

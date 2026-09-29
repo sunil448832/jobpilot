@@ -36,16 +36,40 @@ def answer(key, text):
     return q
 
 
-def ask(key, question, hint="", timeout=900, poll=3):
-    """Post the question, tell Telegram, wait for the answer. Returns '' on timeout."""
+def open_asks():
+    """The questions still waiting for his answer, oldest first: those unanswered whose wait
+    has not run out."""
+    now = dt.datetime.now().isoformat(timespec="seconds")
+    out = []
+    for f in sorted(os.listdir(ASK_DIR)) if os.path.isdir(ASK_DIR) else []:
+        try:
+            q = json.load(open(os.path.join(ASK_DIR, f)))
+        except (OSError, ValueError):
+            continue
+        if not q.get("answer") and (q.get("until") or "") > now:
+            out.append(q)
+    return sorted(out, key=lambda q: q.get("asked_at") or "")
+
+
+def ask(key, question, hint="", timeout=900, poll=3, about=""):
+    """Post the question (it shows in the review list's "Needs you now" section), tell
+    Telegram as a card, wait for the answer. Returns '' on timeout. `about`: the job."""
     from jobpilot.core.daily import form_link, telegram
     os.makedirs(ASK_DIR, exist_ok=True)
-    json.dump({"key": key, "question": question, "hint": hint, "answer": None,
-               "asked_at": dt.datetime.now().isoformat(timespec="seconds")},
+    until = dt.datetime.now() + dt.timedelta(seconds=timeout)
+    json.dump({"key": key, "question": question, "hint": hint, "about": about, "answer": None,
+               "asked_at": dt.datetime.now().isoformat(timespec="seconds"),
+               "until": until.isoformat(timespec="seconds")},
               open(_path(key), "w"), indent=2)
     link = form_link().replace("/?", f"/ask/{key}?")
-    telegram(f"❓ <b>Need one thing from you</b>\n\n{question}\n\n{link}\n\n"
-             f"<i>The browser is holding the form open for {timeout // 60} min.</i>")
+    telegram("🔐 <b>Filing needs you</b>\n"
+             + (f"<b>{about}</b>\n" if about else "")
+             + f"\n{question}\n"
+             + (f"<i>{hint}</i>\n" if hint else "")
+             + f"\n👉 Answer here: {link}\n"
+             + "(also at the top of the review list, under <b>Needs you now</b>)\n\n"
+             + f"⏳ Waiting until <b>{until:%H:%M}</b> ({timeout // 60} min). "
+             + "After that nothing is sent, and it is tried again on the next run.")
     print(f"  [ask] waiting up to {timeout}s for: {question[:70]}")
     deadline = time.time() + timeout
     while time.time() < deadline:

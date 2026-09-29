@@ -1,14 +1,5 @@
 [
  {
-  "n": 1,
-  "tool": "see",
-  "args": {},
-  "page": null,
-  "controls": {},
-  "result": "PAGE: Senior Research Engineer, Frontier Data\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Turing Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'www.turing.com'   [a link]\nc5  link 'Ece Kamar'   [a link]\nc6  link \"Turing's GDPR notice here\"   [a link]\nc7  link 'Create alert'   [a link]\nc8  button 'Autofill my application'   [a button]   shows: 'Autofill my application'\nc9  textbox 'First Name'   [a text box, required]\nc10  textbox 'Last Name'   [a text box, required]\nc11  textbox 'Preferred First Name'   [a text box]\nc12  textbox 'Email'   [a text box, required]\nc13  combobox 'Country'   [a search box: type, then pick from the list that appears, required]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +"
- },
- {
-  "n": 2,
   "tool": "act",
   "args": {
    "rows": [
@@ -330,10 +321,10 @@
     "reads": "India"
    }
   ],
-  "result": "c13  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc16  NOT DONE  combobox 'Location (City)': searched: '\\\\bDelhi\\\\b' -> [\"Delhi, India\", \"New Delhi, Delhi, India\", \"Delhi Cantonment, Delhi, India\", \"Delhi, California, United States\", \"Delhi, Ontario, Canada\", \"Delhi Hills, Ohio, United States\", \"Delhi Hills, Ohio, United States\", \"Town of Delhi, New York, United States\", \"Delhi, Madhya Pradesh, India\", \"Delhi, New York, United States\"]; '^Del' -> [\"Delhi, India\", \"Delmas, Ouest, Haiti\", \"Delmas 73, Ouest, Haiti\"]; '^D' -> [\"Dalian, Liaoning, China\", \"Département d’ Abidjan, Abidjan, Ivory Coast\", \"Dongguan, Guangdong, China\", \"Dar es Salaam, Tanzania\", \"Delhi, India\", \"Dhaka, Bangladesh\", \"Dubai, United Arab Emirates\"]\nc18  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc31  ok  combobox 'Will you require sponsorship or other assistance or support to be authorized to, or otherwise, work from your country of residence?': shows 'No'\nc33  ok  combobox 'Your authorization to work in the country where you live.': shows 'I am authorized to work in the country due to my nationality.'\nc9  ok  textbox 'First Name': shows 'Sunil'\nc10  ok  textbox 'Last Name': shows 'Sharma'\nc11  ok  textbox 'Preferred First Name': shows 'Sunil'\nc12  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc15  ok  textbox 'Phone': shows '96412 98471'\nc28  ok  textbox 'LinkedIn Profile': shows 'https://www"
+  "result": "c13  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc16  NOT DONE  combobox 'Location (City)': searched: '\\\\bDelhi\\\\b' -> [\"Delhi, India\", \"New Delhi, Delhi, India\", \"Delhi Cantonment, Delhi, India\", \"Delhi, California, United States\", \"Delhi, Ontario, Canada\", \"Delhi Hills, Ohio, United States\", \"Delhi Hills, Ohio, United States\", \"Town of Delhi, New York, United States\", \"Delhi, Madhya Pradesh, India\", \"Delhi, New York, United States\"]; '^Del' -> [\"Delhi, India\", \"Delmas, Ouest, Haiti\", \"Delmas 73, Ouest, Haiti\"]; '^D' -> [\"Dalian, Liaoning, China\", \"Département d’ Abidjan, Abidjan, Ivory Coast\", \"Dongguan, Guangdong, China\", \"Dar es Salaam, Tanzania\", \"Delhi, India\", \"Dhaka, Bangladesh\", \"Dubai, United Arab Emirates\"]\nc18  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc31  ok  combobox 'Will you require sponsorship or other assistance or support to be authorized to, or otherwise, work from your country of residence?': shows 'No'\nc33  ok  combobox 'Your authorization to work in the country where you live.': shows 'I am authorized to work in the country due to my nationality.'\nc9  ok  textbox 'First Name': shows 'Sunil'\nc10  ok  textbox 'Last Name': shows 'Sharma'\nc11  ok  textbox 'Preferred First Name': shows 'Sunil'\nc12  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc15  ok  textbox 'Phone': shows '96412 98471'\nc28  ok  textbox 'LinkedIn Profile': shows 'https://www",
+  "n": 1
  },
  {
-  "n": 3,
   "tool": "act",
   "args": {
    "rows": [
@@ -368,27 +359,15 @@
     "reads": ""
    }
   ],
-  "result": "c16  ok  combobox 'Location (City)': shows 'Delhi, India'\n\nNEW FIELDS:\nc40  button 'Clear selections #1'   [a button]\n\nPAGE: Senior Research Engineer, Frontier Data\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+  "result": "c16  ok  combobox 'Location (City)': shows 'Delhi, India'\n\nNEW FIELDS:\nc40  button 'Clear selections #1'   [a button]\n\nPAGE: Senior Research Engineer, Frontier Data\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 2
  },
  {
-  "n": 4,
-  "tool": "finish",
-  "args": {
-   "outcome": "last-page",
-   "note": "Single-page Greenhouse form filled: name, email, phone (+91), Delhi, resume, LinkedIn, GitHub as website, country India, no sponsorship needed in India (authorized by nationality). No cover letter.",
-   "submit_id": "c35"
-  },
-  "page": "Senior Research Engineer, Frontier Data",
-  "controls": {
-   "c35": {
-    "role": "button",
-    "name": "Submit application",
-    "nth": 1,
-    "group": "",
-    "above": "Please choose the option that most closely describes your work authorization.",
-    "qn": 0
-   }
-  },
-  "result": "finished."
+  "n": 3,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: Senior Research Engineer, Frontier Data\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Turing Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'www.turing.com'   [a link]\nc5  link 'Ece Kamar'   [a link]\nc6  link \"Turing's GDPR notice here\"   [a link]\nc7  link 'Create alert'   [a link]\nc8  button 'Autofill my application'   [a button]   shows: 'Autofill my application'\nc9  textbox 'First Name'   [a text box, required]\nc10  textbox 'Last Name'   [a text box, required]\nc11  textbox 'Preferred First Name'   [a text box]\nc12  textbox 'Email'   [a text box, required]\nc13  combobox 'Country'   [a search box: type, then pick from the list that appears, required]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +"
  }
 ]

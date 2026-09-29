@@ -1,14 +1,5 @@
 [
  {
-  "n": 1,
-  "tool": "see",
-  "args": {},
-  "page": null,
-  "controls": {},
-  "result": "PAGE: Research Engineer, Life Sciences\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'anthropic.com/careers'   [a link]\nc5  link 'our policy'   [a link]\nc6  link 'Create alert'   [a link]\nc7  textbox 'First Name'   [a text box, required]\nc8  textbox 'Last Name'   [a text box, required]\nc9  textbox 'Email'   [a text box, required]\nc10  combobox 'Country'   [a search box: type, then pick from the list that appears]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +1, Central African Republic +236, Chad +235, Chile +56, China +86, Christmas Island +61, Cocos (Keeling) Islands +61, Colombia +57, Comoros +269, Congo - Brazzaville +242, Congo - Kinshasa +24"
- },
- {
-  "n": 2,
   "tool": "act",
   "args": {
    "rows": [
@@ -594,10 +585,10 @@
     "reads": "relocating"
    }
   ],
-  "result": "c10  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc13  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc20  ok  combobox 'Are you open to working in-person in one of our offices 25% of the time?': shows 'Yes'\nc24  ok  combobox 'AI Policy for Application': shows 'Yes'\nc28  ok  combobox 'Do you require visa sponsorship?': shows 'Yes'\nc30  ok  combobox \"Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?\": shows 'Yes'\nc34  ok  combobox 'Are you open to relocation for this role?': shows 'Yes'\nc37  ok  combobox 'Have you ever interviewed at Anthropic before?': shows 'No'\nc39  ok  combobox 'Please read the arbitration agreement below': shows 'I will read the arbitration agreement below.'\nc44  ok  combobox 'Agreement to Arbitrate': shows 'I understand and agree to the terms of the Agreement to Arbitrate set forth above.'\nc46  ok  combobox 'Gender': shows 'Male'\nc48  ok  combobox 'Are you Hispanic/Latino?': shows 'Decline To Self Identify'\nc51  ok  combobox 'Veteran Status': shows 'I am not a protected veteran'\nc7  ok  textbox 'First Name': shows 'Sunil'\nc8  ok  textbox 'Last Name': shows 'Sharma'\nc9  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc12  ok  textbox 'Phone': shows '96412 98471'\nc18  ok  textbox '(Optional) Personal Preferences': shows 'No specific preferences — open to "
+  "result": "c10  CHECK  combobox 'Country': set to 'India +91'; the field now shows '+91' — the same entry (a short or cut form of it)? if not, act on it again\nc13  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc20  ok  combobox 'Are you open to working in-person in one of our offices 25% of the time?': shows 'Yes'\nc24  ok  combobox 'AI Policy for Application': shows 'Yes'\nc28  ok  combobox 'Do you require visa sponsorship?': shows 'Yes'\nc30  ok  combobox \"Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?\": shows 'Yes'\nc34  ok  combobox 'Are you open to relocation for this role?': shows 'Yes'\nc37  ok  combobox 'Have you ever interviewed at Anthropic before?': shows 'No'\nc39  ok  combobox 'Please read the arbitration agreement below': shows 'I will read the arbitration agreement below.'\nc44  ok  combobox 'Agreement to Arbitrate': shows 'I understand and agree to the terms of the Agreement to Arbitrate set forth above.'\nc46  ok  combobox 'Gender': shows 'Male'\nc48  ok  combobox 'Are you Hispanic/Latino?': shows 'Decline To Self Identify'\nc51  ok  combobox 'Veteran Status': shows 'I am not a protected veteran'\nc7  ok  textbox 'First Name': shows 'Sunil'\nc8  ok  textbox 'Last Name': shows 'Sharma'\nc9  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc12  ok  textbox 'Phone': shows '96412 98471'\nc18  ok  textbox '(Optional) Personal Preferences': shows 'No specific preferences — open to ",
+  "n": 1
  },
  {
-  "n": 3,
   "tool": "clear",
   "args": {
    "id": "c18"
@@ -613,14 +604,71 @@
     "qn": 0
    }
   },
-  "result": "c18 emptied: shows ''"
+  "result": "c18 emptied: shows ''",
+  "n": 2
+ },
+ {
+  "n": 3,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c18",
+     "write",
+     "learned:86"
+    ]
+   ]
+  },
+  "page": "Research Engineer, Life Sciences",
+  "controls": {
+   "c18": {
+    "role": "textbox",
+    "name": "(Optional) Personal Preferences",
+    "nth": 1,
+    "group": "",
+    "above": "(Optional) Personal Preferences",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c18",
+    "kind": "write",
+    "answer": "learned:86",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure.",
+    "question": null,
+    "reads": "No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure."
+   }
+  ],
+  "result": "c18  ok  textbox '(Optional) Personal Preferences': shows 'No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure.'\n\nPAGE: Research Engineer, Life Sciences\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
  },
  {
   "n": 4,
+  "tool": "replay",
+  "args": {},
+  "page": "Research Engineer, Life Sciences",
+  "controls": {},
+  "result": "redone: (no page); now on page 'Research Engineer, Life Sciences' — the record's last page\nthis is where the record ends: see the page, fill what is left, and carry on."
+ },
+ {
+  "n": 5,
+  "tool": "see",
+  "args": {
+   "scope": "page"
+  },
+  "page": "Research Engineer, Life Sciences",
+  "controls": {},
+  "result": "PAGE: Research Engineer, Life Sciences\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'anthropic.com/careers'   [a link]\nc5  link 'our policy'   [a link]\nc6  link 'Create alert'   [a link]\nc7  textbox 'First Name'   [a text box, required]   shows: 'Sunil'\nc8  textbox 'Last Name'   [a text box, required]   shows: 'Sharma'\nc9  textbox 'Email'   [a text box, required]   shows: 'sunil4832sharma@gmail.com'\nc10  combobox 'Country'   [a search box: type, then pick from the list that appears]   shows: '+91'   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +1, Central African Republic +236, Chad +235, Chile +56, China +86, Christmas Island +61, Cocos (Keeling) "
+ },
+ {
+  "n": 6,
   "tool": "finish",
   "args": {
    "outcome": "last-page",
-   "note": "Single-page Greenhouse form filled; phone country shows +91 (India). Optional Personal Preferences (name pronunciation) left empty. Website left empty.",
+   "note": "Refilled the empty Personal Preferences field (c18) with learned:86. Every other field matches the record. Single-page Greenhouse form, ready to submit.",
    "submit_id": "c53"
   },
   "page": "Research Engineer, Life Sciences",
@@ -635,5 +683,13 @@
    }
   },
   "result": "finished."
+ },
+ {
+  "n": 7,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: Research Engineer, Life Sciences\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'anthropic.com/careers'   [a link]\nc5  link 'our policy'   [a link]\nc6  link 'Create alert'   [a link]\nc7  textbox 'First Name'   [a text box, required]\nc8  textbox 'Last Name'   [a text box, required]\nc9  textbox 'Email'   [a text box, required]\nc10  combobox 'Country'   [a search box: type, then pick from the list that appears]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Netherlands +599, Cayman Islands +1, Central African Republic +236, Chad +235, Chile +56, China +86, Christmas Island +61, Cocos (Keeling) Islands +61, Colombia +57, Comoros +269, Congo - Brazzaville +242, Congo - Kinshasa +24"
  }
 ]

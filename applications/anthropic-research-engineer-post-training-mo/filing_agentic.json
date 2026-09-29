@@ -1,0 +1,26 @@
+{
+ "slug": "anthropic-research-engineer-post-training-mo",
+ "mode": "submit",
+ "outcome": "code-needed",
+ "why": "the portal asks for the code it emailed, and none came: nothing is sent",
+ "redo": {
+  "redone": [
+   "Research Engineer, Post-Training Model Evaluations"
+  ],
+  "at": "Research Engineer, Post-Training Model Evaluations",
+  "end": true,
+  "why": "the record's last page",
+  "differs": []
+ },
+ "screenshot": "data/queue/anthropic-research-engineer-post-training-mo-submitted-0928-1743.png",
+ "seconds": 994,
+ "new_placeholders": {},
+ "presses": [
+  {
+   "page": "Research Engineer, Post-Training Model Evaluations",
+   "button": "Submit application",
+   "outcome": "code-needed",
+   "detail": "the portal asks for the code it emailed, and none came: nothing is sent"
+  }
+ ]
+}

@@ -151,6 +151,7 @@ class H(BaseHTTPRequestHandler):
             # ago still read "pending". Sections + colour + a reload on pageshow.
             t = f"?t={TOKEN}" if TOKEN else ""
             SECT = [("failed", "Failed — needs a look", "red"),
+                    ("unconfirmed", "Sent? — the portal did not confirm: check your email", "amber"),
                     ("exploring", "Re-exploring — back when done", "grey"),
                     ("needs_input", "Review now — need your answers", "amber"),
                     ("manual", "Apply by hand — content ready to copy", "purple"),
@@ -172,7 +173,9 @@ class H(BaseHTTPRequestHandler):
                 nq = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
                 label = {"needs_input": f"{nq} to answer", "pending": "pending", "manual": "🖐 apply by hand",
                          "later": "kept for later" + (f" · {nq} to answer" if nq else ""),
-                         "approved": "✅ approved", "submitted": "submitted", "submitting": "⏳ filing now",
+                         "approved": "✅ approved" + (" · last try: " + i["fail_reason"][:40] if i.get("fail_reason") else ""),
+                         "unconfirmed": "❓ may have been sent — never pressed again",
+                         "submitted": "submitted", "submitting": "⏳ filing now",
                          "exploring": "🔄 re-exploring",
                          "failed": ("⚠ exploration stopped short" if i.get("reached_end") is False
                                     else f"⚠ attempt {i.get('attempts', 1)} failed")}[key]
@@ -182,7 +185,29 @@ class H(BaseHTTPRequestHandler):
                         f'<div class="b {colour}">{label}</div></a>')
             counts = " · ".join(f"{len(groups[k])} {title.split(' —')[0].lower()}"
                                 for k, title, _ in SECT if groups[k])
+            # what a filing is waiting on right now (an emailed code, a verification): answered
+            # here, on the list, without opening another page
+            from jobpilot.review import ask as ask_mod
+            now_asks = ask_mod.open_asks()
             sections = ""
+            if now_asks:
+                sections += (f'<h2 class="red" id="now">Needs you now — a filing is waiting <span>{len(now_asks)}</span></h2>'
+                             + "".join(
+                                 f'<div class="card red"><div class="r">{q.get("about") or "A filing"}</div>'
+                                 f'<div class="m">{q.get("question","")}</div>'
+                                 + (f'<div class="m">{q.get("hint")}</div>' if q.get("hint") else "")
+                                 + f'<div class="m">⏳ waiting until {q.get("until","")[11:16]} — after that nothing is sent</div>'
+                                 f'<input class="ans" id="a-{q["key"]}" autocomplete="one-time-code" placeholder="type here" '
+                                 f'style="font-size:20px;letter-spacing:2px;padding:10px;width:100%;box-sizing:border-box;'
+                                 f'border:1px solid #bbb;border-radius:8px;margin-top:8px">'
+                                 f'<button onclick="send(\'{q["key"]}\')" style="margin-top:8px;padding:12px;width:100%;'
+                                 f'font-size:17px;border:0;border-radius:8px;background:#2a7;color:#fff">Send</button>'
+                                 f'<div class="m" id="s-{q["key"]}"></div></div>' for q in now_asks)
+                             + f"<script>async function send(k){{const v=document.getElementById('a-'+k).value.trim();"
+                               f"if(!v)return;const r=await fetch('/ask/'+k+'/save{t}',{{method:'POST',"
+                               f"headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{answer:v}})}});"
+                               f"document.getElementById('s-'+k).textContent=r.ok?'Sent — the filing goes on.':'Failed: '+r.status;}}"
+                               f"</script>")
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue

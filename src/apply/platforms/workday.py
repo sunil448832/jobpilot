@@ -270,8 +270,8 @@ def _gate(page, ctx, log):
     if "verif" in body and "email" in body:
         from jobpilot.review.ask import ask
         ans = ask(f"wd-verify-{ctx.get('company_slug', 'x')}",
-                  f"{ctx.get('company', 'Workday')}: the new Workday account needs your email verified. "
-                  "Open the mail from them, click the link, then type 'done' here.", timeout=900)
+                  "The new Workday account needs your email verified. Open the mail from them, click the "
+                  "link, then type 'done' here.", timeout=900, about=f"{ctx.get('company', 'Workday')} (Workday)")
         if not ans:
             log("    [workday] email verification not confirmed in time")
             return False

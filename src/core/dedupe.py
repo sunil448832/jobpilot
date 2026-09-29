@@ -37,8 +37,10 @@ QUEUE = os.path.join(DATA, "queue")
 BOARDS = os.path.join(CONFIG, "boards.yaml")
 
 # how far along a queue item is — never drop a further one for a fresher one
-RANK = {"submitted": 5, "approved": 4, "needs_input": 3, "manual": 3, "pending": 2,
-        "failed": 1, "rejected": 0}
+RANK = {"submitted": 6, "unconfirmed": 6, "submitting": 5, "approved": 4, "needs_input": 3, "manual": 3,
+        "pending": 2, "failed": 1, "rejected": 0, "superseded": -1}
+# a card that was, or may have been, sent is never removed: it is what stops a second filing
+SENT = ("submitted", "unconfirmed", "submitting")
 
 JUNK_SLUGS = {"assets", "assets-aws", "static", "cdn", "media", "img", "www",
               "api", "boards", "boards-api", "job-boards", "embed", "widget"}
@@ -149,7 +151,7 @@ def dedupe_queue(dry=False):
                                  len(fd[1].get("fields") or {}),
                                  fd[1].get("created", "")), reverse=True)
         for f, d in lst[1:]:
-            if d.get("status") == "submitted":
+            if d.get("status") in SENT or d.get("submit_presses"):
                 continue
             if not dry:
                 for ext in (".json", ".png", ".html"):

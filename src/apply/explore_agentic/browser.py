@@ -194,9 +194,8 @@ def enter_verification_code(frame, it, press_submit):
     newly says): ask him on Telegram, type it, press the same Submit again (`press_submit()`).
     True when a code was entered; False when none came (or there is no box for it)."""
     from jobpilot.review.ask import ask
-    code = re.sub(r"\s+", "", ask(f"code-{it['id']}",
-                                  f"{it['company']} — {it['role']}: the portal emailed a verification code. "
-                                  f"Paste it here.", hint="from the email that just arrived") or "")
+    code = re.sub(r"\s+", "", ask(f"code-{it['id']}", "The portal emailed you a verification code. Paste it here.",
+                                  hint="from the email that just arrived", about=f"{it['company']} — {it['role']}") or "")
     if not code:
         it.setdefault("warnings", []).append("verification code not received in time — not submitted")
         return False

@@ -110,6 +110,11 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
         if item.get("submit_presses"):
             raise Skip(f"{item['id']}: Submit was pressed before ({item['submit_presses']}) — check the email for a "
                      "confirmation; nothing opened, nothing sent")
+    if submit:
+        sent = [a for a in (R.load(slug).get("attempts") or []) if a.get("outcome") in ("submitted", "unconfirmed")]
+        if sent:
+            raise Skip(f"{slug}: already sent, or maybe sent ({sent[-1]['outcome']}, {sent[-1].get('at')}) — "
+                       "nothing opened, nothing sent")
     approved = C.approved_answers(slug, rec)
     open_qs = [q for q in (rec.get("placeholders") or {}) if R.norm(q) not in approved]
     if submit and open_qs:

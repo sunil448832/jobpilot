@@ -107,6 +107,16 @@ a.card.green{border-left-color:#2E9E5B} .b.green{background:#DDF3E5;color:#1B6B3
 a.card.grey{border-left-color:#B9C2CB;opacity:.6} .b.grey{background:#EEF1F4;color:#5A6B7C}
 a.card.purple{border-left-color:#7C4DBE} .b.purple{background:#EFE6FA;color:#4E2A86} h2.purple{color:#5E3A9E}
 a.card.red{border-left-color:#D2453B} .b.red{background:#FBE3E1;color:#8A2119} h2.red{color:#A32A20}
+.tbl{overflow-x:auto;background:#fff;border:1px solid #DCE3EA;border-radius:10px}
+table.sub{border-collapse:collapse;width:100%;font-size:14px}
+table.sub th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6C7E90;
+padding:8px 10px;border-bottom:1px solid #DCE3EA;white-space:nowrap}
+table.sub td{padding:8px 10px;border-bottom:1px solid #EEF1F4;vertical-align:top}
+table.sub tr:last-child td{border-bottom:0}
+table.sub td.d{white-space:nowrap;color:#6C7E90}
+table.sub a{color:inherit;text-decoration:none}
+@media(prefers-color-scheme:dark){.tbl{background:#151D26;border-color:#243039}
+table.sub th{border-color:#243039} table.sub td{border-color:#1C2630}}
 """
 
 
@@ -244,11 +254,24 @@ class H(BaseHTTPRequestHandler):
                           f"const r=await fetch('/a/'+id+'/submit{t}',{{method:'POST',headers:{{'Content-Type':'application/json'}},"
                           f"body:JSON.stringify({{item:id,decision:'submitted'}})}});"
                           f"if(r.ok)location.reload();else{{box.checked=false;alert('Failed: '+r.status);}}}}</script>")
+            def submitted_table(rows):
+                """What he applied to, newest first: the date, the company, the role, how."""
+                rows = sorted(rows, key=lambda i: i.get("submitted_at") or "", reverse=True)
+                return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th><th>How</th></tr>'
+                        + "".join(
+                            f'<tr><td class="d">{(i.get("submitted_at") or "")[:10]}</td>'
+                            f'<td>{i.get("company","?")}</td>'
+                            f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
+                            f'<td class="d">{"✋ by hand" if i.get("submitted_via") == "manual" else "filed"}</td></tr>'
+                            for i in rows)
+                        + "</table></div>")
+
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue
                 sections += (f'<h2 class="{colour}">{title} <span>{len(groups[k])}</span></h2>'
-                             + "".join(card(i, colour, k) for i in groups[k]))
+                             + (submitted_table(groups[k]) if k == "submitted"
+                                else "".join(card(i, colour, k) for i in groups[k])))
             body = (f"<title>Applications</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
                     f"<style>{INDEX_CSS}</style>"
                     f'<div class="wrap"><h1>Applications to review</h1>'

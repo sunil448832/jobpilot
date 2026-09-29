@@ -1,14 +1,5 @@
 [
  {
-  "n": 1,
-  "tool": "see",
-  "args": {},
-  "page": null,
-  "controls": {},
-  "result": "PAGE: Forward Deployed Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Exa'   [a link]\nc2  link 'Back to Exa’s Job Listings'   [a link]\nc4  button 'Upload file'   [a file picker]   shows: 'Upload file'\nc5  textbox 'Full Name*'   [a text box, required, placeholder 'Type here...']\nc6  textbox 'Email*'   [a text box type=email, required, placeholder 'hello@example.com...']\nc8  button 'Upload File'   [a file picker]   shows: 'Upload File'\nc9  textbox \"Earliest month you'd be able to join*\"   [a text box, required, placeholder 'Type here...']\nc10  textbox 'LinkedIn*'   [a text box, required, placeholder 'Type here...']\nc11  textbox 'Github'   [a text box, placeholder 'Type here...']\nc12  textbox 'Other Links'   [a text box, placeholder 'Type here...']\nc13  radio 'San Francisco based'   [radio: not checked]\nc14  radio 'Open to relocating'   [radio: not checked]\nc15  textbox 'Do you require Visa sponsorship to work in your selected location? If so, which one? And when does your Visa expire?*'   [a text box, required, placeholder 'Type here...']\nc16  textbox 'Why are you interested in working at Exa? (can be short)*'   [a text area, required, placeholder 'Type here...']\nc17  textbox \"What's something you worked on that you were proud of?*\"   [a text area, required, placeholder 'Type here...']\nc18  textbox 'What motivates you?*'   [a text area, required, placeholder 'Type here...']\nc19  textbox 'How did you hear about Ex"
- },
- {
-  "n": 2,
   "tool": "act",
   "args": {
    "rows": [
@@ -331,27 +322,15 @@
     "reads": "LinkedIn"
    }
   ],
-  "result": "c8  ok  button 'Upload File': shows 'sunil_resume.docx'\nc14  ok  radio 'Open to relocating': shows 'checked'\nc5  ok  textbox 'Full Name*': shows 'Sunil Kumar Sharma'\nc6  ok  textbox 'Email*': shows 'sunil4832sharma@gmail.com'\nc9  ok  textbox \"Earliest month you'd be able to join*\": shows '2 months from offer acceptance'\nc10  ok  textbox 'LinkedIn*': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc11  ok  textbox 'Github': shows 'https://github.com/sunil448832'\nc12  ok  textbox 'Other Links': shows 'https://huggingface.co/sunil448832'\nc15  ok  textbox 'Do you require Visa sponsorship to work in your selected location? If so, which one? And when does your Visa expire?*': shows 'Yes'\nc16  ok  textbox 'Why are you interested in working at Exa? (can be short)*': shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc17  ok  textbox \"What's something you worked on that you were proud of?*\": shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc18  ok  textbox 'What motivates you?*': shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc19  ok  textbox 'How did you hear about Exa?*': shows 'LinkedIn'\n\nNEW FIELDS:\nc26  button 'Delete file'   [a file picker]\n\nPAGE: Forward Deployed Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Why are you interested in working at Exa? (can be short)*' holds 'To be confirmed' — asked as 'Why are you interested in working at Exa? (can b"
+  "result": "c8  ok  button 'Upload File': shows 'sunil_resume.docx'\nc14  ok  radio 'Open to relocating': shows 'checked'\nc5  ok  textbox 'Full Name*': shows 'Sunil Kumar Sharma'\nc6  ok  textbox 'Email*': shows 'sunil4832sharma@gmail.com'\nc9  ok  textbox \"Earliest month you'd be able to join*\": shows '2 months from offer acceptance'\nc10  ok  textbox 'LinkedIn*': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc11  ok  textbox 'Github': shows 'https://github.com/sunil448832'\nc12  ok  textbox 'Other Links': shows 'https://huggingface.co/sunil448832'\nc15  ok  textbox 'Do you require Visa sponsorship to work in your selected location? If so, which one? And when does your Visa expire?*': shows 'Yes'\nc16  ok  textbox 'Why are you interested in working at Exa? (can be short)*': shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc17  ok  textbox \"What's something you worked on that you were proud of?*\": shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc18  ok  textbox 'What motivates you?*': shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc19  ok  textbox 'How did you hear about Exa?*': shows 'LinkedIn'\n\nNEW FIELDS:\nc26  button 'Delete file'   [a file picker]\n\nPAGE: Forward Deployed Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Why are you interested in working at Exa? (can be short)*' holds 'To be confirmed' — asked as 'Why are you interested in working at Exa? (can b",
+  "n": 1
  },
  {
-  "n": 3,
-  "tool": "finish",
-  "args": {
-   "outcome": "last-page",
-   "submit_id": "c21",
-   "note": "Single-page Ashby form filled. Placeholders for applicant: why Exa, proud project, motivation. Sponsorship answered Yes (US)."
-  },
-  "page": "Forward Deployed Engineer",
-  "controls": {
-   "c21": {
-    "role": "button",
-    "name": "Submit Application",
-    "nth": 1,
-    "group": "",
-    "above": "Are you applying to work on something specific at Exa? (1 sentence, leave blank if you're open to anything)",
-    "qn": 0
-   }
-  },
-  "result": "finished."
+  "n": 2,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: Forward Deployed Engineer\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Exa'   [a link]\nc2  link 'Back to Exa’s Job Listings'   [a link]\nc4  button 'Upload file'   [a file picker]   shows: 'Upload file'\nc5  textbox 'Full Name*'   [a text box, required, placeholder 'Type here...']\nc6  textbox 'Email*'   [a text box type=email, required, placeholder 'hello@example.com...']\nc8  button 'Upload File'   [a file picker]   shows: 'Upload File'\nc9  textbox \"Earliest month you'd be able to join*\"   [a text box, required, placeholder 'Type here...']\nc10  textbox 'LinkedIn*'   [a text box, required, placeholder 'Type here...']\nc11  textbox 'Github'   [a text box, placeholder 'Type here...']\nc12  textbox 'Other Links'   [a text box, placeholder 'Type here...']\nc13  radio 'San Francisco based'   [radio: not checked]\nc14  radio 'Open to relocating'   [radio: not checked]\nc15  textbox 'Do you require Visa sponsorship to work in your selected location? If so, which one? And when does your Visa expire?*'   [a text box, required, placeholder 'Type here...']\nc16  textbox 'Why are you interested in working at Exa? (can be short)*'   [a text area, required, placeholder 'Type here...']\nc17  textbox \"What's something you worked on that you were proud of?*\"   [a text area, required, placeholder 'Type here...']\nc18  textbox 'What motivates you?*'   [a text area, required, placeholder 'Type here...']\nc19  textbox 'How did you hear about Ex"
  }
 ]

@@ -695,16 +695,6 @@
  },
  {
   "n": 10,
-  "tool": "see",
-  "args": {
-   "scope": "page"
-  },
-  "page": "my experience",
-  "controls": {},
-  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc21  button 'Decline'   [a button]   shows: 'Decline'\nc22  button 'Accept Cookies'   [a button]   shows: 'Accept Cookies'\nc24  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [Deutsch (‏Deutschland), English, Français (‏France), Polski (‏Polska), Română (‏România), עברית (‏ישראל)]\nc25  button 'Sign In'   [a button]   shows: 'Sign In'\nc26  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc27  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc56  button 'Back'   [a button]   shows: 'Back'\nc44  button 'Submit'   [a button]   shows: 'Submit'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- paragraph:\n  - text: Just Eat Takeaway.com uses cookies. These small files keeping temporarily track of the chosen settings and visited pages may not be as delicious as actual cookies, but they help us make sure you get the tastiest experience on our website, improving our functionalities and presenting relevant ads.Navigating on Takeaway.com means you agree to our cookie policy. More details on our cookie policy\n  - link \"here\":\n    - /url: https://www.takeaway.com/jobs/cookies\n  - text: .\n- [c21] button \"Decline\"\n- [c22] button \"Accept Cookies\"\n- banner:\n  - link \"Logo search for jobs\":\n    - /url: /en-US/recruiting/takeaway/"
- },
- {
-  "n": 11,
   "tool": "finish",
   "args": {
    "outcome": "last-page",
@@ -725,7 +715,7 @@
   "result": "finished."
  },
  {
-  "n": 12,
+  "n": 11,
   "tool": "see",
   "args": {},
   "page": null,
@@ -733,7 +723,7 @@
   "result": "PAGE: page\nPAGE ERRORS: Senior Data Scientist page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Skip to main content'   [a link]\nc2  link 'here'   [a link]\nc3  button 'Decline'   [a button]   shows: 'Decline'\nc4  button 'Accept Cookies'   [a button]   shows: 'Accept Cookies'\nc6  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [Deutsch (‏Deutschland), English, Français (‏France), Polski (‏Polska), Română (‏România), עברית (‏ישראל)]\nc7  button 'Sign In'   [a button]   shows: 'Sign In'\nc8  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc9  button 'Apply'   [a button]   shows: 'Apply'\nc10  link 'Senior Data Engineer'   [a link]\nc11  link 'Senior Machine Learning Engineer'   [a link]\nc12  link 'Senior FinOps Analyst'   [a link]\nc13  button 'View All 5 Jobs'   [a button]   shows: 'View All 5 Jobs'\nc14  button 'Read More'   [a button]   shows: 'Read More'\n\nSNAPSHOT\n- [c1] link \"Skip to main content\":\n  - /url: \"\"\n- paragraph:\n  - text: Just Eat Takeaway.com uses cookies. These small files keeping temporarily track of the chosen settings and visited pages may not be as delicious as actual cookies, but they help us make sure you get the tastiest experience on our website, improving our functionalities and presenting relevant ads.Navigating on Takeaway.com means you agree to our cookie policy. More details on our cookie policy\n  - [c2] link \"here\":\n    - /url: https://www.t"
  },
  {
-  "n": 13,
+  "n": 12,
   "tool": "see",
   "args": {},
   "page": "review",
@@ -741,7 +731,7 @@
   "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc21  button 'Decline'   [a button]   shows: 'Decline'\nc22  button 'Accept Cookies'   [a button]   shows: 'Accept Cookies'\nc24  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [Deutsch (‏Deutschland), English, Français (‏France), Polski (‏Polska), Română (‏România), עברית (‏ישראל)]\nc25  button 'Sign In'   [a button]   shows: 'Sign In'\nc26  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc27  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc56  button 'Back'   [a button]   shows: 'Back'\nc44  button 'Submit'   [a button]   shows: 'Submit'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- paragraph:\n  - text: Just Eat Takeaway.com uses cookies. These small files keeping temporarily track of the chosen settings and visited pages may not be as delicious as actual cookies, but they help us make sure you get the tastiest experience on our website, improving our functionalities and presenting relevant ads.Navigating on Takeaway.com means you agree to our cookie policy. More details on our cookie policy\n  - link \"here\":\n    - /url: https://www.takeaway.com/jobs/cookies\n  - text: .\n- [c21] button \"Decline\"\n- [c22] button \"Accept Cookies\"\n- banner:\n  - link \"Logo search for jobs\":\n    - /url: /en-US/recruiting/takeaway/"
  },
  {
-  "n": 14,
+  "n": 13,
   "tool": "finish",
   "args": {
    "outcome": "last-page",

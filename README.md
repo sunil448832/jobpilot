@@ -349,7 +349,8 @@ Every decision keeps what it changed, so the card's **Undo** takes it back — s
 answers, the record, what `learned.yaml` learned — until the item is being filed. No
 Telegram message per decision: the card says it was saved. The list has **Review now**
 and **For later review** (cards kept with *Later*), then Approved, *Filing now*,
-Submitted. Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
+Submitted — a table, newest first: the date, company, role, and how it went (filed, or
+✋ by hand). Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
 it leaves (a captcha: nothing sent, finish by hand) are on their own page, **/questions**:
 the waiting ones first with their answer box and the time the wait ends, then the answered
 and expired ones of the last 7 days. A new one sends a short Telegram message — 🔐 *Filing

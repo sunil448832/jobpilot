@@ -1,1 +1,0 @@
-[["c1","select","option:I AM NOT A VETERAN"],["c3","select","eeo.gender"],["c5","select","eeo.race_ethnicity"],["c7","select","screening.confirm_form_statements"],["c9","select","next"]]

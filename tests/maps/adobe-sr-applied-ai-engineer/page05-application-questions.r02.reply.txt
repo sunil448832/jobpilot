@@ -1,1 +1,0 @@
-[["c1", "select", "keep:option:Yes"], ["c6", "select", "keep:screening.previously_employed_here"], ["c7", "select", "keep:screening.agree_to_background_check"], ["c8", "select", "keep:option:Yes"], ["c9", "select", "keep:location.willing_to_relocate"], ["c10", "select", "keep:work_authorization.us.requires_sponsorship"], ["c12", "select", "next"]]

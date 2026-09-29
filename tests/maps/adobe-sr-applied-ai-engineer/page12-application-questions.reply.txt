@@ -1,1 +1,0 @@
-[["c3", "select", "keep:screening.over_18"], ["c9", "select", "option:I have not worked for Adobe in the past."], ["c10", "select", "keep:screening.agree_to_background_check"], ["c12", "select", "keep:option:Yes"], ["c14", "select", "keep:location.willing_to_relocate"], ["c16", "select", "keep:work_authorization.us.requires_sponsorship"], ["c19", "select", "next"]]

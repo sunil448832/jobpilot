@@ -240,9 +240,12 @@ is typed in one go into its first part.
             worked for Adobe": the facts say never employed there -> one row, for
             "I have not worked for Adobe", and none for Employee). A single
             checkbox that the facts leave unticked: no row.
-        a file picker: file:resume on the form's own resume field only (not an
-            "autofill from your resume" box, which only pre-fills the form;
-            not a cover letter unless FACTS hold one).
+        a file picker: file:resume on the form's own resume / CV field;
+            file:resume_pdf — the same resume as a PDF, so the recruiter reads it as
+            laid out — on a cover letter field or an additional / other documents
+            field, the first such field only, never a second upload into the
+            resume field. An "autofill from your resume" box, which only pre-fills
+            the form, gets neither.
         a repeated section's Add / Add Another button: add:<n> — when FACTS hold n
             more blocks than the page shows (Work Experience 1 only, FACTS hold
             employment[0], [1], [2] -> add:2; Certifications showing only its Add,

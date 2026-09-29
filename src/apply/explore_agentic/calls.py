@@ -315,7 +315,7 @@ def job_facts(slug):
                 if (p.get("answer") or "").strip()]
     ctx = {"market": detect_market(meta.get("Location", ""), jd), "company": meta.get("Company", slug),
            "location": meta.get("Location", "")}
-    return F.job_facts(answers, ctx, approved, B.resume_path(answers, slug), tenant)
+    return F.job_facts(answers, ctx, approved, B.resume_path(answers, slug), tenant, B.resume_pdf_path(answers, slug))
 
 
 def plain_in(value, name):
@@ -339,8 +339,8 @@ def values_by_page(slug):
         low = a.lower()
         if low.startswith(("option:", "text:")):
             return a.split(":", 1)[1].strip()
-        if low == "file:resume":
-            return os.path.basename(str(facts.get("file:resume") or ""))
+        if low in ("file:resume", "file:resume_pdf"):
+            return os.path.basename(str(facts.get(low) or ""))
         return facts.get(a)
 
     pages, order = {}, []

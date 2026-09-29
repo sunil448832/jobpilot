@@ -120,6 +120,17 @@ def resume_path(answers, company_slug):
     return fallback if os.path.isfile(fallback) else None
 
 
+def resume_pdf_path(answers, company_slug):
+    """The same resume as a PDF, for a cover-letter / additional-documents field: a recruiter
+    reads it as laid out, where the .docx a portal parses renders poorly. None when not built."""
+    files = answers["files"]
+    p = os.path.join(TOOL, files["resume_pdf_pattern"].format(company=company_slug))
+    if os.path.isfile(p):
+        return p
+    fallback = os.path.join(RESUME, files["default_fallback_pdf"])
+    return fallback if os.path.isfile(fallback) else None
+
+
 def wait_quiet(frame, max_s=12, quiet=3):
     """Until the page has stopped changing for `quiet` quarter-second polls (a resume parse,
     a re-render): `max_s` seconds at most."""

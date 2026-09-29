@@ -353,7 +353,9 @@ Submitted — each a table, newest first. Approved: the date approved, company, 
 and where its filing stands (ready to file / explore first, when it has no record / what its
 last try hit). Submitted: the date, company, role, how it went (filed, or ✋ by hand), and **Referrals** —
 how many people could refer him for that role, linking to that role's own referral page
-(`/referrals?company=…&role=…`: the same people cards, only that role's). Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
+(`/referrals?company=…&role=…`: the same people cards, only that role's) — and **Referred?**:
+✅ with the name when someone is marked *Referred*, else how far it got (*2 asked, 1 replied*,
+*not yet asked*), from the statuses set on those cards. Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
 it leaves (a captcha: nothing sent, finish by hand) are on their own page, **/questions**:
 the waiting ones first with their answer box and the time the wait ends, then the answered
 and expired ones of the last 7 days. A new one sends a short Telegram message — 🔐 *Filing

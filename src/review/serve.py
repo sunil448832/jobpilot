@@ -266,20 +266,30 @@ class H(BaseHTTPRequestHandler):
                 key = lambda s: " ".join(str(s or "").lower().split())
 
                 def refs(i):
-                    n = people.get((key(i.get("company")), key(i.get("role"))), 0)
+                    n = people.get((key(i.get("company")), key(i.get("role"))), {}).get("people", 0)
                     if not n:
                         return "—"
                     url = f'/referrals{t}{"&" if t else "?"}company={quote(i.get("company",""))}&role={quote(i.get("role",""))}'
                     return f'<a href="{url}">{n} people →</a>'
+
+                def referred(i):
+                    c = people.get((key(i.get("company")), key(i.get("role"))))
+                    if not c:
+                        return "—"
+                    if c["referred"]:
+                        return "✅ " + ", ".join(c["referred"])
+                    if c["asked"]:
+                        return f'{c["asked"]} asked' + (f', {c["replied"]} replied' if c["replied"] else "")
+                    return "not yet asked"
                 rows = sorted(rows, key=lambda i: i.get("submitted_at") or "", reverse=True)
                 return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th><th>How</th>'
-                        '<th>Referrals</th></tr>'
+                        '<th>Referrals</th><th>Referred?</th></tr>'
                         + "".join(
                             f'<tr><td class="d">{(i.get("submitted_at") or "")[:10]}</td>'
                             f'<td>{i.get("company","?")}</td>'
                             f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
                             f'<td class="d">{"✋ by hand" if i.get("submitted_via") == "manual" else "filed"}</td>'
-                            f'<td class="d">{refs(i)}</td></tr>'
+                            f'<td class="d">{refs(i)}</td><td class="d">{referred(i)}</td></tr>'
                             for i in rows)
                         + "</table></div>")
 

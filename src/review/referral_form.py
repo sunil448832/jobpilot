@@ -186,12 +186,21 @@ def same(a, b):
 
 
 def counts():
-    """{(company, role) lower-cased: how many people} — the review list's Referrals column."""
+    """{(company, role) lower-cased: {"people": n, "referred": [names], "asked": n, "replied": n}}
+    — the review list's Referrals and Referred columns."""
     from jobpilot.outreach import referral_tracker as RT
     out = {}
     for d in RT.rows():
         k = (" ".join(str(d.get("Company") or "").lower().split()), " ".join(str(d.get("Role Applied") or "").lower().split()))
-        out[k] = out.get(k, 0) + 1
+        c = out.setdefault(k, {"people": 0, "referred": [], "asked": 0, "replied": 0})
+        st = d.get("Status") or "To Contact"
+        c["people"] += 1
+        if st == "Referred":
+            c["referred"].append(str(d.get("Person") or "?"))
+        if st in ("Invite Sent", "Accepted", "Message Sent", "Replied", "Referred", "No Response"):
+            c["asked"] += 1
+        if st in ("Replied", "Referred"):
+            c["replied"] += 1
     return out
 
 

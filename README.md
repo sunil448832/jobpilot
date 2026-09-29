@@ -328,7 +328,12 @@ what the filing will enter, from the record: each field's fact looked up again, 
 picked, his answer — not what the page happened to display.
 
 **Platforms (`apply/platforms/`)** — only what cannot be read off the page: Workday's
-account gate (credentials from `~/.config/jobbot/env`, never shown to Claude), its step
+account gate, passed by code (credentials from `~/.config/jobbot/env`, never shown to Claude;
+the agent has no sign-in tool and finishes as stuck at a login it cannot pass). A refused
+password, a locked account or a missing account form is asked on `/questions`: he fixes the
+account on the employer's Workday and answers *done* (or *skip*), then one more try — never a
+password asked, never a second account. A filing that ends stuck or unsent leaves a notice
+there with the agent's reason. Its step
 name and last page; each platform's JD API and apply URL. No button names, no field
 lists — Claude reads those off each page. The gate sends its forms the way a person does
 (the form's own submit, else Enter in the password box): a tenant may hide that button from

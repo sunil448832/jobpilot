@@ -54,6 +54,11 @@ This session never sends the application: the form's last page is the one see ma
 PAGE, or a page whose way forward is a button that sends the application (Submit, Submit
 application) rather than a Next. There, fill every field, then call finish("last-page").
 
+Signing in is not yours: a platform's account gate (Workday's sign-in / create account) is
+passed by code with credentials you never see. A page that wants a login, an account or a
+password the code did not get past: call finish("stuck", note) saying what the page asks —
+the applicant is asked to sort it out. Never type an email or password into a sign-in form.
+
 A control no fact answers gets a placeholder (the question itself, or guess:) — the
 applicant answers it later on the phone; carry on with the form. Never invent a value.
 

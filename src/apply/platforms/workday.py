@@ -6,10 +6,12 @@ form agent (explore_agentic), like any form.
     start(page, ctx, log, press_start)
                             the posting -> the first wizard page, through the account
                             gate (sign in; create the account when the tenant does not
-                            know the address; an email verification asked on Telegram).
-                            Which button opens the form the map decides: press_start.
-                            Stops on a wrong password — never creates an account over
-                            one that exists.
+                            know the address; an email verification asked on the questions
+                            page). Done by code — the agent never sees the credentials.
+                            What it cannot get past (a refused password, a locked account,
+                            no account form) is asked on the questions page: he fixes the
+                            account himself and answers done, then one more try; never an
+                            account created over one that exists, never a password asked.
     step(page)              which page is showing: the progress bar's current step
     next_page(page, step, name)  press the map's `next` button; (moved on, the page's errors)
     is_last(step)           Review: exploration stops there, submit presses Submit
@@ -224,8 +226,37 @@ def start(page, ctx, log=print, press_start=None):
     return False
 
 
-def _gate(page, ctx, log):
-    """Sign in; when the tenant does not know the address, create the account."""
+def _ask_fix(page, ctx, log, what):
+    """A sign-in the code cannot get past: ask him on the questions page to fix the account
+    on the employer's Workday himself — never for the password itself. True when he says
+    done (the caller tries once more), False on skip or no answer."""
+    from jobpilot.review.ask import ask
+    host = re.sub(r"^https?://([^/]+).*$", r"\1", ctx.get("url") or "")
+    ans = ask(f"wd-signin-{ctx.get('company_slug', 'x')}",
+              f"The Workday sign-in did not work: {what}. Sign in yourself at {host} — unlock the account, or "
+              "reset its password to the one jobpilot has stored — then type done here. Type skip to leave "
+              "this application for now.", hint="the password is never asked for here",
+              timeout=1800, about=f"{ctx.get('company', 'Workday')} (Workday sign-in)")
+    ok = (ans or "").strip().lower() == "done"
+    log(f"    [workday] sign-in fix: {'done — trying once more' if ok else (ans or 'no answer') + ' — stopped'}")
+    return ok
+
+
+def _sign_in(page, email, pw):
+    """Email and password into the sign-in form, sent. True when the form went away."""
+    f = page.main_frame
+    _box(f, r"^email").fill(email)
+    pw_box = _box(f, r"^password")
+    pw_box.fill(pw)
+    _send(f, pw_box)
+    _quiet(page)
+    return not _box(f, r"^password")
+
+
+def _gate(page, ctx, log, asked=False):
+    """Sign in; when the tenant does not know the address, create the account. What the code
+    cannot get past (a refused password, a locked account, no account form) is put to him on
+    the questions page once; after his done, one more try."""
     f = page.main_frame
     email, pw = creds()
     if not (email and pw):
@@ -233,23 +264,25 @@ def _gate(page, ctx, log):
         return False
     creating = _box(f, r"verify.*password") is not None
     if not creating:
-        _box(f, r"^email").fill(email)
-        pw_box = _box(f, r"^password")
-        pw_box.fill(pw)
-        _send(f, pw_box)
-        _quiet(page)
-        if not _box(f, r"^password"):
+        if _sign_in(page, email, pw):
             log("    [workday] signed in")
             return True
         said = _said(f)
         if WRONG_PASSWORD.search(said):
-            log(f"    [workday] STOPPED — the stored password does not open this tenant's account ({said[:100]}); "
-                "reset it on the employer's Workday before retrying")
+            log(f"    [workday] the stored password does not open this tenant's account ({said[:100]})")
+            if asked or not _ask_fix(page, ctx, log, f"“{said[:140]}”"):
+                return False
+            if _sign_in(page, email, pw):
+                log("    [workday] signed in after the fix")
+                return True
+            log(f"    [workday] STOPPED — still refused after the fix: {_said(f)[:120]}")
             return False
         log(f"    [workday] sign-in refused: {said[:120] or 'no message'} — creating the account")
         if not _click(f, "Create Account") or not _box(f, r"verify.*password"):
             log(f"    [workday] could not sign in and found no account form: {said[:120] or 'no message'}")
-            return False
+            if asked or not _ask_fix(page, ctx, log, f"no account form after “{said[:120] or 'a refused sign-in'}”"):
+                return False
+            return _box(f, r"^password") is not None and _sign_in(page, email, pw)
     _box(f, r"^email").fill(email)
     _box(f, r"^password").fill(pw)
     verify_box = _box(f, r"verify.*password")
@@ -265,7 +298,9 @@ def _gate(page, ctx, log):
         if re.search(r"already (exists|in use|registered|have an account)|account exists", said, re.I):
             if _click(f, "Sign In") or _click(f, "Back to Sign In"):
                 return True                               # the loop signs in on its next pass
-        return False
+        if asked or not _ask_fix(page, ctx, log, f"the account was not created: “{said[:140] or 'no message'}”"):
+            return False
+        return (_click(f, "Sign In") or _click(f, "Back to Sign In")) and _sign_in(page, email, pw)
     body = (f.inner_text("body") or "").lower()
     if "verif" in body and "email" in body:
         from jobpilot.review.ask import ask

@@ -200,6 +200,11 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
                 item.update(status="failed", fail_reason=(out["why"] or out["outcome"] or "unknown")[:300])
             K.save(item)
             R.note_attempt(slug, item["status"], why=out.get("why"))
+            if out["outcome"] in ("stuck", "not-sent", "differs"):   # what the agent could not resolve: put to him
+                from jobpilot.review import ask as ask_mod
+                ask_mod.note(f"stuck-{item['id']}", "The filing stopped and nothing was sent: "
+                             f"{(out.get('why') or out['outcome'])[:400]}",
+                             about=f"{item.get('company')} — {item.get('role')}", link=item.get("url", ""))
             B.notify_outcome(item)
         log(f"\nFILING: {out['outcome']}" + (f" — {out['why']}" if out.get("why") else "")
             + f" | {out['seconds']}s | agent: {out.get('agent') or 'not needed'}"

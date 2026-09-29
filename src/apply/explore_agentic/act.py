@@ -8,10 +8,11 @@ by the pin see put on it. An answer:
     option:<choice>                a choice the control offers
     option:<a> › <b> › <c>         a CHAIN in a nested list: opened once, each step picked
                                    in turn, down to the entry that opens nothing more
-    guess:<chain 1>; <chain 2>; ... | <question>
+    guess:<chain 1>; <chain 2>; ... | <question> [| for:<fact key>]
                                    not sure: chain 1 is picked as a PLACEHOLDER so the form
                                    can go on; the question and every candidate are kept to
-                                   ask the applicant
+                                   ask the applicant. for: the stored fact the list could not
+                                   hold: his pick is a stand-in for this form, never learned
     search:<regex>; <regex>        the agent's patterns, most specific first (\bIndia\b, ^I):
                                    each run over the list's entries (a nested list's chains);
                                    what each matches is reported, nothing picked
@@ -61,9 +62,12 @@ def read_answer(answer, facts, resume):
     if low.startswith("option:"):
         return "chain", chain_of(a[7:])
     if low.startswith("guess:"):
-        body, _, question = a[6:].partition("|")
+        body, _, rest = a[6:].partition("|")
+        question, _, tail = rest.partition("|")
+        tail = tail.strip()
         cands = [chain_of(x) for x in body.split(";") if chain_of(x)]
-        return "guess", {"candidates": cands[:5], "question": question.strip()}
+        return "guess", {"candidates": cands[:5], "question": question.strip(),
+                         "for": tail[4:].strip() if tail.lower().startswith("for:") else ""}
     if low.startswith("search:"):
         return "search", [t.strip() for t in a[7:].split(";") if t.strip()][:3]
     if low == "file:resume":
@@ -826,7 +830,7 @@ def act_row(frame, c, kind, answer, facts, resume):
             return {**out, "ok": False, "error": "a guess without candidates"}
         target = cands[0]
         placeholder = {"question": what["question"], "candidates": [" › ".join(x) for x in cands],
-                       "used": " › ".join(cands[0])}
+                       "used": " › ".join(cands[0]), "for": what.get("for") or ""}
     else:                                                 # the question itself: nothing stored
         if n in ("type", "digits") and (c.facts or {}).get("required"):
             target = PLACEHOLDER_TEXT if n == "type" else "1"

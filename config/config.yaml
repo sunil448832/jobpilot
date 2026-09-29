@@ -9,7 +9,7 @@
 #   config.yaml    HOW the pipeline runs   (limits, thresholds, schedule, ports)
 #   targets.yaml   WHICH jobs are worth it (markets, titles, keywords, scoring)
 #   answers.yaml   WHAT to type into forms (profile, salary, EEO)
-#   learned.yaml   answers already given
+#   (a portal's kept list picks: applications/_tenants/ — written by learn.py)
 #   POLICY.md      how to tailor and what may be claimed (in this folder)
 # ============================================================================
 

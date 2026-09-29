@@ -15,8 +15,29 @@
 """
 import json
 import os
+import re
 
 from jobpilot.apply.explore_agentic import act as A, record as R
+
+# A key numbered by its place in learned.yaml (records before 2026-09-29): the place no longer
+# means the same answer, so the row runs with the value it entered then, which he approved.
+# Likewise a fact key the facts no longer hold (renamed in answers.yaml: work_authorization.us
+# became outside_india): the value it entered then.
+LEGACY = re.compile(r"^(keep:)?\s*learned:\d+$", re.I)
+TAGGED = ("option:", "text:", "guess:", "search:", "file:", "add:")
+
+
+def gone(answer, o, facts):
+    """A row that ran with a fact key the facts no longer hold, or a numbered learned key."""
+    a = re.sub(r"^keep:\s*", "", str(answer or ""), flags=re.I).strip()
+    if LEGACY.match(str(answer or "")):
+        return True
+    return (o or {}).get("how") == "fact" and not a.lower().startswith(TAGGED) and a not in facts
+
+
+def recorded(o):
+    """What a row's control held when it ran: the value read back, else what it showed."""
+    return str((o or {}).get("reads") or (o or {}).get("shown") or "").strip()
 
 CHANGES = ("act", "clear", "press")
 NOT_CHECKED = ("add", "file", "search", "press", "button")   # press / button: rows of older records
@@ -83,6 +104,10 @@ class Redo:
         is itself one of his approved questions is his answer too (a row recorded without its
         question — one that failed then)."""
         q = (o or {}).get("question") or (row[2] if R.norm(str(row[2])) in self.approved else None)
+        if not q and gone(row[2], o, self.form.facts) and recorded(o):
+            if o.get("nature") == "tick":                 # this very choice: ticked then, or not
+                return None if recorded(o).lower() in ("off", "false", "0", "unchecked") else "text:Yes"
+            return ("option:" if row[1] == "select" else "text:") + recorded(o)
         if not q:
             return row[2]
         mine = self.approved.get(R.norm(q))
@@ -278,16 +303,19 @@ SOURCE = {"fact": "fact", "file": "fact", "chain": "pick", "guess": "you", "ques
 
 def job_facts(slug):
     """The facts a filing of this job acts on — as form.Form builds them: the answers file,
-    the job, learned answers, then his approved answers for this form."""
-    from jobpilot.core.answers import load as load_yaml, load_learned, read_jd, detect_market
+    the job, this portal's entries and answers, then his approved answers for this form."""
+    from jobpilot.core.answers import load as load_yaml, load_tenant, read_jd, detect_market
+    from jobpilot.apply import platforms
     from jobpilot.apply.explore_agentic import browser as B, facts as F
     meta, jd = read_jd(slug)
+    url = meta.get("Apply URL") or meta.get("Link")
+    tenant = load_tenant(platforms.tenant(R.load(slug).get("platform") or platforms.detect(url)[0], url))
     answers = load_yaml("answers.yaml")
     approved = [{"match": q, "answer": p["answer"]} for q, p in (R.load(slug).get("placeholders") or {}).items()
                 if (p.get("answer") or "").strip()]
     ctx = {"market": detect_market(meta.get("Location", ""), jd), "company": meta.get("Company", slug),
            "location": meta.get("Location", "")}
-    return F.job_facts(answers, ctx, list(load_learned() or []) + approved, B.resume_path(answers, slug))
+    return F.job_facts(answers, ctx, approved, B.resume_path(answers, slug), tenant)
 
 
 def plain_in(value, name):
@@ -333,7 +361,7 @@ def values_by_page(slug):
         for ident, o in pages[page].values():
             name, group = ident["name"].rstrip("* "), ident.get("group") or ""
             q = o.get("question")
-            given = value_of(o.get("answer"))
+            given = recorded(o) if gone(o.get("answer"), o, facts) else value_of(o.get("answer"))
             nat = o.get("nature") or ("tick" if ident["role"] in ("radio", "checkbox", "switch") else
                                       "press" if ident["role"] == "button" and given and
                                       plain_in(given, ident["name"]) is False else "")

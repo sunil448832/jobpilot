@@ -17,7 +17,7 @@ print(f"{n} modules" + (f"; FAILED {bad}" if bad else ""))
 PY
 ); case "$n" in *FAILED*) bad "imports" "$n";; *) ok "imports" "$n";; esac
 p=$("$T/jobpilot" paths | grep -c ' ok$'); [ "$p" = 10 ] && ok "paths" "10/10" || bad "paths" "$p/10"
-"$PY" -c "import yaml;[yaml.safe_load(open('$T/config/'+f)) for f in ('config.yaml','targets.yaml','answers.yaml','learned.yaml','boards.yaml','keyword_denylist.yaml')]" 2>/dev/null && ok "config yaml" "6 files parse" || bad "config yaml" "parse error"
+"$PY" -c "import yaml;[yaml.safe_load(open('$T/config/'+f)) for f in ('config.yaml','targets.yaml','answers.yaml','boards.yaml','keyword_denylist.yaml')]" 2>/dev/null && ok "config yaml" "5 files parse" || bad "config yaml" "parse error"
 d=$("$T/jobpilot" dedupe --dry-run 2>&1 | tail -1); ok "dedupe --dry-run" "$d"
 s=$(ls -d "$T"/applications/*/ | grep -v '/_' | head -1 | xargs basename); b=$("$PY" -m jobpilot.tailor.scaffold --build "$s" 2>&1 | grep -cE 'pdf\]|ats\]'); [ "$b" = 2 ] && ok "build (pdf + docx)" "$s" || bad "build" "$s: $b/2"
 pg=$(pdfinfo "$T/applications/$s/sunil_resume.pdf" 2>/dev/null | awk '/Pages/{print $2}'); [ "${pg:-0}" -le 2 ] && ok "pages" "$pg" || bad "pages" "$pg (>2)"

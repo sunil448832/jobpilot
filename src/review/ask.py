@@ -8,6 +8,8 @@ ask.py — the questions a filing asks Sunil mid-run, and the notices it leaves 
                               message with the questions page's link (/questions) and the review
                               list's, and the caller polls the file until he answers or the wait
                               runs out
+    pose(key, question, ...)  a question with no deadline and nobody waiting on it (a learned answer
+                              in conflict): listed with its answer box until he replies
     note(key, question, ...)  something a filing cannot pass and nobody can answer by typing —
                               a captcha: listed the same way, nothing waits on it
     recent(days)              every question and notice of the last days, newest first: the
@@ -108,6 +110,15 @@ def note(key, question, about="", hint="", link="", slug=None):
     `slug`: the job it is about (its applications/ folder keeps it)."""
     json.dump({"key": key, "kind": "notice", "question": question, "hint": hint, "about": about, "link": link,
                "asked_at": dt.datetime.now().isoformat(timespec="seconds")}, open(_new_path(key, slug), "w"), indent=2)
+    _tell(about)
+
+
+def pose(key, question, hint="", about="", slug=None, extra=None):
+    """A question he answers when he gets to it: no deadline, nothing polls it. `extra`: what
+    whoever acts on the reply needs (kept in the question's file)."""
+    json.dump({"key": key, "kind": "open", "question": question, "hint": hint, "about": about, "answer": None,
+               "asked_at": dt.datetime.now().isoformat(timespec="seconds"), "until": "9999-12-31T00:00:00",
+               **(extra or {})}, open(_new_path(key, slug), "w"), indent=2)
     _tell(about)
 
 

@@ -27,7 +27,7 @@ import datetime as dt
 import re
 import time
 
-from jobpilot.core.answers import read_jd, detect_market
+from jobpilot.core.answers import read_jd, detect_market, load_tenant, question_key
 from jobpilot.core.config import cfg
 from jobpilot.apply import platforms
 from jobpilot.apply.explore_agentic import browser as B, see as S, act as A, facts as F, record as R
@@ -125,7 +125,7 @@ FIELD_HTML_JS = r"""el => {
 class Form:
     """The live application: one browser, one page, the controls the agent last saw."""
 
-    def __init__(self, slug, answers, learned, log=print, mode="explore"):
+    def __init__(self, slug, answers, log=print, mode="explore"):
         self.slug, self.log, self.mode = slug, log, mode
         meta, jd = read_jd(slug)
         self.url = meta.get("Apply URL") or meta.get("Link")
@@ -134,14 +134,16 @@ class Form:
         A.PLATFORM = self.pid or ""                      # act remembers which technique works where
         self.ctx = {"market": detect_market(meta.get("Location", ""), jd), "company": meta.get("Company", slug),
                     "role": meta.get("Role / Title", ""), "location": meta.get("Location", ""),
-                    "company_slug": slug, "url": self.url}
+                    "company_slug": slug, "url": self.url, "tenant": platforms.tenant(self.pid, self.url)}
         approved = {q: p["answer"] for q, p in (R.load(slug).get("placeholders") or {}).items()
                     if (p.get("answer") or "").strip()}
-        base = len(learned or [])
-        self.learned = list(learned or []) + [{"match": q, "answer": a} for q, a in approved.items()]
-        self.approved = [(f"learned:{base + i}", q, a) for i, (q, a) in enumerate(approved.items())]
+        # his answers for this very form (approved on the phone): learned:<key> of their question
+        self.learned = [{"match": q, "answer": a} for q, a in approved.items()]
+        self.approved = [(f"learned:{question_key(q)}", q, a) for q, a in approved.items()]
         self.resume = B.resume_path(answers, slug)
-        self.facts = F.job_facts(answers, self.ctx, self.learned, self.resume)
+        self.tenant = load_tenant(self.ctx["tenant"])
+        self.asked = F.questions(("employer", self.tenant["answers"]), ("learned", self.learned))
+        self.facts = F.job_facts(answers, self.ctx, self.learned, self.resume, self.tenant)
         self.controls, self.lines, self.snap = {}, {}, []
         self.step, self.seen, self.next_id = None, set(), 1
         self.placeholders, self.filled, self.pages, self.done = {}, {}, [], None
@@ -419,7 +421,8 @@ class Form:
         p = o.get("placeholder")
         if p:
             self.placeholders[p["question"] or o.get("control", "")] = {
-                "used": p["used"], "field": o.get("control", ""), "candidates": p.get("candidates") or [], "page": self.step}
+                "used": p["used"], "field": o.get("control", ""), "candidates": p.get("candidates") or [], "page": self.step,
+                **({"for": p["for"]} if p.get("for") else {})}
         elif o.get("ok") and o.get("how") not in ("search", "add"):
             self.filled[f"{self.step} :: {o.get('control', '')}"] = str(o.get("shown") or "")[:120]
         offered, wanted, shown = o.get("offered"), o.get("wanted"), str(o.get("shown") or "")

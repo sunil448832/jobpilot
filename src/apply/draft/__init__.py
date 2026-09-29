@@ -2,5 +2,5 @@
 
     draft.py      2-3 tappable answers per open question (the draft_answers agent)
     manual.py     the apply-by-hand pack for a portal that is never automated
-    learn.py      his approved answers folded into learned.yaml, never asked again
+    learn.py      his approved list picks kept for their employer portal: applications/_tenants/
 """

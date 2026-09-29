@@ -8,6 +8,11 @@
 # Fields marked TODO must be filled by Sunil before autofill runs.
 # Keep it truthful — same golden rule as the resume.
 #
+# STORED FACTS. Everything here is his profile: always true, and on every form it wins
+# over anything kept from a card. No code ever writes this file: edit it by hand.
+# A form whose list cannot hold a stored value (no IIT Jodhpur in its schools) gets a
+# stand-in he approves, kept for that portal (applications/_tenants/) — never written here.
+#
 # NOT IN GIT-SAFE TERRITORY: contains personal data. Do not publish this file.
 # ============================================================================
 
@@ -44,32 +49,15 @@ links:
 work_authorization:
   citizenship: "India"
   current_work_country: "India"
-  # Per-country: are you legally authorized to work there WITHOUT sponsorship,
-  # and will you require sponsorship now or in the future?
-  us:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
-  uk:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
-  eu:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
-  uae:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
-  saudi_arabia:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
-  australia:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
-  netherlands:
-    authorized_without_sponsorship: false
-    requires_sponsorship: true
+  # By the country of the job: are you legally authorized to work there WITHOUT sponsorship,
+  # and will you require sponsorship now or in the future? India needs none; every other
+  # country (US, UK, EU, Switzerland, Gulf, Australia, Canada, ...) needs it.
   india:
     authorized_without_sponsorship: true
     requires_sponsorship: false
+  outside_india:
+    authorized_without_sponsorship: false
+    requires_sponsorship: true
   visa_status_note: >-
     Indian citizen, currently in India. Require employment visa sponsorship to work
     onsite outside India. Available immediately for fully-remote roles, engaged as a
@@ -329,7 +317,10 @@ screening:
   can_perform_essential_functions: true
   # Default for companies he has never worked at.
   previously_employed_here: false
-  related_to_current_employee: false
+  # One answer for every relatives / affiliation / conflict-of-interest question: a relative,
+  # spouse or close friend at the company, its customers or partners; a government or public
+  # post; ties to officials or candidates, donations, outside employment or business interests.
+  relatives_affiliations_or_conflicts: "No"
   # Per-company overrides. autofill.py matches the application's company against
   # these keys before falling back to the defaults above. Answering "no" on an
   # Amazon form would be a false statement — they check it against their records.

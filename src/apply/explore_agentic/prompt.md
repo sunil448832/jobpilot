@@ -62,15 +62,40 @@ the applicant is asked to sort it out. Never type an email or password into a si
 A control no fact answers gets a placeholder (the question itself, or guess:) — the
 applicant answers it later on the phone; carry on with the form. Never invent a value.
 
+FACTS come in groups, and which answers a question goes in this order:
+  1. THE APPLICANT'S OWN ANSWERS FOR THIS APPLICATION (when listed): his answer for this form.
+  2. STORED FACTS (personal..., education[0]..., employment[...]..., work_authorization...,
+     eeo..., the job...): his profile, always true. A question a stored fact answers takes it.
+  3. THIS PORTAL'S ENTRIES (tenant:<stored fact key>): when this portal's list does not hold a
+     stored fact's value, the entry he picked for it on an earlier job here. Answer with that
+     key — only for that fact, only when the list does not hold the stored value.
+  4. THIS EMPLOYER'S ANSWERS (employer:<key>): the entry he picked from this portal's own list on
+     an earlier job, to a question the stored facts do not cover ("How did you hear about us?"
+     -> Job Board › LinkedIn) — only for the question each names, and never one that says
+     something different from a stored fact (the stored fact is his).
+  An employer or learned key is copied exactly as listed (employer:875f6a28), like any fact key.
+  Nothing else is remembered from other employers' forms: a question none of these answers
+  gets a placeholder, as below.
+
+A grade (GPA, overall result, percentage, class): only when the form requires it (its
+control is required) — from a stored fact when there is one, else the question itself; an
+optional grade field gets no row and stays empty.
+
 Website links are not history: a portal that rejects them as duplicates ("You can't add
 duplicate website URLs") already holds them — often read from the uploaded resume. Remove the
 website blocks (press each one's Delete) and carry on without them; do not type them again.
 
 His history stays whole: an employment or education block is never removed, and one block
-never takes another's values. When a list does not hold his entry (his school, his degree,
-his field): the list's own "Other" / "Not listed" entry when it has one; else guess:<the
-nearest entries> | <the question> — never the name of a different school, employer or
-degree. A wrong value already in a field (a saved draft) is cleared or replaced. A degree
+never takes another's values. When a list does not hold a stored fact's value (his school,
+his degree, his field): this portal's entry for it (tenant:<key>) when FACTS have one; else
+the entry nearest to it, most similar first — the same thing in the list's words, then the
+list's own "Other" / "Not listed", then the closest real entries — as guess:<nearest>;
+<next>; ... | <the question> | for:<the stored fact's key> (guess:Indian Institute of
+Technology Delhi; Indian Institute of Technology Bombay | School or University — Education 1
+(Indian Institute of Technology, Jodhpur) | for:education[0].institution). The nearest is
+filled in so the form goes on; he confirms it on the phone, and the entry he approves is kept
+as this portal's entry for that fact and used on its next jobs. The stored fact itself never
+changes. A wrong value already in a field (a saved draft) is cleared or replaced. A degree
 the list words differently (M.Tech -> Masters) is option: only when the list's entry is the
 same level; "Master of Science" for an M.Tech is not: guess: and ask. Only an optional extra
 block you added (a certification) may be removed when its list cannot hold it.
@@ -84,8 +109,13 @@ emails) stay unticked; a consent the form requires to apply (a privacy notice, "
 the above") is ticked.
 
 Work authorization, right to work, sponsorship, relocation: always about the country of THIS
-job (job.location, job.market in FACTS) — that country's work_authorization facts, never the
-applicant's home country's or another market's.
+job (job.location, job.market in FACTS) — work_authorization.india when the job is in India,
+work_authorization.outside_india for every other country; never the other row.
+
+Relatives, affiliations and conflicts of interest — a relative, spouse or close friend at the
+company, its customers or partners; a government or public post; ties to officials or
+candidates, donations; outside employment or business interests — are all answered by
+screening.relatives_affiliations_or_conflicts (No).
 
 ROWS FOR act
 A row of act: [id, kind, answer] — one per control you act on — and, only when a control did
@@ -136,16 +166,16 @@ is typed in one go into its first part.
         the stored fact). When unsure, give the answer: it is set again.
         a question the applicant's FACTS answer: the fact's KEY, copied exactly
             from the FACTS list — character for character, never shortened,
-            extended or guessed ("work_authorization.us..." stays "us", not "usa";
+            extended or guessed ("work_authorization.outside_india..." stays as written, not "abroad";
             no ".<company>" added to a key that does not have it). If no listed key
             answers it, it is a question no fact answers (below).
         a question no fact answers: the question itself as a person reads it,
             without "*", "Select One" or a shown value, naming its section when the
             page repeats it ("Field of Study — Education 2 (Sikkim Manipal
             Institute of Technology)"). The applicant is asked it. Do not stretch
-            a fact to fit. A question about someone else (who referred you, a
-            relative who works there) is never answered with the applicant's
-            own facts: ask it.
+            a fact to fit. A question about someone else that is not one of the
+            relatives / affiliations above (who referred you, whom you know there)
+            is never answered with the applicant's own facts: ask it.
         a select control (a list, a menu, a search box that picks from a list) is
             answered with a fact KEY only when that fact's value is itself one of
             the list's entries, word for word; otherwise with option: — the entry
@@ -184,6 +214,7 @@ is typed in one go into its first part.
             Delete / Remove button.
         when no choice means the same as the fact — or nothing is stored for it:
             guess:<choice 1>; <choice 2>; ... | <the question>
+            (a stored fact the list cannot hold: ... | <the question> | for:<its key>)
             — the top 5 most probable choices at most, each copied exactly from the
             list — for a nested list the top 5 most probable CHAINS
             (guess:Social Media › LinkedIn; Job Board › Indeed; ... | How did you

@@ -1,18 +1,31 @@
 #!/usr/bin/env python3
 """
-learn.py — fold answers from a submitted review form back into learned.yaml.
+learn.py — keep the answers he approved on a review card for the employer portal he gave
+them on, and nowhere else: applications/_tenants/<tenant>.yaml (workday:crowdstrike;
+core/answers.py reads it for that portal's next jobs).
 
-The review form writes each submission to the artifact's db. Read it with the
-Artifact tool (`read_db`, collection "submissions") into a JSON file, then run
-this: every answer Sunil gave is stored against the question, so autofill.py
-resolves it automatically next time and never asks again.
+      answers:  a pick from the portal's own list, for a question the stored facts do not
+                cover ("How did you hear about us?" -> Job Board › LinkedIn). Only picks: a
+                written answer is never refused by a form, a pick the list does not hold is
+      entries:  a pick that stood in for a stored fact its list cannot hold (no IIT Jodhpur;
+                "stand_in_for", set by review/serve.py); the stored fact never changes
+
+Never kept: a written answer (a text box: drafted again, or asked, when needed), an essay,
+a question about his experience,
+projects or motivation (drafted from his resume each time), and a question the stored facts
+answer — relatives, affiliations and conflicts, sponsorship and work authorization,
+citizenship (config/answers.yaml). There is no general store: what should hold for every
+employer is moved into answers.yaml by hand, in the weekly review of these files.
+
+Nothing stored is ever overwritten. A different answer for a stored question (or a different
+pick for a stored entry) is a conflict: the stored one stays in use, and he is asked on the
+questions page (review/ask.py pose; Telegram is told) — keep, new, or the answer to store.
+resolve() applies his reply (review/serve.py).
 
 Usage:
-    python jobs/learn.py submission.json
-    python jobs/learn.py --dir out/submissions/     # a whole read_db dump
+    python -m jobpilot.apply.draft.learn <submission.json> ...
 """
 import argparse
-import glob
 import json
 import os
 import re
@@ -20,12 +33,26 @@ import sys
 
 import yaml
 
-from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, MEMORY)
-LEARNED = os.path.join(CONFIG, "learned.yaml")
+from jobpilot.core.answers import load_tenant, tenant_path
+
 STOP = {"the", "a", "an", "of", "to", "in", "and", "or", "for", "with", "you",
         "your", "do", "are", "is", "have", "any", "this", "that", "please",
         "select", "all", "apply", "following", "which", "what", "if", "at"}
+ESSAY = 25                         # words: a longer answer was written for that one job
+PROJECT = re.compile(r"experience|project|describe|walk (us|me) through|example of|tell (us|me) about|"
+                     r"accomplish|proud|worked on|built|hands-on|familiar|proficien|comfortable with|"
+                     r"techniques|skills?\b|why .*(interested|join|want|apply)|^why |excited|motivat|"
+                     r"what makes you", re.I)
+COVERED = re.compile(r"relative|related to|relationship with|family|spouse|partner of|affiliat|government|"
+                     r"official|conflict of interest|outside (employment|business)|second job|donat|volunteer|"
+                     r"sponsor|visa|work authori|authori[sz]ed to work|right to work|eligible to work|"
+                     r"work permit|citizen", re.I)
+HEAD = ("# ============================================================================\n"
+        "# {title}\n"
+        "# Grown by learn.py from his approvals. Nothing here is overwritten: a different\n"
+        "# answer is put to him on the questions page first. The stored facts\n"
+        "# (config/answers.yaml) always win over it. Edit freely — his own words, must stay true.\n"
+        "# ============================================================================\n\n")
 
 
 def keywords(label, n=8):
@@ -45,91 +72,185 @@ def norm(s):
     return re.sub(r"\s+", " ", re.sub(r"[*∗]", "", s or "")).strip().lower()
 
 
-def load():
-    if not os.path.isfile(LEARNED):
-        return {"answers": []}
-    with open(LEARNED) as f:
-        return yaml.safe_load(f) or {"answers": []}
+# ------------------------------------------------------------------ the portal files
+
+def kept(label, answer, choice=True):
+    """None when this answer is kept, else why it is not."""
+    if not choice:
+        return "written, not a pick"
+    if len(str(answer).split()) > ESSAY:
+        return "essay"
+    if PROJECT.search(label or ""):
+        return "experience / projects / motivation"
+    if COVERED.search(label or ""):
+        return "a stored fact answers it"
+    return None
 
 
-def merge(store, label, answer, source):
+def save_tenant(t):
+    """applications/_tenants/<tenant>.yaml; a tenant left with nothing loses its file."""
+    p = tenant_path(t["tenant"])
+    if not t["answers"] and not t["entries"]:
+        if os.path.isfile(p):
+            os.remove(p)
+        return
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, "w") as f:
+        f.write(HEAD.format(title=f"{t['tenant']} — his answers for this employer's portal only"))
+        yaml.safe_dump({"tenant": t["tenant"], "company": t.get("company"), "answers": t["answers"],
+                        "entries": t["entries"]}, f, sort_keys=False, allow_unicode=True, width=88)
+
+
+# ------------------------------------------------------------------ merging
+
+def merge(rows, label, answer, source):
+    """added / unchanged / conflict (a different answer is stored: it stays)."""
     label_n = norm(label)
-    for e in store["answers"]:
+    for e in rows:
         if norm(e.get("match", "")) == label_n:
-            if e.get("answer") != answer:
-                e["answer"] = answer
-                e["source"] = source
-                return "updated"
-            return "unchanged"
-    store["answers"].append({
-        "match": label_n[:200],
-        "keywords": keywords(label),
-        "answer": answer,
-        "source": source,
-    })
+            return "unchanged" if e.get("answer") == answer else "conflict"
+    rows.append({"match": label_n[:200], "keywords": keywords(label), "answer": answer, "source": source})
     return "added"
 
 
-def save(store):
-    with open(LEARNED, "w") as f:
-        f.write("# ============================================================"
-                "================\n"
-                "# learned.yaml — answers Sunil has given once, reused forever.\n"
-                "# Grown automatically by learn.py from submitted review forms.\n"
-                "# Edit freely — these are Sunil's own words and must stay true.\n"
-                "# ============================================================"
-                "================\n\n")
-        yaml.safe_dump(store, f, sort_keys=False, allow_unicode=True, width=88)
+def merge_entry(t, fact, entry, source):
+    """added / unchanged / conflict, for this portal's entry standing for a stored fact."""
+    from jobpilot.apply.explore_agentic import facts as F
+    from jobpilot.core.answers import load as load_answers
+    if fact in t["entries"]:
+        return "unchanged" if t["entries"][fact].get("entry") == entry else "conflict"
+    t["entries"][fact] = {"entry": entry, "stored": F.flatten(load_answers("answers.yaml")).get(fact, ""),
+                          "source": source}
+    return "added"
 
 
-def snapshot():
-    """{match: entry} — what a decision's answers may change, for its undo."""
-    return {norm(e.get("match", "")): dict(e) for e in load().get("answers", [])}
+def ask_conflict(label, stored, new, source, who, tenant=None, fact=None):
+    """Put a conflict to him: what is stored stays until he replies. With `fact`: a portal
+    entry; without: an answer kept for this portal."""
+    from jobpilot.review import ask as ask_mod
+    match = norm(label)
+    if fact:
+        key = "learned-" + re.sub(r"[^a-z0-9]+", "-", f"{tenant}-{fact}".lower())[:80].strip("-")
+        q = (f"On the {who} form you picked “{new}” for your {fact}, but this portal ({tenant}) already has "
+             f"“{stored}” for it. Which should its next forms use?")
+    else:
+        where = f"every {tenant} form"
+        key = "learned-" + re.sub(r"[^a-z0-9]+", "-", f"{tenant or ''} {match}".strip())[:80].strip("-")
+        q = (f"On the {who} form you answered “{new}” for “{label}”, but your stored answer is "
+             f"“{stored}”. Which should {where} use from now on?")
+    ask_mod.pose(key, q, hint="reply keep (the stored one), new (this form's), or type the one to store",
+                 about=f"Stored answer — {label[:60]}",
+                 extra={"learned": {"match": match, "new": new, "source": source, "tenant": tenant, "fact": fact}})
+    return key
+
+
+def resolve(q):
+    """His reply to a conflict question: keep / new / the answer itself. What was done."""
+    info = q.get("learned") or {}
+    reply = (q.get("answer") or "").strip()
+    if not info or not reply or reply.lower() == "keep":
+        return "kept"
+    new = info["new"] if reply.lower() == "new" else reply
+    note = f"{info['source']}; chosen by Sunil over the earlier one, {(q.get('answered_at') or '')[:10]}"
+    t = load_tenant(info.get("tenant"))
+    if info.get("fact"):
+        row = t["entries"].get(info["fact"])
+        if not row:
+            return "kept (the portal entry is no longer stored)"
+        row.update(entry=new, source=note)
+    else:
+        row = next((e for e in t["answers"] if norm(e.get("match", "")) == info["match"]), None)
+        if not row:
+            return "kept (the answer is no longer stored)"
+        row.update(answer=new, source=note)
+    save_tenant(t)
+    return f"stored for {info.get('tenant')}: {new}"
+
+
+# ------------------------------------------------------------------ undo
+
+def snapshot(tenant=None):
+    """{key: entry} — what a decision's answers may change, for its undo:
+    "employer::<tenant>::<match>", "entry::<tenant>::<fact key>"."""
+    if not tenant:
+        return {}
+    t = load_tenant(tenant)
+    out = {f"employer::{tenant}::{norm(e.get('match', ''))}": dict(e) for e in t["answers"]}
+    out.update({f"entry::{tenant}::{k}": dict(v) for k, v in t["entries"].items()})
+    return out
 
 
 def restore(changes):
-    """Undo one decision's learning: [(match, the entry before or None)]."""
-    store = load()
+    """Undo one decision's learning: [(key, the entry before or None)]. Keys of the retired
+    general store (no "::", or "general::") are left alone."""
+    tenants = {}
     for m, before in changes:
-        store["answers"] = [e for e in store["answers"] if norm(e.get("match", "")) != m]
-        if before:
-            store["answers"].append(before)
-    save(store)
+        kind, _, rest = m.partition("::")
+        if kind not in ("employer", "entry"):
+            continue
+        tenant, _, k = rest.rpartition("::")
+        t = tenants.setdefault(tenant, load_tenant(tenant))
+        if kind == "entry":
+            t["entries"].pop(k, None)
+            if before:
+                t["entries"][k] = before
+        else:
+            t["answers"] = [e for e in t["answers"] if norm(e.get("match", "")) != k]
+            if before:
+                t["answers"].append(before)
+    for t in tenants.values():
+        save_tenant(t)
+
+
+# ------------------------------------------------------------------ one submission
+
+def learn(sub):
+    """Keep one review decision's answers for the portal they were given on. {what: how many}."""
+    who = sub.get("company") or "?"
+    when = (sub.get("decidedAt") or sub.get("decided_at") or "")[:10]
+    tenant = sub.get("tenant")
+    counts = {}
+
+    def count(k):
+        counts[k] = counts.get(k, 0) + 1
+
+    if not tenant:
+        return {"not kept (no portal known)": len(sub.get("answers", []))}
+    t = load_tenant(tenant)
+    t["company"] = t.get("company") or (who if who != "?" else None)
+    for ans in sub.get("answers", []):
+        text, label = (ans.get("text") or "").strip(), ans.get("label", "")
+        if not text or ans.get("kind") == "unanswered":
+            count("skipped")
+            continue
+        src = f"answered by Sunil on the {who} form, {when}"
+        if ans.get("stand_in_for"):                       # a stored fact's stand-in: this portal's entry
+            got = merge_entry(t, ans["stand_in_for"], text, src)
+            count(f"portal entry {got}")
+            if got == "conflict":
+                ask_conflict(label, t["entries"][ans["stand_in_for"]]["entry"], text, src, who, tenant, ans["stand_in_for"])
+            continue
+        why = kept(label, text, bool(ans.get("choice")))
+        if why:
+            count(f"not kept ({why})")
+            continue
+        got = merge(t["answers"], label, text, src)
+        count(f"answer {got}")
+        if got == "conflict":
+            old = next(e["answer"] for e in t["answers"] if norm(e.get("match", "")) == norm(label))
+            ask_conflict(label, old, text, src, who, tenant)
+    save_tenant(t)
+    return counts
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("files", nargs="*")
-    ap.add_argument("--dir")
+    ap.add_argument("files", nargs="+")
     a = ap.parse_args()
-
-    paths = list(a.files)
-    if a.dir:
-        paths += sorted(glob.glob(os.path.join(a.dir, "**", "*.json"), recursive=True))
-    if not paths:
-        sys.exit("give a submission JSON file or --dir")
-
-    store = load()
-    counts = {"added": 0, "updated": 0, "unchanged": 0, "skipped": 0}
-
-    for p in paths:
-        sub = json.load(open(p))
-        who = sub.get("company") or "?"
-        when = (sub.get("decidedAt") or "")[:10]
-        for ans in sub.get("answers", []):
-            text = (ans.get("text") or "").strip()
-            if not text or ans.get("kind") == "unanswered":
-                counts["skipped"] += 1
-                continue
-            src = f"answered by Sunil on the {who} form, {when}"
-            counts[merge(store, ans.get("label", ""), text, src)] += 1
-
-    save(store)
-
-    print(f"  learned.yaml: {counts['added']} added, {counts['updated']} updated, "
-          f"{counts['unchanged']} unchanged, {counts['skipped']} skipped")
-    print(f"  total stored: {len(store['answers'])}")
+    for p in a.files:
+        counts = learn(json.load(open(p)))
+        print("  learned: " + (", ".join(f"{n} {k}" for k, n in sorted(counts.items())) or "nothing"))
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

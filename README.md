@@ -34,7 +34,7 @@ repo** is read-only source of truth.
     agents/     screen/ tailor/ draft_answers/                       — each Claude CLI agent: prompt.md + tools.yaml
     review/     serve.py form.py bot.py keyword_form.py referral_form.py — what Sunil sees
     outreach/   referrals.py referral_tracker.py prospects.py outreach.py — referral drafting (never sending)
-  config/                            what you edit: POLICY.md config.yaml targets.yaml answers.yaml learned.yaml boards.yaml
+  config/                            what you edit: POLICY.md config.yaml targets.yaml answers.yaml boards.yaml
   data/                              general state only: state.db (jobs, referrals) connections.csv, per-platform
                                      techniques, per-company quota blocks, caches — nothing about one application
   logs/                              what runs print, read once: daily.log, sessions/<slug>/ (each agent session
@@ -116,7 +116,7 @@ in different words, and new claims are reported, never written.
  │  (systemd)    with drafted options + "write my own"                    │
  │       │                                                                │
  │       ├── approve / later / reject ──► queue JSON (Undo on the card)   │
- │       └── answers ──► learn.py ──► learned.yaml (never asked again)    │
+ │       └── picks ──► learn.py ──► applications/_tenants (that portal)    │
  └───────────────────────┬────────────────────────────────────────────────┘
                          ▼
  ┌─ SUBMIT + TRACK ───────────────────────────────────────────────────────┐
@@ -269,7 +269,7 @@ writes `JD.md` with the platform module's autofill route.
 never-fabricate rule is enforced by judgment, not a prompt string.
 
 **`optimize.py`** — *raise the ATS score without lying*
-1. Build a truth vocabulary from the base resume, `answers.yaml`, `learned.yaml`.
+1. Build a truth vocabulary from the base resume, `answers.yaml`, the learned answers.
 2. For each missing JD keyword, drop extraction noise, then classify:
    - **SAFE** — same fact, different words: an acronym already spelled out, a plural, a
      synonym, or the target job title. Applied automatically.
@@ -365,7 +365,7 @@ with a database is org-internal and always demands one. Answers POST straight ba
 the queue file and run `learn.py`. On Approve, each answer is also written into the
 application's `explore.json` (its placeholder's `answer`), so the submit replay uses it.
 Every decision keeps what it changed, so the card's **Undo** takes it back — status,
-answers, the record, what `learned.yaml` learned — until the item is being filed. No
+answers, the record, what was learned from it — until the item is being filed. No
 Telegram message per decision: the card says it was saved. The list has **Review now**
 and **For later review** (cards kept with *Later*), then Approved, *Filing now*,
 Submitted — each a table, newest first. Approved: the date approved, company, role, portal,
@@ -397,10 +397,30 @@ marked with where it came from (*from your profile*, *picked from the form's cho
 *your answer*, *already on the form*). Dual transport: the artifact `db` when hosted, a same-origin POST when
 local.
 
-**`learn.py` / `learned.yaml`** — every answer given once is matched back by normalised
-label, then keyword, then fuzzy token overlap (≥0.72). Stored answers beat every
-heuristic including the compliance hard-stop: that guard exists to prevent *guessing*,
-and a confirmed answer is not a guess.
+**Stored facts and portal picks.** `config/answers.yaml` holds the **stored facts** — his
+profile (identity, contact, education, employment, work authorization — India needs no
+sponsorship, every other country does — EEO, pay, and one "No" for every relatives /
+affiliations / conflict-of-interest question): always true, edited only by hand, and on every
+form they win. Nothing general is learned any more; the only thing kept from a card is what can
+go wrong again on the same portal — a **pick from its list** (`learn.py`):
+
+- `applications/_tenants/<tenant>.yaml` (`workday:crowdstrike`, `greenhouse:anthropic`;
+  `platforms.tenant()`): its `answers` — his pick for a list question the stored facts do not
+  cover ("How did you hear about us?" -> Job Board › LinkedIn) — and its `entries` — the list entry
+  he approved for a stored fact the list cannot hold (no IIT Jodhpur). Reused on that portal's
+  next jobs only.
+- Never kept: a written answer (a text box never refuses what is typed), an essay, anything
+  about his experience, projects or motivation, and anything a stored fact answers.
+- Anything that should hold everywhere is moved into `answers.yaml` by hand, in a weekly review
+  of these files.
+
+Nothing kept is overwritten: a different pick is put to him on `/questions` (keep / new / his
+own) while the kept one stays in use. The form agent answers in this order: his answers for this
+form → stored facts → this portal's entries (`tenant:<fact>`) → this portal's picks
+(`employer:<key>`); anything else is a placeholder he answers on the card. A key comes from its
+question's words, so a record's key keeps its meaning; a row recorded with a key that no longer
+exists (the old numbered `learned:<n>`, a renamed fact) replays the value it entered then. A grade
+(GPA) is filled only when the form requires it.
 
 > Effect on one real form: 13 fields / 4 questions → **17 fields / 0 questions**.
 
@@ -662,7 +682,7 @@ end. **Edit it to change how the scheduler behaves** — do not edit prompts in 
 |---|---|
 | `answers.yaml` | *What do I type into this form?* — contact, per-market salary, visa status, skill-years, EEO |
 | `targets.yaml` | *Is this job worth applying to?* — markets, titles, keywords, hard rejects, scoring weights |
-| `learned.yaml` | *Have I answered this before?* — grows automatically |
+| `applications/_tenants/` | *What did I pick on this portal's list before?* — his approved picks |
 | `boards.yaml` | 203 boards across 7 platforms |
 | `connections.csv` | LinkedIn export (not in repo; `install_connections.sh`) |
 

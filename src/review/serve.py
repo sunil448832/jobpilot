@@ -11,7 +11,8 @@ Reach it from the phone:
   - same wifi:      http://<laptop-ip>:8765/?t=<token>
   - anywhere:       Tailscale, then http://<tailscale-name>:8765/?t=<token>
 
-A submitted form updates the queue item AND folds its answers into learned.yaml,
+A submitted form updates the card AND keeps its list picks for the employer portal
+(applications/_tenants/<tenant>.yaml, learn.py),
 so the same question is never asked again.
 
 Usage:
@@ -133,8 +134,9 @@ def questions_page(t):
         when = (q.get("asked_at") or "")[5:16].replace("T", " ")
         if st == "waiting":
             return (f'<div class="card red">{head}'
-                    f'<div class="m">⏳ waiting until {q.get("until","")[11:16]} — after that nothing is sent</div>'
-                    f'<input class="ans" id="a-{q["key"]}" autocomplete="one-time-code" placeholder="type here" {box}>'
+                    + (f'<div class="m">⏳ waiting until {q.get("until","")[11:16]} — after that nothing is sent</div>'
+                       if q.get("kind") != "open" else '<div class="m">⏳ waiting for your answer — nothing is held up</div>')
+                    + f'<input class="ans" id="a-{q["key"]}" autocomplete="one-time-code" placeholder="type here" {box}>'
                     f'<button onclick="send(\'{q["key"]}\')" {btn}>Send</button>'
                     f'<div class="m" id="s-{q["key"]}"></div></div>')
         if st == "notice":
@@ -523,7 +525,7 @@ class H(BaseHTTPRequestHandler):
             if u.get("learned"):
                 L.restore(u["learned"])
         except Exception as e:
-            print(f"  [warn] undo: learned.yaml not restored: {e}")
+            print(f"  [warn] undo: learned answers not restored: {e}")
         print(f"  [undo] {item_id} -> {item.get('status')}")
         return self._ok(json.dumps({"ok": True, "status": item.get("status")}), "application/json")
 
@@ -560,7 +562,10 @@ class H(BaseHTTPRequestHandler):
                 return self._err(400, "bad json")
             from jobpilot.review import ask as ask_mod
             with LOCK:
-                ask_mod.answer(parts[1], payload.get("answer", ""))
+                q = ask_mod.answer(parts[1], payload.get("answer", ""))
+                if q.get("learned"):                     # a stored answer in conflict: apply his choice
+                    from jobpilot.apply.draft import learn as L
+                    print(f"  [learned] {parts[1]}: {L.resolve(q)}")
             print(f"  [ask] {parts[1]} answered")
             return self._ok(json.dumps({"ok": True}), "application/json")
 
@@ -699,6 +704,19 @@ class H(BaseHTTPRequestHandler):
             json.dump(item, open(p, "w"), indent=2)
 
             sub = CD.submission(item_id)
+            # which employer portal the answers were given on (learn.py keeps a question naming
+            # the employer, and a stand-in for a stored fact its list lacks, for that portal only)
+            from jobpilot.apply import platforms
+            tenant = item.get("tenant") or platforms.tenant(item.get("portal"), item.get("url"))
+            payload.update(tenant=tenant, company=payload.get("company") or item.get("company"),
+                           decided_at=item.get("decided_at"))
+            facts_of = {q.get("qid"): q.get("fact") for q in item.get("questions", []) if q.get("fact")}
+            lists = {q.get("qid") for q in item.get("questions", []) if q.get("kind") == "select"}
+            for a in payload.get("answers", []):
+                if facts_of.get(a.get("qid")):
+                    a["stand_in_for"] = facts_of[a.get("qid")]
+                if a.get("qid") in lists:                    # a pick from the form's list: kept for its portal
+                    a["choice"] = True
             json.dump(payload, open(sub, "w"), indent=2)
 
         # Write his answers into the application's record (explore.json) straight
@@ -710,7 +728,7 @@ class H(BaseHTTPRequestHandler):
                           (R.load(item["company_slug"]).get("placeholders") or {}).items()}
         except Exception:
             rec_before = {}
-        learned_before = L.snapshot()
+        learned_before = L.snapshot(tenant)
         try:
             answered = {q["label"]: q["selected"] for q in item.get("questions", [])
                         if q.get("status") == "answered" and (q.get("selected") or "").strip()}
@@ -720,14 +738,14 @@ class H(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"  [warn] replay.json not updated: {e}")
 
-        # Fold the answers into learned.yaml so they are never asked again.
+        # Keep his list picks for this portal (learn.py) so its next forms need not ask them.
         try:
             subprocess.run([sys.executable, "-m", "jobpilot.apply.draft.learn", sub],
                            check=False, timeout=30)
         except Exception as e:
             print(f"  [warn] learn.py failed: {e}")
 
-        learned_after = L.snapshot()
+        learned_after = L.snapshot(tenant)
         if decision != "submitted" and not reexplore:
             with LOCK:
                 cur = json.load(open(p))

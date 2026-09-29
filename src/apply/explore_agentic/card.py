@@ -16,6 +16,7 @@ import os
 from jobpilot.core import cards as CD
 from jobpilot.core.answers import read_jd, detect_market
 from jobpilot.core.paths import TOOL
+from jobpilot.apply import platforms
 from jobpilot.apply.explore_agentic import facts as F, record as R
 
 save, load, cards = CD.save, CD.load, CD.cards
@@ -29,18 +30,24 @@ def approved(slug=None):
     return out[-1:] if slug else out
 
 
-def questions_from(record):
+def questions_from(record, answers=None):
     """The unanswered placeholders as the card's questions: the agent's candidates (whole
-    chains for a nested list) and what stood in while exploring."""
+    chains for a nested list) and what stood in while exploring. A stand-in for a stored fact
+    the form's list could not hold (its "for") says so: his pick is for this form only."""
+    stored = F.flatten(answers or {})
     out = []
     for i, (q, p) in enumerate((record.get("placeholders") or {}).items()):
         if (p.get("answer") or "").strip():
             continue
         cands = list(p.get("candidates") or [])
+        note = f"explored with placeholder {str(p.get('used'))[:40]!r} — needs your answer"
+        if p.get("for"):
+            note = (f"your stored {p['for']} ({stored.get(p['for'], '?')!r}) is not in this portal's list — the nearest "
+                    "entry is picked; the one you approve is kept for this portal and used on its next jobs "
+                    "(never replaces the stored fact)")
         out.append({"qid": i, "label": q, "options": cands, "kind": "select" if cands else "text",
                     "required": True, "status": "open", "page": p.get("page") or "", "field": p.get("field") or "",
-                    "value": str(p.get("used") or ""),
-                    "note": f"explored with placeholder {str(p.get('used'))[:40]!r} — needs your answer"})
+                    "value": str(p.get("used") or ""), "note": note, **({"fact": p["for"]} if p.get("for") else {})})
     return out
 
 
@@ -50,7 +57,7 @@ def write(slug, out, answers):
     market = detect_market(meta.get("Location", ""), jd)
     record = R.load(slug)
     reached = out["outcome"] == "last-page"
-    questions = questions_from(record)
+    questions = questions_from(record, answers)
     for it in cards():                                   # one card per job on the phone: this run's
         if it.get("company_slug") == slug and it.get("status") not in ("submitted", "superseded") \
                 and not it.get("submitted_at"):
@@ -60,6 +67,7 @@ def write(slug, out, answers):
         "id": f"{slug}-{dt.datetime.now():%m%d%H%M}", "company": meta.get("Company", slug), "company_slug": slug,
         "role": meta.get("Role / Title", ""), "location": meta.get("Location", ""),
         "url": meta.get("Apply URL") or meta.get("Link"), "portal": out.get("platform"), "market": market,
+        "tenant": platforms.tenant(out.get("platform"), meta.get("Apply URL") or meta.get("Link")),
         "salary_quoted": F.pay_text(answers, market), "score": None, "resume": out.get("resume"),
         "screenshot": out.get("screenshot"), "fields": {k.split(" :: ", 1)[-1]: v for k, v in (out.get("filled") or {}).items()},
         "warnings": [out["note"]] if out.get("note") else [], "questions": questions,

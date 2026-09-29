@@ -4,18 +4,27 @@ facts.py — the applicant's facts for ONE job, by key: what the form agent (ses
 may point a form's question at. A key, never a value, goes through Claude; the
 value is looked up here when the code acts.
 
-    answers.yaml, flattened     personal.first_name, work_authorization.eu.requires_sponsorship, ...
+    answers.yaml, flattened     personal.first_name, work_authorization.outside_india.requires_sponsorship, ...
     job.company / job.location / job.market
                                 the job itself, so the agent picks the right row
                                 (a Germany job -> the eu row) — no rules in code
     job.today (.year .month .day)   the day the form is filled or filed
-    learned:<n>                 an answer he gave on an earlier form (learned.yaml)
+    tenant:<stored fact key>    this portal's entry for a stored fact its list does not hold as
+                                written (applications/_tenants/<tenant>.yaml entries): his pick,
+                                reused on every job here
+    employer:<key>              the entry he picked from this portal's list on an earlier job
+                                (the same file's answers) — reused here only
+    learned:<key>               his answer for this very form, approved on the phone
+                                — a <key> comes from the question's words (answers.question_key),
+                                so a recorded key keeps meaning the same answer
     file:resume                 the resume file built for this application
 
 Salary rows of other markets are left out: only this market's asking figure applies.
 """
 import datetime as dt
 import re
+
+from jobpilot.core.answers import question_key
 
 SKIP = re.compile(r"^(portal_routing\.|files\.)|(password|token|secret|api_?key)", re.I)
 # a value that stands for "not written yet" is not a fact: its question gets a
@@ -42,7 +51,7 @@ def flatten(d, prefix=""):
     return out
 
 
-def job_facts(answers, ctx, learned=None, resume=None):
+def job_facts(answers, ctx, learned=None, resume=None, tenant=None):
     """{key: value} for one job — everything a form on it may be answered from."""
     market = ctx.get("market") or "default"
     by_market = (answers.get("compensation") or {}).get("by_market") or {}
@@ -64,9 +73,14 @@ def job_facts(answers, ctx, learned=None, resume=None):
             facts[k + ".year"], facts[k + ".month"] = m.group(1), m.group(2)
             if m.group(3):
                 facts[k + ".day"] = m.group(3)
-    for i, e in enumerate(learned or []):
-        if isinstance(e, dict) and str(e.get("answer") or "").strip():
-            facts[f"learned:{i}"] = str(e["answer"]).strip()
+    tenant = tenant or {}
+    for k, e in (tenant.get("entries") or {}).items():
+        if isinstance(e, dict) and str(e.get("entry") or "").strip():
+            facts[f"tenant:{k}"] = str(e["entry"]).strip()
+    for kind, rows in (("employer", tenant.get("answers")), ("learned", learned)):
+        for e in rows or []:
+            if isinstance(e, dict) and str(e.get("answer") or "").strip():
+                facts[f"{kind}:{question_key(e.get('match', ''))}"] = str(e["answer"]).strip()
     if resume:
         facts["file:resume"] = resume
     return facts
@@ -78,16 +92,38 @@ def pay_text(answers, market):
     return ((comp.get("by_market") or {}).get(market) or comp.get("default") or {}).get("expected_text", "")
 
 
-def for_prompt(facts, learned=None):
-    """The facts as Claude sees them: one line each; a learned answer shows the
-    question it answered; the resume is named, not its path."""
-    lines = []
+def questions(*lists):
+    """{"learned:<key>" and "employer:<key>": the question it answers}, for the prompt."""
+    out = {}
+    for kind, rows in lists:
+        for e in rows or []:
+            if isinstance(e, dict):
+                out[f"{kind}:{question_key(e.get('match', ''))}"] = e.get("match", "")
+    return out
+
+
+def for_prompt(facts, asked=None, tenant=""):
+    """The facts as Claude sees them, in groups: the stored facts (answers.yaml and the job),
+    which always win; this portal's entries for stored facts its lists do not hold; this
+    portal's learned answers; his answers for this form — each answer with its question
+    (asked: questions()). The resume is named, not its path."""
+    asked = asked or {}
+    stored, portal, employer, got = [], [], [], []
     for k, v in facts.items():
         if k == "file:resume":
-            lines.append("file:resume: (the resume file)")
-        elif k.startswith("learned:") and learned:
-            q = (learned[int(k.split(":")[1])] or {}).get("match", "")
-            lines.append(f"{k}: answer to {q[:80]!r}: {v[:40]}")
+            stored.append("file:resume: (the resume file)")
+        elif k.startswith("tenant:"):
+            own = facts.get(k[len("tenant:"):], "")
+            portal.append(f"{k}: {v[:120]}" + (f"   (stands for the stored {own[:60]!r})" if own else ""))
+        elif k.startswith(("learned:", "employer:")):
+            q = asked.get(k, "")
+            (employer if k.startswith("employer:") else got).append(
+                f"{k}: answer to {q[:80]!r}: {v[:40]}" if q else f"{k}: {v[:40]}")
         else:
-            lines.append(f"{k}: {v[:160]}")
-    return "\n".join(lines)
+            stored.append(f"{k}: {v[:160]}")
+    return ("STORED FACTS — his profile: always true, never replaced by anything below\n" + "\n".join(stored)
+            + (f"\n\nTHIS PORTAL'S ENTRIES ({tenant}) — the entry this portal's list holds for a stored fact it "
+               "does not hold as written; his pick, reused on every job here\n" + "\n".join(portal) if portal else "")
+            + (f"\n\nTHIS EMPLOYER'S ANSWERS ({tenant}) — what he answered on earlier jobs of this portal, "
+               "to questions the stored facts do not cover\n" + "\n".join(employer) if employer else "")
+            + ("\n\nHIS ANSWERS FOR THIS FORM — approved on the phone\n" + "\n".join(got) if got else ""))

@@ -38,6 +38,18 @@ WRONG_PASSWORD = re.compile(r"wrong (email address or )?password|incorrect passw
                             r"account is locked", re.I)
 
 
+def company_key(url):
+    """The tenant: <tenant>.wd5.myworkdayjobs.com, or wd3.myworkdaysite.com/recruiting/<tenant>/."""
+    p = urllib.parse.urlparse(url or "")
+    m = re.match(r"^([^.]+)\.wd\d+\.myworkdayjobs\.com$", p.netloc.lower())
+    segs = [s for s in p.path.split("/") if s]
+    if m:
+        return m.group(1)
+    if p.netloc.lower().endswith("myworkdaysite.com") and len(segs) > 1 and segs[0] == "recruiting":
+        return segs[1].lower()
+    return None
+
+
 def fetch_jd(url):
     """Workday exposes the posting as JSON under /wday/cxs/<tenant>/<site>/job/<path>."""
     p = urllib.parse.urlparse(url)

@@ -39,7 +39,7 @@ import subprocess
 import sys
 import time
 
-from jobpilot.core.answers import load, load_learned
+from jobpilot.core.answers import load
 from jobpilot.core.config import cfg
 from jobpilot.core import cards as CD, quota as Q
 from jobpilot.core.paths import LOGS, TOOL
@@ -150,7 +150,7 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
     if submit and not rec.get("submit_control"):
         raise Skip("the record names no submit button — explore it again")
 
-    form = Form(slug, load("answers.yaml"), load_learned(), log, mode="submit" if submit else "dry-run")
+    form = Form(slug, load("answers.yaml"), log, mode="submit" if submit else "dry-run")
     form.item, form.submit_control = item, rec.get("submit_control")
     form.redo = redo = C.Redo(form, rec, calls, approved, not submit, log)
     form.save_calls = lambda cs: C.save(slug, cs, calls)

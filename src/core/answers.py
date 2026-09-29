@@ -3,11 +3,15 @@
 answers.py — the applicant's stored answers and what the stages read about a job:
 
     load(name)            a config file (answers.yaml, targets.yaml, ...)
-    load_learned()        the answers he gave on earlier forms (learned.yaml)
+    load_tenant(tenant)   one employer portal's learned answers: applications/_tenants/<tenant>.yaml —
+                          its answers (short answers to questions no stored fact covers) and its
+                          entries (the list entry that stands for a stored fact it cannot hold)
+    question_key(q)       the stable key of a learned question: employer:<key> / learned:<key>
     preflight(answers)    refuse to open a browser while answers.yaml holds a TODO
     read_jd(slug)         the meta block tailor/scaffold.py wrote into applications/<slug>/JD.md
     detect_market(...)    which market (salary block, sponsorship row) a job is in
 """
+import hashlib
 import os
 import re
 import sys
@@ -15,6 +19,8 @@ import sys
 import yaml
 
 from jobpilot.core.paths import CONFIG, APPLICATIONS
+
+TENANTS = os.path.join(APPLICATIONS, "_tenants")
 
 
 def load(name):
@@ -112,12 +118,34 @@ def preflight(answers):
         sys.exit("Unresolved TODO fields in answers.yaml:\n  " + "\n  ".join(bad))
 
 
-def load_learned():
-    path = os.path.join(CONFIG, "learned.yaml")
-    if not os.path.isfile(path):
-        return []
-    with open(path) as f:
-        return (yaml.safe_load(f) or {}).get("answers") or []
+def question_key(question):
+    """A learned question's stable key: from its words, never its place in the file — a
+    record's learned:<key> must mean the same answer after the file changes."""
+    q = re.sub(r"\s+", " ", re.sub(r"[*∗]", "", question or "")).strip().lower()
+    return hashlib.sha1(q.encode()).hexdigest()[:8]
+
+
+def tenant_path(tenant):
+    return os.path.join(TENANTS, re.sub(r"[^a-z0-9]+", "-", (tenant or "").lower()).strip("-") + ".yaml")
+
+
+def load_tenant(tenant):
+    """{"tenant", "company", "answers": [...], "entries": {stored fact key: {entry, stored, source}}}."""
+    p = tenant_path(tenant)
+    if not tenant or not os.path.isfile(p):
+        return {"tenant": tenant, "answers": [], "entries": {}}
+    with open(p) as f:
+        d = yaml.safe_load(f) or {}
+    return {"tenant": tenant, "company": d.get("company"), "answers": d.get("answers") or [],
+            "entries": d.get("entries") or {}}
+
+
+def load_tenant_facts(tenant):
+    """This portal's entries for stored facts it cannot hold as written."""
+    return load_tenant(tenant)["entries"]
+
+
+
 
 
 # --------------------------------------------------------------------------

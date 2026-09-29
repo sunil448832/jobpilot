@@ -44,8 +44,8 @@ except KeyError:
     check(True, "a missing param is refused")
 
 print("2. facts for one job")
-answers, learned = autofill.load("answers.yaml"), autofill.load_learned()
-f = facts.job_facts(answers, {"market": "netherlands", "company": "Acme", "location": "Amsterdam"}, learned,
+answers = autofill.load("answers.yaml")
+f = facts.job_facts(answers, {"market": "netherlands", "company": "Acme", "location": "Amsterdam"}, [],
                     resume="/x/sunil_resume.docx")
 check(f.get("personal.first_name") and f.get("job.company") == "Acme" and f.get("job.market") == "netherlands",
       "the answers file flattened, plus the job itself")
@@ -53,7 +53,7 @@ check(any(k.startswith("compensation.by_market.netherlands.") for k in f)
       and not any(k.startswith("compensation.by_market.usa.") for k in f), "only this market's salary")
 check(not any(v in ("PER_COMPANY", "TODO") for v in f.values()), "no 'not written yet' markers")
 check(not any(s in k.lower() for k in f for s in ("password", "token", "secret")), "no secrets")
-shown = facts.for_prompt(f, learned)
+shown = facts.for_prompt(f)
 check("file:resume: (the resume file)" in shown and "/x/sunil_resume.docx" not in shown, "the resume by name, not its path")
 
 print()

@@ -7,7 +7,8 @@ Layout (since 2026-09-22): the tool is `~/work/projects/jobpilot` — `src/`,
 `config/` (this file lives there, with everything else hand-edited), `data/`, and its outputs `applications/<slug>/`. The resume repo, `~/work/docs/sunil_resume_v2`, is **read-only**
 for the tool: `resume/sections/*.tex` (the base resume), `project-memory-backup/`,
 `target-companies/`. Both trees are passed as `--add-dir`; prompts give absolute
-paths. `config.yaml`, `targets.yaml`, `answers.yaml`, `learned.yaml` live in `config/`.
+paths. `config.yaml`, `targets.yaml`, `answers.yaml` live in `config/`; his picks from a portal's
+lists, per employer portal, in `applications/_tenants/<tenant>.yaml`.
 
 ---
 
@@ -188,7 +189,7 @@ Ordered by how realistically sponsorship happens, **not** by pay:
 
 ## 5. Asking the human — form and Telegram
 
-Ask **only what `answers.yaml` / `learned.yaml` cannot answer**; every avoidable
+Ask **only what `answers.yaml` / the learned answers cannot answer**; every avoidable
 question costs him evening time. When a question is genuinely open:
 
 1. **Draft 2–3 complete answers**, not hints — tap one and done. Each true and
@@ -209,7 +210,7 @@ the form for anything longer; confirm every decision.
 
 ## 6. Reusing what he has already answered
 
-`learned.yaml` is the memory: an answer given once is never asked again
+The stored facts and each portal's kept picks (`applications/_tenants/`) are the memory: an answer given once is never asked again
 (`learn.py` folds submitted forms back in; matching is normalised label → keyword →
 fuzzy overlap ≥0.72). **A stored answer beats every heuristic, including the
 compliance hard-stop** — that guard prevents guessing; a confirmed answer is not a
@@ -241,7 +242,7 @@ with a note — message after they accept.
 5. **Never auto-answer sanctions / export-control / legal declarations** without a
    stored answer.
 6. **Never trust a log over a screenshot.** A clicked button is not a submission.
-7. **Never overwrite something he set** in `answers.yaml` or `learned.yaml`.
+7. **Never overwrite something he set** in `answers.yaml` or the learned answers.
 
 ---
 

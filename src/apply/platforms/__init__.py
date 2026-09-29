@@ -79,6 +79,18 @@ def host_of(url):
     return (urllib.parse.urlparse(url or "").netloc or "").lower().split(":")[0]
 
 
+def tenant(platform_id, url):
+    """The tenant a form belongs to: one employer's portal on a platform ("workday:crowdstrike",
+    "greenhouse:anthropic"). Its lists are the same on every job there, so an entry picked
+    for a stored fact it does not hold is picked again next time (applications/_tenants/)."""
+    fn = getattr(get(platform_id), "company_key", None)
+    try:
+        key = fn(url) if fn else None
+    except Exception:
+        key = None
+    return f"{platform_id or 'web'}:{key or host_of(url)}"
+
+
 def slug_for_host(host):
     """A platform id from a host: the registrable part, hyphenated.
     jobs.smartrecruiters.com -> smartrecruiters; careers.acme.co.uk -> acme-co-uk."""

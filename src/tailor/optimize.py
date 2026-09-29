@@ -90,7 +90,7 @@ def truth_vocabulary():
                     text.append(open(os.path.join(d, fn), encoding="utf-8").read())
                 except Exception:
                     pass
-    # answers.yaml and learned.yaml: his ANSWERS only. Reading the raw files
+    # answers.yaml and the learned answers: his ANSWERS only. Reading the raw files
     # also took in the questions they answer — "stay up to date with MongoDB
     # culture?" — and a keyword list, so an employer's name became a "true"
     # skill and "Mongodb" was written onto a resume. Keys, questions, keywords
@@ -101,10 +101,13 @@ def truth_vocabulary():
         text.append("\n".join(_scalars(a)))
     except Exception:
         pass
-    try:
-        l = yaml.safe_load(open(os.path.join(CONFIG, "learned.yaml"))) or []
-        rows = l if isinstance(l, list) else (l.get("answers") or l.get("learned") or [])
-        text.append("\n".join(str(r.get("answer")) for r in rows if isinstance(r, dict) and r.get("answer")))
+    try:                                         # each employer portal's learned answers
+        import glob
+        from jobpilot.core.answers import TENANTS
+        for f in glob.glob(os.path.join(TENANTS, "*.yaml")):
+            l = yaml.safe_load(open(f)) or {}
+            rows = l if isinstance(l, list) else (l.get("answers") or [])
+            text.append("\n".join(str(r.get("answer")) for r in rows if isinstance(r, dict) and r.get("answer")))
     except Exception:
         pass
     # targets.yaml: only the buckets that are vetted TRUE. The `interest` bucket

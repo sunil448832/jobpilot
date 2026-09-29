@@ -36,7 +36,7 @@ import time
 from claude_agent_sdk import (tool, create_sdk_mcp_server, ClaudeAgentOptions, ClaudeSDKClient, AssistantMessage,
                               UserMessage, ResultMessage, TextBlock, ToolUseBlock, ToolResultBlock, ToolAnnotations)
 
-from jobpilot.core.answers import load, load_learned
+from jobpilot.core.answers import load
 from jobpilot.core.config import cfg
 from jobpilot.core import cards as CD
 from jobpilot.core.paths import LOGS, TOOL
@@ -58,7 +58,7 @@ def system_prompt(form):
         text += ("\n\nTHE APPLICANT'S OWN ANSWERS FOR THIS APPLICATION — he gave these for this very form: the\n"
                  "control each answers takes it (its learned: key) before any other fact; it is his answer,\n"
                  "not a guess:\n" + "\n".join(f"- {k}: {q!r} -> {a!r}" for k, q, a in form.approved))
-    return text + "\n\nFACTS (key: value)\n" + F.for_prompt(form.facts, form.learned) + "\n"
+    return text + "\n\nFACTS (key: value)\n" + F.for_prompt(form.facts, form.asked, form.ctx.get("tenant", "")) + "\n"
 
 
 def keep_placeholders(slug, form):
@@ -211,7 +211,7 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
         logf.write(line + "\n")
         logf.flush()
 
-    form = Form(slug, load("answers.yaml"), load_learned(), log)
+    form = Form(slug, load("answers.yaml"), log)
     rec, former = C.load(slug)
     if former and not fresh:                     # resumable: the replay tool redoes the former record
         form.redo = C.Redo(form, rec, former, C.approved_answers(slug, rec), True, log)

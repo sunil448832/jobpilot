@@ -3,14 +3,8 @@ data/
 jobpilot.egg-info/
 __pycache__/
 *.pyc
-# built artefacts inside applications (sources are tracked)
-applications/*/sunil_resume.pdf
-applications/*/sunil_resume.docx
-applications/*/ats.md
-applications/*/resume.pdf
-# the exploration's own record and page captures: machine-written, rewritten every run
-applications/*/explore.json
-applications/*/pages/
+# every application's folder (tailored resume, JD, records, answers): personal, kept on disk only
+applications/
 *.aux
 *.log
 *.out

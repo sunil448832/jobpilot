@@ -1208,8 +1208,8 @@ answers:
   - institute
   - technology
   - jodhpur
-  answer: Indian Institute Of Technology
-  source: answered by Sunil on the Blackstone form, 2026-09-28
+  answer: Indian Institute of Technology Jodhpur
+  source: corrected by Sunil 2026-09-29 (the Crowdstrike form's list had no Jodhpur; IIT Delhi was its stand-in, never his school)
 - match: field of study — education 1 (indian institute of technology, jodhpur)
   keywords:
   - field
@@ -1374,3 +1374,26 @@ answers:
   - blackstone
   answer: For better opportunity.
   source: answered by Sunil on the Blackstone form, 2026-09-28
+- match: 'team matching: which teams or projects are you most interested in?'
+  keywords:
+  - team
+  - matching
+  - teams
+  - projects
+  - most
+  - interested
+  answer: AI Alignment Research
+  source: answered by Sunil on the Anthropic form, 2026-09-29
+- match: why are you interested in working at hyperbound?
+  keywords:
+  - why
+  - interested
+  - working
+  - hyperbound
+  answer: 'The role''s emphasis on owning models end to end, from fine-tuning through production,
+    matches how I''ve worked at Aria: I self-hosted LLaMA 3 Instruct and Phi-3 Vision via
+    vLLM in production, and separately built an evaluation framework that benchmarks a 28-task
+    agent fleet at 86% exact-pass and 0.86 mean F1 to catch regressions before they ship.
+    Building that same rigor into Hyperbound''s roleplay, scoring, and coaching models is
+    exactly the kind of ownership I''m looking for.'
+  source: answered by Sunil on the Hyperbound form, 2026-09-29

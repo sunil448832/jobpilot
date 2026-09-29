@@ -189,13 +189,13 @@ def main():
     where = "WHERE status != 'held'" if a.all else "WHERE status='new'"
     rows = list(con.execute(
         f"SELECT key,company,title,location,market,url,jd,yc,"
-        f"COALESCE(board_size,0),COALESCE(team_size,0) FROM jobs {where}"))
+        f"COALESCE(board_size,0),COALESCE(team_size,0),status FROM jobs {where}"))
     if not rows:
         print("  nothing to rank — run: python jobs/intake.py")
         return
 
     scored = []
-    for k, co, title, loc, market, url, jd, yc, bsize, tsize in rows:
+    for k, co, title, loc, market, url, jd, yc, bsize, tsize, _ in rows:
         job = {"title": title, "jd": jd or "", "location": loc, "market": market,
                "yc": yc, "board_size": bsize, "team_size": tsize}
         job["company"] = co
@@ -205,6 +205,10 @@ def main():
         scored.append((s, co, title, loc, market, url, why, k))
     con.commit()
     scored.sort(reverse=True, key=lambda x: x[0])
+    # --all re-scores every row, but only roles still open to work are listed or queued: a
+    # rejected or already-queued role at the top of the list read as the day's best pick.
+    live = {r[0] for r in rows if r[-1] == "new"}
+    scored = [r for r in scored if r[7] in live]
 
     floor = t["scoring"]["min_score_to_queue"]
     if a.market:

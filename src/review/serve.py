@@ -110,6 +110,53 @@ a.card.red{border-left-color:#D2453B} .b.red{background:#FBE3E1;color:#8A2119} h
 """
 
 
+
+def questions_page(t):
+    """/questions — every question a filing asked him (an emailed code, a Workday email
+    verification) and every notice it left (a captcha) in the last 7 days: the waiting ones
+    first, each with its answer box, then notices, then answered / expired ones."""
+    from jobpilot.review import ask as ask_mod
+    asked = ask_mod.recent(7)
+    box = ('style="font-size:20px;letter-spacing:2px;padding:10px;width:100%;box-sizing:border-box;'
+           'border:1px solid #bbb;border-radius:8px;margin-top:8px"')
+    btn = ('style="margin-top:8px;padding:12px;width:100%;font-size:17px;border:0;border-radius:8px;'
+           'background:#2a7;color:#fff"')
+
+    def card(q):
+        st = ask_mod.state(q)
+        head = (f'<div class="r">{q.get("about") or "A filing"}</div>'
+                f'<div class="m">{q.get("question","")}</div>'
+                + (f'<div class="m">{q.get("hint")}</div>' if q.get("hint") else ""))
+        when = (q.get("asked_at") or "")[5:16].replace("T", " ")
+        if st == "waiting":
+            return (f'<div class="card red">{head}'
+                    f'<div class="m">⏳ waiting until {q.get("until","")[11:16]} — after that nothing is sent</div>'
+                    f'<input class="ans" id="a-{q["key"]}" autocomplete="one-time-code" placeholder="type here" {box}>'
+                    f'<button onclick="send(\'{q["key"]}\')" {btn}>Send</button>'
+                    f'<div class="m" id="s-{q["key"]}"></div></div>')
+        if st == "notice":
+            return (f'<div class="card amber">{head}<div class="m">{when}'
+                    + (f' · <a href="{q["link"]}">open the application</a>' if q.get("link") else "") + '</div></div>')
+        tail = (f'answered {q.get("answered_at","")[11:16]}: <b>{q.get("answer")}</b>' if st == "answered"
+                else "no answer in time — not sent; tried again on the next run")
+        return f'<div class="card grey">{head}<div class="m">{when} · {tail}</div></div>'
+
+    waiting = [q for q in asked if ask_mod.state(q) == "waiting"]
+    rest = [q for q in asked if ask_mod.state(q) != "waiting"]
+    return (f"<title>Questions from filing</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
+            f"<style>{INDEX_CSS}</style><div class=\"wrap\"><h1>Questions from filing</h1>"
+            f'<p class="m">What a filing needs from you right now, and what it asked before (last 7 days). '
+            f'<a href="/{t}">Review list →</a></p>'
+            + (f'<h2 class="red">Waiting for you <span>{len(waiting)}</span></h2>' + "".join(card(q) for q in waiting)
+               if waiting else '<p class="m">Nothing is waiting on you now.</p>')
+            + (f'<h2 class="grey">Earlier <span>{len(rest)}</span></h2>' + "".join(card(q) for q in rest) if rest else "")
+            + "</div>"
+            + f"<script>async function send(k){{const v=document.getElementById('a-'+k).value.trim();"
+              f"if(!v)return;const r=await fetch('/ask/'+k+'/save{t}',{{method:'POST',"
+              f"headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{answer:v}})}});"
+              f"document.getElementById('s-'+k).textContent=r.ok?'Sent — the filing goes on.':'Failed: '+r.status;}}"
+              f"</script>")
+
 class H(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
@@ -185,47 +232,7 @@ class H(BaseHTTPRequestHandler):
                         f'<div class="b {colour}">{label}</div></a>')
             counts = " · ".join(f"{len(groups[k])} {title.split(' —')[0].lower()}"
                                 for k, title, _ in SECT if groups[k])
-            # every question a filing asked him (an emailed code, a Workday email verification)
-            # and every notice it left (a captcha): the waiting ones answered here, on the list
-            from jobpilot.review import ask as ask_mod
-            asked = ask_mod.recent(7)
             sections = ""
-            if asked:
-                box = ('style="font-size:20px;letter-spacing:2px;padding:10px;width:100%;box-sizing:border-box;'
-                       'border:1px solid #bbb;border-radius:8px;margin-top:8px"')
-                btn = ('style="margin-top:8px;padding:12px;width:100%;font-size:17px;border:0;border-radius:8px;'
-                       'background:#2a7;color:#fff"')
-
-                def asked_card(q):
-                    st = ask_mod.state(q)
-                    head = (f'<div class="r">{q.get("about") or "A filing"}</div>'
-                            f'<div class="m">{q.get("question","")}</div>'
-                            + (f'<div class="m">{q.get("hint")}</div>' if q.get("hint") else ""))
-                    when = (q.get("asked_at") or "")[5:16].replace("T", " ")
-                    if st == "waiting":
-                        return (f'<div class="card red">{head}'
-                                f'<div class="m">⏳ waiting until {q.get("until","")[11:16]} — after that nothing is sent</div>'
-                                f'<input class="ans" id="a-{q["key"]}" autocomplete="one-time-code" placeholder="type here" {box}>'
-                                f'<button onclick="send(\'{q["key"]}\')" {btn}>Send</button>'
-                                f'<div class="m" id="s-{q["key"]}"></div></div>')
-                    if st == "notice":
-                        return (f'<div class="card amber">{head}<div class="m">{when}'
-                                + (f' · <a href="{q["link"]}">open the application</a>' if q.get("link") else "")
-                                + '</div></div>')
-                    tail = (f'answered {q.get("answered_at","")[11:16]}: <b>{q.get("answer")}</b>' if st == "answered"
-                            else "no answer in time — not sent; tried again on the next run")
-                    return f'<div class="card grey">{head}<div class="m">{when} · {tail}</div></div>'
-
-                waiting = [q for q in asked if ask_mod.state(q) == "waiting"]
-                sections += (f'<h2 class="{"red" if waiting else "grey"}" id="now">Questions from filing '
-                             f'<span>{len(waiting)} waiting</span></h2>'
-                             + "".join(asked_card(q) for q in waiting)
-                             + "".join(asked_card(q) for q in asked if ask_mod.state(q) != "waiting")
-                             + f"<script>async function send(k){{const v=document.getElementById('a-'+k).value.trim();"
-                               f"if(!v)return;const r=await fetch('/ask/'+k+'/save{t}',{{method:'POST',"
-                               f"headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{answer:v}})}});"
-                               f"document.getElementById('s-'+k).textContent=r.ok?'Sent — the filing goes on.':'Failed: '+r.status;}}"
-                               f"</script>")
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue
@@ -311,6 +318,9 @@ class H(BaseHTTPRequestHandler):
                     f"const j=await r.json();o.textContent=(j.results||[]).map(x=>x.ok?('✅ '+x.company+' — '+x.title+' ('+x.portal+', '+x.market+')'+(x.note?'  ⚠ '+x.note:'')):('❌ '+x.url.slice(0,60)+': '+x.why)).join('\\n')"
                     f"+(j.started?'\\n\\nTailoring started — items appear in the list as they are ready.':'');}}</script>")
             return self._ok(body)
+
+        if parts == ["questions"]:
+            return self._ok(questions_page(f"?t={TOKEN}" if TOKEN else ""))
 
         # a mid-run question from the submitter (e.g. an emailed verification code)
         if parts[0] == "ask" and len(parts) == 2:

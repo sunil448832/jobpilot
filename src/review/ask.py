@@ -3,13 +3,14 @@ ask.py — the questions a filing asks Sunil mid-run, and the notices it leaves 
 
     ask(key, question, ...)   a portal wants something only he has now — the code Greenhouse
                               emails before it takes a submission, a Workday email
-                              verification: written to data/asks/<key>.json, one short Telegram
-                              line with the review list's link, and the caller polls the file
-                              until he answers there or the wait runs out
+                              verification: written to data/asks/<key>.json, a short Telegram
+                              message with the questions page's link (/questions) and the review
+                              list's, and the caller polls the file until he answers or the wait
+                              runs out
     note(key, question, ...)  something a filing cannot pass and nobody can answer by typing —
                               a captcha: listed the same way, nothing waits on it
     recent(days)              every question and notice of the last days, newest first: the
-                              review list's "Questions from filing" section
+                              questions page (review/serve.py questions_page)
 
 Nothing here submits anything.
 """
@@ -75,10 +76,13 @@ def recent(days=7):
 
 
 def _tell(about):
-    """One short Telegram line: input is needed, and where to give it."""
+    """One short Telegram message: input is needed — the questions page to give it on, and the
+    review list."""
     from jobpilot.core.daily import form_link, telegram
+    link = form_link()
     telegram("🔐 <b>Filing needs your input</b>" + (f" — {about}" if about else "")
-             + f"\nOpen the review list, section <b>Questions from filing</b>:\n{form_link()}")
+             + f"\nAnswer here: {link.replace('/?', '/questions?')}"
+             + f"\nReview list: {link}")
 
 
 def note(key, question, about="", hint="", link=""):

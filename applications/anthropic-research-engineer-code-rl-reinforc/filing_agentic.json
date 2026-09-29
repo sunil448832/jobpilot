@@ -1,0 +1,26 @@
+{
+ "slug": "anthropic-research-engineer-code-rl-reinforc",
+ "mode": "submit",
+ "outcome": "submitted",
+ "why": "Thank you for applying",
+ "redo": {
+  "redone": [
+   "Research Engineer, Code RL (Reinforcement Learning)"
+  ],
+  "at": "Research Engineer, Code RL (Reinforcement Learning)",
+  "end": true,
+  "why": "the record's last page",
+  "differs": []
+ },
+ "screenshot": "data/queue/anthropic-research-engineer-code-rl-reinforc-submitted-0929-0742.png",
+ "seconds": 105,
+ "new_placeholders": {},
+ "presses": [
+  {
+   "page": "Research Engineer, Code RL (Reinforcement Learning)",
+   "button": "Submit application",
+   "outcome": "submitted",
+   "detail": "Thank you for applying"
+  }
+ ]
+}

@@ -266,11 +266,33 @@ class H(BaseHTTPRequestHandler):
                             for i in rows)
                         + "</table></div>")
 
+            def approved_table(rows):
+                """What he approved and is not sent yet, newest first: the date, company, role,
+                portal, and where its filing stands."""
+                from jobpilot.apply.explore_agentic import calls as C
+
+                def stands(i):
+                    if not C.load(i.get("company_slug", ""))[1]:
+                        return "explore first (no record)"
+                    return ("last try: " + i["fail_reason"][:60]) if i.get("fail_reason") else "ready to file"
+                rows = sorted(rows, key=lambda i: i.get("decided_at") or i.get("created") or "", reverse=True)
+                return ('<div class="tbl"><table class="sub"><tr><th>Approved</th><th>Company</th><th>Role</th>'
+                        '<th>Portal</th><th>Filing</th></tr>'
+                        + "".join(
+                            f'<tr><td class="d">{(i.get("decided_at") or "")[:10]}</td>'
+                            f'<td>{i.get("company","?")}</td>'
+                            f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
+                            f'<td class="d">{i.get("portal") or ""}</td>'
+                            f'<td class="m" style="margin:0">{stands(i)}</td></tr>'
+                            for i in rows)
+                        + "</table></div>")
+
+            tables = {"submitted": submitted_table, "approved": approved_table}
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue
                 sections += (f'<h2 class="{colour}">{title} <span>{len(groups[k])}</span></h2>'
-                             + (submitted_table(groups[k]) if k == "submitted"
+                             + (tables[k](groups[k]) if k in tables
                                 else "".join(card(i, colour, k) for i in groups[k])))
             body = (f"<title>Applications</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
                     f"<style>{INDEX_CSS}</style>"

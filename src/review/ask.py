@@ -1,11 +1,17 @@
 """
-ask.py — a question the pipeline cannot answer itself, put to Sunil mid-run.
+ask.py — the questions a filing asks Sunil mid-run, and the notices it leaves him.
 
-Used when a portal wants something only he has at that moment — the 8-character
-verification code Greenhouse emails before it accepts a submission, for one.
-The question is written to data/asks/<key>.json, a Telegram message carries a
-link to /ask/<key> on the review server, and the caller polls the file until
-he saves an answer or the timeout passes. Nothing here submits anything.
+    ask(key, question, ...)   a portal wants something only he has now — the code Greenhouse
+                              emails before it takes a submission, a Workday email
+                              verification: written to data/asks/<key>.json, one short Telegram
+                              line with the review list's link, and the caller polls the file
+                              until he answers there or the wait runs out
+    note(key, question, ...)  something a filing cannot pass and nobody can answer by typing —
+                              a captcha: listed the same way, nothing waits on it
+    recent(days)              every question and notice of the last days, newest first: the
+                              review list's "Questions from filing" section
+
+Nothing here submits anything.
 """
 import datetime as dt
 import json
@@ -36,40 +42,63 @@ def answer(key, text):
     return q
 
 
-def open_asks():
-    """The questions still waiting for his answer, oldest first: those unanswered whose wait
-    has not run out."""
-    now = dt.datetime.now().isoformat(timespec="seconds")
+def _all():
     out = []
     for f in sorted(os.listdir(ASK_DIR)) if os.path.isdir(ASK_DIR) else []:
         try:
-            q = json.load(open(os.path.join(ASK_DIR, f)))
+            out.append(json.load(open(os.path.join(ASK_DIR, f))))
         except (OSError, ValueError):
             continue
-        if not q.get("answer") and (q.get("until") or "") > now:
-            out.append(q)
-    return sorted(out, key=lambda q: q.get("asked_at") or "")
+    return out
+
+
+def state(q, now=None):
+    """waiting / answered / expired / notice."""
+    now = now or dt.datetime.now().isoformat(timespec="seconds")
+    if q.get("kind") == "notice":
+        return "notice"
+    if q.get("answer"):
+        return "answered"
+    return "waiting" if (q.get("until") or "") > now else "expired"
+
+
+def open_asks():
+    """The questions still waiting for his answer, oldest first."""
+    return sorted([q for q in _all() if state(q) == "waiting"], key=lambda q: q.get("asked_at") or "")
+
+
+def recent(days=7):
+    """Every question and notice of the last `days`, newest first."""
+    since = (dt.datetime.now() - dt.timedelta(days=days)).isoformat(timespec="seconds")
+    return sorted([q for q in _all() if (q.get("asked_at") or "") >= since],
+                  key=lambda q: q.get("asked_at") or "", reverse=True)
+
+
+def _tell(about):
+    """One short Telegram line: input is needed, and where to give it."""
+    from jobpilot.core.daily import form_link, telegram
+    telegram("🔐 <b>Filing needs your input</b>" + (f" — {about}" if about else "")
+             + f"\nOpen the review list, section <b>Questions from filing</b>:\n{form_link()}")
+
+
+def note(key, question, about="", hint="", link=""):
+    """A notice for the review list — a captcha, say: nothing waits on it, Telegram is told."""
+    os.makedirs(ASK_DIR, exist_ok=True)
+    json.dump({"key": key, "kind": "notice", "question": question, "hint": hint, "about": about, "link": link,
+               "asked_at": dt.datetime.now().isoformat(timespec="seconds")}, open(_path(key), "w"), indent=2)
+    _tell(about)
 
 
 def ask(key, question, hint="", timeout=900, poll=3, about=""):
-    """Post the question (it shows in the review list's "Needs you now" section), tell
-    Telegram as a card, wait for the answer. Returns '' on timeout. `about`: the job."""
-    from jobpilot.core.daily import form_link, telegram
+    """Post the question (the review list's "Questions from filing"), send Telegram one line
+    with the list's link, wait for the answer. Returns '' on timeout. `about`: the job."""
     os.makedirs(ASK_DIR, exist_ok=True)
     until = dt.datetime.now() + dt.timedelta(seconds=timeout)
     json.dump({"key": key, "question": question, "hint": hint, "about": about, "answer": None,
                "asked_at": dt.datetime.now().isoformat(timespec="seconds"),
                "until": until.isoformat(timespec="seconds")},
               open(_path(key), "w"), indent=2)
-    link = form_link().replace("/?", f"/ask/{key}?")
-    telegram("🔐 <b>Filing needs you</b>\n"
-             + (f"<b>{about}</b>\n" if about else "")
-             + f"\n{question}\n"
-             + (f"<i>{hint}</i>\n" if hint else "")
-             + f"\n👉 Answer here: {link}\n"
-             + "(also at the top of the review list, under <b>Needs you now</b>)\n\n"
-             + f"⏳ Waiting until <b>{until:%H:%M}</b> ({timeout // 60} min). "
-             + "After that nothing is sent, and it is tried again on the next run.")
+    _tell(about)
     print(f"  [ask] waiting up to {timeout}s for: {question[:70]}")
     deadline = time.time() + timeout
     while time.time() < deadline:

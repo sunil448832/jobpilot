@@ -79,6 +79,8 @@ def item_path(i):
     return CD.path(i) or ""
 
 
+PAGE = 10                                        # rows per page of the Submitted table
+
 INDEX_CSS = """
 body{background:#F3F6F9;color:#131A23;font-family:"Source Sans 3",system-ui,sans-serif;
 margin:0;padding:24px 16px}
@@ -109,6 +111,7 @@ table.sub td{padding:8px 10px;border-bottom:1px solid #EEF1F4;vertical-align:top
 table.sub tr:last-child td{border-bottom:0}
 table.sub td.d{white-space:nowrap;color:#6C7E90}
 table.sub a{color:inherit;text-decoration:none}
+p.pager{text-align:center;margin:8px 0 0} p.pager a{color:#1D4E89;font-weight:600;text-decoration:none}
 @media(prefers-color-scheme:dark){.tbl{background:#151D26;border-color:#243039}
 table.sub th{border-color:#243039} table.sub td{border-color:#1C2630}}
 """
@@ -325,6 +328,19 @@ class H(BaseHTTPRequestHandler):
                             + "".join(f'<option value="{v}"{" selected" if v == cur else ""}>{lab}</option>'
                                       for v, lab in opts) + "</select>")
                 rows = sorted(rows, key=lambda i: i.get("submitted_at") or "", reverse=True)
+                # 10 a page (?sp=<page>): the list grows with every filing and rendered whole
+                pages = max(1, -(-len(rows) // PAGE))
+                try:
+                    page = min(max(1, int((q.get("sp") or ["1"])[0])), pages)
+                except ValueError:
+                    page = 1
+                shown = rows[(page - 1) * PAGE: page * PAGE]
+                go = lambda n: f'/{t}{"&" if t else "?"}sp={n}#submitted'
+                nav = ("" if pages == 1 else
+                       '<p class="m pager">'
+                       + (f'<a href="{go(page - 1)}">← Newer</a> · ' if page > 1 else "")
+                       + f"page {page} of {pages} ({len(rows)} submitted)"
+                       + (f' · <a href="{go(page + 1)}">Older →</a>' if page < pages else "") + "</p>")
                 return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th><th>How</th>'
                         '<th>Referrals</th><th>Referred?</th><th>After</th></tr>'
                         + "".join(
@@ -334,8 +350,8 @@ class H(BaseHTTPRequestHandler):
                             f'<td class="d">{"✋ by hand" if i.get("submitted_via") == "manual" else "filed"}</td>'
                             f'<td class="d">{refs(i)}</td><td class="d">{referred(i)}</td>'
                             f'<td class="d">{after(i)}</td></tr>'
-                            for i in rows)
-                        + "</table></div>")
+                            for i in shown)
+                        + "</table></div>" + nav)
 
             def approved_table(rows):
                 """What he approved and is not sent yet, newest first: the date, company, role,
@@ -362,7 +378,7 @@ class H(BaseHTTPRequestHandler):
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue
-                sections += (f'<h2 class="{colour}">{title} <span>{len(groups[k])}</span></h2>'
+                sections += (f'<h2 class="{colour}" id="{k}">{title} <span>{len(groups[k])}</span></h2>'
                              + (tables[k](groups[k]) if k in tables
                                 else "".join(card(i, colour, k) for i in groups[k])))
             body = (f"<title>Applications</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"

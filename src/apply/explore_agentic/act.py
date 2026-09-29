@@ -16,9 +16,9 @@ by the pin see put on it. An answer:
     search:<regex>; <regex>        the agent's patterns, most specific first (\bIndia\b, ^I):
                                    each run over the list's entries (a nested list's chains);
                                    what each matches is reported, nothing picked
-    file:resume                    the resume file (.docx: what the portal parses)
-    file:resume_pdf                the same resume as a PDF (a cover letter / additional
-                                   documents field, for the recruiter to read)
+    file:resume                    the resume file for the resume / CV field (the PDF)
+    file:resume_docx               the same resume as a .docx, for a second attachment field
+                                   (cover letter, additional documents)
     add:<n>                        a repeated section's Add, pressed n times, each checked
     <the question itself>          nothing stored: a required box gets a placeholder text
     text:<value>                   a literal value — the applicant's approved answer, at filing
@@ -74,8 +74,10 @@ def read_answer(answer, facts, resume):
         return "search", [t.strip() for t in a[7:].split(";") if t.strip()][:3]
     if low == "file:resume":
         return "file", resume
-    if low == "file:resume_pdf":
-        return "file", facts.get("file:resume_pdf")
+    if low == "file:resume_docx":
+        return "file", facts.get(low)
+    if low == "file:resume_pdf":                         # a record's SECOND attachment field (cover letter,
+        return "file", facts.get("file:resume_docx") or facts.get(low)   # additional): it now takes the .docx
     if low.startswith("add:"):
         n = "".join(ch for ch in a[4:] if ch.isdigit())
         return "add", int(n or 0)

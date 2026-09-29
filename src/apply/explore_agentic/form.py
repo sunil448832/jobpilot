@@ -142,9 +142,11 @@ class Form:
         self.approved = [(f"learned:{question_key(q)}", q, a) for q, a in approved.items()]
         self.resume = B.resume_path(answers, slug)
         self.resume_pdf = B.resume_pdf_path(answers, slug)
+        self.resume_docx = B.resume_docx_path(answers, slug)
         self.tenant = load_tenant(self.ctx["tenant"])
         self.asked = F.questions(("employer", self.tenant["answers"]), ("learned", self.learned))
-        self.facts = F.job_facts(answers, self.ctx, self.learned, self.resume, self.tenant, self.resume_pdf)
+        self.facts = F.job_facts(answers, self.ctx, self.learned, self.resume, self.tenant, self.resume_pdf,
+                                 self.resume_docx)
         self.controls, self.lines, self.snap = {}, {}, []
         self.step, self.seen, self.next_id = None, set(), 1
         self.placeholders, self.filled, self.pages, self.done = {}, {}, [], None

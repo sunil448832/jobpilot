@@ -351,8 +351,11 @@ files:
   # name reads as machine-generated. The folder keeps them apart.
   resume_pdf_pattern: "applications/{company}/sunil_resume.pdf"
   resume_docx_pattern: "applications/{company}/sunil_resume.docx"
-  # Which one to upload where. ATS portals parse .docx far better than LaTeX PDF.
-  upload_for_ats_portal: "docx"
+  # Which one to upload where. The resume PDF's text extracts cleanly (checked 2026-09-29:
+  # single column, no broken ligatures), so the resume field gets the PDF — the layout a
+  # recruiter should see. A form with a second attachment field (cover letter, additional
+  # documents) gets the .docx there too.
+  upload_for_ats_portal: "pdf"
   upload_for_human_review: "pdf"
   default_fallback_pdf: "sunil_resume.pdf"
 

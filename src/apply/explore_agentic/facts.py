@@ -17,8 +17,10 @@ value is looked up here when the code acts.
     learned:<key>               his answer for this very form, approved on the phone
                                 — a <key> comes from the question's words (answers.question_key),
                                 so a recorded key keeps meaning the same answer
-    file:resume                 the resume file built for this application (.docx)
-    file:resume_pdf             the same resume as a PDF, for a cover letter / additional field
+    file:resume                 the resume file built for this application (the PDF)
+    file:resume_docx            the same resume as a .docx, for a second attachment field
+    (file:resume_pdf            a record's second attachment field, from before 2026-09-29: it
+                                now takes the .docx (act.read_answer); not shown to the agent)
 
 Salary rows of other markets are left out: only this market's asking figure applies.
 """
@@ -52,7 +54,7 @@ def flatten(d, prefix=""):
     return out
 
 
-def job_facts(answers, ctx, learned=None, resume=None, tenant=None, resume_pdf=None):
+def job_facts(answers, ctx, learned=None, resume=None, tenant=None, resume_pdf=None, resume_docx=None):
     """{key: value} for one job — everything a form on it may be answered from."""
     market = ctx.get("market") or "default"
     by_market = (answers.get("compensation") or {}).get("by_market") or {}
@@ -84,6 +86,8 @@ def job_facts(answers, ctx, learned=None, resume=None, tenant=None, resume_pdf=N
                 facts[f"{kind}:{question_key(e.get('match', ''))}"] = str(e["answer"]).strip()
     if resume:
         facts["file:resume"] = resume
+    if resume_docx:
+        facts["file:resume_docx"] = resume_docx
     if resume_pdf:
         facts["file:resume_pdf"] = resume_pdf
     return facts
@@ -114,9 +118,11 @@ def for_prompt(facts, asked=None, tenant=""):
     stored, portal, employer, got = [], [], [], []
     for k, v in facts.items():
         if k == "file:resume":
-            stored.append("file:resume: (the resume file, .docx)")
+            stored.append("file:resume: (the resume file, PDF)")
+        elif k == "file:resume_docx":
+            stored.append("file:resume_docx: (the same resume as a .docx)")
         elif k == "file:resume_pdf":
-            stored.append("file:resume_pdf: (the same resume as a PDF)")
+            continue                                     # a key older records name; not offered
         elif k.startswith("tenant:"):
             own = facts.get(k[len("tenant:"):], "")
             portal.append(f"{k}: {v[:120]}" + (f"   (stands for the stored {own[:60]!r})" if own else ""))

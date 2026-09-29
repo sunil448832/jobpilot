@@ -109,7 +109,8 @@ def open_browser(pw):
 # ---------------------------------------------------------------- around the form
 
 def resume_path(answers, company_slug):
-    """The resume built for this application (.docx parses best on ATS portals), else the base PDF."""
+    """The resume for the form's resume field: files.upload_for_ats_portal (the PDF), else the
+    other built format, else the base PDF."""
     files = answers["files"]
     key = "resume_docx_pattern" if files["upload_for_ats_portal"] == "docx" else "resume_pdf_pattern"
     for k in (key, "resume_pdf_pattern"):
@@ -120,9 +121,16 @@ def resume_path(answers, company_slug):
     return fallback if os.path.isfile(fallback) else None
 
 
+def resume_docx_path(answers, company_slug):
+    """The same resume as a .docx, for a form's second attachment field (cover letter,
+    additional documents) when the resume field takes the PDF. None when not built."""
+    p = os.path.join(TOOL, answers["files"]["resume_docx_pattern"].format(company=company_slug))
+    return p if os.path.isfile(p) else None
+
+
 def resume_pdf_path(answers, company_slug):
-    """The same resume as a PDF, for a cover-letter / additional-documents field: a recruiter
-    reads it as laid out, where the .docx a portal parses renders poorly. None when not built."""
+    """The resume as a PDF (records from before 2026-09-29 name it file:resume_pdf for an
+    extra field). None when not built."""
     files = answers["files"]
     p = os.path.join(TOOL, files["resume_pdf_pattern"].format(company=company_slug))
     if os.path.isfile(p):

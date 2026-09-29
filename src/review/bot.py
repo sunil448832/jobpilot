@@ -38,10 +38,10 @@ import time
 import requests
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
-QUEUE_DIR = os.path.join(DATA, "queue")
-REPLIES = os.path.join(QUEUE_DIR, "_replies.json")
-OFFSET_F = os.path.join(QUEUE_DIR, "_offset.json")
+                   RESUME, APPLICATIONS, MEMORY)
+from jobpilot.core import cards as CD  # noqa: E402
+REPLIES = os.path.join(DATA, "bot_replies.json")
+OFFSET_F = os.path.join(DATA, "bot_offset.json")
 ENV_PATH = os.path.expanduser("~/.config/jobbot/env")
 API = "https://api.telegram.org/bot{token}/{method}"
 
@@ -72,21 +72,11 @@ def sid_of(item_id):
 
 
 def all_items():
-    out = []
-    for p in sorted(glob.glob(os.path.join(QUEUE_DIR, "*.json"))):
-        if os.path.basename(p).startswith("_"):
-            continue
-        try:
-            out.append(json.load(open(p)))
-        except json.JSONDecodeError:
-            print(f"  [warn] unreadable queue file: {p}")
-    return out
+    return list(CD.cards())
 
 
 def save_item(item):
-    os.makedirs(QUEUE_DIR, exist_ok=True)
-    with open(os.path.join(QUEUE_DIR, f"{item['id']}.json"), "w") as f:
-        json.dump(item, f, indent=2)
+    CD.save(item)
 
 
 def by_sid(sid):

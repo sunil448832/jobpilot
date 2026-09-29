@@ -26,7 +26,7 @@ import os
 import re
 import sys
 
-from jobpilot.core.paths import SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY, RESUME, APPLICATIONS, TRACKERS, MEMORY  # noqa: E402,F401
+from jobpilot.core.paths import SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY, RESUME, APPLICATIONS, MEMORY  # noqa: E402,F401
 from jobpilot.core.config import cfg  # noqa: E402
 from jobpilot.tailor import ats_score as A  # noqa: E402
 from jobpilot.rank import keywords as KW  # noqa: E402
@@ -34,7 +34,7 @@ from jobpilot.tailor import optimize  # noqa: E402
 
 STATE = os.path.join(DATA, "keyword_learn.json")
 DENY = os.path.join(CONFIG, "keyword_denylist.yaml")
-GAPS = os.path.join(TRACKERS, "keyword_gaps.md")      # for Sunil to read: lives with the trackers
+GAPS = os.path.join(DATA, "keyword_gaps.md")          # machine-written, for Sunil to read
 TARGETS = os.path.join(CONFIG, "targets.yaml")
 
 
@@ -227,7 +227,7 @@ def add_interest(terms):
     return new
 
 
-TODO = os.path.join(TRACKERS, "resume_todo.md")      # for Sunil to read: lives with the trackers
+TODO = os.path.join(DATA, "resume_todo.md")          # machine-written, for Sunil to read
 
 
 def add_confirmed(terms):

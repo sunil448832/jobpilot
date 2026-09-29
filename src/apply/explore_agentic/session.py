@@ -21,9 +21,9 @@ sends the application.
                                                            tool, arguments, page, the lasting
                                                            identity of each control it names, what
                                                            it did — what replay.py runs again
-                    tests/maps/<slug>/agentic-<time>.log   the whole session (review phase):
+                    logs/sessions/<slug>/agentic-<time>.log   the whole session (review phase):
                                                            the agent's words, each call, each result
-                    tests/maps/<slug>/agentic-<time>.system.txt   the system prompt, as sent
+                    logs/sessions/<slug>/agentic-<time>.system.txt   the system prompt, as sent
 """
 import asyncio
 import concurrent.futures as cf
@@ -38,7 +38,8 @@ from claude_agent_sdk import (tool, create_sdk_mcp_server, ClaudeAgentOptions, C
 
 from jobpilot.core.answers import load, load_learned
 from jobpilot.core.config import cfg
-from jobpilot.core.paths import TOOL
+from jobpilot.core import cards as CD
+from jobpilot.core.paths import LOGS, TOOL
 from jobpilot.tailor.autotailor import AUTO_CWD
 from jobpilot.apply.explore_agentic import facts as F, record as R
 from jobpilot.apply.explore_agentic.form import Form
@@ -199,7 +200,7 @@ async def agent(form, on_browser, task, model, effort, max_turns, log, logf):
 
 async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
     stamp = dt.datetime.now().strftime("%m%d-%H%M")
-    base = os.path.join(TOOL, "tests", "maps", slug, f"agentic-{stamp}")
+    base = os.path.join(LOGS, "sessions", slug, f"agentic-{stamp}")
     os.makedirs(os.path.dirname(base), exist_ok=True)
     logf = open(base + ".log", "w", encoding="utf-8")
     t0 = time.time()
@@ -231,7 +232,8 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
             task = "The browser shows the job posting. Fill the application." + (
                 " A former session's record exists: start with replay (see RESUMING)." if form.redo else "")
             calls, result = await agent(form, on_browser, task, model, effort, max_turns, log, logf)
-            shot = os.path.join("data", "queue", f"{slug}-{stamp}.png")
+            os.makedirs(CD.folder(slug), exist_ok=True)
+            shot = os.path.relpath(os.path.join(CD.folder(slug), f"{slug}-{stamp}.png"), TOOL)
             try:                                          # the page it ended on, for the phone card
                 await on_browser(lambda: form.page.screenshot(path=os.path.join(TOOL, shot), full_page=True))
             except Exception:

@@ -236,7 +236,7 @@ def _ask_fix(page, ctx, log, what):
               f"The Workday sign-in did not work: {what}. Sign in yourself at {host} — unlock the account, or "
               "reset its password to the one jobpilot has stored — then type done here. Type skip to leave "
               "this application for now.", hint="the password is never asked for here",
-              timeout=1800, about=f"{ctx.get('company', 'Workday')} (Workday sign-in)")
+              timeout=1800, about=f"{ctx.get('company', 'Workday')} (Workday sign-in)", slug=ctx.get("company_slug"))
     ok = (ans or "").strip().lower() == "done"
     log(f"    [workday] sign-in fix: {'done — trying once more' if ok else (ans or 'no answer') + ' — stopped'}")
     return ok
@@ -306,7 +306,8 @@ def _gate(page, ctx, log, asked=False):
         from jobpilot.review.ask import ask
         ans = ask(f"wd-verify-{ctx.get('company_slug', 'x')}",
                   "The new Workday account needs your email verified. Open the mail from them, click the "
-                  "link, then type 'done' here.", timeout=900, about=f"{ctx.get('company', 'Workday')} (Workday)")
+                  "link, then type 'done' here.", timeout=900, about=f"{ctx.get('company', 'Workday')} (Workday)",
+                  slug=ctx.get("company_slug"))
         if not ans:
             log("    [workday] email verification not confirmed in time")
             return False

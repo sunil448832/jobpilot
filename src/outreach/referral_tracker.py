@@ -13,7 +13,7 @@ Candidates are a deliberate mix:
 
 Sending is ALWAYS manual. This produces text and links; Sunil presses send.
 
-Sheet: tracking/referral-tracker.xlsx
+Store: the `referrals` table in data/state.db (until 2026-09-29, tracking/referral-tracker.xlsx)
 Status flow: To Contact -> Invite Sent -> Accepted -> Message Sent -> Replied
              -> Referred | No Response
 
@@ -30,17 +30,14 @@ import datetime as dt
 import glob
 import json
 import os
+import sqlite3
 import sys
 import urllib.parse
 import urllib.request
 
-from openpyxl import Workbook, load_workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-
-from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+from jobpilot.core.paths import DATA  # noqa: E402
 from jobpilot.core.config import cfg  # noqa: E402
-XLSX = os.path.join(TRACKERS, "referral-tracker.xlsx")
+DB = os.path.join(DATA, "state.db")
 ENV = os.path.expanduser("~/.config/jobbot/env")
 
 COLS = ["Person", "Their Title", "Company", "Role Applied", "Relationship",
@@ -55,86 +52,60 @@ STATUSES = ["To Contact", "Invite Sent", "Accepted", "Message Sent", "Replied",
 FOLLOWUP_DAYS = cfg("followups.referral_days", 7)
 
 
-# --------------------------------------------------------------------- sheet
+# --------------------------------------------------------------------- store
 
-def ensure_sheet():
-    if os.path.isfile(XLSX):
-        return load_workbook(XLSX)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Referrals"
-    ws.append(COLS)
-    head = PatternFill("solid", fgColor="1F4E78")
-    thin = Side(style="thin", color="D9D9D9")
-    for c in ws[1]:
-        c.fill = head
-        c.font = Font(bold=True, color="FFFFFF", size=11)
-        c.alignment = Alignment(vertical="center", horizontal="center", wrap_text=True)
-        c.border = Border(left=thin, right=thin, top=thin, bottom=thin)
-    for col, w in zip("ABCDEFGHIJKLMN",
-                      (22, 30, 18, 28, 14, 24, 38, 14, 12, 12, 13, 10, 60, 26)):
-        ws.column_dimensions[col].width = w
-    ws.freeze_panes = "A2"
-    os.makedirs(os.path.dirname(XLSX), exist_ok=True)
-    wb.save(XLSX)
-    return wb
+# One column per COLS entry, in order; `id` is the row number the page and --set use.
+FIELDS = ["person", "their_title", "company", "role_applied", "relationship", "why_them",
+          "profile_url", "status", "invite_sent", "message_sent", "followup_date", "replied",
+          "message_used", "notes"]
+
+
+def db():
+    con = sqlite3.connect(DB, timeout=30)
+    con.execute("CREATE TABLE IF NOT EXISTS referrals (id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ", ".join(f"{f} TEXT" for f in FIELDS) + ", added TEXT, "
+                "UNIQUE (person COLLATE NOCASE, role_applied COLLATE NOCASE))")
+    return con
 
 
 def rows():
-    wb = ensure_sheet()
-    ws = wb.active
-    out = []
-    for r in range(2, ws.max_row + 1):
-        d = {c: ws.cell(r, i + 1).value for i, c in enumerate(COLS)}
-        if d["Person"]:
-            d["_row"] = r
-            out.append(d)
-    return out
+    """Every tracked person, oldest first: a dict keyed by COLS, plus "_row" (the id)."""
+    with db() as con:
+        got = con.execute(f"SELECT id, {', '.join(FIELDS)} FROM referrals ORDER BY id").fetchall()
+    return [{**dict(zip(COLS, r[1:])), "_row": r[0]} for r in got]
 
 
 def add(entries):
-    """Append candidates, skipping anyone already tracked for the same role."""
-    wb = ensure_sheet()
-    ws = wb.active
-    have = {(str(ws.cell(r, 1).value or "").lower(),
-             str(ws.cell(r, 4).value or "").lower())
-            for r in range(2, ws.max_row + 1)}
-    thin = Side(style="thin", color="D9D9D9")
+    """Add candidates, skipping anyone already tracked for the same role."""
+    now = dt.datetime.now().isoformat(timespec="seconds")
     added = 0
-    for e in entries:
-        key = (e["Person"].lower(), e["Role Applied"].lower())
-        if key in have:
-            continue
-        have.add(key)
-        ws.append([e.get(c, "") for c in COLS])
-        for c in ws[ws.max_row]:
-            c.alignment = Alignment(vertical="top", wrap_text=True)
-            c.border = Border(left=thin, right=thin, top=thin, bottom=thin)
-        added += 1
-    wb.save(XLSX)
+    with db() as con:
+        for e in entries:
+            cur = con.execute(f"INSERT OR IGNORE INTO referrals ({', '.join(FIELDS)}, added) "
+                              f"VALUES ({', '.join('?' * (len(FIELDS) + 1))})",
+                              [e.get(c) or None for c in COLS] + [now])
+            added += cur.rowcount
     return added
 
 
 def set_status(row, status):
+    """A status tap (the referral page) or --set: the status, and the dates it implies."""
     if status not in STATUSES:
-        sys.exit(f"status must be one of: {', '.join(STATUSES)}")
-    wb = ensure_sheet()
-    ws = wb.active
+        raise ValueError(f"status must be one of: {', '.join(STATUSES)}")
     today = dt.date.today()
-    ws.cell(row, COLS.index("Status") + 1, status)
+    chase = (today + dt.timedelta(days=FOLLOWUP_DAYS)).isoformat()
+    sets = {"status": status}
     if status == "Invite Sent":
-        ws.cell(row, COLS.index("Invite Sent") + 1, today.isoformat())
-        ws.cell(row, COLS.index("Follow-up Date") + 1,
-                (today + dt.timedelta(days=FOLLOWUP_DAYS)).isoformat())
+        sets.update(invite_sent=today.isoformat(), followup_date=chase)
     elif status == "Message Sent":
-        ws.cell(row, COLS.index("Message Sent") + 1, today.isoformat())
-        ws.cell(row, COLS.index("Follow-up Date") + 1,
-                (today + dt.timedelta(days=FOLLOWUP_DAYS)).isoformat())
+        sets.update(message_sent=today.isoformat(), followup_date=chase)
     elif status in ("Replied", "Referred", "No Response"):
-        ws.cell(row, COLS.index("Replied") + 1,
-                today.isoformat() if status == "Replied" else "")
-        ws.cell(row, COLS.index("Follow-up Date") + 1, "")
-    wb.save(XLSX)
+        sets.update(replied=today.isoformat() if status == "Replied" else None, followup_date=None)
+    with db() as con:
+        cur = con.execute(f"UPDATE referrals SET {', '.join(f'{k}=?' for k in sets)} WHERE id=?",
+                          [*sets.values(), row])
+    if not cur.rowcount:
+        raise ValueError(f"no referral row {row}")
     print(f"  row {row} -> {status}")
 
 
@@ -148,8 +119,8 @@ def due(days_ahead=0):
         if not raw:
             continue
         try:
-            when = raw.date() if hasattr(raw, "date") else dt.date.fromisoformat(str(raw)[:10])
-        except Exception:
+            when = dt.date.fromisoformat(str(raw)[:10])
+        except ValueError:
             continue
         if when <= today + dt.timedelta(days=days_ahead):
             d["_overdue"] = (today - when).days
@@ -291,7 +262,7 @@ def referral_link():
 
 def push(company, role, entries):
     """ONE message with ONE link. Everything is on the page: profile, message to
-    copy, and status buttons that write back to the tracker."""
+    copy, and status buttons that save straight back."""
     warm = sum(1 for e in entries if e["Relationship"] == "1st-degree")
     names = ", ".join(e["Person"].split()[0] for e in entries[:4])
     body = (f"🤝 <b>Referral targets — {esc(company)}</b>\n"
@@ -305,10 +276,11 @@ def push(company, role, entries):
 # ---------------------------------------------------------------------- main
 
 def from_application(slug):
-    """Read company + role off the queue item for a submitted application."""
-    fs = sorted(glob.glob(os.path.join(DATA, "queue", f"{slug}-*.json")))
+    """Read company + role off the card for a submitted application."""
+    from jobpilot.core import cards as CD
+    fs = CD.of(slug)
     if not fs:
-        sys.exit(f"no queue item for {slug}")
+        sys.exit(f"no card for {slug}")
     d = json.load(open(fs[-1]))
     return d.get("company", slug), d.get("role", "the role")
 
@@ -332,7 +304,7 @@ def digest():
     if not d_due and not todo:
         lines.append("Nothing outstanding.")
     lines += ["", f"Work through them here:\n{referral_link()}",
-              f"<i>Sheet: tracking/referral-tracker.xlsx ({len(open_rows)} open)</i>"]
+              f"<i>{len(open_rows)} open</i>"]
     return "\n".join(lines)
 
 
@@ -354,7 +326,10 @@ def main():
         pass
 
     if a.set:
-        return set_status(int(a.set[0]), a.set[1])
+        try:
+            return set_status(int(a.set[0]), a.set[1])
+        except ValueError as e:
+            sys.exit(f"  {e}")
     if a.list:
         for d in rows():
             star = "★" if d["Relationship"] == "1st-degree" else " "
@@ -384,7 +359,7 @@ def main():
         print("  none found")
         return
     n = add(ents)
-    print(f"  {len(ents)} candidate(s), {n} new in the tracker")
+    print(f"  {len(ents)} candidate(s), {n} new in the referral list")
     for e in ents:
         print(f"    [{e['Relationship']:<14}] {e['Person'][:26]:<28} {e['Their Title'][:40]}")
     if not a.no_telegram:

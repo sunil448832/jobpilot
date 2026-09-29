@@ -7,12 +7,12 @@
 #
 # Layout (see paths.py for how the two trees are found):
 #   src/<stage>/   code: core discover rank screen tailor apply (platforms explore_agentic draft) review outreach  (imported as jobpilot.<stage>)
-#   config/   what you edit      data/  machine-written      applications/  per-role output
-#   tracking repo: resume/ applications/ tracking/ target-companies/  (config.yaml paths.tracking_repo)
+#   config/   what you edit      data/  general state (state.db)      logs/  run output      applications/<slug>/  one role: cards, asks, resume
+#   tracking repo: resume/ project-memory-backup/ target-companies/  (config.yaml paths.tracking_repo; read-only)
 # ============================================================================
 set -uo pipefail
 TOOL="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
-SRC="$TOOL/src"; DATA="$TOOL/data"
+SRC="$TOOL/src"; DATA="$TOOL/data"; LOGS="$TOOL/logs"
 PY="${JOBPILOT_PYTHON:-/home/sunil/miniconda3/bin/python3}"   # has playwright; /usr/bin/python3 does not
 py() { "$PY" -m "jobpilot.$1" "${@:2}"; }                      # every stage is a module: jobpilot.<stage>.<mod> (pip install -e .)
 TIMERS="jobpilot-daily.timer jobpilot-review.timer"
@@ -27,6 +27,9 @@ usage() { cat <<'TXT'
     ./jobpilot stop            scheduler OFF + kill anything mid-run
     ./jobpilot pipeline [N]    one full end-to-end run now; N = roles to tailor (default 6)
                                --only screen,tailor   re-run just those stages
+                               --source-limit 200     intake stops at 200 matching postings (boards
+                                                      scanned longest ago first); default config
+                                                      discovery.source_limit, 0 = every board
                                --dry-run              build nothing, fill nothing
     ./jobpilot stages          the stage names --only accepts, in order
     ./jobpilot status          ON/OFF, services, counts
@@ -44,14 +47,15 @@ usage() { cat <<'TXT'
     ./jobpilot submit <slug>   file one approved job
     ./jobpilot dryrun <slug>   a filing that stops before Submit (presses nothing there)
     ./jobpilot log [N]         follow the run log
+    ./jobpilot companies       per company: applications sent, the limit (5 a month; OpenAI 5
+                               per 180 days), room now, when the next slot opens (also /companies)
 
   EACH STAGE ON ITS OWN  (same order as the pipeline)
     ./jobpilot dedupe          remove duplicates from every store
-    ./jobpilot intake          pull all boards (no re-rank)
+    ./jobpilot intake          pull all boards (no re-rank); --limit 200: stop at 200 matching postings
     ./jobpilot rank [N]        re-score everything, show the top N
     ./jobpilot screen          Claude reviews batches until 10 are usable
     ./jobpilot prep [N]        tailor + build + fill the top N (= tailor)
-    ./jobpilot tracker         sync tracking/job-tracker.xlsx
     ./jobpilot referrals       open referral list
     ./jobpilot digest          review prompt + file approved items (--no-submit to only prompt)
 
@@ -85,8 +89,9 @@ usage() { cat <<'TXT'
     ./jobpilot referrals       open list + link to the referral page
     ./jobpilot chase           referral follow-ups due
 
-  TRACKING  (lives in the resume repo, tracking/)
-    ./jobpilot follow          follow-ups due (5 business days after applying)
+  TRACKING  (follow-ups, from the submitted queue cards)
+    ./jobpilot follow          follow-ups due (5 business days after applying; mark them on
+                               the review list, Submitted → After)
     ./jobpilot paths           where everything is, and whether it exists
     ./jobpilot check           smoke test: imports, config, build, form — no LLM
 
@@ -153,7 +158,7 @@ case "$cmd" in
   pipeline|now) # ./jobpilot pipeline [N] [--only stage,stage] [--dry-run]  — N = roles to tailor today
               if [[ "${1:-}" =~ ^[0-9]+$ ]]; then n="$1"; shift; py core.daily --tailor-limit "$n" "$@"
               else py core.daily "$@"; fi ;;
-  stages)     echo "  dedupe intake rank screen tailor tracker referrals digest"
+  stages)     echo "  dedupe intake hold rank screen tailor referrals digest"
               echo "  e.g.  ./jobpilot pipeline 5 --only screen,tailor" ;;
   status)     en=$(systemctl --user is-enabled jobpilot-daily.timer 2>/dev/null)
               ac=$(systemctl --user is-active  jobpilot-daily.timer 2>/dev/null)
@@ -179,7 +184,7 @@ case "$cmd" in
               else py apply.explore_agentic.replay; fi ;;
   dryrun)     [ $# -ge 1 ] || { echo "  usage: ./jobpilot dryrun <slug>"; exit 1; }
               py apply.explore_agentic.replay "$1" "${@:2}" ;;
-  log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
+  log)        tail -n "${1:-40}" -f "$LOGS/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
   intake)     py discover.intake "$@" ;;
   tenants)    py discover.tenants "$@" ;;
@@ -198,6 +203,7 @@ case "$cmd" in
   add)        [ $# -ge 1 ] || { echo "  usage: ./jobpilot add <url> [url...]   (company-site apply links you found; skips rank+screen)"; exit 1; }
               py discover.inbox "$@" ;;
   inbox)      py discover.inbox --list ;;
+  companies)  py core.quota ;;
   explore|fill) [ $# -ge 1 ] || { echo "  usage: ./jobpilot explore <slug>"; exit 1; }; py apply.explore_agentic "$@" ;;
   dedupe)     py core.dedupe "$@" ;;
   keywords)   py rank.keyword_learn "$@" ;;
@@ -213,7 +219,6 @@ case "$cmd" in
   referrals)  py outreach.referral_tracker --list ;;
   chase)      py outreach.referral_tracker --due ;;
   follow)     py core.tracker --followups ;;
-  tracker)    py core.tracker --sync ;;
   setup-telegram)  py review.telegram_setup "$@" ;;
   setup-tailscale) bash "$TOOL/scripts/setup_tailscale.sh" ;;
   services)   systemctl --user daemon-reload && systemctl --user enable --now jobpilot-form.service

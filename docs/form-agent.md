@@ -55,7 +55,7 @@ verification, a refused password, a locked account or a missing account form is 
 never a second account, no second try in a session after a refusal).
 
 **At the end** the placeholders go into `applications/<slug>/explore.json` (his earlier answers
-kept), the card into `data/queue/<id>.json` (card.py) with the last page's screenshot, and a
+kept), the card into `applications/<slug>/cards/<id>.json` (card.py, core/cards.py) with the last page's screenshot, and a
 Telegram message says a new card is ready (with the card's and the review list's links). A
 re-exploration supersedes the job's unsent cards.
 
@@ -148,7 +148,7 @@ way to the next:
 ## 5. Questions during filing (`review/ask.py`, `/questions`)
 
 What a filing needs from him at that moment — an emailed code, a Workday email verification, a
-sign-in fix — is written to `data/asks/<key>.json` and shown on its own page, `/questions`:
+sign-in fix — is written to `applications/<slug>/asks/<key>.json` and shown on its own page, `/questions`:
 waiting ones first with an answer box and the time the wait ends (15 min for a code, 30 for a
 sign-in fix), then notices (a captcha, a filing the agent could not resolve, with the job's
 link), then the answered and expired ones of the last 7 days. Each new one sends Telegram a
@@ -184,10 +184,10 @@ values is what the filing will enter, from the record (`calls.values_by_page`).
 | `applications/<slug>/explore.json` | placeholders, his answers, submit attempts |
 | `applications/<slug>/agentic.json` | the last exploration: outcome, pages, the Submit button |
 | `applications/<slug>/filing_agentic.json` | the last filing: redo, presses, agent calls, cost |
-| `data/queue/<id>.json` / `.png` | the card and its screenshots |
-| `data/asks/<key>.json` | questions and notices from filings |
+| `applications/<slug>/cards/<id>.json` / `.png` | the card and its screenshots |
+| `applications/<slug>/asks/<key>.json` | questions and notices from filings |
 | `data/techniques.json` | which technique works on which platform |
-| `tests/maps/<slug>/` | each session's log and system prompt (review) |
+| `logs/sessions/<slug>/` | each session's log and system prompt (review) |
 
 ## 9. Known limits
 

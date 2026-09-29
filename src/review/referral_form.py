@@ -5,10 +5,10 @@ referral_form.py — render the referral tracker as one page.
 A dozen Telegram messages per application is unusable on a phone. This puts every
 candidate for every open application on a single page served over Tailscale:
 tap to copy the message, tap to open the profile, tap to set the status — which
-writes straight back to tracking/referral-tracker.xlsx.
+saves straight back to the referrals table in data/state.db.
 
 Usage:
-    python jobs/referral_form.py            # write jobs/queue/_referrals.html
+    python -m jobpilot.review.referral_form   # write logs/referrals.html
     python jobs/referral_form.py --company Openai
 """
 import argparse
@@ -18,7 +18,7 @@ import os
 import sys
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY, LOGS)
 
 TEMPLATE = r"""<title>Referral Queue</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -234,7 +234,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--company")
     ap.add_argument("-o", "--out",
-                    default=os.path.join(DATA, "queue", "_referrals.html"))
+                    default=os.path.join(LOGS, "referrals.html"))
     a = ap.parse_args()
     open(a.out, "w", encoding="utf-8").write(build(a.company))
     print(f"  {a.out}")

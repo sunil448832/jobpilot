@@ -8,7 +8,8 @@ no Claude while the pages are as they were, and let the agent take over only whe
                 that does not move on): the agent, with every tool and the replay tool
                 (resume.md) — it fixes the page, calls replay to go on, and finishes on the
                 last page
-    3 submit    only with --submit, a queue item that is approved and never pressed before,
+    3 submit    only with --submit, a queue item that is approved and never pressed before, its
+                company under its application limit (core/quota.py; otherwise it stays approved),
                 every placeholder answered, none set while filing: code presses the button the
                 record names (form.submit — its checks, and the watch of what the portal does)
     4 fix       NOT ACCEPTED (errors on the form, or sent back to an earlier page): the agent,
@@ -25,7 +26,7 @@ A dry run goes to the last page and presses nothing there. Filing one job takes 
 approved card unless --item names one. After a submission: the outcome to his phone
 (browser.notify_outcome), the attempt in the record, and referral targets for the company.
 Written: calls.json (saved after every call: a filing stopped anywhere resumes from it),
-applications/<slug>/filing_agentic.json (what happened, each press), tests/maps/<slug>/replay-<time>.log.
+applications/<slug>/filing_agentic.json (what happened, each press), logs/sessions/<slug>/replay-<time>.log.
 """
 import argparse
 import asyncio
@@ -40,7 +41,8 @@ import time
 
 from jobpilot.core.answers import load, load_learned
 from jobpilot.core.config import cfg
-from jobpilot.core.paths import TOOL
+from jobpilot.core import cards as CD, quota as Q
+from jobpilot.core.paths import LOGS, TOOL
 from jobpilot.apply.explore_agentic import browser as B, record as R
 from jobpilot.apply.explore_agentic.form import Form
 from jobpilot.apply.explore_agentic import calls as C, card as K, session as SS
@@ -107,7 +109,7 @@ def fix_task(said):
 
 async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
     stamp = dt.datetime.now().strftime("%m%d-%H%M")
-    base = os.path.join(TOOL, "tests", "maps", slug, f"replay-{stamp}")
+    base = os.path.join(LOGS, "sessions", slug, f"replay-{stamp}")
     os.makedirs(os.path.dirname(base), exist_ok=True)
     logf = open(base + ".log", "w", encoding="utf-8")
     t0 = time.time()
@@ -132,6 +134,10 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
         if item.get("submit_presses"):
             raise Skip(f"{item['id']}: Submit was pressed before ({item['submit_presses']}) — check the email for a "
                      "confirmation; nothing opened, nothing sent")
+        q = Q.companies().get(Q.key(item.get("company")))
+        if q and q["room"] is not None and q["room"] <= 0:
+            raise Skip(f"{item['id']}: {item.get('company')} is at its limit ({q['used']} sent in {q['window']} days, "
+                       f"max {q['max']}) — stays approved, files from {q['opens']:%Y-%m-%d}; nothing opened, nothing sent")
     if submit:
         sent = [a for a in (R.load(slug).get("attempts") or []) if a.get("outcome") in ("submitted", "unconfirmed")]
         if sent:
@@ -189,7 +195,8 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
                 out["why"] = done[1]
         if form.sent:
             out["outcome"], out["why"] = form.sent
-        shot = os.path.join(TOOL, "data", "queue", f"{slug}-{'submitted' if submit else 'replay'}-{stamp}.png")
+        os.makedirs(CD.folder(slug), exist_ok=True)
+        shot = os.path.join(CD.folder(slug), f"{slug}-{'submitted' if submit else 'replay'}-{stamp}.png")
         try:
             await on_browser(lambda: form.page.screenshot(path=shot, full_page=True))
             out["screenshot"] = os.path.relpath(shot, TOOL)
@@ -229,7 +236,7 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
                 from jobpilot.review import ask as ask_mod
                 ask_mod.note(f"stuck-{item['id']}", "The filing stopped and nothing was sent: "
                              f"{(out.get('why') or out['outcome'])[:400]}",
-                             about=f"{item.get('company')} — {item.get('role')}", link=item.get("url", ""))
+                             about=f"{item.get('company')} — {item.get('role')}", link=item.get("url", ""), slug=slug)
             B.notify_outcome(item)
         log(f"\nFILING: {out['outcome']}" + (f" — {out['why']}" if out.get("why") else "")
             + f" | {out['seconds']}s | agent: {out.get('agent') or 'not needed'}"

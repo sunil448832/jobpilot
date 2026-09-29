@@ -39,7 +39,7 @@ import requests
 import yaml
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 from jobpilot.core.config import cfg  # noqa: E402
 CACHE = os.path.join(DATA, ".yc_companies.json")
 BOARDS = os.path.join(CONFIG, "boards.yaml")

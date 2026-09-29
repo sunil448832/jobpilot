@@ -30,7 +30,7 @@ import urllib.parse
 from bs4 import BeautifulSoup
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 from jobpilot.apply import platforms  # noqa: E402   one registry: recognise a link, fetch its JD, route it
 from jobpilot.apply.platforms._http import get as _get, html_to_text as _html_to_text  # noqa: E402
 APPLICATIONS_DIR = APPLICATIONS
@@ -70,6 +70,7 @@ def fetch_generic(url):
         "text": _html_to_text(str(soup)),
         "apply_url": url,
         "apply_links": apply_links,
+        "scraped": True,          # company and title read off the page: see main()
     }
 
 
@@ -229,6 +230,9 @@ def main():
     ap.add_argument("url", nargs="?", help="job posting URL")
     ap.add_argument("--company", help="folder name under applications/ (default: derived)")
     ap.add_argument("--market", help="market id from targets.yaml; sets the \\location line")
+    ap.add_argument("--name", help="the employer, as the pipeline recorded it (used when the JD is a page scrape)")
+    ap.add_argument("--title", help="the role, as the pipeline recorded it (used when the JD is a page scrape)")
+    ap.add_argument("--location", help="the location, as the pipeline recorded it (used when the JD has none)")
     ap.add_argument("--force", action="store_true", help="overwrite an existing folder")
     ap.add_argument("--build", metavar="COMPANY", help="build PDF + docx, then score")
     ap.add_argument("--score", metavar="COMPANY", help="score only")
@@ -257,6 +261,13 @@ def main():
 
     print(f"Fetching: {args.url}")
     jd = fetch_jd(args.url)
+    # A page scrape knows the site, not the employer: an aggregator's page gave "arbeitnow.ch"
+    # as the company and "<role> – Nebius – Zürich | Arbeitnow" as the title. What the pipeline
+    # recorded from the board's own data (--name / --title / --location) is right then.
+    if jd.pop("scraped", False):
+        jd["company"] = args.name or jd["company"]
+        jd["title"] = args.title or jd["title"]
+    jd["location"] = jd["location"] or args.location or ""
     company = args.company or slugify(jd["company"]) or "unknown-company"
     print(f"  [jd] {jd['title']} @ {jd['company']} ({jd['location'] or 'location n/a'})")
     print(f"  [jd] portal={jd['portal']}  folder={company}")

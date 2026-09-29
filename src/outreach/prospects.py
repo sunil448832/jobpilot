@@ -32,7 +32,7 @@ import requests
 import yaml
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36"
 SCHOOL = "indian-institute-of-technology-jodhpur"

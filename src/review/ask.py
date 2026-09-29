@@ -3,7 +3,8 @@ ask.py — the questions a filing asks Sunil mid-run, and the notices it leaves 
 
     ask(key, question, ...)   a portal wants something only he has now — the code Greenhouse
                               emails before it takes a submission, a Workday email
-                              verification: written to data/asks/<key>.json, a short Telegram
+                              verification: written to applications/<slug>/asks/<key>.json (the
+                              job it is about; data/asks/ when there is none), a short Telegram
                               message with the questions page's link (/questions) and the review
                               list's, and the caller polls the file until he answers or the wait
                               runs out
@@ -15,39 +16,56 @@ ask.py — the questions a filing asks Sunil mid-run, and the notices it leaves 
 Nothing here submits anything.
 """
 import datetime as dt
+import glob
 import json
 import os
 import time
 
-from jobpilot.core.paths import DATA
+from jobpilot.core.paths import APPLICATIONS, DATA
 
-ASK_DIR = os.path.join(DATA, "asks")
+ASK_DIR = os.path.join(DATA, "asks")          # only for a question about no one job
+
+
+def _safe(key):
+    return "".join(c if c.isalnum() or c in "-_" else "-" for c in key)
+
+
+def _new_path(key, slug=None):
+    """Where a question is written: with the job it is about, else data/asks/."""
+    d = os.path.join(APPLICATIONS, slug, "asks") if slug else ASK_DIR
+    os.makedirs(d, exist_ok=True)
+    return os.path.join(d, f"{_safe(key)}.json")
+
+
+def _files(name="*.json"):
+    return glob.glob(os.path.join(APPLICATIONS, "*", "asks", name)) + glob.glob(os.path.join(ASK_DIR, name))
 
 
 def _path(key):
-    safe = "".join(c if c.isalnum() or c in "-_" else "-" for c in key)
-    return os.path.join(ASK_DIR, f"{safe}.json")
+    """An existing question's file, wherever it was written; None when there is none."""
+    hit = _files(f"{_safe(key)}.json")
+    return hit[0] if hit else None
 
 
 def load(key):
     p = _path(key)
-    return json.load(open(p)) if os.path.isfile(p) else None
+    return json.load(open(p)) if p else None
 
 
 def answer(key, text):
+    p = _path(key) or _new_path(key)
     q = load(key) or {"key": key}
     q["answer"] = (text or "").strip()
     q["answered_at"] = dt.datetime.now().isoformat(timespec="seconds")
-    os.makedirs(ASK_DIR, exist_ok=True)
-    json.dump(q, open(_path(key), "w"), indent=2)
+    json.dump(q, open(p, "w"), indent=2)
     return q
 
 
 def _all():
     out = []
-    for f in sorted(os.listdir(ASK_DIR)) if os.path.isdir(ASK_DIR) else []:
+    for f in sorted(_files(), key=os.path.basename):
         try:
-            out.append(json.load(open(os.path.join(ASK_DIR, f))))
+            out.append(json.load(open(f)))
         except (OSError, ValueError):
             continue
     return out
@@ -85,23 +103,23 @@ def _tell(about):
              + f"\nReview list: {link}")
 
 
-def note(key, question, about="", hint="", link=""):
-    """A notice for the review list — a captcha, say: nothing waits on it, Telegram is told."""
-    os.makedirs(ASK_DIR, exist_ok=True)
+def note(key, question, about="", hint="", link="", slug=None):
+    """A notice for the review list — a captcha, say: nothing waits on it, Telegram is told.
+    `slug`: the job it is about (its applications/ folder keeps it)."""
     json.dump({"key": key, "kind": "notice", "question": question, "hint": hint, "about": about, "link": link,
-               "asked_at": dt.datetime.now().isoformat(timespec="seconds")}, open(_path(key), "w"), indent=2)
+               "asked_at": dt.datetime.now().isoformat(timespec="seconds")}, open(_new_path(key, slug), "w"), indent=2)
     _tell(about)
 
 
-def ask(key, question, hint="", timeout=900, poll=3, about=""):
+def ask(key, question, hint="", timeout=900, poll=3, about="", slug=None):
     """Post the question (the review list's "Questions from filing"), send Telegram one line
-    with the list's link, wait for the answer. Returns '' on timeout. `about`: the job."""
-    os.makedirs(ASK_DIR, exist_ok=True)
+    with the list's link, wait for the answer. Returns '' on timeout. `about`: the job;
+    `slug`: its applications/ folder, which keeps the question."""
     until = dt.datetime.now() + dt.timedelta(seconds=timeout)
     json.dump({"key": key, "question": question, "hint": hint, "about": about, "answer": None,
                "asked_at": dt.datetime.now().isoformat(timespec="seconds"),
                "until": until.isoformat(timespec="seconds")},
-              open(_path(key), "w"), indent=2)
+              open(_new_path(key, slug), "w"), indent=2)
     _tell(about)
     print(f"  [ask] waiting up to {timeout}s for: {question[:70]}")
     deadline = time.time() + timeout

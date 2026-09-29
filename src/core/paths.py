@@ -3,8 +3,10 @@ paths.py — the one place that knows where things live.
 
 jobpilot is two trees, deliberately:
 
-  TOOL      this checkout: code, config, data, and — since 2026-09-22 — the
-            tool's own outputs: applications/<slug>/ and tracking/*.xlsx.
+  TOOL      this checkout: code, config, and the tool's own outputs: data/ (general
+            state: state.db, caches), applications/<slug>/ (everything about one
+            application: its resume, record, cards, asks), and logs/
+            (what runs print, read once: daily.log, sessions/<slug>/, old/).
   TRACKING  Sunil's resume repo: resume/, project-memory-backup/,
             target-companies/. READ-ONLY for the tool: the base resume and the
             code-grounded notes are the only things the tool takes from it.
@@ -27,6 +29,7 @@ SRC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOL = os.path.dirname(SRC)
 CONFIG = os.path.join(TOOL, "config")
 DATA = os.path.join(TOOL, "data")
+LOGS = os.path.join(TOOL, "logs")
 SCRIPTS = os.path.join(TOOL, "scripts")
 POLICY = os.path.join(CONFIG, "POLICY.md")     # hand-edited rules live with the other hand-edited files
 
@@ -55,9 +58,9 @@ RESUME = os.path.join(TRACKING, "resume")
 MEMORY = os.path.join(TRACKING, "project-memory-backup")
 # ... and what it WRITES, which lives with the tool.
 APPLICATIONS = os.path.join(TOOL, "applications")
-TRACKERS = os.path.join(TOOL, "tracking")
 
 os.makedirs(DATA, exist_ok=True)
+os.makedirs(LOGS, exist_ok=True)
 
 
 def check():
@@ -71,7 +74,7 @@ def check():
 
 
 if __name__ == "__main__":
-    for k in ("TOOL", "SRC", "CONFIG", "DATA", "TRACKING", "RESUME", "APPLICATIONS",
-              "TRACKERS", "MEMORY", "POLICY"):
+    for k in ("TOOL", "SRC", "CONFIG", "DATA", "LOGS", "TRACKING", "RESUME", "APPLICATIONS",
+              "MEMORY", "POLICY"):
         v = globals()[k]
         print(f"  {k:<13} {v}   {'ok' if os.path.exists(v) else 'MISSING'}")

@@ -34,7 +34,7 @@ TEMPLATE = """<!doctype html><html><head><meta charset="utf-8">
 <form id="f" class="card"><div id="list"></div>
 <button type="submit">Save choices</button>
 <div class="ok" id="ok"></div></form>
-<div class="note">Interest → <code>targets.yaml → keywords.interest</code>. Done → <code>keywords.confirmed</code> + <code>tracking/resume_todo.md</code>. Delete a line there to undo.</div>
+<div class="note">Interest → <code>targets.yaml → keywords.interest</code>. Done → <code>keywords.confirmed</code> + <code>data/resume_todo.md</code>. Delete a line there to undo.</div>
 <script>
 const D=__DATA__;
 const L=document.getElementById("learned");

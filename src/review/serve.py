@@ -33,10 +33,10 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
-from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, LOGS, TRACKING, POLICY,  # noqa: E402
+                   RESUME, APPLICATIONS, MEMORY)
 from jobpilot.core.config import cfg  # noqa: E402
-QUEUE_DIR = os.path.join(DATA, "queue")
+from jobpilot.core import cards as CD  # noqa: E402
 from jobpilot.review import form as form_mod                                    # noqa: E402
 
 TOKEN = None
@@ -70,19 +70,12 @@ def telegram(text):
 
 
 def items():
-    out = []
-    for p in sorted(glob.glob(os.path.join(QUEUE_DIR, "*.json"))):
-        if os.path.basename(p).startswith("_"):
-            continue
-        try:
-            out.append(json.load(open(p)))
-        except json.JSONDecodeError:
-            pass
-    return out
+    return list(CD.cards())
 
 
 def item_path(i):
-    return os.path.join(QUEUE_DIR, i + ".json")
+    """The card's file ("" when there is no such card)."""
+    return CD.path(i) or ""
 
 
 INDEX_CSS = """
@@ -166,6 +159,40 @@ def questions_page(t):
               f"headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{answer:v}})}});"
               f"document.getElementById('s-'+k).textContent=r.ok?'Sent — the filing goes on.':'Failed: '+r.status;}}"
               f"</script>")
+
+def companies_line():
+    """One line for the list's Companies card: who is at the limit."""
+    from jobpilot.core import quota as Q
+    try:
+        rows = Q.table()
+    except Exception as e:
+        return f"table unavailable: {type(e).__name__}"
+    full = [r[0] for r in rows if r[4] == 0]
+    return (f"{len(rows)} companies, {sum(r[1] for r in rows)} submitted · at the limit: "
+            + (", ".join(full) if full else "none"))
+
+
+def companies_page(t):
+    """/companies — one row per company (core/quota.py): what was sent, sent inside its
+    window, the limit, room now, when the next slot opens, cards still waiting."""
+    from jobpilot.core import quota as Q
+    rows = Q.table()
+    cell = lambda v: "" if v is None else str(v)
+    body = "".join(
+        f'<tr{" class=full" if r[4] == 0 else ""}>' + "".join(
+            f'<td{" class=d" if k else ""}>{cell(v)}</td>' for k, v in enumerate(r)) + "</tr>"
+        for r in rows)
+    return (f"<title>Companies</title><meta name=viewport content=\"width=device-width,initial-scale=1\">"
+            f"<style>{INDEX_CSS} tr.full td{{background:#FBE3E1}} "
+            f"@media(prefers-color-scheme:dark){{tr.full td{{background:#3A1E1B}}}}</style>"
+            f'<div class="wrap"><h1>Companies</h1>'
+            f'<p class="m">{companies_line()}. At most {cfg("apply.default_quota.max", 5)} applications per company in '
+            f'{cfg("apply.default_quota.window_days", 30)} days (OpenAI: its portal\'s own limit). A company at the '
+            f'limit gets no new tailoring, and its approved cards wait until the next slot. '
+            f'<a href="/{t}">Review list →</a></p>'
+            f'<div class="tbl"><table class="sub"><tr>' + "".join(f"<th>{c}</th>" for c in Q.COLUMNS)
+            + f"</tr>{body}</table></div></div>")
+
 
 class H(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -253,11 +280,16 @@ class H(BaseHTTPRequestHandler):
                           f"if(!confirm('Mark it as submitted by hand? It will never be filed again.')){{box.checked=false;return;}}"
                           f"const r=await fetch('/a/'+id+'/submit{t}',{{method:'POST',headers:{{'Content-Type':'application/json'}},"
                           f"body:JSON.stringify({{item:id,decision:'submitted'}})}});"
-                          f"if(r.ok)location.reload();else{{box.checked=false;alert('Failed: '+r.status);}}}}</script>")
+                          f"if(r.ok)location.reload();else{{box.checked=false;alert('Failed: '+r.status);}}}}"
+                          f"async function after(sel,id){{const r=await fetch('/a/'+id+'/after{t}',{{method:'POST',"
+                          f"headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{status:sel.value}})}});"
+                          f"if(!r.ok)alert('Not saved: '+r.status);}}</script>")
             def submitted_table(rows):
-                """What he applied to, newest first: the date, the company, the role, how, and the
-                people who could refer him for it (the role's own referral page)."""
+                """What he applied to, newest first: the date, the company, the role, how, the
+                people who could refer him for it (the role's own referral page), and what
+                happened after (core/tracker.py: ⏰ once a follow-up is due and nothing is marked)."""
                 from urllib.parse import quote
+                from jobpilot.core import tracker
                 from jobpilot.review import referral_form
                 try:
                     people = referral_form.counts()
@@ -281,15 +313,25 @@ class H(BaseHTTPRequestHandler):
                     if c["asked"]:
                         return f'{c["asked"]} asked' + (f', {c["replied"]} replied' if c["replied"] else "")
                     return "not yet asked"
+
+                def after(i):
+                    cur = (i.get("after") or {}).get("status") or ""
+                    day = tracker.due_date(i)
+                    blank = "⏰ follow up" if not cur and day and day <= dt.date.today() else "—"
+                    opts = [("", blank)] + list(tracker.AFTER.items())
+                    return (f'<select onchange="after(this, \'{i["id"]}\')">'
+                            + "".join(f'<option value="{v}"{" selected" if v == cur else ""}>{lab}</option>'
+                                      for v, lab in opts) + "</select>")
                 rows = sorted(rows, key=lambda i: i.get("submitted_at") or "", reverse=True)
                 return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th><th>How</th>'
-                        '<th>Referrals</th><th>Referred?</th></tr>'
+                        '<th>Referrals</th><th>Referred?</th><th>After</th></tr>'
                         + "".join(
                             f'<tr><td class="d">{(i.get("submitted_at") or "")[:10]}</td>'
                             f'<td>{i.get("company","?")}</td>'
                             f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
                             f'<td class="d">{"✋ by hand" if i.get("submitted_via") == "manual" else "filed"}</td>'
-                            f'<td class="d">{refs(i)}</td><td class="d">{referred(i)}</td></tr>'
+                            f'<td class="d">{refs(i)}</td><td class="d">{referred(i)}</td>'
+                            f'<td class="d">{after(i)}</td></tr>'
                             for i in rows)
                         + "</table></div>")
 
@@ -329,6 +371,9 @@ class H(BaseHTTPRequestHandler):
                     + f'<a class="card" href="/add{t}">'
                       f'<div class="r">Add job links →</div>'
                       f'<div class="m">Paste company-site apply links you found; they go straight to tailoring</div></a>'
+                    + f'<a class="card" href="/companies{t}">'
+                      f'<div class="r">Companies →</div>'
+                      f'<div class="m">{companies_line()}</div></a>'
                     + f'<a class="card" href="/referrals{t}">'
                       f'<div class="r">Referral queue →</div>'
                       f'<div class="m">People to contact, messages ready to copy</div></a>'
@@ -405,6 +450,9 @@ class H(BaseHTTPRequestHandler):
         if parts == ["questions"]:
             return self._ok(questions_page(f"?t={TOKEN}" if TOKEN else ""))
 
+        if parts == ["companies"]:
+            return self._ok(companies_page(f"?t={TOKEN}" if TOKEN else ""))
+
         # a mid-run question from the submitter (e.g. an emailed verification code)
         if parts[0] == "ask" and len(parts) == 2:
             from jobpilot.review import ask as ask_mod
@@ -431,7 +479,7 @@ class H(BaseHTTPRequestHandler):
             return self._ok(body)
 
         if parts[0] == "shot" and len(parts) == 2:
-            p = os.path.join(QUEUE_DIR, parts[1] + ".png")
+            p = CD.shot(parts[1]) or ""
             if not os.path.isfile(p):
                 return self._err(404, "no screenshot")
             return self._ok(open(p, "rb").read(), "image/png")
@@ -458,7 +506,7 @@ class H(BaseHTTPRequestHandler):
                     item[k] = u[k]
             item.pop("undo", None)
             json.dump(item, open(p, "w"), indent=2)
-            sub = os.path.join(QUEUE_DIR, f"_submission-{item_id}.json")
+            sub = CD.submission(item_id)
             if os.path.isfile(sub):
                 os.remove(sub)
         try:
@@ -537,7 +585,7 @@ class H(BaseHTTPRequestHandler):
                 try:
                     subprocess.Popen([sys.executable, "-m", "jobpilot.tailor.autotailor", "--inbox",
                                       "--limit", str(len([r for r in results if r.get("ok")]))],
-                                     cwd=TOOL, stdout=open(os.path.join(DATA, "inbox-tailor.log"), "a"),
+                                     cwd=TOOL, stdout=open(os.path.join(LOGS, "inbox-tailor.log"), "a"),
                                      stderr=subprocess.STDOUT, start_new_session=True)
                     started = True
                 except Exception as e:
@@ -546,7 +594,7 @@ class H(BaseHTTPRequestHandler):
                   + (", tailoring started" if started else ""))
             return self._ok(json.dumps({"results": results, "started": started}), "application/json")
 
-        # referral status updates write straight into the tracker sheet
+        # referral status updates save straight into the referrals table (data/state.db)
         if parts[:2] == ["referrals", "status"]:
             n = int(self.headers.get("Content-Length") or 0)
             try:
@@ -561,6 +609,24 @@ class H(BaseHTTPRequestHandler):
                 return self._ok(json.dumps({"ok": True}), "application/json")
             except Exception as e:
                 return self._err(400, f"{type(e).__name__}: {e}")
+
+        # what happened after a submitted application went (core/tracker.py): ends its follow-up
+        if len(parts) == 3 and parts[0] == "a" and parts[2] == "after":
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                payload = json.loads(self.rfile.read(n) or b"{}")
+            except json.JSONDecodeError:
+                return self._err(400, "bad json")
+            if not os.path.isfile(item_path(parts[1])):
+                return self._err(404, "no such application")
+            from jobpilot.core import tracker
+            try:
+                with LOCK:
+                    tracker.mark(parts[1], payload.get("status") or "")
+            except ValueError as e:
+                return self._err(400, str(e))
+            print(f"  [after] {parts[1]} -> {payload.get('status') or '(cleared)'}")
+            return self._ok(json.dumps({"ok": True}), "application/json")
 
         if not (len(parts) == 3 and parts[0] == "a" and parts[2] == "submit"):
             return self._err(404, "not found")
@@ -632,7 +698,7 @@ class H(BaseHTTPRequestHandler):
                 item["deferred_count"] = (item.get("deferred_count") or 0) + 1
             json.dump(item, open(p, "w"), indent=2)
 
-            sub = os.path.join(QUEUE_DIR, f"_submission-{item_id}.json")
+            sub = CD.submission(item_id)
             json.dump(payload, open(sub, "w"), indent=2)
 
         # Write his answers into the application's record (explore.json) straight
@@ -673,7 +739,7 @@ class H(BaseHTTPRequestHandler):
         if reexplore:
             try:
                 subprocess.Popen([sys.executable, "-m", "jobpilot.apply.explore_agentic", item["company_slug"]],
-                                 cwd=TOOL, stdout=open(os.path.join(DATA, "reexplore.log"), "a"),
+                                 cwd=TOOL, stdout=open(os.path.join(LOGS, "reexplore.log"), "a"),
                                  stderr=subprocess.STDOUT, start_new_session=True)
                 print(f"  [re-explore] {item_id} — exploration started")
             except Exception as e:

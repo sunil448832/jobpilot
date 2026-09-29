@@ -582,7 +582,8 @@ class Form:
                     from jobpilot.review import ask as ask_mod
                     ask_mod.note(f"captcha-{self.item['id']}", "The portal showed a captcha after Submit, so nothing "
                                  "was sent. Every field was filled as you approved: finish it by hand.",
-                                 about=f"{self.item.get('company')} — {self.item.get('role')}", link=self.item.get("url", ""))
+                                 about=f"{self.item.get('company')} — {self.item.get('role')}", link=self.item.get("url", ""),
+                                 slug=self.slug)
                 return "captcha", "the portal shows a captcha after Submit: nothing is sent until a person solves it"
             text = "\n".join(ln for ln in self.page_lines() if ln not in standing)
             if not coded and B.CODE_RX.search(text):      # an emailed code, asked for after the press

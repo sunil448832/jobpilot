@@ -4,8 +4,7 @@ Standing instructions for every automated run and every Claude session working o
 an application. **If a rule here conflicts with a clever idea, the rule wins.**
 
 Layout (since 2026-09-22): the tool is `~/work/projects/jobpilot` — `src/`,
-`config/` (this file lives there, with everything else hand-edited), `data/`, and its outputs `applications/<slug>/` and
-`tracking/*.xlsx`. The resume repo, `~/work/docs/sunil_resume_v2`, is **read-only**
+`config/` (this file lives there, with everything else hand-edited), `data/`, and its outputs `applications/<slug>/`. The resume repo, `~/work/docs/sunil_resume_v2`, is **read-only**
 for the tool: `resume/sections/*.tex` (the base resume), `project-memory-backup/`,
 `target-companies/`. Both trees are passed as `--add-dir`; prompts give absolute
 paths. `config.yaml`, `targets.yaml`, `answers.yaml`, `learned.yaml` live in `config/`.
@@ -94,7 +93,7 @@ the header.
 **`targets.yaml` has three kinds of keyword.** `strong`, `strong_recent`,
 `learned` and `confirmed` are things he HAS — `confirmed` being work he ticked as
 DONE on the Sunday keyword page that the resume never wrote up (his own
-confirmation; usable in the JD's wording, and listed in `tracking/resume_todo.md`
+confirmation; usable in the JD's wording, and listed in `data/resume_todo.md`
 until the base resume catches up). `interest` is things the market asks for that
 he ticked to *rank for* — a search signal, never evidence. Nothing in `interest` may
 appear on a resume, in a form answer, or in a message; `optimize.py` excludes it

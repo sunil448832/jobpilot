@@ -17,9 +17,8 @@ import re
 
 import yaml
 
+from jobpilot.core import cards as CD  # noqa: E402
 from jobpilot.core.paths import CONFIG, DATA, APPLICATIONS  # noqa: E402
-
-QUEUE = os.path.join(DATA, "queue")
 
 
 def _answers():
@@ -77,8 +76,7 @@ def pack(p, portal):
 
 
 def create(p, portal, reason=""):
-    """Write the manual queue item. Returns its path."""
-    os.makedirs(QUEUE, exist_ok=True)
+    """Write the manual card. Returns its path."""
     app = os.path.join(APPLICATIONS, p["slug"])
     item_id = f"{p['slug']}-{dt.datetime.now():%m%d%H%M}"
     item = {
@@ -99,6 +97,4 @@ def create(p, portal, reason=""):
         ],
         "warnings": [],
     }
-    path = os.path.join(QUEUE, item_id + ".json")
-    json.dump(item, open(path, "w"), indent=2)
-    return path
+    return CD.save(item)

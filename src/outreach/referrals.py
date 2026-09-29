@@ -25,7 +25,7 @@ import re
 import sys
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 # LinkedIn ships it as "Connections.csv"; accept either spelling.
 def _find_csv():
     for n in ("connections.csv", "Connections.csv"):

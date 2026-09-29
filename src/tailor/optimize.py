@@ -25,7 +25,7 @@ import subprocess
 import sys
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 APPS = APPLICATIONS
 from jobpilot.tailor import ats_score as A                                       # noqa: E402
 from jobpilot.rank import keywords as KW                                       # noqa: E402

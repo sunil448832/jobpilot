@@ -27,7 +27,7 @@ import sys
 import yaml
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 from jobpilot.discover.intake import db, load_targets                      # noqa: E402
 from jobpilot.rank import salary as sal                                      # noqa: E402
 from jobpilot.rank import keywords as KW                                     # noqa: E402
@@ -185,7 +185,8 @@ def main():
 
     t = load_targets()
     con = db()
-    where = "" if a.all else "WHERE status='new'"
+    # 'held': a company at its application limit (core/quota.py) — not ranked until it has room
+    where = "WHERE status != 'held'" if a.all else "WHERE status='new'"
     rows = list(con.execute(
         f"SELECT key,company,title,location,market,url,jd,yc,"
         f"COALESCE(board_size,0),COALESCE(team_size,0) FROM jobs {where}"))

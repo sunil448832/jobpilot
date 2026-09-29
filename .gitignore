@@ -1,5 +1,6 @@
-# machine-written state: never versioned
+# machine-written state and run output: never versioned
 data/
+logs/
 jobpilot.egg-info/
 __pycache__/
 *.pyc

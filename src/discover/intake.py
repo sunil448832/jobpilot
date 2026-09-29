@@ -28,13 +28,13 @@ import re
 import sqlite3
 import sys
 import urllib.parse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 import yaml
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 DB_PATH = os.path.join(DATA, "state.db")
 BOARDS_PATH = os.path.join(CONFIG, "boards.yaml")
 from jobpilot.core.config import cfg  # noqa: E402
@@ -564,8 +564,17 @@ def classify(job, t):
 
 # ----------------------------------------------------------------------- main
 
-def pull(workers=None):
+SCANS = os.path.join(DATA, "board_scans.json")     # {board: when it was last fetched}
+
+
+def pull(workers=None, limit=None):
+    """Fetch the boards, keep what matches titles + markets, store what is new.
+
+    limit (discovery.source_limit; 0 = none): stop fetching boards once this many postings
+    matching titles + markets are in hand (known ones count too), and store at most that many.
+    Boards scanned longest ago go first then, so limited runs take turns over every board."""
     workers = workers or cfg("discovery.workers", 12)
+    limit = cfg("discovery.source_limit", 0) if limit is None else limit
     t = load_targets()
     boards = load_boards()
     con = db()
@@ -589,6 +598,13 @@ def pull(workers=None):
         fetchers.append((from_phenom, entry))
     for entry in boards.get("workday", []):
         fetchers.append((from_workday, entry))
+    try:
+        scans = json.load(open(SCANS))
+    except (OSError, ValueError):
+        scans = {}
+    label_of = lambda item: item[1]["slug"] if isinstance(item[1], dict) else item[1]
+    if limit:
+        fetchers.sort(key=lambda item: scans.get(label_of(item), ""))    # never scanned first
 
     # Which boards belong to YC companies, so postings can be tagged and boosted.
     yc_of, size_of = {}, {}
@@ -628,19 +644,37 @@ def pull(workers=None):
         except Exception as e:
             return label, [], type(e).__name__
 
-    done = 0
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        for label, jobs, err in ex.map(_fetch, fetchers):
+    def matching(jobs):
+        return sum(1 for j in jobs if title_ok(j["title"], t) and classify(j, t)[0] is not None)
+
+    done = matched = 0
+    now = dt.datetime.now().isoformat(timespec="seconds")
+    ex = ThreadPoolExecutor(max_workers=workers)
+    futs = [ex.submit(_fetch, item) for item in fetchers]
+    try:
+        for fut in as_completed(futs):
+            label, jobs, err = fut.result()
             done += 1
             if err:
                 print(f"    [warn] {label}: {err}")
+            else:
+                scans[label] = now
             rows.extend(jobs)
             raw += len(jobs)
+            if limit:
+                matched += matching(jobs)
             if done % 50 == 0:
                 print(f"    {done}/{len(fetchers)} boards, {raw} postings so far")
-    for job in from_aggregators():
-        raw += 1
-        rows.append(job)
+            if limit and matched >= limit:
+                print(f"    limit {limit} reached: {matched} matching postings from {done}/{len(fetchers)} boards")
+                break
+    finally:
+        ex.shutdown(wait=False, cancel_futures=True)
+    if not limit or matched < limit:
+        for job in from_aggregators():
+            raw += 1
+            rows.append(job)
+    json.dump(scans, open(SCANS, "w"), indent=1)
 
     # EXPIRY. A posting that has left its board is filled or withdrawn. Until now
     # it stayed 'new' forever: a TII role from 7 Sep was picked first on 23 Sep
@@ -652,7 +686,7 @@ def pull(workers=None):
         live_by_board.setdefault(job["board"], set()).add(job["url"])
     expired = 0
     for board, urls in live_by_board.items():
-        for (key, url) in con.execute("SELECT key, url FROM jobs WHERE board=? AND status='new'", (board,)).fetchall():
+        for (key, url) in con.execute("SELECT key, url FROM jobs WHERE board=? AND status IN ('new', 'held')", (board,)).fetchall():
             if url and url not in urls:
                 con.execute("UPDATE jobs SET status='expired' WHERE key=?", (key,)); expired += 1
     if expired:
@@ -664,6 +698,8 @@ def pull(workers=None):
         market, reason = classify(job, t)
         if market is None:
             continue
+        if limit and kept >= limit:
+            break
         kept += 1
         k = key_for(job["company"], job["title"], job["location"])
         if k in seen_before:
@@ -699,6 +735,9 @@ def main():
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--workers", type=int, default=None,
                     help=f"parallel board fetches (default discovery.workers = {cfg('discovery.workers', 12)})")
+    ap.add_argument("--limit", type=int, default=None,
+                    help="stop once this many postings match titles + markets, store at most that many "
+                         f"(default discovery.source_limit = {cfg('discovery.source_limit', 0)}; 0 = all boards)")
     ap.add_argument("--new", action="store_true")
     ap.add_argument("--stats", action="store_true")
     a = ap.parse_args()
@@ -724,7 +763,7 @@ def main():
                              "WHERE status='new' ORDER BY market, company"):
             print(f"  [{r[3]:<13}] {r[0][:18]:<20} {r[1][:44]:<46} {r[2][:28]}")
         return
-    pull(a.workers)
+    pull(a.workers, a.limit)
 
 
 if __name__ == "__main__":

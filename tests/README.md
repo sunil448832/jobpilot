@@ -6,6 +6,6 @@
 
 `./jobpilot check` runs `test_agents.py` with the other smoke checks.
 
-`maps/<slug>/` keeps each live session for review: `agentic-<time>.log` (the agent's words,
+`logs/sessions/<slug>/` (at the top of the tool) keeps each live session for review: `agentic-<time>.log` (the agent's words,
 every tool call and its result), `agentic-<time>.system.txt` (the system prompt as sent),
 `replay-<time>.log` (a filing: the redo, and the agent where it was needed).

@@ -1,4 +1,4 @@
-"""explore_agentic/card.py — the phone's card for an application (data/queue/<id>.json): what
+"""explore_agentic/card.py — the phone's card for an application (core/cards.py: where it lives): what
 an exploration left for his approval, and the queue the filing takes approved cards from.
 
     write(slug, out, answers)   the card for a finished exploration (session.run's result):
@@ -11,34 +11,14 @@ an exploration left for his approval, and the queue the filing takes approved ca
     approved(slug=None)         approved cards, oldest first (one job's newest, with a slug)
 """
 import datetime as dt
-import json
 import os
 
+from jobpilot.core import cards as CD
 from jobpilot.core.answers import read_jd, detect_market
 from jobpilot.core.paths import TOOL
-from jobpilot.apply.explore_agentic import browser as B, facts as F, record as R
+from jobpilot.apply.explore_agentic import facts as F, record as R
 
-QUEUE = B.QUEUE_DIR
-
-
-def save(item):
-    os.makedirs(QUEUE, exist_ok=True)
-    with open(os.path.join(QUEUE, f"{item['id']}.json"), "w") as f:
-        json.dump(item, f, indent=2)
-
-
-def load(item_id):
-    with open(os.path.join(QUEUE, item_id + ".json")) as f:
-        return json.load(f)
-
-
-def cards():
-    for name in sorted(os.listdir(QUEUE)) if os.path.isdir(QUEUE) else []:
-        if name.endswith(".json") and not name.startswith("_"):
-            try:
-                yield json.load(open(os.path.join(QUEUE, name)))
-            except (OSError, ValueError):
-                continue
+save, load, cards = CD.save, CD.load, CD.cards
 
 
 def approved(slug=None):

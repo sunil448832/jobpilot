@@ -9,10 +9,9 @@ each time they were fixed locally and came back somewhere else:
                  registered under two locale paths (/inception and /global/en)
   state.db       the same req posted in 7 cities = 7 rows (Databricks FDE), so a
                  screen verdict on one left the other six live
-  queue/         re-filling an application wrote a second item, orphaning the
+  cards          re-filling an application wrote a second item, orphaning the
                  drafted answers in the first
-  job-tracker    a submitted role added again from the ranked list
-  referral       the same person tracked twice for one role
+  referrals      the same person tracked twice for one role
 
 So this runs as a routine step, not as an incident response. It is idempotent and
 always keeps the RICHEST record — most jobs, most fields, furthest status — never
@@ -20,7 +19,7 @@ merely the newest.
 
     python jobs/dedupe.py            # clean everything
     python jobs/dedupe.py --dry-run
-    python jobs/dedupe.py --only boards|jobs|queue|tracker|referrals
+    python jobs/dedupe.py --only boards|jobs|queue|referrals
 """
 import argparse
 import glob
@@ -31,9 +30,8 @@ import sqlite3
 import sys
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 DB = os.path.join(DATA, "state.db")
-QUEUE = os.path.join(DATA, "queue")
 BOARDS = os.path.join(CONFIG, "boards.yaml")
 
 # how far along a queue item is — never drop a further one for a fresher one
@@ -133,10 +131,10 @@ def dedupe_jobs(dry=False):
 # ----------------------------------------------------------------------- queue
 
 def dedupe_queue(dry=False):
+    """One live card per job (core/cards.py): the furthest along stays."""
+    from jobpilot.core import cards as CD
     items = {}
-    for f in sorted(glob.glob(os.path.join(QUEUE, "*.json"))):
-        if os.path.basename(f).startswith("_"):
-            continue
+    for f in CD.paths():
         try:
             d = json.load(open(f))
         except json.JSONDecodeError:
@@ -154,7 +152,7 @@ def dedupe_queue(dry=False):
             if d.get("status") in SENT or d.get("submit_presses"):
                 continue
             if not dry:
-                for ext in (".json", ".png", ".html"):
+                for ext in (".json", CD.SUB, ".png", ".html"):
                     p = f[:-5] + ext
                     if os.path.isfile(p):
                         os.remove(p)
@@ -162,54 +160,35 @@ def dedupe_queue(dry=False):
     return removed
 
 
-# -------------------------------------------------------------------- trackers
+# ------------------------------------------------------------------ referrals
 
-def _dedupe_xlsx(path, key_cols, prefer_col=None, dry=False):
-    if not os.path.isfile(path):
-        return 0
-    from openpyxl import load_workbook
-    wb = load_workbook(path)
-    ws = wb.active
-    hdr = [c.value for c in ws[1]]
-    idx = {h: i + 1 for i, h in enumerate(hdr) if h}
-    if not all(c in idx for c in key_cols):
-        return 0
+def dedupe_referrals(dry=False):
+    """The referrals table (outreach/referral_tracker.py): one person per role. The table
+    refuses an exact repeat; this catches the same name spelled with other punctuation
+    or spacing, and keeps the row that got furthest (its status), else the older one."""
+    from jobpilot.outreach import referral_tracker as RT
+    far = {s: i for i, s in enumerate(RT.STATUSES)}
     seen, drop = {}, []
-    for r in range(2, ws.max_row + 1):
-        k = tuple(norm(str(ws.cell(r, idx[c]).value or ""))[:60] for c in key_cols)
+    for d in RT.rows():
+        k = (norm(str(d["Person"] or ""))[:60], norm(str(d["Role Applied"] or ""))[:60])
         if not any(k):
             continue
-        if k in seen:
-            # keep whichever row carries a real status/date, drop the emptier one
-            prev = seen[k]
-            a = str(ws.cell(prev, idx[prefer_col]).value or "") if prefer_col else ""
-            b = str(ws.cell(r, idx[prefer_col]).value or "") if prefer_col else ""
-            if len(b) > len(a):
-                drop.append(prev)
-                seen[k] = r
-            else:
-                drop.append(r)
-        else:
-            seen[k] = r
+        if k not in seen:
+            seen[k] = d
+            continue
+        keep, lose = seen[k], d
+        if far.get(d["Status"], 0) > far.get(keep["Status"], 0):
+            keep, lose = d, keep
+        seen[k] = keep
+        drop.append(lose["_row"])
     if drop and not dry:
-        for r in sorted(drop, reverse=True):
-            ws.delete_rows(r)
-        wb.save(path)
+        with RT.db() as con:
+            con.executemany("DELETE FROM referrals WHERE id=?", [(r,) for r in drop])
     return len(drop)
 
 
-def dedupe_tracker(dry=False):
-    return _dedupe_xlsx(os.path.join(TRACKERS, "job-tracker.xlsx"),
-                        ["Company", "Role"], "Stage", dry)
-
-
-def dedupe_referrals(dry=False):
-    return _dedupe_xlsx(os.path.join(TRACKERS, "referral-tracker.xlsx"),
-                        ["Person", "Role Applied"], "Status", dry)
-
-
 STEPS = {"boards": dedupe_boards, "jobs": dedupe_jobs, "queue": dedupe_queue,
-         "tracker": dedupe_tracker, "referrals": dedupe_referrals}
+         "referrals": dedupe_referrals}
 
 
 def run_all(dry=False, only=None):

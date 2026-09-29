@@ -21,7 +21,7 @@ import sys
 import yaml
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 LEARNED = os.path.join(CONFIG, "learned.yaml")
 STOP = {"the", "a", "an", "of", "to", "in", "and", "or", "for", "with", "you",
         "your", "do", "are", "is", "have", "any", "this", "that", "please",

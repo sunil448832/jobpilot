@@ -15,7 +15,7 @@
 
 paths:
   # The resume repo — the RECORD. jobpilot reads resume/ and project-memory-backup/,
-  # and writes only applications/ and tracking/. It used to be inferred from where
+  # and writes only applications/ and data/. It used to be inferred from where
   # the code lived; now that the tool is a separate checkout it must be stated.
   # Override per-shell with $JOBPILOT_TRACKING.
   tracking_repo: ~/work/docs/sunil_resume_v2
@@ -145,6 +145,10 @@ apply:
   # 180 days" — a scarce, non-renewable resource, and the pipeline holds ~50
   # OpenAI roles, so without this it would spend all six on whatever ranked
   # highest that week. Counted from submitted queue items in the window.
+  # default_quota holds for every company (Sunil, 2026-09-29: at most 5 a month);
+  # an entry under quotas replaces it for that company. See src/core/quota.py and
+  # ./jobpilot companies.
+  default_quota: {max: 5, window_days: 30}
   quotas:
     openai: {max: 5, window_days: 180}     # the portal refuses a 6th in 180 days (seen 2026-09-29)
   # Companies to skip tailoring entirely. OpenAI was held from 2026-09-07 until
@@ -164,7 +168,7 @@ keywords_learn:
   interest_weight: 0.15   # rank.py weight for gaps Sunil ticked — ranking only, never a claim
 
 followups:
-  # Business days after applying before chasing. From job-tracker-guide.md.
+  # Business days after applying before chasing.
   job_days: 5
   # Calendar days after a LinkedIn invite or message. Sooner reads as pushy,
   # later and they have forgotten the context.
@@ -182,6 +186,11 @@ discovery:
   yc_min_size: 10       # smaller than this cannot sponsor anyone
   yc_limit: 600
   workers: 14           # parallel probes; higher risks rate limits
+  # Intake stops pulling boards once this many postings match titles + markets, and
+  # stores at most that many; boards scanned longest ago go first (data/board_scans.json),
+  # so limited runs take turns over every board. 0 = every board, every run.
+  # Per run: ./jobpilot pipeline --source-limit 200, ./jobpilot intake --limit 200.
+  source_limit: 0
   # Slugs that resolve but are not employers. `agency` is a freelance AI-trainer
   # marketplace whose 829 gig listings cleared the enterprise scale tier, so each
   # one collected the biggest company-scale bonus rank.py gives. `pulse` stopped

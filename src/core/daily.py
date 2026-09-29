@@ -5,7 +5,7 @@ daily.py — the overnight run (Phase 6). Costs Sunil zero morning time.
 Sequence:
   1. intake.py   pull every board, filter, dedupe into state.db
   2. rank.py     score and route what is new
-  3. tracker.py  sync job-tracker.xlsx, compute follow-ups
+  3. tracker.py  follow-ups due, from the submitted queue cards
   4. Telegram    one digest: new roles worth a look + follow-ups due
 
 It deliberately does NOT tailor or fill anything. Tailoring is judgment work
@@ -28,12 +28,12 @@ import json
 import urllib.parse
 import urllib.request
 
-from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, LOGS, TRACKING, POLICY,  # noqa: E402
+                   RESUME, APPLICATIONS, MEMORY)
 from jobpilot.core.config import cfg  # noqa: E402
 DB = os.path.join(DATA, "state.db")
 ENV = os.path.expanduser("~/.config/jobbot/env")
-LOG = os.path.join(DATA, "daily.log")
+LOG = os.path.join(LOGS, "daily.log")
 LOCK = os.path.join(DATA, ".daily.lock")
 
 
@@ -47,7 +47,7 @@ def log(msg):
         pass
 
 
-MODULES = {"scaffold.py": "jobpilot.tailor.scaffold", "ats_score.py": "jobpilot.tailor.ats_score", "explore": "jobpilot.apply.explore_agentic", "submit": "jobpilot.apply.explore_agentic.replay", "autotailor.py": "jobpilot.tailor.autotailor", "bot.py": "jobpilot.review.bot", "build.py": "jobpilot.tailor.build", "build_reference.py": "jobpilot.tailor.build_reference", "careers.py": "jobpilot.discover.careers", "config.py": "jobpilot.core.config", "daily.py": "jobpilot.core.daily", "dedupe.py": "jobpilot.core.dedupe", "find_careers.py": "jobpilot.discover.find_careers", "form.py": "jobpilot.review.form", "intake.py": "jobpilot.discover.intake", "keyword_form.py": "jobpilot.review.keyword_form", "keyword_learn.py": "jobpilot.rank.keyword_learn", "keywords.py": "jobpilot.rank.keywords", "learn.py": "jobpilot.apply.draft.learn", "llm_eval.py": "jobpilot.screen.llm_eval", "mine_keywords.py": "jobpilot.rank.mine_keywords", "optimize.py": "jobpilot.tailor.optimize", "outreach.py": "jobpilot.outreach.outreach", "paths.py": "jobpilot.core.paths", "prospects.py": "jobpilot.outreach.prospects", "rank.py": "jobpilot.rank.rank", "referral_form.py": "jobpilot.review.referral_form", "referral_tracker.py": "jobpilot.outreach.referral_tracker", "referrals.py": "jobpilot.outreach.referrals", "salary.py": "jobpilot.rank.salary", "screen.py": "jobpilot.screen.screen", "semantic.py": "jobpilot.rank.semantic", "serve.py": "jobpilot.review.serve", "startups.py": "jobpilot.discover.startups", "telegram_setup.py": "jobpilot.review.telegram_setup", "tenants.py": "jobpilot.discover.tenants", "tex2md.py": "jobpilot.tailor.tex2md", "tracker.py": "jobpilot.core.tracker"}
+MODULES = {"scaffold.py": "jobpilot.tailor.scaffold", "ats_score.py": "jobpilot.tailor.ats_score", "explore": "jobpilot.apply.explore_agentic", "submit": "jobpilot.apply.explore_agentic.replay", "autotailor.py": "jobpilot.tailor.autotailor", "bot.py": "jobpilot.review.bot", "build.py": "jobpilot.tailor.build", "build_reference.py": "jobpilot.tailor.build_reference", "careers.py": "jobpilot.discover.careers", "config.py": "jobpilot.core.config", "daily.py": "jobpilot.core.daily", "dedupe.py": "jobpilot.core.dedupe", "find_careers.py": "jobpilot.discover.find_careers", "form.py": "jobpilot.review.form", "intake.py": "jobpilot.discover.intake", "keyword_form.py": "jobpilot.review.keyword_form", "keyword_learn.py": "jobpilot.rank.keyword_learn", "keywords.py": "jobpilot.rank.keywords", "learn.py": "jobpilot.apply.draft.learn", "llm_eval.py": "jobpilot.screen.llm_eval", "mine_keywords.py": "jobpilot.rank.mine_keywords", "optimize.py": "jobpilot.tailor.optimize", "outreach.py": "jobpilot.outreach.outreach", "paths.py": "jobpilot.core.paths", "prospects.py": "jobpilot.outreach.prospects", "rank.py": "jobpilot.rank.rank", "referral_form.py": "jobpilot.review.referral_form", "referral_tracker.py": "jobpilot.outreach.referral_tracker", "referrals.py": "jobpilot.outreach.referrals", "salary.py": "jobpilot.rank.salary", "screen.py": "jobpilot.screen.screen", "semantic.py": "jobpilot.rank.semantic", "serve.py": "jobpilot.review.serve", "startups.py": "jobpilot.discover.startups", "telegram_setup.py": "jobpilot.review.telegram_setup", "tenants.py": "jobpilot.discover.tenants", "tex2md.py": "jobpilot.tailor.tex2md", "tracker.py": "jobpilot.core.tracker", "quota.py": "jobpilot.core.quota"}
 
 
 def run(script, *args, timeout=900):
@@ -166,7 +166,7 @@ def digest(since_iso):
 
 # Every stage of the unattended run, in order. `--only` picks a subset so a
 # stage can be re-run on demand without paying for the ones before it.
-STAGES = ("dedupe", "intake", "rank", "screen", "tailor", "tracker", "referrals", "digest")
+STAGES = ("dedupe", "intake", "hold", "rank", "screen", "tailor", "referrals", "digest")
 
 
 def main():
@@ -178,6 +178,8 @@ def main():
     ap.add_argument("--per-company", type=int, default=cfg("pipeline.per_company", 3))
     ap.add_argument("--no-screen", action="store_true",
                     help="skip the Claude false-positive screen")
+    ap.add_argument("--source-limit", type=int, default=cfg("discovery.source_limit", 0),
+                    help="intake stops once this many postings match titles + markets (0 = every board)")
     ap.add_argument("--tailor-limit", type=int, default=cfg("pipeline.tailor_limit", 6),
                     help="roles to tailor per run (2 Claude sessions each)")
     ap.add_argument("--digest-only", action="store_true",
@@ -226,11 +228,9 @@ def main():
         # is waiting. Anything deferred is still here, by design.
         pend = 0
         try:
-            import glob as _g
-            for f in _g.glob(os.path.join(DATA, "queue", "*.json")):
-                if os.path.basename(f).startswith("_"):
-                    continue
-                st = json.load(open(f)).get("status")
+            from jobpilot.core import cards as CD
+            for d in CD.cards():
+                st = d.get("status")
                 if st in ("pending", "needs_input", "approved", "manual"):
                     pend += 1
         except Exception:
@@ -272,18 +272,21 @@ def main():
         if not a.no_submit and not a.dry_run:
             if not run("submit", "--limit", str(a.submit_limit),
                        timeout=3600):
-                log("   !! submit-approved failed — see data/queue/*.json fail_reason")
-            run("tracker.py", "--sync", timeout=300)
+                log("   !! submit-approved failed — see each card's fail_reason (applications/<slug>/cards/)")
         return
 
     # Dedupe BEFORE intake so new rows are compared against a clean store, and
-    # again at the end because queue/tracker writes happen throughout.
+    # again at the end because queue and referral-tracker writes happen throughout.
     if want("dedupe"):
         run("dedupe.py", timeout=600)
 
     if want("intake"):
-        if not run("intake.py", timeout=1800):
+        if not run("intake.py", *(["--limit", str(a.source_limit)] if a.source_limit else []), timeout=1800):
             failures.append("intake.py")
+    # A company at its application limit takes no ranking, screening or tailoring: its
+    # postings wait as 'held' until it has room (core/quota.py).
+    if want("hold") and not run("quota.py", "--hold", *(["--dry-run"] if a.dry_run else []), timeout=120):
+        failures.append("quota.py")
     if want("rank") and "intake.py" not in failures:
         if not run("rank.py", "--all", "--top", "1", timeout=900):
             failures.append("rank.py")
@@ -301,17 +304,14 @@ def main():
                    "--per-company", str(a.per_company),
                    *(["--dry-run"] if a.dry_run else []), timeout=2400):
             failures.append("autotailor.py")
-    if want("tracker") and not run("tracker.py", "--sync" if not a.dry_run else "--dry-run",
-                                   timeout=300):
-        failures.append("tracker.py")
     # Referral follow-ups are the highest-converting thing he does, so they get
-    # their own line in the evening digest rather than living only in a sheet.
+    # their own line in the evening digest rather than living only on a page.
     if want("referrals") and not run("referral_tracker.py", "--digest",
                *(["--no-telegram"] if a.dry_run or a.no_telegram else []), timeout=300):
         failures.append("referral_tracker.py")
 
     if want("dedupe"):
-        run("dedupe.py", timeout=600)      # queue + trackers were written above
+        run("dedupe.py", timeout=600)      # queue + referral tracker were written above
 
     if not want("digest"):
         log("daily run complete (stages: " + ",".join(x for x in STAGES if want(x)) + ")")

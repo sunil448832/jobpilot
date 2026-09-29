@@ -33,9 +33,10 @@ import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, LOGS, TRACKING, POLICY,  # noqa: E402
+                   RESUME, APPLICATIONS, MEMORY)
 from jobpilot.core.config import cfg  # noqa: E402
+from jobpilot.core import quota as Q  # noqa: E402
 AUTO_CWD = os.path.join(DATA, ".auto")
 DB = os.path.join(DATA, "state.db")
 
@@ -61,7 +62,7 @@ def log(m):
     with LOG_LOCK:
         print(line, flush=True)
         try:
-            with open(os.path.join(DATA, "daily.log"), "a") as f:
+            with open(os.path.join(LOGS, "daily.log"), "a") as f:
                 f.write(line + "\n")
         except Exception:
             pass
@@ -111,74 +112,17 @@ def norm_url(u):
 
 
 def already_handled():
-    """Postings that already have a queue item, so a submitted role is never
+    """Postings that already have a card, so a submitted role is never
     prepared a second time. Matching on folder slug alone is not enough — the
     folder name rarely matches the slug this script would generate."""
-    import glob
-    import json
+    from jobpilot.core import cards as CD
     urls, titles = set(), set()
-    for f in glob.glob(os.path.join(DATA, "queue", "*.json")):
-        if os.path.basename(f).startswith("_"):
-            continue
-        try:
-            d = json.load(open(f))
-        except Exception:
-            continue
+    for d in CD.cards():
         if d.get("url"):
             urls.add(norm_url(d["url"]))
         if d.get("company") and d.get("role"):
             titles.add((d["company"].strip().lower(), d["role"].strip().lower()[:40]))
     return urls, titles
-
-
-def _cokey(name):
-    return re.sub(r"[^a-z0-9]+", "", (name or "").lower())
-
-
-def quota_state():
-    """{company_key: (used, max)} for portals that cap applications.
-
-    Counts sent (or maybe sent) queue items inside each quota's window. OpenAI's portal
-    allows 5 applications per 180 days; the pipeline holds ~50 OpenAI roles, so
-    without this it would spend every slot on whatever ranked highest that week. A portal
-    that refused a filing over its limit counts as full until then (data/quota_blocks.json,
-    written by the filing): it also counts applications made outside the pipeline.
-    """
-    quotas = cfg("apply.quotas", {}) or {}
-    if not quotas:
-        return {}
-    now = dt.datetime.now()
-    used = {}
-    for f in glob.glob(os.path.join(DATA, "queue", "*.json")):
-        if os.path.basename(f).startswith("_"):
-            continue
-        try:
-            d = json.load(open(f))
-        except (json.JSONDecodeError, OSError):
-            continue
-        if d.get("status") not in ("submitted", "unconfirmed", "submitting"):   # sent, or maybe sent
-            continue
-        k = _cokey(d.get("company"))
-        q = quotas.get(k)
-        if not q:
-            continue
-        when = d.get("submitted_at") or d.get("created") or ""
-        try:
-            age = (now - dt.datetime.fromisoformat(when)).days
-        except ValueError:
-            age = 0          # unparseable date: count it, erring toward caution
-        if age <= q.get("window_days", 180):
-            used[k] = used.get(k, 0) + 1
-    out = {k: (used.get(k, 0), q.get("max", 0)) for k, q in quotas.items()}
-    try:
-        blocks = json.load(open(os.path.join(DATA, "quota_blocks.json")))
-    except (OSError, ValueError):
-        blocks = {}
-    for k, b in blocks.items():                      # the portal said the limit is reached
-        if (b.get("until") or "") > now.isoformat(timespec="seconds"):
-            mx = out.get(k, (0, 0))[1] or 1
-            out[k] = (mx, mx)
-    return out
 
 
 def candidates(limit, floor, per_company=3, require_screen=None):
@@ -219,11 +163,11 @@ def candidates(limit, floor, per_company=3, require_screen=None):
           "CASE market WHEN 'usa' THEN 1 ELSE 0 END, "
           f"(COALESCE(fit, 0) * {w} + score * {1 - w}) DESC LIMIT ?",
         (floor, max(limit * 8, 60))).fetchall()
-    held = {_cokey(c) for c in (cfg("apply.hold_companies", []) or [])}
-    quota = quota_state()
+    held = {Q.key(c) for c in (cfg("apply.hold_companies", []) or [])}
+    quota = Q.companies()
     out, seen, roles, urls = [], {}, set(), set()
     for k, co, title, loc, url, mk, sc, fit, src in rows:
-        ck = _cokey(co)
+        ck = Q.key(co)
         inbox = src == "inbox"
         # One role, several cities = several rows. Two workers scaffolding the same
         # folder collided on Culture Amp; pick a role once.
@@ -233,9 +177,9 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         roles.add(role)
         if ck in held:
             continue                       # deliberately paused, see config.yaml
-        u, mx = quota.get(ck, (0, 0))
-        if mx and u + sum(1 for o in out if _cokey(o["company"]) == ck) >= mx:
-            continue                       # portal application cap reached
+        left = Q.room(co, waiting=True, rows=quota)
+        if left is not None and left - sum(1 for o in out if Q.key(o["company"]) == ck) <= 0:
+            continue                       # the company is at its application limit (core/quota.py)
         slug = slugify(f"{co}-{title}")[:44]
         if norm_url(url) in handled or norm_url(url) in urls:
             continue                       # queued already, or picked this run under another title
@@ -399,7 +343,8 @@ def process_role(p, cli, tag=""):
     log(f"{tag}{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
 
     ok, out = run([sys.executable, "-m", "jobpilot.tailor.scaffold",
-                   p["url"], "--company", p["slug"], "--market", p["market"]], timeout=300)
+                   p["url"], "--company", p["slug"], "--market", p["market"],
+                   "--name", p["company"], "--title", p["title"], "--location", p["location"] or ""], timeout=300)
     if not ok:
         if "EXPIRED:" in out:
             con = sqlite3.connect(DB, timeout=30)
@@ -458,6 +403,7 @@ def process_role(p, cli, tag=""):
             run([sys.executable, "-m", "jobpilot.tailor.scaffold", "--build", p["slug"]], timeout=600)
             break
         best = cur
+        shutil.rmtree(snap, ignore_errors=True)          # the round stays: its undo copy is not needed
         added = new_claims(p["slug"])
         if added:
             log(f"  {tag}new words vs base ({len(added)}): {', '.join(added[:24])}")

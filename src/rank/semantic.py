@@ -47,7 +47,7 @@ import re
 import sys
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 CACHE = os.path.join(DATA, ".embeddings.pkl")
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 

@@ -35,11 +35,15 @@ repo** is read-only source of truth.
     review/     serve.py form.py bot.py keyword_form.py referral_form.py — what Sunil sees
     outreach/   referrals.py referral_tracker.py prospects.py outreach.py — referral drafting (never sending)
   config/                            what you edit: POLICY.md config.yaml targets.yaml answers.yaml learned.yaml boards.yaml
-  data/                              machine-written: state.db queue/ daily.log connections.csv …
+  data/                              general state only: state.db (jobs, referrals) connections.csv, per-platform
+                                     techniques, per-company quota blocks, caches — nothing about one application
+  logs/                              what runs print, read once: daily.log, sessions/<slug>/ (each agent session
+                                     and filing), old/ (earlier ad-hoc run logs); safe to delete
   applications/<slug>/               one application: sections/ (copy of the base), resume.tex, JD.md, built pdf+docx,
+                                     cards/ (its phone cards, their answers, its screenshots: core/cards.py),
+                                     asks/ (questions and notices its filings left),
                                      calls.json (every tool call of the form agent: what filing redoes),
                                      explore.json (placeholders and his answers), agentic.json (the last exploration)
-  tracking/                          job-tracker.xlsx  referral-tracker.xlsx
   scripts/                           one-off setup
   docs/                              form-agent.md — how applications are explored and filed
 
@@ -103,7 +107,7 @@ in different words, and new claims are reported, never written.
  │  prompt; tools: see, act, options, search, clear, inspect, press,      │
  │  finish (+ replay when a record exists). It fills page after page.     │
  │  every tool call ──► calls.json (resumable at any point)               │
- │  ──► queue/<id>.json + .png + explore.json.  NEVER presses Submit.     │
+ │  ──► cards/<id>.json + .png + explore.json.  NEVER presses Submit.     │
  └───────────────────────┬────────────────────────────────────────────────┘
                          ▼
  ┌─ APPROVE ─ phone, any network via Tailscale ───────────────────────────┐
@@ -120,7 +124,7 @@ in different words, and new claims are reported, never written.
  │  replay.py ──► redo calls.json by code with the approved values; the   │
  │                agent only where a page differs; Submit (≤3 presses,    │
  │                code-gated), VERIFY, screenshot                         │
- │  tracker.py ──► job-tracker.xlsx + follow-ups at 5 business days       │
+ │  tracker.py ──► follow-ups at 5 business days, from the queue cards    │
  └────────────────────────────────────────────────────────────────────────┘
 
  ┌─ REFERRALS ─ parallel track, sending always manual ────────────────────┐
@@ -334,7 +338,7 @@ never "the 6th Delete"); a Delete / Add is redone only while its section's size 
 from what the press left.
 
 **The card (`card.py`)** — at the end, the placeholders go into `explore.json` (his earlier
-answers kept) and the card into `data/queue/<id>.json`: what was filled, the questions only
+answers kept) and the card into `applications/<slug>/cards/<id>.json`: what was filled, the questions only
 he can answer with the agent's candidates, the last page's screenshot. A re-exploration
 supersedes the job's unsent cards. Each new card to review sends a short Telegram message
 (📝 *New application to review* — the job, how many questions — with a link to the card and
@@ -370,7 +374,8 @@ last try hit). Submitted: the date, company, role, how it went (filed, or ✋ by
 how many people could refer him for that role, linking to that role's own referral page
 (`/referrals?company=…&role=…`: the same people cards, only that role's) — and **Referred?**:
 ✅ with the name when someone is marked *Referred*, else how far it got (*2 asked, 1 replied*,
-*not yet asked*), from the statuses set on those cards. Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
+*not yet asked*), from the statuses set on those cards — and **After**: what happened since
+(see `tracker.py`). Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
 it leaves (a captcha: nothing sent, finish by hand) are on their own page, **/questions**:
 the waiting ones first with their answer box and the time the wait ends, then the answered
 and expired ones of the last 7 days. A new one sends a short Telegram message — 🔐 *Filing
@@ -424,8 +429,23 @@ session after a refused sign-in (a retry can lock the account). A clicked button
 submission. After a
 submission: the outcome to his phone, the attempt in `explore.json`, referral targets.
 
-**`tracker.py`** — syncs `job-tracker.xlsx` using its existing columns and Stage
-vocabulary. Submitted → `Applied` with a follow-up **5 business days** out. Idempotent.
+**`tracker.py`** — follow-ups from the queue cards: a submitted card is due one **5 business
+days** after `submitted_at`, and the digest lists it until it is marked. The review list's
+Submitted table has an **After** column (*Followed up*, *Heard back*, *Rejected*; *⏰ follow up*
+while one is due), and any mark ends the reminder. It used to sync `tracking/job-tracker.xlsx`;
+nothing read that sheet but these reminders and nobody updated its Stage, so a reminder could
+never be closed. The sheet and the `tracking/` folder were removed on 2026-09-29.
+
+**`quota.py`** — *at most 5 applications per company a month*. Every company takes at most
+`apply.default_quota` (5 in a rolling 30 days); an entry under `apply.quotas` replaces it
+for that company (OpenAI's portal: 5 in 180 days), and a portal's own refusal
+(`data/quota_blocks.json`) holds the company until that date. Counted from the queue cards.
+Filing holds an approved card while its company is at the limit (it stays approved and files
+once a slot opens); tailoring also counts the cards waiting for review or filing, so it
+prepares no card the limit would hold; and before ranking, the pipeline's `hold` stage parks a full
+company's unworked postings as `held` (rank, screen and tailoring skip them) and puts them back once it
+has room. `./jobpilot companies` prints the table; `/companies` on
+the review page shows it, linked from the list with who is at the limit.
 
 **`daily.py`** — intake → rank → tracker → one Telegram digest, non-US first. It never
 tailors or fills: filling a form unattended at 2am, with nobody to read the screenshot,
@@ -451,11 +471,11 @@ Ranked by shared context and locality, never inferred nationality.
 **`referral_tracker.py` + `referral_form.py`** — the loop from *applied* to *seen*.
 On every successful submit it picks 3-4 people at that company (warm from the
 connections export, always at least one cold from GitHub or published papers),
-drafts a message for each, writes them into `tracking/referral-tracker.xlsx`, and
+drafts a message for each, adds them to the `referrals` table in `data/state.db`, and
 sends **one Telegram link** to a page listing them all.
 
 The page is the tracker: tap to copy the message, tap to open the profile, tap a
-status — which writes straight back to the sheet and stamps a 7-day follow-up.
+status — which saves straight back to the table and stamps a 7-day follow-up.
 Status flow: `To Contact → Invite Sent → Accepted → Message Sent → Replied →
 Referred | No Response`. The evening digest lists who is due to chase.
 
@@ -495,6 +515,9 @@ wakes, rather than being skipped.
 jobpilot-daily.timer
   └─ daily.py                          (exclusive lock: two runs never collide)
        ├─ intake.py     203 boards, 7 platforms → filter → dedupe into state.db
+       │                (--source-limit N: stop at N matching postings, stalest boards first)
+       ├─ quota.py      hold: a company at its application limit is parked ('held') — not
+       │                ranked, screened or tailored until it has room again
        ├─ rank.py       score, route, market-weight, per-company cap
        ├─ screen.py     Claude screens until enough roles are usable
        ├─ autotailor.py for each of the top N roles (one posting once per batch):
@@ -502,7 +525,6 @@ jobpilot-daily.timer
        │                  optimize → build
        │                  form agent explores the form → calls.json → card (+ Telegram)
        │                  claude -p  #2  draft answers for open questions
-       ├─ tracker.py    sync job-tracker.xlsx, follow-ups at 5 business days
        └─ referral_tracker.py --digest
 ```
 
@@ -572,8 +594,8 @@ cd ~/work/projects/jobpilot
 ```
 
 `./jobpilot pipeline` runs in the foreground; the timer runs the same thing silently — use `./jobpilot log`.
-`./jobpilot stages` prints the stage names `--only` accepts (dedupe, intake, rank, screen,
-tailor, tracker, referrals, digest — always executed in that order, whichever subset you pick).
+`./jobpilot stages` prints the stage names `--only` accepts (dedupe, intake, hold, rank, screen,
+tailor, referrals, digest — always executed in that order, whichever subset you pick).
 
 Each stage on its own:
 
@@ -583,7 +605,7 @@ Each stage on its own:
 ./jobpilot scan            # intake + rank in one go
 ./jobpilot screen          # Claude screens until 10 are usable
 ./jobpilot prep 3          # tailor + build + fill the top 3   (alias: tailor)
-./jobpilot tracker         # sync the xlsx tracker
+./jobpilot follow          # follow-ups due
 ./jobpilot digest          # review prompt + file approved items (--no-submit: prompt only)
 ./jobpilot apply <url>     # one job you found yourself
 ./jobpilot explore <slug>  # explore an application's form again, resuming from its record (never submits; --fresh)
@@ -591,6 +613,7 @@ Each stage on its own:
 ./jobpilot submit <slug>   # file one approved job
 ./jobpilot dryrun <slug>   # a filing that stops before Submit
 ./jobpilot queue           # what is waiting
+./jobpilot companies       # per company: sent, the limit, room now, next slot
 ./jobpilot link            # the review URL, and /questions (what a filing needs from you)
 ./jobpilot refer <slug>    # referral targets for a submitted application
 ./jobpilot chase           # referral follow-ups due

@@ -19,7 +19,8 @@ from jobpilot.core.paths import APPLICATIONS, CONFIG, DATA, TRACKING
 
 
 def newest_queue_file(slug):
-    fs = sorted(glob.glob(os.path.join(DATA, "queue", f"{slug}-*.json")))
+    from jobpilot.core import cards as CD
+    fs = CD.of(slug)
     return fs[-1] if fs else None
 
 

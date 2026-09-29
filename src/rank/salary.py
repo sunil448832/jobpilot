@@ -25,7 +25,7 @@ import requests
 import yaml
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY)
 CACHE = os.path.join(DATA, ".rates.json")
 
 # Fallback only. USD-pegged currencies (AED 3.6725, SAR 3.75) are fixed by policy.

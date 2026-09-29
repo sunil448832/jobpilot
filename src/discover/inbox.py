@@ -26,7 +26,7 @@ DB = os.path.join(DATA, "state.db")
 def add(url, note=""):
     """Fetch the JD from the ATS and file it as a reviewed, tailor-ready row.
     Returns a dict describing what happened (for the page / CLI)."""
-    from jobpilot.tailor import apply as apply_mod
+    from jobpilot.tailor import scaffold as apply_mod
     from jobpilot.discover import intake
     url = (url or "").strip()
     if not url.startswith(("http://", "https://")):

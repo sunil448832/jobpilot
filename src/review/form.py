@@ -22,8 +22,8 @@ import os
 import sys
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, TRACKERS, MEMORY)
-QUEUE_DIR = os.path.join(DATA, "queue")
+                   RESUME, APPLICATIONS, MEMORY, LOGS)
+from jobpilot.core import cards as CD  # noqa: E402
 
 TEMPLATE = r"""<title>Application Review</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -512,18 +512,17 @@ def main():
     a = ap.parse_args()
 
     if a.latest or not a.item_id:
-        files = [f for f in sorted(glob.glob(os.path.join(QUEUE_DIR, "*.json")))
-                 if not os.path.basename(f).startswith("_")]
+        files = CD.paths()
         if not files:
-            sys.exit("queue is empty")
+            sys.exit("no cards")
         path = files[-1]
     else:
-        path = os.path.join(QUEUE_DIR, a.item_id + ".json")
-        if not os.path.isfile(path):
-            sys.exit(f"no queue item {a.item_id}")
+        path = CD.path(a.item_id)
+        if not path:
+            sys.exit(f"no card {a.item_id}")
 
     item = json.load(open(path))
-    out = a.out or os.path.join(QUEUE_DIR, item["id"] + ".html")
+    out = a.out or os.path.join(LOGS, item["id"] + ".html")
     open(out, "w", encoding="utf-8").write(build(item))
     print(f"  {out}")
     print(f"  {item['company']} — {item['role']}")

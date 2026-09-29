@@ -20,6 +20,26 @@
   "n": 1
  },
  {
+  "tool": "press",
+  "args": {
+   "id": "c21"
+  },
+  "page": "Start Your Application",
+  "controls": {
+   "c21": {
+    "role": "button",
+    "name": "Apply Manually",
+    "nth": 1,
+    "group": "",
+    "above": "Real Estate – Innovation, Applied AI Engineer",
+    "qn": 1
+   }
+  },
+  "moved_to": "create account/sign in",
+  "result": "moved on: now on page 'create account/sign in'. see it.",
+  "n": 2
+ },
+ {
   "tool": "act",
   "args": {
    "rows": [
@@ -55,7 +75,7 @@
    }
   ],
   "result": "c36  ok  button 'Country Netherlands Required': shows 'India'\n\nOTHER FIELDS THE PAGE CHANGED (not acted on):\nc46  textbox 'Country Phone Code'   [a search box: type, then pick from the list that appears, required, placeholder 'Search']   shows: 'India (+91)'   choices: [Afghanistan (+93), Åland Islands (+358), Albania (+355), Algeria (+213), American Samoa (+1), Andorra (+376), Angola (+244), Anguilla (+1), Antigua and Barbuda (+1), Argentina (+54), Armenia (+374), Aruba (+297), Australia (+61), Austria (+43), Azerbaijan (+994)]   (only the first entries of a longer list: an entry not among them — search:<term>)   (was 'Netherlands (+31)')\n\nNEW FIELDS:\nc51  textbox 'Local Given Name(s)'   [a text box]\nc52  textbox 'Local Family Name'   [a text box]\n\nFIELDS GONE: ['c39', 'c42']\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
-  "n": 2
+  "n": 3
  },
  {
   "tool": "act",
@@ -303,7 +323,7 @@
    }
   ],
   "result": "c35  ok  button 'How Did You Hear About Us? Select One Required': shows 'LinkedIn – Applied directly myself'\nc36  ok  button 'Country India Required': shows 'India'\nc45  ok  button 'Phone Device Type Mobile Required': shows 'Mobile'\nc46  ok  textbox 'Country Phone Code': shows '1 item selected, India (+91); India (+91)'\nc37  NOT DONE  textbox 'Given Name(s)': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc38  NOT DONE  textbox 'Family Name': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc41  NOT DONE  textbox 'Address Line 1': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc43  NOT DONE  textbox 'City': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc44  NOT DONE  textbox 'Postal Code': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc48  NOT DONE  textbox 'Phone Number': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\n\nNEW FIELDS:\nc53  textbox 'Given Name(s)'   [a text box, required]   shows: 'Sunil'\nc54  textbox 'Family Name'   [a text box, required]   shows: 'Sharma'\nc55  textbox 'Address Line 1'   [a text box]   shows: 'Delhi'\nc56  textbox 'City'   [a text box]   shows: 'Delhi'\nc57  textbox 'Postal Code'   [a text box]   shows: '110019'\nc58  textbox 'Phone Number'   [a text box, required]   shows: '9641298471'\n\nFIELDS GONE: ['c37', 'c38', 'c41', 'c43', 'c44', 'c48']\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
-  "n": 3
+  "n": 4
  },
  {
   "tool": "act",
@@ -461,7 +481,7 @@
    }
   ],
   "result": "c53  ok  textbox 'Given Name(s)': shows 'Sunil'\nc54  ok  textbox 'Family Name': shows 'Sharma'\nc55  ok  textbox 'Address Line 1': shows 'Delhi'\nc56  ok  textbox 'City': shows 'Delhi'\nc57  ok  textbox 'Postal Code': shows '110019'\nc58  ok  textbox 'Phone Number': shows '9641298471'\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
-  "n": 4
+  "n": 5
  },
  {
   "tool": "press",
@@ -481,7 +501,7 @@
   },
   "moved_to": "my experience",
   "result": "moved on: now on page 'my experience'. see it.",
-  "n": 5
+  "n": 6
  },
  {
   "tool": "act",
@@ -594,7 +614,7 @@
    }
   ],
   "result": "c59  ok  button 'Add #1': shows 'added 3 block(s)'\nc67  ok  button 'Add Another': shows 'added 1 block(s)'\nc70  ok  button 'Add #2': shows 'added 3 block(s)'\nc69  ok  button 'Select files': shows 'sunil_resume.docx'\n\nNEW FIELDS:\nc72  button 'Delete #1'   [a button]   shows: 'Delete'\nc73  textbox 'Job Title #1'   [a text box, required]\nc74  textbox 'Company #1'   [a text box, required]\nc75  textbox 'Location #1'   [a text box]\nc76  checkbox 'I currently work here #1'   [checkbox: not checked]\nc77  spinbutton 'Month #1'   [a number box (a date part, shows 'MM')]\nc78  spinbutton 'Year #1'   [a number box (a date part, shows 'YYYY')]\nc79  button 'Calendar #1'   [a button]\nc80  spinbutton 'Month #2'   [a number box (a date part, shows 'MM')]\nc81  spinbutton 'Year #2'   [a number box (a date part, shows 'YYYY')]\nc82  button 'Calendar #2'   [a button]\nc83  textbox 'Role Description #1'   [a text area]\nc84  button 'Delete #2'   [a button]   shows: 'Delete'\nc85  textbox 'Job Title #2'   [a text box, required]\nc86  textbox 'Company #2'   [a text box, required]\nc87  textbox 'Location #2'   [a text box]\nc88  checkbox 'I currently work here #2'   [checkbox: not checked]\nc89  spinbutton 'Month #3'   [a number box (a date part, shows 'MM')]\nc90  spinbutton 'Year #3'   [a number box (a date part, shows 'YYYY')]\nc91  button 'Calendar #3'   [a button]\nc92  spinbutton 'Month #4'   [a number box (a date part, shows 'MM')]\nc93  spinbutton 'Year #4'   [a number box (a date part, shows 'YYYY')]\nc94",
-  "n": 6
+  "n": 7
  },
  {
   "tool": "act",
@@ -1506,87 +1526,9 @@
    }
   ],
   "result": "c76  ok  checkbox 'I currently work here #1': shows 'checked'\nc60  NOT DONE  textbox 'School or University #1': searched: 'Jodhpur' -> []; 'Indian Institute of Technology' -> [Indian Institute Of Technology, Indian Institute Of Technology Allahabad, Indian Institute Of Technology Bombay, Indian Institute of Technology Delhi, Indian Institute of Technology Guwahati, Indian Institute of Technology Hyderabad, Indian Institute of Technology Indore, Indian Institute of Technology Kanpur, Indian Institute of Technology Kharagpur, Indian Institute of Technology Madras]; '^Other' -> []\nc109  NOT DONE  textbox 'School or University #2': searched: 'Sikkim Manipal' -> []; 'Sikkim' -> [Sikkim Manipal University, Sikkim University]; '^Other' -> []\nc62  NOT DONE  textbox 'Field of Study #1': searched: 'Artificial Intelligence' -> [Artificial Intelligence and Robotics]; 'Computer Science' -> [Computer Sciences]; '^Art' -> [Art, Art Education, Art History, Artificial Intelligence and Robotics, Arts Management, Art Therapy]\nc111  NOT DONE  textbox 'Field of Study #2': searched: 'Electronics and Communication' -> []; 'Electronic' -> [Electronics]; 'Electrical' -> [Electrical Engineering]\nc61  ok  button 'Degree Select One Required #1': shows 'Masters of Engineering (M.Eng)'\nc110  ok  button 'Degree Select One Required #2': shows 'Bachelor of Technology (B.T.)'\nc73  NOT DONE  textbox 'Job Title #1': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc74  NOT DONE  textbox 'Company #1'",
-  "n": 7
+  "n": 8
  },
  {
-  "n": 8,
-  "tool": "replay",
-  "args": {},
-  "page": "page",
-  "controls": {},
-  "result": "redone: ['page', 'my information']; now on page 'my experience' — it differs from the record\nwhat differs on it:\n- c96 spinbutton 'Year': should hold '2023', holds '2022'\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand.\nthe record's values on this page:\n- checkbox 'I currently work here' (under 'I currently work here'): employment[0].current\n- button 'Degree Select One Required' (under 'Degree'): option:Masters of Engineering (M.Eng)\n- button 'Degree Select One Required' (under 'Degree'): option:Bachelor of Technology (B.T.)\n- textbox 'Job Title' (under 'Job Title'): employment[0].title\n- textbox 'Company' (under 'Company'): employment[0].employer\n- textbox 'Location' (under 'Location'): employment[0].location\n- spinbutton 'Month' (under 'From'): employment[0].start_date.month\n- spinbutton 'Year' (under 'From'): employment[0].start_date.year\n- textbox 'Role Description' (under 'Role Description'): employment[0].summary\n- textbox 'Job Title' (under 'Job Title'): employment[1].title\n- textbox 'Company' (under 'Company'): employment[1].employer\n- textbox 'Location' (under 'Location'): employment[1].location\n- spinbutton 'Month' (under 'From'): employment[1].start_date.month\n- spinbutton 'Year' (under 'From'): employment[1].start_date.year\n- spinbutton 'Month' (under 'From'): employment[1].end_date.month\n- spinbutton 'Year' (under 'From'): employment[1].end_date.year\n- textbox 'Role Description' (un"
- },
- {
-  "n": 9,
-  "tool": "see",
-  "args": {
-   "scope": "ids",
-   "ids": [
-    "c93",
-    "c94",
-    "c95",
-    "c96",
-    "c97"
-   ],
-   "snapshot": true
-  },
-  "page": "my experience",
-  "controls": {
-   "c93": {
-    "role": "spinbutton",
-    "name": "Year",
-    "nth": 4,
-    "group": "From",
-    "above": "From",
-    "qn": 5
-   },
-   "c94": {
-    "role": "button",
-    "name": "Calendar",
-    "nth": 4,
-    "group": "From",
-    "above": "From",
-    "qn": 2
-   },
-   "c95": {
-    "role": "spinbutton",
-    "name": "Month",
-    "nth": 5,
-    "group": "To",
-    "above": "From",
-    "qn": 2
-   },
-   "c96": {
-    "role": "spinbutton",
-    "name": "Year",
-    "nth": 5,
-    "group": "To",
-    "above": "From",
-    "qn": 3
-   },
-   "c97": {
-    "role": "button",
-    "name": "Calendar",
-    "nth": 5,
-    "group": "To",
-    "above": "From",
-    "qn": 1
-   }
-  },
-  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc93  spinbutton 'Year #4'   [a number box (a date part, shows '2021')]   shows: '2021'\nc94  button 'Calendar #4'   [a button]\nc95  spinbutton 'Month #5'   [a number box (a date part, shows '2')]   shows: '2'\nc96  spinbutton 'Year #5'   [a number box (a date part, shows '2022')]   shows: '2022'\nc97  button 'Calendar #5'   [a button]"
- },
- {
-  "n": 10,
-  "tool": "see",
-  "args": {
-   "snapshot": true
-  },
-  "page": "my experience",
-  "controls": {},
-  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc28  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc63  button 'Delete #1'   [a button]   shows: 'Delete'\nc114  textbox 'Job Title #1'   [a text box, required]   shows: 'Senior Data Scientist'\nc115  textbox 'Company #1'   [a text box, required]   shows: 'Aria Intelligent Solutions'\nc116  textbox 'Location #1'   [a text box]   shows: 'India'\nc67  checkbox 'I currently work here #1'   [checkbox: checked]   shows: 'I currently work here'\nc68  spinbutton 'Month #1'   [a number box (a date part, shows '2')]   shows: '2'\nc69  spinbutton 'Year #1'   [a number box (a date part, shows '2023')]   shows: '2023'\nc70  button 'Calendar #1'   [a button]\nc74  textbox 'Role Description #1'   [a text area]   shows: 'Architected an Orchestrator Agent on the A2A protocol with L'\nc75  button 'Delete #2'   [a button]   shows: 'Delete'\nc117  textbox 'Job Title #2'   [a text box, required]   shows: 'Applied Scientist I'\nc118  textbox 'Company #2'   [a text box, required]   shows: 'Amazon Development Centre (India) Pvt. Ltd.'\nc119  textbox 'Location #2'   [a text box]   shows: 'India'\nc79  checkbox 'I currently work here #2'   [checkbox: not checked]\nc80  spinbutton 'Month #2'   [a number box (a date part, shows '2')]   shows: '2'\nc81  spinbutton 'Year #2'   [a number box (a date part, shows '2022')]   shows: '2022'\nc82  button 'Calendar #2'   [a button]\nc83  spin"
- },
- {
-  "n": 11,
   "tool": "act",
   "args": {
    "rows": [
@@ -2533,10 +2475,10 @@
     "reads": "https://huggingface.co/sunil448832"
    }
   ],
-  "result": "c67  ok  checkbox 'I currently work here #1': shows 'on'\nc50  NOT DONE  textbox 'School or University #1': searched: 'Jodhpur' -> []; 'Indian Institute of Technology' -> [Indian Institute Of Technology, Indian Institute Of Technology Allahabad, Indian Institute Of Technology Bombay, Indian Institute of Technology Delhi, Indian Institute of Technology Guwahati, Indian Institute of Technology Hyderabad, Indian Institute of Technology Indore, Indian Institute of Technology Kanpur, Indian Institute of Technology Kharagpur, Indian Institute of Technology Madras]; '^Other' -> []\nc51  ok  button 'Degree Masters of Engineering (M.Eng) Required': shows 'Masters of Engineering (M.Eng)'   (a placeholder: 'Masters of Engineering (M.Eng)', asked later)\nc52  NOT DONE  textbox 'Field of Study #1': searched: '\\\\bArtificial Intelligence\\\\b' -> [Artificial Intelligence and Robotics]; 'Computer Science' -> [Computer Sciences]; '^Art' -> [Art, Art Education, Art History, Artificial Intelligence and Robotics, Arts Management, Art Therapy]\nc100  NOT DONE  textbox 'School or University #2': searched: 'Sikkim Manipal' -> []; 'Manipal' -> [Manipal University, Manipal University Dubai Campus, Sikkim Manipal University]; '^Other' -> []\nc101  ok  button 'Degree Bachelor of Technology (B.T.) Required': shows 'Bachelor of Technology (B.T.)'   (a placeholder: 'Bachelor of Technology (B.T.)', asked later)\nc102  NOT DONE  textbox 'Field of Study #2': searched: 'Electronics.*Communication' -> []; 'Electrical "
+  "result": "c67  ok  checkbox 'I currently work here #1': shows 'on'\nc50  NOT DONE  textbox 'School or University #1': searched: 'Jodhpur' -> []; 'Indian Institute of Technology' -> [Indian Institute Of Technology, Indian Institute Of Technology Allahabad, Indian Institute Of Technology Bombay, Indian Institute of Technology Delhi, Indian Institute of Technology Guwahati, Indian Institute of Technology Hyderabad, Indian Institute of Technology Indore, Indian Institute of Technology Kanpur, Indian Institute of Technology Kharagpur, Indian Institute of Technology Madras]; '^Other' -> []\nc51  ok  button 'Degree Masters of Engineering (M.Eng) Required': shows 'Masters of Engineering (M.Eng)'   (a placeholder: 'Masters of Engineering (M.Eng)', asked later)\nc52  NOT DONE  textbox 'Field of Study #1': searched: '\\\\bArtificial Intelligence\\\\b' -> [Artificial Intelligence and Robotics]; 'Computer Science' -> [Computer Sciences]; '^Art' -> [Art, Art Education, Art History, Artificial Intelligence and Robotics, Arts Management, Art Therapy]\nc100  NOT DONE  textbox 'School or University #2': searched: 'Sikkim Manipal' -> []; 'Manipal' -> [Manipal University, Manipal University Dubai Campus, Sikkim Manipal University]; '^Other' -> []\nc101  ok  button 'Degree Bachelor of Technology (B.T.) Required': shows 'Bachelor of Technology (B.T.)'   (a placeholder: 'Bachelor of Technology (B.T.)', asked later)\nc102  NOT DONE  textbox 'Field of Study #2': searched: 'Electronics.*Communication' -> []; 'Electrical ",
+  "n": 9
  },
  {
-  "n": 12,
   "tool": "act",
   "args": {
    "rows": [
@@ -2667,10 +2609,10 @@
     "reads": "Select files"
    }
   ],
-  "result": "c50  ok  textbox 'School or University #1': shows '1 item selected, Indian Institute Of Technology; Indian Institute Of Technology'   (a placeholder: 'Indian Institute Of Technology', asked later)\nc52  ok  textbox 'Field of Study #1': shows 'Expanded; Artificial Intelligence and Robotics'   (a placeholder: 'Artificial Intelligence and Robotics', asked later)\nc100  NOT DONE  textbox 'School or University #2': TimeoutError: Locator.click: Timeout 5000ms exceeded.\nc102  ok  textbox 'Field of Study #2': shows 'Expanded; Electronics'   (a placeholder: 'Electronics', asked later)\nc59  ok  button 'Select files': shows 'sunil_resume.docx'\n\nNEW FIELDS:\nc131  button 'Delete sunil_resume.docx #2'   [a file picker]\n\nPAGE: my experience\nPAGE ERRORS: sunil_resume.docx successfully uploaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Degree Masters of Engineering (M.Eng) Required' holds 'Masters of Engineering (M.Eng)' — asked as 'Degree — Education 1 (Indian Institute of Technology, Jodhpur)'\n- button 'Degree Bachelor of Technology (B.T.) Required' holds 'Bachelor of Technology (B.T.)' — asked as 'Degree — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'Sc"
+  "result": "c50  ok  textbox 'School or University #1': shows '1 item selected, Indian Institute Of Technology; Indian Institute Of Technology'   (a placeholder: 'Indian Institute Of Technology', asked later)\nc52  ok  textbox 'Field of Study #1': shows 'Expanded; Artificial Intelligence and Robotics'   (a placeholder: 'Artificial Intelligence and Robotics', asked later)\nc100  NOT DONE  textbox 'School or University #2': TimeoutError: Locator.click: Timeout 5000ms exceeded.\nc102  ok  textbox 'Field of Study #2': shows 'Expanded; Electronics'   (a placeholder: 'Electronics', asked later)\nc59  ok  button 'Select files': shows 'sunil_resume.docx'\n\nNEW FIELDS:\nc131  button 'Delete sunil_resume.docx #2'   [a file picker]\n\nPAGE: my experience\nPAGE ERRORS: sunil_resume.docx successfully uploaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Degree Masters of Engineering (M.Eng) Required' holds 'Masters of Engineering (M.Eng)' — asked as 'Degree — Education 1 (Indian Institute of Technology, Jodhpur)'\n- button 'Degree Bachelor of Technology (B.T.) Required' holds 'Bachelor of Technology (B.T.)' — asked as 'Degree — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'Sc",
+  "n": 10
  },
  {
-  "n": 13,
   "tool": "act",
   "args": {
    "rows": [
@@ -2705,18 +2647,82 @@
     "reads": ""
    }
   ],
-  "result": "c100  ok  textbox 'School or University #2': shows '1 item selected, Sikkim Manipal University; Sikkim Manipal University'   (a placeholder: 'Sikkim Manipal University', asked later)\n\nOTHER FIELDS THE PAGE CHANGED (not acted on):\nc102  textbox 'Field of Study #2'   [a search box: type, then pick from the list that appears, placeholder 'Search']   shows: 'Electronics'   choices: [Accounting, Acting, Actuarial, Actuarial Science, Administration, Advertising, Aerospace Engineering, African-American Studies, \"African Languages, Literatures, and Linguistics\", African Studies, Agricultural/Biological Engineering and Bioengineering, Agricultural Business and Management, Agricultural Economics, Agricultural Education, Agricultural Journalism]   (only the first entries of a longer list: an entry not among them — search:<term>)   (was '')\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Degree Masters of Engineering (M.Eng) Required' holds 'Masters of Engineering (M.Eng)' — asked as 'Degree — Education 1 (Indian Institute of Technology, Jodhpur)'\n- button 'Degree Bachelor of Technology (B.T.) Required' holds 'Bachelor of Technology (B.T.)' — asked as 'Degree — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked"
+  "result": "c100  ok  textbox 'School or University #2': shows '1 item selected, Sikkim Manipal University; Sikkim Manipal University'   (a placeholder: 'Sikkim Manipal University', asked later)\n\nOTHER FIELDS THE PAGE CHANGED (not acted on):\nc102  textbox 'Field of Study #2'   [a search box: type, then pick from the list that appears, placeholder 'Search']   shows: 'Electronics'   choices: [Accounting, Acting, Actuarial, Actuarial Science, Administration, Advertising, Aerospace Engineering, African-American Studies, \"African Languages, Literatures, and Linguistics\", African Studies, Agricultural/Biological Engineering and Bioengineering, Agricultural Business and Management, Agricultural Economics, Agricultural Education, Agricultural Journalism]   (only the first entries of a longer list: an entry not among them — search:<term>)   (was '')\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Degree Masters of Engineering (M.Eng) Required' holds 'Masters of Engineering (M.Eng)' — asked as 'Degree — Education 1 (Indian Institute of Technology, Jodhpur)'\n- button 'Degree Bachelor of Technology (B.T.) Required' holds 'Bachelor of Technology (B.T.)' — asked as 'Degree — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked",
+  "n": 11
  },
  {
-  "n": 14,
-  "tool": "replay",
-  "args": {},
+  "n": 12,
+  "tool": "see",
+  "args": {
+   "snapshot": true
+  },
   "page": "my experience",
   "controls": {},
-  "result": "redone: (no page); now on page 'my experience' — the record has no Next for this page (its session stopped here): press it yourself, then call replay again\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand.\nthe record's values on this page:\n- checkbox 'I currently work here' (under 'I currently work here'): employment[0].current\n- button 'Degree Select One Required' (under 'Degree'): option:Masters of Engineering (M.Eng)\n- button 'Degree Select One Required' (under 'Degree'): option:Bachelor of Technology (B.T.)\n- textbox 'Job Title' (under 'Job Title'): employment[0].title\n- textbox 'Company' (under 'Company'): employment[0].employer\n- textbox 'Location' (under 'Location'): employment[0].location\n- spinbutton 'Month' (under 'From'): employment[0].start_date.month\n- spinbutton 'Year' (under 'From'): employment[0].start_date.year\n- textbox 'Role Description' (under 'Role Description'): employment[0].summary\n- textbox 'Job Title' (under 'Job Title'): employment[1].title\n- textbox 'Company' (under 'Company'): employment[1].employer\n- textbox 'Location' (under 'Location'): employment[1].location\n- spinbutton 'Month' (under 'From'): employment[1].start_date.month\n- spinbutton 'Year' (under 'From'): employment[1].start_date.year\n- spinbutton 'Month' (under 'From'): employment[1].end_date.month\n- spinbutton 'Year' (under 'From'): employment[1].end_date.year\n- textbox 'Role Description' (under 'Role Descr"
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS\nc46  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc67  button 'Delete #1'   [a button]   shows: 'Delete'\nc68  textbox 'Job Title #1'   [a text box, required]   shows: 'Senior Data Scientist'\nc69  textbox 'Company #1'   [a text box, required]   shows: 'Aria Intelligent Solutions'\nc70  textbox 'Location #1'   [a text box]   shows: 'India'\nc71  checkbox 'I currently work here #1'   [checkbox: checked]   shows: 'I currently work here'\nc72  spinbutton 'Month #1'   [a number box (a date part, shows '12')]   shows: '12'\nc73  spinbutton 'Year #1'   [a number box (a date part, shows '2023')]   shows: '2023'\nc74  button 'Calendar #1'   [a button]\nc75  textbox 'Role Description #1'   [a text area]   shows: 'Architected an Orchestrator Agent on the A2A protocol with L'\nc76  button 'Delete #2'   [a button]   shows: 'Delete'\nc77  textbox 'Job Title #2'   [a text box, required]   shows: 'Applied Scientist I'\nc"
  },
  {
-  "n": 15,
+  "n": 13,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c97",
+     "write",
+     "employment[2].end_date.year"
+    ],
+    [
+     "c96",
+     "write",
+     "employment[2].end_date.month"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c97": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 5,
+    "group": "To",
+    "above": "From",
+    "qn": 3
+   },
+   "c96": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 5,
+    "group": "To",
+    "above": "From",
+    "qn": 2
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c97",
+    "kind": "write",
+    "answer": "employment[2].end_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2022",
+    "question": null,
+    "reads": "2022"
+   },
+   {
+    "id": "c96",
+    "kind": "write",
+    "answer": "employment[2].end_date.month",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "9",
+    "question": null,
+    "reads": "9"
+   }
+  ],
+  "result": "c97  ok  spinbutton 'Year #5': shows '2022'\nc96  ok  spinbutton 'Month #5': shows '9'\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'"
+ },
+ {
   "tool": "press",
   "args": {
    "id": "c29"
@@ -2733,10 +2739,481 @@
    }
   },
   "moved_to": "application questions",
-  "result": "moved on: now on page 'application questions'. see it."
+  "result": "moved on: now on page 'application questions'. see it.",
+  "n": 14
+ },
+ {
+  "n": 15,
+  "tool": "replay",
+  "args": {},
+  "page": "my experience",
+  "controls": {},
+  "result": "redone: (no page); now on page 'my experience' — its Next did not move on: still on page 'my experience'. The page says: sunil_resume.docx successfully uploaded; invalid: URL*. see it for what changed.\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand.\nthe record's values on this page:\n- checkbox 'I currently work here' (under 'I currently work here'): employment[0].current\n- button 'Degree Select One Required' (under 'Degree'): option:Masters of Engineering (M.Eng)\n- button 'Degree Select One Required' (under 'Degree'): option:Bachelor of Technology (B.T.)\n- textbox 'Job Title' (under 'Job Title'): employment[0].title\n- textbox 'Role Description' (under 'Role Description'): keep:employment[0].summary\n- textbox 'Location' (under 'Location'): employment[0].location\n- spinbutton 'Month' (under 'From'): employment[0].start_date.month\n- spinbutton 'Year' (under 'From'): employment[0].start_date.year\n- spinbutton 'Month' (under 'From'): employment[1].end_date.month\n- textbox 'Job Title' (under 'Job Title'): employment[1].title\n- textbox 'Role Description' (under 'Role Description'): keep:employment[1].summary\n- textbox 'Location' (under 'Location'): employment[1].location\n- spinbutton 'Month' (under 'From'): employment[1].start_date.month\n- spinbutton 'Year' (under 'From'): employment[1].start_date.year\n- spinbutton 'Month' (under 'From'): employment[2].start_date.month\n- spinbutton 'Year' (under 'From"
  },
  {
   "n": 16,
+  "tool": "see",
+  "args": {
+   "scope": "section",
+   "name": "Websites"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: invalid: URL*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS OF 'Websites'\nc125  button 'Delete #5'   [a button]   shows: 'Delete'\nc134  textbox 'URL #1'   [a text box, required]   shows: 'https://www.linkedin.com/in/sunil4832sharma'\nc127  button 'Delete #6'   [a button]   shows: 'Delete'\nc135  textbox 'URL #2'   [a text box, required]   shows: 'https://github.com/sunil448832'\nc129  button 'Delete #7'   [a button]   shows: 'Delete'\nc136  textbox 'URL #3'   [a text box, required]   shows: 'https://huggingface.co/sunil448832'\nc131  button 'Add Another #3'   [a button]   shows: 'Add Another'"
+ },
+ {
+  "n": 17,
+  "tool": "see",
+  "args": {
+   "scope": "outline"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: invalid: URL*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'\n\nSECTIONS\n  heading 'Real Estate – Innovation, Applied AI Engineer': 38 control(s)\n  heading 'Errors Found': 38 control(s)\n  group 'Work Experience': 34 control(s)\n    group 'Work Experience 1': 9 control(s)\n      group 'From': 3 control(s)\n    group 'Work Experience 2': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n    group 'Work Experience 3': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n  group 'Education': 16 control(s)\n    heading 'If your school is not found, please enter as \"Other\".': 16 control(s)\n    group 'Education 1': 7 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n    group 'Education 2': 8 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n  group 'Skills': 1 control(s)\n  group 'Resume/CV': 5 control(s)\n  group 'Websites': 7 control(s)\n    group 'Websi"
+ },
+ {
+  "n": 18,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c134",
+     "write",
+     "links.linkedin"
+    ],
+    [
+     "c135",
+     "write",
+     "links.github"
+    ],
+    [
+     "c136",
+     "write",
+     "links.huggingface"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c134": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   },
+   "c135": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   },
+   "c136": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 3,
+    "group": "Websites 3",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c134",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null,
+    "reads": "https://www.linkedin.com/in/sunil4832sharma"
+   },
+   {
+    "id": "c135",
+    "kind": "write",
+    "answer": "links.github",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://github.com/sunil448832",
+    "question": null,
+    "reads": "https://github.com/sunil448832"
+   },
+   {
+    "id": "c136",
+    "kind": "write",
+    "answer": "links.huggingface",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://huggingface.co/sunil448832",
+    "question": null,
+    "reads": "https://huggingface.co/sunil448832"
+   }
+  ],
+  "result": "c134  ok  textbox 'URL #1': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc135  ok  textbox 'URL #2': shows 'https://github.com/sunil448832'\nc136  ok  textbox 'URL #3': shows 'https://huggingface.co/sunil448832'\n\nPAGE: my experience\nPAGE ERRORS: invalid: URL*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'"
+ },
+ {
+  "n": 19,
+  "tool": "press",
+  "args": {
+   "id": "c47"
+  },
+  "page": "my experience",
+  "controls": {
+   "c47": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "Error: You can't add duplicate website URLs.",
+    "qn": 1
+   }
+  },
+  "moved_to": null,
+  "section": "",
+  "section_count": null,
+  "result": "still on page 'my experience'. The page says: sunil_resume.docx successfully uploaded; invalid: URL*. see it for what changed."
+ },
+ {
+  "n": 20,
+  "tool": "inspect",
+  "args": {
+   "id": "c136"
+  },
+  "page": "my experience",
+  "controls": {
+   "c136": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 3,
+    "group": "Websites 3",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "result": "c136 textbox 'URL #3' — its field's HTML:\n<div data-fkit-id=\"webAddress-6--null\" class=\"css-1obf64m\"><div data-automation-id=\"formField-url\" data-fkit-id=\"webAddress-6--url\" class=\"css-7t35fz\"><label for=\"webAddress-6--url\" class=\"css-1ud5i8o\"><span>URL<abbr aria-hidden=\"true\" class=\"css-1fc83zd\" data-jp-sugg=\"0\">*</abbr></span></label><div class=\"css-15rz5ap\"><div style=\"width: 100%; max-width: 344px; min-width: 280px;\"><input type=\"text\" id=\"webAddress-6--url\" name=\"url\" aria-required=\"true\" class=\"css-1kbu7en\" value=\"https://huggingface.co/sunil448832\" data-agent-id=\"c136\" aria-describedby=\"error1-webAddress-6--url\" aria-invalid=\"true\" data-jp=\"URL #3\"></div><div class=\"css-18szrho\"><p id=\"error1-webAddress-6--url\" data-automation-id=\"inputAlert\" class=\"css-1d876r2\"><span class=\"css-12vmz5i\">Error: </span>You can't add duplicate website URLs.</p></div></div></div></div>"
+ },
+ {
+  "n": 21,
+  "tool": "inspect",
+  "args": {
+   "id": "c135"
+  },
+  "page": "my experience",
+  "controls": {
+   "c135": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "result": "c135 textbox 'URL #2' — its field's HTML:\n<div data-fkit-id=\"webAddress-5--null\" class=\"css-1obf64m\"><div data-automation-id=\"formField-url\" data-fkit-id=\"webAddress-5--url\" class=\"css-7t35fz\"><label for=\"webAddress-5--url\" class=\"css-1ud5i8o\"><span>URL<abbr aria-hidden=\"true\" class=\"css-1fc83zd\" data-jp-sugg=\"0\">*</abbr></span></label><div class=\"css-15rz5ap\"><div style=\"width: 100%; max-width: 344px; min-width: 280px;\"><input type=\"text\" id=\"webAddress-5--url\" name=\"url\" aria-required=\"true\" class=\"css-1kbu7en\" value=\"https://github.com/sunil448832\" data-agent-id=\"c135\" aria-describedby=\"error1-webAddress-5--url\" aria-invalid=\"true\" data-jp=\"URL #2\"></div><div class=\"css-18szrho\"><p id=\"error1-webAddress-5--url\" data-automation-id=\"inputAlert\" class=\"css-1d876r2\"><span class=\"css-12vmz5i\">Error: </span>You can't add duplicate website URLs.</p></div></div></div></div>"
+ },
+ {
+  "n": 22,
+  "tool": "inspect",
+  "args": {
+   "id": "c134"
+  },
+  "page": "my experience",
+  "controls": {
+   "c134": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "result": "c134 textbox 'URL #1' — its field's HTML:\n<div data-fkit-id=\"webAddress-4--null\" class=\"css-1obf64m\"><div data-automation-id=\"formField-url\" data-fkit-id=\"webAddress-4--url\" class=\"css-7t35fz\"><label for=\"webAddress-4--url\" class=\"css-1ud5i8o\"><span>URL<abbr aria-hidden=\"true\" class=\"css-1fc83zd\" data-jp-sugg=\"0\">*</abbr></span></label><div class=\"css-15rz5ap\"><div style=\"width: 100%; max-width: 344px; min-width: 280px;\"><input type=\"text\" id=\"webAddress-4--url\" name=\"url\" aria-required=\"true\" class=\"css-1kbu7en\" value=\"https://www.linkedin.com/in/sunil4832sharma\" data-agent-id=\"c134\" aria-describedby=\"error1-webAddress-4--url\" aria-invalid=\"true\" data-jp=\"URL #1\"></div><div class=\"css-18szrho\"><p id=\"error1-webAddress-4--url\" data-automation-id=\"inputAlert\" class=\"css-1d876r2\"><span class=\"css-12vmz5i\">Error: </span>You can't add duplicate website URLs.</p></div></div></div></div>"
+ },
+ {
+  "n": 23,
+  "tool": "clear",
+  "args": {
+   "id": "c134"
+  },
+  "page": "my experience",
+  "controls": {
+   "c134": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "result": "c134 emptied: shows ''"
+ },
+ {
+  "n": 24,
+  "tool": "clear",
+  "args": {
+   "id": "c135"
+  },
+  "page": "my experience",
+  "controls": {
+   "c135": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "result": "c135 emptied: shows ''"
+ },
+ {
+  "n": 25,
+  "tool": "clear",
+  "args": {
+   "id": "c136"
+  },
+  "page": "my experience",
+  "controls": {
+   "c136": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 3,
+    "group": "Websites 3",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "result": "c136 emptied: shows ''"
+ },
+ {
+  "n": 26,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c134",
+     "write",
+     "links.linkedin"
+    ],
+    [
+     "c135",
+     "write",
+     "links.github"
+    ],
+    [
+     "c136",
+     "write",
+     "links.huggingface"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c134": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   },
+   "c135": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   },
+   "c136": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 3,
+    "group": "Websites 3",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c134",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c135",
+    "kind": "write",
+    "answer": "links.github",
+    "how": null,
+    "nature": null,
+    "ok": false,
+    "shown": "",
+    "question": null
+   },
+   {
+    "id": "c136",
+    "kind": "write",
+    "answer": "links.huggingface",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://huggingface.co/sunil448832",
+    "question": null
+   }
+  ],
+  "result": "c134  NOT DONE  textbox 'URL #1': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc135  NOT DONE  textbox 'URL #2': TimeoutError: Locator.input_value: Timeout 30000ms exceeded.\nc136  ok  textbox 'URL #3': shows 'https://huggingface.co/sunil448832'\n\nNEW FIELDS:\nc149  textbox 'URL #1'   [a text box, required]   shows: 'https://www.linkedin.com/in/sunil4832sharma'\nc150  textbox 'URL #2'   [a text box, required]   shows: 'https://github.com/sunil448832'\nc151  textbox 'URL #3'   [a text box, required]   shows: 'https://huggingface.co/sunil448832'\n\nFIELDS GONE: ['c142', 'c146', 'c147', 'c148', 'c134', 'c135', 'c136']\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'"
+ },
+ {
+  "n": 27,
+  "tool": "see",
+  "args": {
+   "scope": "section",
+   "name": "Websites"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS OF 'Websites'\nc125  button 'Delete #5'   [a button]   shows: 'Delete'\nc149  textbox 'URL #1'   [a text box, required]   shows: 'https://www.linkedin.com/in/sunil4832sharma'\nc127  button 'Delete #6'   [a button]   shows: 'Delete'\nc150  textbox 'URL #2'   [a text box, required]   shows: 'https://github.com/sunil448832'\nc129  button 'Delete #7'   [a button]   shows: 'Delete'\nc151  textbox 'URL #3'   [a text box, required]   shows: 'https://huggingface.co/sunil448832'\nc131  button 'Add Another #3'   [a button]   shows: 'Add Another'"
+ },
+ {
+  "n": 28,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c149",
+     "write",
+     "keep:links.linkedin"
+    ],
+    [
+     "c150",
+     "write",
+     "keep:links.github"
+    ],
+    [
+     "c151",
+     "write",
+     "keep:links.huggingface"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c149": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 1,
+    "group": "Websites 1",
+    "above": "URL",
+    "qn": 0
+   },
+   "c150": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 2,
+    "group": "Websites 2",
+    "above": "URL",
+    "qn": 0
+   },
+   "c151": {
+    "role": "textbox",
+    "name": "URL",
+    "nth": 3,
+    "group": "Websites 3",
+    "above": "URL",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c149",
+    "kind": "write",
+    "answer": "keep:links.linkedin",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null,
+    "reads": "https://www.linkedin.com/in/sunil4832sharma"
+   },
+   {
+    "id": "c150",
+    "kind": "write",
+    "answer": "keep:links.github",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://github.com/sunil448832",
+    "question": null,
+    "reads": "https://github.com/sunil448832"
+   },
+   {
+    "id": "c151",
+    "kind": "write",
+    "answer": "keep:links.huggingface",
+    "how": "keep",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://huggingface.co/sunil448832",
+    "question": null,
+    "reads": "https://huggingface.co/sunil448832"
+   }
+  ],
+  "result": "c149  ok  textbox 'URL #1': shows 'https://www.linkedin.com/in/sunil4832sharma'\nc150  ok  textbox 'URL #2': shows 'https://github.com/sunil448832'\nc151  ok  textbox 'URL #3': shows 'https://huggingface.co/sunil448832'\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Overall Result (GPA) #1' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 1 (Indian Institute of Technology, Jodhpur)'\n- textbox 'Overall Result (GPA) #2' holds 'To be confirmed' — asked as 'Overall Result (GPA) — Education 2 (Sikkim Manipal Institute of Technology)'\n- textbox 'School or University #2' holds 'Sikkim Manipal University' — asked as 'School or University — Education 2 (Sikkim Manipal Institute of Technology)'"
+ },
+ {
+  "tool": "press",
+  "args": {
+   "id": "c29"
+  },
+  "page": "my experience",
+  "controls": {
+   "c29": {
+    "role": "button",
+    "name": "Save and Continue",
+    "nth": 1,
+    "group": "",
+    "above": "URL",
+    "qn": 1
+   }
+  },
+  "moved_to": "application questions",
+  "result": "moved on: now on page 'application questions'. see it.",
+  "n": 29
+ },
+ {
+  "n": 30,
+  "tool": "replay",
+  "args": {},
+  "page": "my experience",
+  "controls": {},
+  "result": "redone: (no page); now on page 'my experience' — its Next did not move on: still on page 'my experience'. The page says: sunil_resume.docx successfully uploaded; invalid: URL*. see it for what changed.\nsee the page and fix it (what the record did here is below); then call replay again to go on with the record, or carry on by hand.\nthe record's values on this page:\n- checkbox 'I currently work here' (under 'I currently work here'): employment[0].current\n- button 'Degree Select One Required' (under 'Degree'): option:Masters of Engineering (M.Eng)\n- button 'Degree Select One Required' (under 'Degree'): option:Bachelor of Technology (B.T.)\n- textbox 'Job Title' (under 'Job Title'): employment[0].title\n- textbox 'Role Description' (under 'Role Description'): keep:employment[0].summary\n- textbox 'Location' (under 'Location'): employment[0].location\n- spinbutton 'Month' (under 'From'): employment[0].start_date.month\n- spinbutton 'Year' (under 'From'): employment[0].start_date.year\n- spinbutton 'Month' (under 'From'): employment[1].end_date.month\n- textbox 'Job Title' (under 'Job Title'): employment[1].title\n- textbox 'Role Description' (under 'Role Description'): keep:employment[1].summary\n- textbox 'Location' (under 'Location'): employment[1].location\n- spinbutton 'Month' (under 'From'): employment[1].start_date.month\n- spinbutton 'Year' (under 'From'): employment[1].start_date.year\n- spinbutton 'Month' (under 'From'): employment[2].start_date.month\n- spinbutton 'Year' (under 'From"
+ },
+ {
+  "n": 31,
+  "tool": "finish",
+  "args": {
+   "outcome": "stuck",
+   "note": "My Experience page won't save. Every Websites URL field (LinkedIn, GitHub, Hugging Face — one each, no visible duplicates) is flagged 'You can't add duplicate website URLs.' Clearing and re-entering them didn't help. The portal probably already holds these URLs from the saved draft. I fixed the Beltech end year to 2022; everything else on the page matches the record. The applicant (or a manual check of the draft) should resolve the duplicate-URL issue — e.g. delete the Websites blocks and re-add them once. I did not delete his links."
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "finished."
+ },
+ {
+  "n": 32,
   "tool": "see",
   "args": {
    "snapshot": true
@@ -2746,7 +3223,7 @@
   "result": "PAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc28  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc133  textbox ' #1'   [a text area, required]\nc134  textbox ' #2'   [a text area]\nc135  button 'Select One Required #1'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc136  button 'Select One Required #2'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc137  button 'Select One Required #3'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc138  button 'Select One Required #4'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc139  button 'Select One Required #5'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc140  button 'Select One Required #6'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc141  button 'Select One Required #7'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc142  button 'Select One Required #8'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc143  button 'Select One Required #9'   [a button that opens a list,"
  },
  {
-  "n": 17,
+  "n": 33,
   "tool": "act",
   "args": {
    "rows": [
@@ -3168,7 +3645,7 @@
   "result": "c135  ok  button 'Select One Required #1': shows 'No'\nc136  ok  button 'Select One Required #2': shows 'Yes'\nc137  ok  button 'Select One Required #3': shows 'No'   (a placeholder: 'No', asked later)\nc138  ok  button 'Select One Required #4': shows 'No'   (a placeholder: 'No', asked later)\nc139  ok  button 'Select One Required #5': shows 'No'   (a placeholder: 'No', asked later)\nc140  ok  button 'Select One Required #6': shows 'No'   (a placeholder: 'No', asked later)\nc141  ok  button 'Select One Required #7': shows 'No'   (a placeholder: 'No', asked later)\nc142  ok  button 'Select One Required #8': shows 'No'   (a placeholder: 'No', asked later)\nc143  ok  button 'Select One Required #9': shows 'No'\nc144  ok  button 'Select One Required #10': shows 'No'\nc145  ok  button 'Select One Required #11': shows 'No'   (a placeholder: 'No', asked later)\nc146  ok  button 'Select One Required #12': shows 'No'   (a placeholder: 'No', asked later)\nc147  ok  button 'Select One Required #13': shows 'No'   (a placeholder: 'No', asked later)\nc148  ok  button 'Select One Required #14': shows 'No'   (a placeholder: 'No', asked later)\nc162  ok  checkbox 'Real Estate': shows 'checked'   (a placeholder: 'Real Estate', asked later)\nc133  ok  textbox ' #1': shows 'To be confirmed'   (a placeholder: 'To be confirmed', asked later)\nc134  ok  textbox ' #2': shows 'USD 200,000 base (open on total comp / equity mix)'\n\nNEW FIELDS:\nc166  textbox ' #3'   [a text area, required]\n\nPAGE: application questions\nP"
  },
  {
-  "n": 18,
+  "n": 34,
   "tool": "see",
   "args": {
    "scope": "ids",
@@ -3191,7 +3668,7 @@
   "result": "PAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Select One Required #3' holds 'No' — asked as 'In the past two years, have you donated to, or engaged in volunteer work for, a state or local political campaign?'\n- button 'Select One Required #4' holds 'No' — asked as 'In the past two years, has your spouse donated to, or engaged in volunteer work for a state or local political campaign?'\n- button 'Select One Required #5' holds 'No' — asked as 'In the past two years, have you donated to or volunteered for a federal candidate holding state/local office?'\n- button 'Select One Required #6' holds 'No' — asked as 'In the past two years, has your spouse donated to or volunteered for a federal candidate holding state/local office?'\n- button 'Select One Required #7' holds 'No' — asked as 'In the past two years, have you donated to, or engaged in volunteer work for any political party or PAC?'\n- button 'Select One Required #8' holds 'No' — asked as 'In the past two years, has your spouse donated to, or engaged in volunteer work for any political party or PAC?'\n- button 'Select One Required #11' holds 'No' — asked as 'Are any of your relatives or members of your household employed by Deloitte?'\n- button 'Select One Required #12' holds 'No' — asked as 'Does your spouse, sibling, parent(s) or child serve with, invest in, or have a business relationship with any portfolio company, competitor, supplier, client or investor of"
  },
  {
-  "n": 19,
+  "n": 35,
   "tool": "see",
   "args": {
    "scope": "section",
@@ -3203,7 +3680,7 @@
   "result": "PAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Select One Required #3' holds 'No' — asked as 'In the past two years, have you donated to, or engaged in volunteer work for, a state or local political campaign?'\n- button 'Select One Required #4' holds 'No' — asked as 'In the past two years, has your spouse donated to, or engaged in volunteer work for a state or local political campaign?'\n- button 'Select One Required #5' holds 'No' — asked as 'In the past two years, have you donated to or volunteered for a federal candidate holding state/local office?'\n- button 'Select One Required #6' holds 'No' — asked as 'In the past two years, has your spouse donated to or volunteered for a federal candidate holding state/local office?'\n- button 'Select One Required #7' holds 'No' — asked as 'In the past two years, have you donated to, or engaged in volunteer work for any political party or PAC?'\n- button 'Select One Required #8' holds 'No' — asked as 'In the past two years, has your spouse donated to, or engaged in volunteer work for any political party or PAC?'\n- button 'Select One Required #11' holds 'No' — asked as 'Are any of your relatives or members of your household employed by Deloitte?'\n- button 'Select One Required #12' holds 'No' — asked as 'Does your spouse, sibling, parent(s) or child serve with, invest in, or have a business relationship with any portfolio company, competitor, supplier, client or investor of"
  },
  {
-  "n": 20,
+  "n": 36,
   "tool": "inspect",
   "args": {
    "id": "c166"
@@ -3222,7 +3699,7 @@
   "result": "c166 textbox ' #3' — its field's HTML:\n<div data-automation-id=\"formField-5edd9cebf2e201c7aa9b0edafe018d7d\" data-fkit-id=\"primaryQuestionnaire--5edd9cebf2e201c7aa9b0edafe018d7d\" class=\"css-gvoll6\"><fieldset class=\"css-1s9yhc\"><legend><div id=\"label-5edd9cebf2e201c7aa9b0edafe018d7d\" class=\"css-f6y8ld\"><div data-automation-id=\"richText\" class=\"css-1e8xi5p\"><p><b>If yes, please outline the details of your current visa (Tier, expiration date, sponsor, etc.):</b><abbr title=\"required\" class=\"requiredAsterisk\">*</abbr></p></div></div></legend><div class=\"css-15rz5ap\"><div><textarea id=\"primaryQuestionnaire--5edd9cebf2e201c7aa9b0edafe018d7d\" aria-required=\"true\" class=\"css-6p1b5t\" data-agent-id=\"c166\" data-jp=\" #3\"></textarea></div><div class=\"css-0\"></div></div></fieldset></div>"
  },
  {
-  "n": 21,
+  "n": 37,
   "tool": "act",
   "args": {
    "rows": [
@@ -3260,7 +3737,7 @@
   "result": "c166  ok  textbox ' #3': shows 'Indian citizen, currently in India. Require employment visa sponsorship to work onsite outside India. Available immediately for fully-remote roles, engaged as a contractor or through an Employer of Re'\n\nPAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- button 'Select One Required #3' holds 'No' — asked as 'In the past two years, have you donated to, or engaged in volunteer work for, a state or local political campaign?'\n- button 'Select One Required #4' holds 'No' — asked as 'In the past two years, has your spouse donated to, or engaged in volunteer work for a state or local political campaign?'\n- button 'Select One Required #5' holds 'No' — asked as 'In the past two years, have you donated to or volunteered for a federal candidate holding state/local office?'\n- button 'Select One Required #6' holds 'No' — asked as 'In the past two years, has your spouse donated to or volunteered for a federal candidate holding state/local office?'\n- button 'Select One Required #7' holds 'No' — asked as 'In the past two years, have you donated to, or engaged in volunteer work for any political party or PAC?'\n- button 'Select One Required #8' holds 'No' — asked as 'In the past two years, has your spouse donated to, or engaged in volunteer work for any political party or PAC?'\n- button 'Select One Required #11' holds 'No' — asked as 'Are any of your relatives or members of your household employed by Deloit"
  },
  {
-  "n": 22,
+  "n": 38,
   "tool": "press",
   "args": {
    "id": "c29"
@@ -3280,7 +3757,7 @@
   "result": "moved on: now on page 'voluntary disclosures'. see it."
  },
  {
-  "n": 23,
+  "n": 39,
   "tool": "see",
   "args": {},
   "page": "voluntary disclosures",
@@ -3288,7 +3765,7 @@
   "result": "PAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc23  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本), 简体中文 (‏中国)]\nc24  button 'Settings'   [a button that opens a list, shows 'Settings']   shows: 'Settings'   choices: [Change Email]\nc25  button 'sunil4832sharma@gmail.com'   [a button that opens a list, shows 'sunil4832sharma@gmail.com']   shows: 'sunil4832sharma@gmail.com'   choices: [Sign Out]\nc26  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc27  button 'Candidate Home'   [a button]   shows: 'Candidate Home'\nc28  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc167  button 'Please select your gender: Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Female, Male, Not Declared (United States of America), Prefer Not To Disclose (United States of America)]\nc168  button 'Please select the ethnicity which most accurately describes how you identify yourself: Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, American Indian or Alaska Native (United States of America), Asian (United States of America), Black or African American (United States of America), Hispanic or Latino (United States of America), Native Hawaiian or Other Pacific Islander (United States of America)"
  },
  {
-  "n": 24,
+  "n": 40,
   "tool": "act",
   "args": {
    "rows": [
@@ -3398,7 +3875,7 @@
   "result": "c167  ok  button 'Please select your gender: Select One Required': shows 'Male'\nc168  ok  button 'Please select the ethnicity which most accurately describes how you identify yourself: Select One Required': shows 'Preferred Not to Self-Identify (United States of America)'\nc170  ok  button 'Veteran Status: Select One': shows 'I am not a Veteran'\nc184  ok  checkbox 'Yes, I have read and consent to the terms and conditions': shows 'checked'\n\nPAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
  },
  {
-  "n": 25,
+  "n": 41,
   "tool": "press",
   "args": {
    "id": "c29"
@@ -3418,7 +3895,7 @@
   "result": "moved on: now on page 'review' — the form's LAST PAGE. see it."
  },
  {
-  "n": 26,
+  "n": 42,
   "tool": "see",
   "args": {
    "scope": "outline"
@@ -3428,7 +3905,7 @@
   "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nSECTIONS\n  heading 'Real Estate – Innovation, Applied AI Engineer': 2 control(s)\n  heading 'Voluntary Disclosures': 2 control(s)"
  },
  {
-  "n": 27,
+  "n": 43,
   "tool": "see",
   "args": {},
   "page": "review",
@@ -3436,7 +3913,7 @@
   "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc23  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本), 简体中文 (‏中国)]\nc24  button 'Settings'   [a button that opens a list, shows 'Settings']   shows: 'Settings'   choices: [Change Email]\nc25  button 'sunil4832sharma@gmail.com'   [a button that opens a list, shows 'sunil4832sharma@gmail.com']   shows: 'sunil4832sharma@gmail.com'   choices: [Sign Out]\nc26  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc27  button 'Candidate Home'   [a button]   shows: 'Candidate Home'\nc28  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc61  button 'Back'   [a button]   shows: 'Back'\nc29  button 'Submit'   [a button]   shows: 'Submit'"
  },
  {
-  "n": 28,
+  "n": 44,
   "tool": "finish",
   "args": {
    "outcome": "last-page",
@@ -3457,7 +3934,7 @@
   "result": "finished."
  },
  {
-  "n": 29,
+  "n": 45,
   "tool": "see",
   "args": {},
   "page": null,
@@ -3465,35 +3942,7 @@
   "result": "PAGE: page\nPAGE ERRORS: Real Estate – Innovation, Applied AI Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Skip to main content'   [a link]\nc3  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本), 简体中文 (‏中国)]\nc4  button 'Sign In'   [a button]   shows: 'Sign In'\nc5  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc6  button 'Apply'   [a button]   shows: 'Apply'\nc7  link 'www.blackstone.com'   [a link]\nc8  link 'LinkedIn #1'   [a link]\nc9  link 'X (Twitter)'   [a link]\nc10  link 'Instagram'   [a link]\nc11  link 'Blackstone Credit & Insurance - Infrastructure Credit, Senior Associate'   [a link]\nc12  link 'Blackstone Credit & Insurance– Liquid Credit Strategies, CLO Portfolio Management, Senior Associate'   [a link]\nc13  link 'Blackstone Credit & Insurance -BCBS, Quantitative Researcher, Senior Associate'   [a link]\nc14  button 'View All 11 Jobs'   [a button]   shows: 'View All 11 Jobs'\nc15  button 'Read More'   [a button]   shows: 'Read More'\nc16  link 'LinkedIn #2'   [a link]\nc17  link 'X'   [a link]\nc18  link 'Facebook'   [a link]\n\nSNAPSHOT\n- [c1] link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"search for jobs\":\n    - /url: /en-US/Blackstone_Careers\n    - img \"search for jobs\"\n  - heading [level=1]\n  - [c3] button \"English\"\n  - [c4] button \"Sign In\"\n  - navigation:\n    - [c5] button \"Search for Jobs\"\n- img \"Banner\"\n- alert"
  },
  {
-  "n": 30,
-  "tool": "see",
-  "args": {},
-  "page": "Start Your Application",
-  "controls": {},
-  "result": "PAGE: Start Your Application\nPAGE ERRORS: Real Estate – Innovation, Applied AI Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc19  button 'Close'   [a button]\nc20  button 'Autofill with Resume'   [a button]   shows: 'Autofill with Resume'\nc21  button 'Apply Manually'   [a button]   shows: 'Apply Manually'\nc22  button 'Use My Last Application'   [a button]   shows: 'Use My Last Application'\n\nSNAPSHOT\n- dialog \"Start Your Application\":\n  - [c19] button \"Close\"\n  - heading \"Start Your Application\" [level=2]\n  - heading \"Real Estate – Innovation, Applied AI Engineer\" [level=3]\n  - [c20] button \"Autofill with Resume\"\n  - [c21] button \"Apply Manually\"\n  - [c22] button \"Use My Last Application\"\n  - iframe"
- },
- {
-  "n": 31,
-  "tool": "press",
-  "args": {
-   "id": "c21"
-  },
-  "page": "Start Your Application",
-  "controls": {
-   "c21": {
-    "role": "button",
-    "name": "Apply Manually",
-    "nth": 1,
-    "group": "",
-    "above": "Real Estate – Innovation, Applied AI Engineer",
-    "qn": 1
-   }
-  },
-  "moved_to": "create account/sign in",
-  "result": "moved on: now on page 'create account/sign in'. see it."
- },
- {
-  "n": 32,
+  "n": 46,
   "tool": "see",
   "args": {},
   "page": "create account/sign in",

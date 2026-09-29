@@ -25,6 +25,8 @@ Fixing a form that was not accepted:
 - see the page first: the errors, the fields they name, what those fields show.
 - a required field left empty: fill it from FACTS or from THE APPLICANT'S OWN ANSWERS, as in
   exploring.
+- website links rejected as duplicates: the portal already holds them (read from the resume):
+  remove the website blocks with press on each one's Delete, never retype them.
 - a value the portal will not take as written (a date or phone format, a pick that did not
   take, a box that needs its entry chosen from its list): enter the same answer in the form
   the field wants.

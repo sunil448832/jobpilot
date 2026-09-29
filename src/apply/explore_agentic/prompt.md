@@ -62,6 +62,10 @@ the applicant is asked to sort it out. Never type an email or password into a si
 A control no fact answers gets a placeholder (the question itself, or guess:) — the
 applicant answers it later on the phone; carry on with the form. Never invent a value.
 
+Website links are not history: a portal that rejects them as duplicates ("You can't add
+duplicate website URLs") already holds them — often read from the uploaded resume. Remove the
+website blocks (press each one's Delete) and carry on without them; do not type them again.
+
 His history stays whole: an employment or education block is never removed, and one block
 never takes another's values. When a list does not hold his entry (his school, his degree,
 his field): the list's own "Other" / "Not listed" entry when it has one; else guess:<the

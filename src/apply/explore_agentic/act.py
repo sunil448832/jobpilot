@@ -200,35 +200,57 @@ def focus(el):
     el.focus()
 
 
-def type_into(frame, el, value):
-    """Typed as a person types it (a long text is set at once), then the box is left. A box
-    that offers suggestions as you type takes the one that is the value, else the first that
-    starts with it; one that drops the value when left (it wanted a suggestion picked) is
-    reported, not taken as done."""
+def type_into(frame, el, value, c=None):
+    """Set in one step (a box that redraws while you type — Workday's — keeps up), then the
+    box is left. Suggestions the box offers are read after: the one that is the value, else the
+    first that starts with it, is picked. A box that drops the value when left (it wanted a
+    suggestion picked and the one-step set brought none up) is typed once more key by key; one
+    that still drops it is reported, not taken as done. The box is found again (by `c`) before
+    each read, so a redrawn box is never waited on."""
     text, picked = str(value), None
-    focus(el)
-    if len(text) > 80:                                   # a long text: set at once, no suggestions to wait for
-        el.fill(text, timeout=WAIT)
-    else:
-        el.fill("", timeout=WAIT)
-        before = offered_now(frame, el)
-        el.press_sequentially(text, delay=15)
+    box = (lambda: locate(frame, c)) if c is not None else (lambda: el)
+
+    def now_value():
+        try:
+            return box().input_value(timeout=2000)
+        except Exception:
+            return ""
+
+    def pick(before):
+        nonlocal picked
         want = plain(text)
-        now = suggestions_after(frame, el, before, want)
-        best = next((x for x in now if plain(x[0]) == want), None) or \
-            next((x for x in now if plain(x[0]).startswith(want)), None)
+        got = suggestions_after(frame, box(), before, want)
+        best = next((x for x in got if plain(x[0]) == want), None) or \
+            next((x for x in got if plain(x[0]).startswith(want)), None)
         if best:
             best[1].click(timeout=WAIT)
             picked = best[0]
-        elif now:
+        elif got:
             S._close(frame)
-    typed = el.input_value()
-    try:
-        el.blur()
-        frame.wait_for_timeout(250)
-    except Exception:
-        pass
-    got = el.input_value()
+
+    def leave():
+        typed = now_value()
+        try:
+            box().blur(timeout=2000)
+            frame.wait_for_timeout(250)
+        except Exception:
+            pass
+        return typed, now_value()
+
+    focus(el)
+    short = len(text) <= 80
+    before = offered_now(frame, el) if short else None
+    el.fill(text, timeout=WAIT)
+    if short:
+        pick(before)
+    typed, got = leave()
+    if short and typed.strip() and not got.strip():      # dropped when left: key by key, as a person types
+        focus(box())
+        box().fill("", timeout=WAIT)
+        before = offered_now(frame, box())
+        box().press_sequentially(text, delay=15)
+        pick(before)
+        typed, got = leave()
     if typed.strip() and not got.strip():
         return {"ok": False, "shown": got, "error": f"the box dropped {text!r} when left — it wants an entry picked "
                                                      "from its suggestions: search it"}
@@ -632,7 +654,7 @@ def act_row(frame, c, kind, answer, facts, resume):
     elif n == "digits":
         r = key_digits(frame, el, target[-1] if isinstance(target, list) else target)
     else:
-        r = type_into(frame, el, " › ".join(target) if isinstance(target, list) else target)
+        r = type_into(frame, el, " › ".join(target) if isinstance(target, list) else target, c)
     wanted = " › ".join(target) if isinstance(target, list) else str(target)
     return {**out, **r, "placeholder": placeholder, "wanted": wanted}
 

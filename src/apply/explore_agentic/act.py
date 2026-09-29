@@ -823,11 +823,16 @@ def date_groups(outcomes, by_id):
     next to one another (a Month and its Year), in page order."""
     parts = sorted((o for o in outcomes if o.get("nature") == "digits" and o.get("wanted") and o.get("id") in by_id),
                    key=lambda o: by_id[o["id"]].line)
+    kind = lambda c: str((c.facts or {}).get("valuetext") or "").strip().upper()   # MM / DD / YYYY, as read empty
     groups = []
     for o in parts:
         c = by_id[o["id"]]
         last = groups[-1][-1] if groups else None
-        if last and by_id[last["id"]].group == c.group and 0 < c.line - by_id[last["id"]].line <= 6:
+        seen = {kind(by_id[x["id"]]) for x in groups[-1]} if groups else set()
+        # the same date: next to the last part, in its group, and not a second part of a kind it
+        # already has (a second MM begins the next date — a start date and an end date side by side)
+        if last and by_id[last["id"]].group == c.group and 0 < c.line - by_id[last["id"]].line <= 6 \
+                and not (kind(c).isalpha() and kind(c) in seen):
             groups[-1].append(o)
         else:
             groups.append([o])

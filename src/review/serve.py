@@ -255,14 +255,31 @@ class H(BaseHTTPRequestHandler):
                           f"body:JSON.stringify({{item:id,decision:'submitted'}})}});"
                           f"if(r.ok)location.reload();else{{box.checked=false;alert('Failed: '+r.status);}}}}</script>")
             def submitted_table(rows):
-                """What he applied to, newest first: the date, the company, the role, how."""
+                """What he applied to, newest first: the date, the company, the role, how, and the
+                people who could refer him for it (the role's own referral page)."""
+                from urllib.parse import quote
+                from jobpilot.review import referral_form
+                try:
+                    people = referral_form.counts()
+                except Exception:
+                    people = {}
+                key = lambda s: " ".join(str(s or "").lower().split())
+
+                def refs(i):
+                    n = people.get((key(i.get("company")), key(i.get("role"))), 0)
+                    if not n:
+                        return "—"
+                    url = f'/referrals{t}{"&" if t else "?"}company={quote(i.get("company",""))}&role={quote(i.get("role",""))}'
+                    return f'<a href="{url}">{n} people →</a>'
                 rows = sorted(rows, key=lambda i: i.get("submitted_at") or "", reverse=True)
-                return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th><th>How</th></tr>'
+                return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th><th>How</th>'
+                        '<th>Referrals</th></tr>'
                         + "".join(
                             f'<tr><td class="d">{(i.get("submitted_at") or "")[:10]}</td>'
                             f'<td>{i.get("company","?")}</td>'
                             f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
-                            f'<td class="d">{"✋ by hand" if i.get("submitted_via") == "manual" else "filed"}</td></tr>'
+                            f'<td class="d">{"✋ by hand" if i.get("submitted_via") == "manual" else "filed"}</td>'
+                            f'<td class="d">{refs(i)}</td></tr>'
                             for i in rows)
                         + "</table></div>")
 
@@ -339,7 +356,7 @@ class H(BaseHTTPRequestHandler):
         if parts[0] == "referrals":
             from jobpilot.review import referral_form
             co = (q.get("company") or [None])[0]
-            return self._ok(referral_form.build(co))
+            return self._ok(referral_form.build(co, (q.get("role") or [None])[0]))
 
         if parts[0] == "keywords" and len(parts) == 1:
             from jobpilot.review import keyword_form

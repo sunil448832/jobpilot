@@ -181,11 +181,28 @@ async function setStatus(row, status) {
 """
 
 
-def build(company=None):
+def same(a, b):
+    return " ".join(str(a or "").lower().split()) == " ".join(str(b or "").lower().split())
+
+
+def counts():
+    """{(company, role) lower-cased: how many people} — the review list's Referrals column."""
+    from jobpilot.outreach import referral_tracker as RT
+    out = {}
+    for d in RT.rows():
+        k = (" ".join(str(d.get("Company") or "").lower().split()), " ".join(str(d.get("Role Applied") or "").lower().split()))
+        out[k] = out.get(k, 0) + 1
+    return out
+
+
+def build(company=None, role=None):
+    """The referral page: every candidate, or one company's, or one role's."""
     from jobpilot.outreach import referral_tracker as RT
     people = []
     for d in RT.rows():
-        if company and str(d.get("Company") or "").lower() != company.lower():
+        if company and not same(d.get("Company"), company):
+            continue
+        if role and not same(d.get("Role Applied"), role):
             continue
         people.append({
             "row": d["_row"],

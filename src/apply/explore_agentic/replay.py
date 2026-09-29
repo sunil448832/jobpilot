@@ -33,6 +33,7 @@ import concurrent.futures as cf
 import datetime as dt
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -43,6 +44,27 @@ from jobpilot.core.paths import TOOL
 from jobpilot.apply.explore_agentic import browser as B, record as R
 from jobpilot.apply.explore_agentic.form import Form
 from jobpilot.apply.explore_agentic import calls as C, card as K, session as SS
+
+
+LIMIT_RX = re.compile(r"may not apply more than|application limit|limits for applications", re.I)
+
+
+def block_company(item):
+    """A portal refused a filing over its application limit: tailoring picks nothing more from
+    that company until its window has passed (data/quota_blocks.json; the window from
+    config apply.quotas, else 180 days)."""
+    from jobpilot.core.config import cfg as _cfg
+    from jobpilot.core.paths import DATA
+    key = re.sub(r"[^a-z0-9]+", "", (item.get("company") or "").lower())
+    days = ((_cfg("apply.quotas", {}) or {}).get(key) or {}).get("window_days", 180)
+    path = os.path.join(DATA, "quota_blocks.json")
+    try:
+        blocks = json.load(open(path))
+    except (OSError, ValueError):
+        blocks = {}
+    blocks[key] = {"until": (dt.datetime.now() + dt.timedelta(days=days)).isoformat(timespec="seconds"),
+                   "why": f"{item.get('id')}: the portal's application limit"}
+    json.dump(blocks, open(path, "w"), indent=1)
 
 
 class Skip(Exception):
@@ -186,6 +208,9 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
             now = dt.datetime.now().isoformat(timespec="seconds")
             if out["outcome"] == "submitted":
                 item.update(status="submitted", submitted_at=now, fail_reason=None, submit_screenshot=out.get("screenshot"))
+            elif out["outcome"] == "refused" and LIMIT_RX.search(out.get("why") or ""):
+                block_company(item)                       # the portal's application limit: no more picks there
+                item.update(status="failed", fail_reason=(out["why"] or "refused")[:300])
             elif out["outcome"] == "captcha":             # not sent: a person has to submit it
                 item.update(status="failed", fail_reason="the portal asks for a captcha at Submit — every field is filled "
                             f"as you approved; submit it by hand: {item.get('url')}", submit_screenshot=out.get("screenshot"))

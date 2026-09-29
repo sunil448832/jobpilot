@@ -146,10 +146,10 @@ apply:
   # OpenAI roles, so without this it would spend all six on whatever ranked
   # highest that week. Counted from submitted queue items in the window.
   quotas:
-    openai: {max: 6, window_days: 180}
+    openai: {max: 5, window_days: 180}     # the portal refuses a 6th in 180 days (seen 2026-09-29)
   # Companies to skip tailoring entirely. OpenAI was held from 2026-09-07 until
   # the RL post-training project reached the resume; it landed 2026-09-22 and the
-  # hold was lifted the same day. Its 6-per-180-days quota still applies above.
+  # hold was lifted the same day. Its 5-per-180-days quota still applies above.
   hold_companies: []
 
 keywords_learn:

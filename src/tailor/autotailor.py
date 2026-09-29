@@ -138,9 +138,11 @@ def _cokey(name):
 def quota_state():
     """{company_key: (used, max)} for portals that cap applications.
 
-    Counts SUBMITTED queue items inside each quota's window. OpenAI's portal
-    allows 6 applications per 180 days; the pipeline holds ~50 OpenAI roles, so
-    without this it would spend every slot on whatever ranked highest that week.
+    Counts sent (or maybe sent) queue items inside each quota's window. OpenAI's portal
+    allows 5 applications per 180 days; the pipeline holds ~50 OpenAI roles, so
+    without this it would spend every slot on whatever ranked highest that week. A portal
+    that refused a filing over its limit counts as full until then (data/quota_blocks.json,
+    written by the filing): it also counts applications made outside the pipeline.
     """
     quotas = cfg("apply.quotas", {}) or {}
     if not quotas:
@@ -154,7 +156,7 @@ def quota_state():
             d = json.load(open(f))
         except (json.JSONDecodeError, OSError):
             continue
-        if d.get("status") != "submitted":
+        if d.get("status") not in ("submitted", "unconfirmed", "submitting"):   # sent, or maybe sent
             continue
         k = _cokey(d.get("company"))
         q = quotas.get(k)
@@ -167,7 +169,16 @@ def quota_state():
             age = 0          # unparseable date: count it, erring toward caution
         if age <= q.get("window_days", 180):
             used[k] = used.get(k, 0) + 1
-    return {k: (used.get(k, 0), q.get("max", 0)) for k, q in quotas.items()}
+    out = {k: (used.get(k, 0), q.get("max", 0)) for k, q in quotas.items()}
+    try:
+        blocks = json.load(open(os.path.join(DATA, "quota_blocks.json")))
+    except (OSError, ValueError):
+        blocks = {}
+    for k, b in blocks.items():                      # the portal said the limit is reached
+        if (b.get("until") or "") > now.isoformat(timespec="seconds"):
+            mx = out.get(k, (0, 0))[1] or 1
+            out[k] = (mx, mx)
+    return out
 
 
 def candidates(limit, floor, per_company=3, require_screen=None):

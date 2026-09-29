@@ -124,7 +124,7 @@ way to the next:
 | control | techniques |
 |---|---|
 | text box | set in one step · key by key · by script (input / change events) |
-| tick box / radio | real click · its label · set checked · forced · script click (never undoing what took) |
+| tick box / radio | the drawn control that disagrees · real click · its label · set checked · forced · script click (never undoing what took); done only when the input and any control drawn for it (`aria-checked`, `data-state`) agree |
 | Yes/No button | click · forced · script |
 | `<select>` | by label · by matching text · keyboard |
 | list | its entries clicked (a nested chain step by step) · the entry typed and picked from the suggestions |
@@ -173,7 +173,8 @@ values is what the filing will enter, from the record (`calls.values_by_page`).
 - only a confirmation the portal shows after the press counts as submitted
 - his answers keep their meaning; a question nobody answered stops the filing
 - credentials never reach the agent; the agent never types into a sign-in form
-- per-portal application caps (`apply.quotas`), and a posting picked once per tailoring batch
+- per-portal application caps (`apply.quotas`, counting sent and maybe-sent cards; a portal's own
+  limit refusal blocks the company until its window passes), and a posting picked once per batch
 
 ## 8. Files
 
@@ -193,6 +194,6 @@ values is what the filing will enter, from the record (`calls.values_by_page`).
 - Lever shows a captcha on Submit: filed by hand (the notice links the job).
 - A date widget whose parts do not move on by themselves, or a calendar picker, is not typed
   as one date; the check reports it and the agent can give its own keys.
-- A portal's own limits (OpenAI: 5 applications in 180 days) refuse a filing; nothing is sent.
-- Some styled radios can show a tick the form did not register; the real click is tried first,
-  and a portal error sends the agent to fix it.
+- A portal's own limits (OpenAI: 5 applications in 180 days) refuse a filing; nothing is sent,
+  and the company is blocked for tailoring until the window has passed
+  (`data/quota_blocks.json`), since the portal also counts applications made outside jobpilot.

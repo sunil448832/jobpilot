@@ -393,22 +393,75 @@ def key_digits(frame, el, value):
     return {"ok": ok, "shown": part_value(el), "technique": how, **({"tried": tried} if not ok else {})}
 
 
+# a radio / checkbox's state as the page keeps it: its own (checked, or aria-checked), and that
+# of any control drawn for it in its field (a styled one keeps its state there: aria-checked,
+# data-state="checked", data-checked) — the field being the nearest box around it holding no
+# other radio / checkbox
+TICK_JS = r"""el => {
+  const own = el.matches('input') ? el.checked : el.getAttribute('aria-checked') === 'true';
+  // what marks the edge of its field: another real input for an input (the role=radio drawn
+  // beside it belongs to it); another role control for a control that is itself one
+  const CHOICE = el.matches('input') ? 'input[type=radio], input[type=checkbox]'
+                                     : '[role=radio], [role=checkbox], [role=switch]';
+  let box = el;
+  for (let i = 0; i < 4 && box.parentElement; i++) {
+    const p = box.parentElement;
+    if ([...p.querySelectorAll(CHOICE)].some(x => x !== el && !x.contains(el) && !el.contains(x))) break;
+    box = p;
+  }
+  const drawn = [];
+  document.querySelectorAll('[data-jp-drawn]').forEach(n => n.removeAttribute('data-jp-drawn'));
+  for (const n of box.querySelectorAll('[aria-checked], [data-state], [data-checked]')) {
+    if (n === el) continue;
+    const a = n.getAttribute('aria-checked'), st = n.getAttribute('data-state'), dc = n.getAttribute('data-checked');
+    let v = null;
+    if (a === 'true' || a === 'false') v = a === 'true';
+    else if (st === 'checked' || st === 'unchecked') v = st === 'checked';
+    else if (dc === 'true' || dc === 'false') v = dc === 'true';
+    if (v === null) continue;
+    drawn.push(v);
+    if (v !== own && !document.querySelector('[data-jp-drawn]')) n.setAttribute('data-jp-drawn', '1');
+  }
+  return {own, drawn};
+}"""
+
+
+def ticked(el):
+    """(on, agreed): the control's own state, and whether every control drawn for it says the same."""
+    try:
+        got = el.evaluate(TICK_JS)
+    except Exception:
+        return el.is_checked(), True
+    return bool(got["own"]), all(d == got["own"] for d in got["drawn"])
+
+
 def tick(el, on=True):
-    """A radio / checkbox, by the first technique that leaves it as wanted: a real click where
-    it lands (a styled one — Ashby's — registers only that), a click on its label, set checked,
-    set checked forced, a click by script."""
-    if el.is_checked() == on:
+    """A radio / checkbox, by the first technique that leaves it as wanted — its own state and
+    that of any control drawn for it (a styled radio can show a tick its form never took: the
+    input checked, its drawn control not): a real click where it lands (a styled one — Ashby's —
+    registers only that), a click on its label, set checked, set checked forced, a click by
+    script."""
+    holds = lambda: (lambda st: st[0] == on and st[1])(ticked(el))
+    if holds():
         return {"ok": True, "shown": "checked" if on else "unchecked"}
-    still = lambda fn: (lambda: fn() if el.is_checked() != on else None)   # never undo what took
+    still = lambda fn: (lambda: fn() if not holds() else None)   # never undo what took
+    def drawn():                                         # the drawn control that disagrees, clicked itself
+        ticked(el)
+        d = el.page.locator('[data-jp-drawn="1"]')
+        if not d.count():
+            raise ValueError("no drawn control disagrees")
+        S.tap(d.first)
     ok, how, tried = attempt("tick", [
+        ("drawn", still(drawn)),
         ("click", still(lambda: S.tap(el))),
         ("label", still(lambda: el.evaluate("el => (el.labels && el.labels[0] ? el.labels[0] : el).click()"))),
         ("set", still(lambda: el.set_checked(on, timeout=WAIT))),
         ("force", still(lambda: el.set_checked(on, force=True, timeout=WAIT))),
         ("js", still(lambda: el.evaluate("el => el.click()"))),
-    ], lambda: el.is_checked() == on)
-    return {"ok": ok, "shown": "checked" if el.is_checked() else "unchecked", "technique": how,
-            **({"tried": tried} if not ok else {})}
+    ], holds)
+    own, agreed = ticked(el)
+    return {"ok": ok, "shown": ("checked" if own else "unchecked") + ("" if agreed else " (its drawn control disagrees)"),
+            "technique": how, **({"tried": tried} if not ok else {})}
 
 
 def press(frame, el):

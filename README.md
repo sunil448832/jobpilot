@@ -27,7 +27,7 @@ repo** is read-only source of truth.
     screen/     screen.py llm_eval.py                                  — Claude: eligibility + fit score
     tailor/     autotailor.py scaffold.py optimize.py build.py tex2md.py ats_score.py — per-application work
     apply/      the form:
-      explore_agentic/  session.py form.py calls.py replay.py card.py — one Claude agent per application, tools on the live page
+      explore_agentic/  session.py form.py calls.py replay.py card.py — one Claude agent per application, tools on the live page (docs/form-agent.md)
                         see.py act.py controls.py facts.py record.py browser.py — what the tools read and do
       draft/      draft.py learn.py manual.py                        — drafted answers, learned answers, apply-by-hand
       platforms/  greenhouse.py lever.py ashby.py workday.py …       — only what is truly platform-specific (account gate, steps)
@@ -41,6 +41,7 @@ repo** is read-only source of truth.
                                      explore.json (placeholders and his answers), agentic.json (the last exploration)
   tracking/                          job-tracker.xlsx  referral-tracker.xlsx
   scripts/                           one-off setup
+  docs/                              form-agent.md — how applications are explored and filed
 
 ~/work/docs/sunil_resume_v2/         THE RESUME REPO — read-only for the tool  (config.yaml -> paths.tracking_repo)
   resume/sections/*.tex              the base resume
@@ -276,6 +277,8 @@ never-fabricate rule is enforced by judgment, not a prompt string.
 
 `./jobpilot explore <slug>` (`python -m jobpilot.apply.explore_agentic`) fills an
 application's form to its last page and queues it for approval. It **never presses Submit**.
+The whole design — exploring, the record, filing and every Submit outcome, the techniques per
+control, questions during filing, the safety rules — is in `docs/form-agent.md`.
 
 **One agent per application (`session.py`)** — a Claude Agent SDK session, started once.
 Its system prompt is sent once: `prompt.md` (how to work, the answer grammar, the rules —

@@ -308,7 +308,12 @@ until the control holds what was wanted — a text box: set in one step, key by 
 a tick: a real click, its label, set checked, forced, by script; a <select>: by label, by
 matching text, by keyboard; a list: its entries clicked, else typed and picked from the
 suggestions; a file: its input, else the file chooser. The one that worked is remembered per
-platform (`data/techniques.json`) and tried first there next time; `see.py` reads the accessibility snapshot
+platform (`data/techniques.json`) and tried first there next time. A control that still does
+not take is reported with the techniques tried, and the agent may name another
+(`technique:<name>`) or give its own keys (`keys:122023`, `{Tab}`) as a row's 4th item. Date and
+number parts are checked by the widget's own value (`aria-valuenow`), and all parts of a date
+are read again after every act: on Workday, typing the year puts its first key in the month
+(12 → 2), so a date a later part undid is typed in one go into its first part; `see.py` reads the accessibility snapshot
 (`controls.py` parses it). Workday's account gate is passed by code; the credentials are
 never shown to Claude.
 

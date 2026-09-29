@@ -1,9 +1,9 @@
 {
  "slug": "adobe-sr-applied-ai-engineer",
  "platform": "workday",
- "at": "2026-09-28T12:25:44",
+ "at": "2026-09-29T08:31:41",
  "outcome": "last-page",
- "note": "Reached Review page; all prior pages saved. Open for applicant: How Did You Hear About Us (Job Board › LinkedIn vs Social Media › LinkedIn). Certification block removed: DeepLearning.AI course not in Adobe's list.",
+ "note": "All pages filled; on Review. For the applicant: 'How Did You Hear About Us?' set to Job Board › LinkedIn (or Social Media › LinkedIn). Certification 'DeepLearning.AI — Generative AI with LLMs' not in Adobe's list, so the block was removed. Education 2 field = Electrical Engineering (his learned answer).",
  "pages": [
   "page",
   "Start Your Application",
@@ -80,11 +80,23 @@
    "page": "my information"
   }
  },
- "tool_calls": 20,
- "seconds": 385,
+ "submit_control": {
+  "page": "review",
+  "role": "button",
+  "name": "Submit",
+  "nth": 1,
+  "group": "",
+  "above": "Check this box to confirm the statement above. Yes",
+  "qn": 1
+ },
+ "calls": "applications/adobe-sr-applied-ai-engineer/calls.json",
+ "tool_calls": 23,
+ "seconds": 392,
  "model": "opus",
  "effort": "low",
- "turns": 21,
- "cost_usd": 0.5143082,
- "transcript": "tests/maps/adobe-sr-applied-ai-engineer/agentic-0928-1219.log"
+ "turns": 24,
+ "cost_usd": 0.559583,
+ "transcript": "tests/maps/adobe-sr-applied-ai-engineer/agentic-0929-0825.log",
+ "screenshot": "data/queue/adobe-sr-applied-ai-engineer-0929-0825.png",
+ "resume": "/home/sunil/work/projects/jobpilot/applications/adobe-sr-applied-ai-engineer/sunil_resume.docx"
 }

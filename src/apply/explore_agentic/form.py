@@ -430,6 +430,11 @@ class Form:
                    (f"set to {wanted!r}; the field now shows {shown[:200]!r} — the same entry (a short or cut "
                     "form of it)? if not, act on it again" if check else (o.get("error") or f"shows {shown[:200]!r}"))))
         label = "ok" if o.get("ok") else "CHECK" if check else "NOT DONE"
+        if o.get("tried") and not o.get("ok"):          # what did not take: the agent may name another way
+            detail += (f"   [tried: {'; '.join(o['tried'])} — add a 4th item to the row: technique:<one not tried>, "
+                       "or keys:<your own keys, {Tab} {Enter}>]")
+        if o.get("note"):
+            detail += f"   [{o['note']}]"
         return f"{o.get('id')}  {label}  {o.get('control', '')}: {detail}" + \
             (f"   (a placeholder: {p['used']!r}, asked later)" if p else "")
 

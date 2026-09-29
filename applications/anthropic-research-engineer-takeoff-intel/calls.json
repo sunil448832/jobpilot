@@ -1,14 +1,5 @@
 [
  {
-  "n": 1,
-  "tool": "see",
-  "args": {},
-  "page": null,
-  "controls": {},
-  "result": "PAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'we are delegating a growing share of AI development to AI systems themselves'   [a link]\nc5  link 'Anthropic Institute'   [a link]\nc6  link \"Epoch's Capabilities Index\"   [a link]\nc7  link 'When AI Builds Itself #1'   [a link]\nc8  link 'When AI Builds Itself #2'   [a link]\nc9  link 'anthropic.com/careers'   [a link]\nc10  link 'our policy'   [a link]\nc11  link 'Create alert'   [a link]\nc12  textbox 'First Name'   [a text box, required]\nc13  textbox 'Last Name'   [a text box, required]\nc14  textbox 'Email'   [a text box, required]\nc15  combobox 'Country'   [a search box: type, then pick from the list that appears]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambo"
- },
- {
-  "n": 2,
   "tool": "act",
   "args": {
    "rows": [
@@ -618,10 +609,10 @@
     "reads": "relocating"
    }
   ],
-  "result": "c15  NOT DONE  combobox 'Country': the box would not keep 'India +91' (fill: did not take; keys: did not take; js: did not take) — it may want an entry picked from its suggestions: search it\nc18  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc25  NOT DONE  combobox 'Are you open to working in-person in one of our offices 25% of the time?': the box would not keep \"Yes, I'm open to being in the Zurich office at least 25% of the time.\" (fill: did not take; keys: did not take; js: did not take) — it may want an entry picked from its suggestions: search it\nc29  ok  combobox 'AI Policy for Application': shows 'Yes'\nc33  ok  combobox 'Do you require visa sponsorship?': shows 'Yes'\nc35  ok  combobox \"Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?\": shows 'Yes'\nc39  ok  combobox 'Are you open to relocation for this role?': shows 'Yes'\nc42  ok  combobox 'Have you ever interviewed at Anthropic before?': shows 'No'\nc44  ok  combobox 'Please read the arbitration agreement below': shows 'I will read the arbitration agreement below.'\nc49  ok  combobox 'Agreement to Arbitrate': shows 'I understand and agree to the terms of the Agreement to Arbitrate set forth above.'\nc51  ok  combobox 'Gender': shows 'Male'\nc53  ok  combobox 'Are you Hispanic/Latino?': shows 'Decline To Self Identify'\nc56  ok  combobox 'Veteran Status': shows 'I am not a protected veteran'\nc12  ok  textbox 'First Name': sh"
+  "result": "c15  NOT DONE  combobox 'Country': the box would not keep 'India +91' (fill: did not take; keys: did not take; js: did not take) — it may want an entry picked from its suggestions: search it\nc18  ok  button 'Attach #1': shows 'sunil_resume.docx'\nc25  NOT DONE  combobox 'Are you open to working in-person in one of our offices 25% of the time?': the box would not keep \"Yes, I'm open to being in the Zurich office at least 25% of the time.\" (fill: did not take; keys: did not take; js: did not take) — it may want an entry picked from its suggestions: search it\nc29  ok  combobox 'AI Policy for Application': shows 'Yes'\nc33  ok  combobox 'Do you require visa sponsorship?': shows 'Yes'\nc35  ok  combobox \"Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located?\": shows 'Yes'\nc39  ok  combobox 'Are you open to relocation for this role?': shows 'Yes'\nc42  ok  combobox 'Have you ever interviewed at Anthropic before?': shows 'No'\nc44  ok  combobox 'Please read the arbitration agreement below': shows 'I will read the arbitration agreement below.'\nc49  ok  combobox 'Agreement to Arbitrate': shows 'I understand and agree to the terms of the Agreement to Arbitrate set forth above.'\nc51  ok  combobox 'Gender': shows 'Male'\nc53  ok  combobox 'Are you Hispanic/Latino?': shows 'Decline To Self Identify'\nc56  ok  combobox 'Veteran Status': shows 'I am not a protected veteran'\nc12  ok  textbox 'First Name': sh",
+  "n": 1
  },
  {
-  "n": 3,
   "tool": "act",
   "args": {
    "rows": [
@@ -680,10 +671,10 @@
     "reads": ""
    }
   ],
-  "result": "c15  NOT DONE  combobox 'Country': searched: '\\\\bIndia\\\\b' -> [India +91]; '^Ind' -> [India +91, Indonesia +62]\nc25  ok  combobox 'Are you open to working in-person in one of our offices 25% of the time?': shows 'Yes'\n\nNEW FIELDS:\nc71  button 'Clear selections #1'   [a button]\n\nPAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+  "result": "c15  NOT DONE  combobox 'Country': searched: '\\\\bIndia\\\\b' -> [India +91]; '^Ind' -> [India +91, Indonesia +62]\nc25  ok  combobox 'Are you open to working in-person in one of our offices 25% of the time?': shows 'Yes'\n\nNEW FIELDS:\nc71  button 'Clear selections #1'   [a button]\n\nPAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 2
  },
  {
-  "n": 4,
   "tool": "clear",
   "args": {
    "id": "c23"
@@ -699,10 +690,10 @@
     "qn": 0
    }
   },
-  "result": "c23 emptied: shows ''"
+  "result": "c23 emptied: shows ''",
+  "n": 3
  },
  {
-  "n": 5,
   "tool": "act",
   "args": {
    "rows": [
@@ -737,67 +728,69 @@
     "reads": ""
    }
   ],
-  "result": "c15  NOT DONE  combobox 'Country': the box would not keep 'India +91' (fill: did not take; keys: did not take; js: did not take) — it may want an entry picked from its suggestions: search it\n\nOTHER FIELDS THE PAGE CHANGED (not acted on):\nc23  textbox '(Optional) Personal Preferences'   [a text box]   (was 'No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure.')\n\nPAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+  "result": "c15  NOT DONE  combobox 'Country': the box would not keep 'India +91' (fill: did not take; keys: did not take; js: did not take) — it may want an entry picked from its suggestions: search it\n\nOTHER FIELDS THE PAGE CHANGED (not acted on):\nc23  textbox '(Optional) Personal Preferences'   [a text box]   (was 'No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure.')\n\nPAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 4
  },
  {
-  "n": 6,
-  "tool": "see",
+  "n": 5,
+  "tool": "act",
   "args": {
-   "scope": "ids",
-   "ids": [
-    "c15",
-    "c17",
-    "c25"
+   "rows": [
+    [
+     "c23",
+     "write",
+     "learned:86"
+    ]
    ]
   },
   "page": "Research Engineer, Takeoff Intel",
   "controls": {
-   "c15": {
-    "role": "combobox",
-    "name": "Country",
-    "nth": 1,
-    "group": "Phone",
-    "above": "+91",
-    "qn": 0
-   },
-   "c17": {
+   "c23": {
     "role": "textbox",
-    "name": "Phone",
-    "nth": 1,
-    "group": "Phone",
-    "above": "Phone",
-    "qn": 0
-   },
-   "c25": {
-    "role": "combobox",
-    "name": "Are you open to working in-person in one of our offices 25% of the time?",
+    "name": "(Optional) Personal Preferences",
     "nth": 1,
     "group": "",
-    "above": "Yes",
+    "above": "(Optional) Personal Preferences",
     "qn": 0
    }
   },
-  "result": "PAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc15  combobox 'Country'   [a search box: type, then pick from the list that appears]   shows: '+91'   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambodia +855, Cameroon +237, Canada +1, Cape Verde +238, Caribbean Ne"
+  "outcomes": [
+   {
+    "id": "c23",
+    "kind": "write",
+    "answer": "learned:86",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure.",
+    "question": null,
+    "reads": "No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure."
+   }
+  ],
+  "result": "c23  ok  textbox '(Optional) Personal Preferences': shows 'No specific preferences — open to any of the SF, NYC, or Seattle offices, and open to whichever team within RL Engineering best fits my background in training pipelines and eval infrastructure.'\n\nPAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+ },
+ {
+  "n": 6,
+  "tool": "replay",
+  "args": {},
+  "page": "Research Engineer, Takeoff Intel",
+  "controls": {},
+  "result": "redone: (no page); now on page 'Research Engineer, Takeoff Intel' — the record's last page\nthis is where the record ends: see the page, fill what is left, and carry on."
  },
  {
   "n": 7,
-  "tool": "finish",
-  "args": {
-   "outcome": "last-page",
-   "submit_id": "c58",
-   "note": "Single-page Greenhouse form, all fields filled. Phone country shows +91 (India). Website left empty: no fact for it; ask the applicant. Personal Preferences (name pronunciation) left empty: the saved answer was for a different role. Error list shown is stale from before filling."
-  },
+  "tool": "see",
+  "args": {},
   "page": "Research Engineer, Takeoff Intel",
-  "controls": {
-   "c58": {
-    "role": "button",
-    "name": "Submit application",
-    "nth": 1,
-    "group": "",
-    "above": "I am not a protected veteran",
-    "qn": 2
-   }
-  },
-  "result": "finished."
+  "controls": {},
+  "result": "PAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: invalid: First Name*; invalid: Last Name*; invalid: Email*; invalid: Phone; invalid: Are you open to working in-person in one of our offices 25% of the time?*; invalid: AI Policy for Application*; invalid: Why Anthropic?*; invalid: Do you require visa sponsorship? *; invalid: Will you now or will you in the future require employment visa sponsorship to work in the country in which the job you're applying for is located? *; invalid: Are you open to relocation for this role? *; invalid: Have you ever interviewed at Anthropic before?*; invalid: Please read the arbitration agreement below*\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'we are delegating a growing share of AI development to AI systems themselves'   [a link]\nc5  link 'Anthropic Institute'   [a link]\nc6  link \"Epoch's Capabilities Index\"   [a link]\nc7  link 'When AI Builds Itself #1'   [a link]\nc8  link 'When AI Builds Itself #2'   [a link]\nc9  link 'anthropic.com/careers'   [a link]\nc10  link 'our policy'   [a link]\nc11  link 'Create alert'   [a link]\nc12  textbox 'First Name'   [a text box, required]   shows: 'Sunil'\nc13  textbox 'Last Name'   [a text box, required]   shows: 'Sharma'\nc14  textbox 'Email'   [a text box, required]   shows: 'sunil4832sharma@gmail.com'\nc15  combobox 'Country'   [a search box: ty"
+ },
+ {
+  "n": 8,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: Research Engineer, Takeoff Intel\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Anthropic Logo'   [a link]\nc2  link 'Back to jobs'   [a link]\nc3  button 'Apply'   [a button]   shows: 'Apply'\nc4  link 'we are delegating a growing share of AI development to AI systems themselves'   [a link]\nc5  link 'Anthropic Institute'   [a link]\nc6  link \"Epoch's Capabilities Index\"   [a link]\nc7  link 'When AI Builds Itself #1'   [a link]\nc8  link 'When AI Builds Itself #2'   [a link]\nc9  link 'anthropic.com/careers'   [a link]\nc10  link 'our policy'   [a link]\nc11  link 'Create alert'   [a link]\nc12  textbox 'First Name'   [a text box, required]\nc13  textbox 'Last Name'   [a text box, required]\nc14  textbox 'Email'   [a text box, required]\nc15  combobox 'Country'   [a search box: type, then pick from the list that appears]   choices: [United States +1, Afghanistan +93, Åland Islands +358, Albania +355, Algeria +213, American Samoa +1, Andorra +376, Angola +244, Anguilla +1, Antigua & Barbuda +1, Argentina +54, Armenia +374, Aruba +297, Ascension Island +247, Australia +61, Austria +43, Azerbaijan +994, Bahamas +1, Bahrain +973, Bangladesh +880, Barbados +1, Belarus +375, Belgium +32, Belize +501, Benin +229, Bermuda +1, Bhutan +975, Bolivia +591, Bosnia & Herzegovina +387, Botswana +267, Brazil +55, British Indian Ocean Territory +246, British Virgin Islands +1, Brunei +673, Bulgaria +359, Burkina Faso +226, Burundi +257, Cambo"
  }
 ]

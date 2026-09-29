@@ -125,6 +125,7 @@ def plain(s):
 # says the control holds what was wanted. The one that worked is remembered per platform and
 # tried first next time (data/techniques.json).
 PLATFORM = ""                                    # set by form.Form for its application
+PREFER = None                                    # the technique the agent named for this row (act_row)
 _LEARNED = None
 
 
@@ -157,7 +158,7 @@ def attempt(kind, techniques, check):
     first — until check() is true: a technique that raises, or leaves the check false, gives way
     to the next. (ok, the technique that worked, [what the others hit])."""
     first = (_learned().get(PLATFORM or "any") or {}).get(kind)
-    order = sorted(techniques, key=lambda t: t[0] != first)
+    order = sorted(techniques, key=lambda t: (t[0] != PREFER, t[0] != first))
     tried = []
     for name, fn in order:
         try:
@@ -325,9 +326,9 @@ def type_into(frame, el, value, c=None):
     ok, how, tried = attempt("type", techniques, holds_it)
     got = now_value()
     if not ok and not got.strip():
-        return {"ok": False, "shown": got, "error": f"the box would not keep {text!r} ({'; '.join(tried)}) — "
-                                                     "it may want an entry picked from its suggestions: search it"}
-    return {"ok": ok, "shown": got, "technique": how}
+        return {"ok": False, "shown": got, "tried": tried, "error": f"the box would not keep {text!r} — it may want "
+                                                                    "an entry picked from its suggestions: search it"}
+    return {"ok": ok, "shown": got, "technique": how, **({"tried": tried} if not ok else {})}
 
 
 def offered_now(frame, el):
@@ -359,12 +360,26 @@ def suggestions_after(frame, el, before, want, wait_s=2.5):
     return got
 
 
+def same_number(got, want):
+    got, want = str(got).strip(), str(want).strip()
+    return got.isdigit() and want.isdigit() and int(got) == int(want)
+
+
+def part_value(el):
+    """What a date / number part holds: the widget's own value (aria-valuenow) when it keeps
+    one, else the box's text."""
+    try:
+        return str(el.evaluate("el => { const n = el.getAttribute('aria-valuenow'); return n !== null ? n : el.value; }") or "")
+    except Exception:
+        return ""
+
+
 def key_digits(frame, el, value):
     """A number / date part (a date widget keeps its own state; a value set directly may show
     but not be what the page saves): its text selected and typed over, then the same slower
     (the first keys swallowed), then set in one step, then by script."""
     want = str(value).strip()
-    same = lambda: (lambda s: s.strip().isdigit() and want.isdigit() and int(s) == int(want))(el.input_value(timeout=2000))
+    same = lambda: same_number(part_value(el), want)
 
     def keys(delay):
         def run():
@@ -373,9 +388,9 @@ def key_digits(frame, el, value):
             frame.page.keyboard.type(want, delay=delay)
             frame.page.keyboard.press("Tab")
         return run
-    ok, how, _ = attempt("digits", [("keys", keys(40)), ("keys-slow", keys(120)),
+    ok, how, tried = attempt("digits", [("keys", keys(40)), ("keys-slow", keys(120)),
                                     ("fill", lambda: el.fill(want, timeout=WAIT)), ("js", lambda: js_set(el, want))], same)
-    return {"ok": ok, "shown": el.input_value(timeout=2000), "technique": how}
+    return {"ok": ok, "shown": part_value(el), "technique": how, **({"tried": tried} if not ok else {})}
 
 
 def tick(el, on=True):
@@ -385,14 +400,15 @@ def tick(el, on=True):
     if el.is_checked() == on:
         return {"ok": True, "shown": "checked" if on else "unchecked"}
     still = lambda fn: (lambda: fn() if el.is_checked() != on else None)   # never undo what took
-    ok, how, _ = attempt("tick", [
+    ok, how, tried = attempt("tick", [
         ("click", still(lambda: S.tap(el))),
         ("label", still(lambda: el.evaluate("el => (el.labels && el.labels[0] ? el.labels[0] : el).click()"))),
         ("set", still(lambda: el.set_checked(on, timeout=WAIT))),
         ("force", still(lambda: el.set_checked(on, force=True, timeout=WAIT))),
         ("js", still(lambda: el.evaluate("el => el.click()"))),
     ], lambda: el.is_checked() == on)
-    return {"ok": ok, "shown": "checked" if el.is_checked() else "unchecked", "technique": how}
+    return {"ok": ok, "shown": "checked" if el.is_checked() else "unchecked", "technique": how,
+            **({"tried": tried} if not ok else {})}
 
 
 def press(frame, el):
@@ -413,11 +429,12 @@ def press(frame, el):
                 fn()
                 frame.wait_for_timeout(200)
         return run
-    ok, how, _ = attempt("press", [("click", click(lambda: S.tap(el))),
+    ok, how, tried = attempt("press", [("click", click(lambda: S.tap(el))),
                                    ("force", click(lambda: el.click(force=True, timeout=WAIT))),
                                    ("js", click(lambda: el.evaluate("el => el.click()")))],
                          lambda: state() == "true")
-    return {"ok": ok, "shown": "pressed" if state() == "true" else "clicked", "technique": how}
+    return {"ok": ok, "shown": "pressed" if state() == "true" else "clicked", "technique": how,
+            **({"tried": tried} if not ok else {})}
 
 
 def select_native(el, label):
@@ -437,10 +454,10 @@ def select_native(el, label):
         el.focus()
         el.press_sequentially(str(label)[:20], delay=30)
         el.press("Enter")
-    ok, how, _ = attempt("select", [("label", lambda: el.select_option(label=str(label), timeout=WAIT)),
+    ok, how, tried = attempt("select", [("label", lambda: el.select_option(label=str(label), timeout=WAIT)),
                                     ("text", by_text), ("keys", keyboard)],
                          lambda: plain(shown()) == plain(label))
-    return {"ok": ok, "shown": shown(), "technique": how}
+    return {"ok": ok, "shown": shown(), "technique": how, **({"tried": tried} if not ok else {})}
 
 
 def give_file(frame, el, path):
@@ -464,8 +481,9 @@ def give_file(frame, el, path):
                 pass
             time.sleep(0.25)
         return False
-    ok, how, _ = attempt("file", [("input", lambda: inp().set_input_files(path, timeout=WAIT)), ("chooser", chooser)], shown)
-    return {"ok": ok, "shown": os.path.basename(str(path)) if ok else "the page never showed the file", "technique": how}
+    ok, how, tried = attempt("file", [("input", lambda: inp().set_input_files(path, timeout=WAIT)), ("chooser", chooser)], shown)
+    return {"ok": ok, "shown": os.path.basename(str(path)) if ok else "the page never showed the file", "technique": how,
+            **({"tried": tried} if not ok else {})}
 
 
 # marks the visible list entry whose words — read exactly as see reads an entry (its text,
@@ -800,6 +818,58 @@ def list_open(frame):
 ORDER = {"select": 1, "write": 2}          # Add first, then choices (they may add or hide fields), then typing
 
 
+def date_groups(outcomes, by_id):
+    """The date / number parts acted on, grouped into dates: parts in one group of the page,
+    next to one another (a Month and its Year), in page order."""
+    parts = sorted((o for o in outcomes if o.get("nature") == "digits" and o.get("wanted") and o.get("id") in by_id),
+                   key=lambda o: by_id[o["id"]].line)
+    groups = []
+    for o in parts:
+        c = by_id[o["id"]]
+        last = groups[-1][-1] if groups else None
+        if last and by_id[last["id"]].group == c.group and 0 < c.line - by_id[last["id"]].line <= 6:
+            groups[-1].append(o)
+        else:
+            groups.append([o])
+    return groups
+
+
+def pad(value, c):
+    """A part's digits to its width, from what it showed empty (MM, DD, YYYY)."""
+    ph = str((c.facts or {}).get("valuetext") or "")
+    return str(value).strip().zfill(len(ph)) if ph.isalpha() and len(ph) in (2, 4) else str(value).strip()
+
+
+def settle_dates(frame, by_id, outcomes, log):
+    """Every date part set in this act, read again at the end: a later part that moved the focus
+    back (Workday: the year's first key landed in the month) undid an earlier one. Such a date
+    is typed in one go into its first part — the widget moving on by itself — and read again."""
+    for g in date_groups(outcomes, by_id):
+        held = lambda: [same_number(part_value(locate(frame, by_id[o["id"]])), o["wanted"]) for o in g]
+        if all(held()):
+            continue
+        if len(g) > 1:
+            try:
+                el = locate(frame, by_id[g[0]["id"]])
+                focus(el)
+                el.evaluate("el => el.select && el.select()")
+                frame.page.keyboard.type("".join(pad(o["wanted"], by_id[o["id"]]) for o in g), delay=60)
+                frame.page.keyboard.press("Tab")
+                frame.wait_for_timeout(300)
+            except Exception as e:
+                log(f"      a date typed in one go failed: {type(e).__name__}")
+            if all(held()):
+                _remember("date", "together")
+        for o, ok in zip(g, held()):
+            got = part_value(locate(frame, by_id[o["id"]]))
+            if ok and len(g) > 1:
+                o.update(ok=True, shown=got, technique="together")
+            elif not ok:
+                o.update(ok=False, shown=got, error=f"holds {got!r}, not {o['wanted']!r} — typing another part of this "
+                                                    "date changed it")
+            log(f"      {o['id']:4} {'✓' if ok else '✗'} date part re-checked -> {got}")
+
+
 def act_rows(frame, controls, rows, facts, resume, log=print):
     """Every row on its control, in order: Add buttons, then picks, then typing. Each
     control is pinned by its DOM id first, so it is found again after its name changes with
@@ -824,16 +894,45 @@ def act_rows(frame, controls, rows, facts, resume, log=print):
                  "error": "not a control of this page (its id was not given)"} for r in rows if not is_row(r)]
     good = sorted((r for r in rows if is_row(r)),
                   key=lambda r: 0 if str(r[2]).lower().startswith("add:") else ORDER.get(r[1], 1))
-    for cid, kind, answer in (r[:3] for r in good):
+    global PREFER
+    for r in good:
+        cid, kind, answer = r[:3]
+        hint = str(r[3]).strip() if len(r) > 3 and r[3] else ""
         c = by_id[cid]
         try:
-            o = act_row(frame, c, kind, answer, facts, resume)
+            if hint.lower().startswith("keys:"):
+                o = keys_row(frame, c, kind, answer, hint[5:])
+            else:
+                PREFER = hint[10:].strip() if hint.lower().startswith("technique:") else None
+                o = act_row(frame, c, kind, answer, facts, resume)
         except Exception as ex:
             o = {"id": cid, "control": f"{c.role} {c.ref!r}", "kind": kind, "answer": answer, "ok": False,
                  "error": f"{type(ex).__name__}: {str(ex).splitlines()[0][:160]}"}
+        finally:
+            PREFER = None
         if list_open(frame) and not S._close(frame):   # a list left open covers the next control
             log(f"      a list is still open after {cid} — it may cover the next control")
         outcomes.append(o)
         log(f"      {cid:4} {'✓' if o.get('ok') else '✗'} {o.get('control', '')[:44]:44} {str(answer)[:48]:48} "
             f"-> {str(o.get('shown') or o.get('error') or '')[:60]}")
+    settle_dates(frame, by_id, outcomes, log)
     return outcomes
+
+
+def keys_row(frame, c, kind, answer, keys):
+    """The agent's own key sequence for a control (a technique the routines do not know): the
+    control focused, its text selected, the keys typed — {Tab} / {Enter} / {Escape} pressed —
+    then what it holds."""
+    el = locate(frame, c)
+    focus(el)
+    el.evaluate("el => el.select && el.select()")
+    for part in re.split(r"(\{\w+\})", keys):
+        if re.fullmatch(r"\{\w+\}", part):
+            frame.page.keyboard.press(part[1:-1])
+        elif part:
+            frame.page.keyboard.type(part, delay=40)
+    frame.wait_for_timeout(300)
+    got = part_value(el) if nature(c) == "digits" else ("; ".join(shows(frame, c)) or part_value(el))
+    return {"id": c.id, "control": f"{c.role} {c.ref!r}", "kind": kind, "answer": answer, "how": "keys",
+            "nature": nature(c), "ok": True, "shown": got, "technique": "keys:" + keys,
+            "note": "your own key sequence: check what it holds"}

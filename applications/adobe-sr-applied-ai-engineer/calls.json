@@ -5,7 +5,7 @@
   "args": {},
   "page": null,
   "controls": {},
-  "result": "PAGE: page\nPAGE ERRORS: Research Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Skip to main content'   [a link]\nc3  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc4  button 'Sign In'   [a button]   shows: 'Sign In'\nc5  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc6  button 'Apply'   [a button]   shows: 'Apply'\nc7  link 'values and culture'   [a link]\nc8  link 'focus on people, purpose and community'   [a link]\nc9  link 'Adobe for All'   [a link]\nc10  link 'benefits programs'   [a link]\nc11  link 'stories we tell'   [a link]\nc12  link 'customers'   [a link]\nc13  link 'Equal Employment Opportunity'   [a link]\nc14  link 'Learn more.'   [a link]\nc15  link 'accommodations@adobe.com'   [a link]\nc16  link 'AI in the hiring experience'   [a link]\nc17  link 'Research Scientist'   [a link]\nc18  link 'Staff Applied Scientist, 3D - Firefly Foundry'   [a link]\nc19  link 'Senior AI / Machine Learning Engineer — Fraud Detection'   [a link]\nc20  button 'View All 5 Jobs'   [a button]   shows: 'View All 5 Jobs'\nc21  button 'Read More'   [a button]   shows: 'Read More'\nc22  link 'YouTube'   [a link]\nc23  link 'X'   [a link]\nc24  link 'Glassdoor'   [a link]\nc25  link 'LinkedIn'   [a link]\n\nSNAPSHOT\n- [c1] link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"careers home\":\n    - /url: http://careers.adobe.com\n    - img \"careers home\"\n  -"
+  "result": "PAGE: page\nPAGE ERRORS: Sr. Applied AI Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Skip to main content'   [a link]\nc3  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc4  button 'Sign In'   [a button]   shows: 'Sign In'\nc5  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc6  button 'Apply'   [a button]   shows: 'Apply'\nc7  link 'values and culture'   [a link]\nc8  link 'focus on people, purpose and community'   [a link]\nc9  link 'Adobe for All'   [a link]\nc10  link 'benefits programs'   [a link]\nc11  link 'stories we tell'   [a link]\nc12  link 'customers'   [a link]\nc13  link 'Equal Employment Opportunity'   [a link]\nc14  link 'Learn more.'   [a link]\nc15  link 'accommodations@adobe.com'   [a link]\nc16  link 'AI in the hiring experience'   [a link]\nc17  link 'Staff Applied Scientist, 3D - Firefly Foundry'   [a link]\nc18  link 'Senior Applied AI Engineer– Creative Systems & Brand Intelligence, Adobe Express'   [a link]\nc19  link 'Staff Applied Scientist, Firefly Foundry'   [a link]\nc20  button 'View All 5 Jobs'   [a button]   shows: 'View All 5 Jobs'\nc21  button 'Read More'   [a button]   shows: 'Read More'\nc22  link 'YouTube'   [a link]\nc23  link 'X'   [a link]\nc24  link 'Glassdoor'   [a link]\nc25  link 'LinkedIn'   [a link]\n\nSNAPSHOT\n- [c1] link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"careers home\":\n    - /url: "
  },
  {
   "n": 2,
@@ -20,7 +20,7 @@
     "name": "Apply",
     "nth": 1,
     "group": "",
-    "above": "Research Engineer",
+    "above": "Sr. Applied AI Engineer",
     "qn": 0
    }
   },
@@ -33,7 +33,7 @@
   "args": {},
   "page": "Start Your Application",
   "controls": {},
-  "result": "PAGE: Start Your Application\nPAGE ERRORS: Research Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc26  button 'Close'   [a button]\nc27  button 'Autofill with Resume'   [a button]   shows: 'Autofill with Resume'\nc28  button 'Apply Manually'   [a button]   shows: 'Apply Manually'\nc29  button 'Use My Last Application'   [a button]   shows: 'Use My Last Application'\n\nSNAPSHOT\n- dialog \"Start Your Application\":\n  - [c26] button \"Close\"\n  - heading \"Start Your Application\" [level=2]\n  - heading \"Research Engineer\" [level=3]\n  - paragraph: We are excited to review your application! Please start your application using the options below.\n  - [c27] button \"Autofill with Resume\"\n  - [c28] button \"Apply Manually\"\n  - [c29] button \"Use My Last Application\"\n  - iframe"
+  "result": "PAGE: Start Your Application\nPAGE ERRORS: Sr. Applied AI Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc26  button 'Close'   [a button]\nc27  button 'Autofill with Resume'   [a button]   shows: 'Autofill with Resume'\nc28  button 'Apply Manually'   [a button]   shows: 'Apply Manually'\nc29  button 'Use My Last Application'   [a button]   shows: 'Use My Last Application'\n\nSNAPSHOT\n- dialog \"Start Your Application\":\n  - [c26] button \"Close\"\n  - heading \"Start Your Application\" [level=2]\n  - heading \"Sr. Applied AI Engineer\" [level=3]\n  - paragraph: We are excited to review your application! Please start your application using the options below.\n  - [c27] button \"Autofill with Resume\"\n  - [c28] button \"Apply Manually\"\n  - [c29] button \"Use My Last Application\"\n  - iframe"
  },
  {
   "n": 4,
@@ -59,7 +59,7 @@
   "n": 5,
   "tool": "see",
   "args": {
-   "snapshot": false
+   "snapshot": true
   },
   "page": "my information",
   "controls": {},
@@ -78,7 +78,7 @@
     [
      "c38",
      "select",
-     "screening.previously_employed_here"
+     "learned:90"
     ],
     [
      "c39",
@@ -123,7 +123,7 @@
     [
      "c49",
      "select",
-     "keep:option:Mobile"
+     "keep:learned:98"
     ],
     [
      "c50",
@@ -259,7 +259,7 @@
    {
     "id": "c38",
     "kind": "select",
-    "answer": "screening.previously_employed_here",
+    "answer": "learned:90",
     "how": "fact",
     "nature": "tick",
     "ok": true,
@@ -292,7 +292,7 @@
    {
     "id": "c49",
     "kind": "select",
-    "answer": "keep:option:Mobile",
+    "answer": "keep:learned:98",
     "how": "keep",
     "nature": "list",
     "ok": true,
@@ -453,11 +453,6 @@
      "employment[0].summary"
     ],
     [
-     "c78",
-     "select",
-     "add:2"
-    ],
-    [
      "c79",
      "write",
      "education[0].institution"
@@ -483,16 +478,6 @@
      "education[0].end_date.year"
     ],
     [
-     "c86",
-     "select",
-     "add:1"
-    ],
-    [
-     "c87",
-     "select",
-     "add:1"
-    ],
-    [
      "c89",
      "select",
      "file:resume"
@@ -501,6 +486,21 @@
      "c90",
      "write",
      "links.linkedin"
+    ],
+    [
+     "c78",
+     "select",
+     "add:2"
+    ],
+    [
+     "c86",
+     "select",
+     "add:1"
+    ],
+    [
+     "c87",
+     "select",
+     "add:1"
     ]
    ]
   },
@@ -562,14 +562,6 @@
     "above": "Role Description",
     "qn": 0
    },
-   "c78": {
-    "role": "button",
-    "name": "Add Another",
-    "nth": 1,
-    "group": "Work Experience",
-    "above": "Role Description",
-    "qn": 0
-   },
    "c79": {
     "role": "textbox",
     "name": "School or University",
@@ -610,22 +602,6 @@
     "above": "To (Actual or Expected)",
     "qn": 0
    },
-   "c86": {
-    "role": "button",
-    "name": "Add Another",
-    "nth": 2,
-    "group": "Education",
-    "above": "To (Actual or Expected)",
-    "qn": 0
-   },
-   "c87": {
-    "role": "button",
-    "name": "Add",
-    "nth": 1,
-    "group": "Certifications",
-    "above": "Certifications",
-    "qn": 0
-   },
    "c89": {
     "role": "button",
     "name": "Select files",
@@ -640,6 +616,30 @@
     "nth": 1,
     "group": "Social Network URLs",
     "above": "Share your LinkedIn Profile site",
+    "qn": 0
+   },
+   "c78": {
+    "role": "button",
+    "name": "Add Another",
+    "nth": 1,
+    "group": "Work Experience",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c86": {
+    "role": "button",
+    "name": "Add Another",
+    "nth": 2,
+    "group": "Education",
+    "above": "To (Actual or Expected)",
+    "qn": 0
+   },
+   "c87": {
+    "role": "button",
+    "name": "Add",
+    "nth": 1,
+    "group": "Certifications",
+    "above": "Certifications",
     "qn": 0
    }
   },
@@ -843,7 +843,7 @@
     [
      "c81",
      "select",
-     "option:Artificial Intelligence and Robotics"
+     "learned:107"
     ],
     [
      "c96",
@@ -938,7 +938,7 @@
     [
      "c123",
      "select",
-     "search:Electronics.*Communication; ^Electr; ^E"
+     "learned:121"
     ],
     [
      "c126",
@@ -1148,8 +1148,8 @@
    {
     "id": "c81",
     "kind": "select",
-    "answer": "option:Artificial Intelligence and Robotics",
-    "how": "chain",
+    "answer": "learned:107",
+    "how": "fact",
     "nature": "list",
     "ok": true,
     "shown": "Expanded; Artificial Intelligence and Robotics",
@@ -1170,11 +1170,11 @@
    {
     "id": "c123",
     "kind": "select",
-    "answer": "search:Electronics.*Communication; ^Electr; ^E",
-    "how": "search",
+    "answer": "learned:121",
+    "how": "fact",
     "nature": "list",
-    "ok": false,
-    "shown": "",
+    "ok": true,
+    "shown": "Expanded; Electrical Engineering",
     "question": null,
     "reads": ""
    },
@@ -1392,40 +1392,16 @@
     "reads": "2019"
    }
   ],
-  "result": "c81  ok  textbox 'Field of Study #1': shows 'Expanded; Artificial Intelligence and Robotics'\nc122  ok  button 'Degree Select One Required': shows 'Bachelors'\nc123  NOT DONE  textbox 'Field of Study #2': searched: 'Electronics.*Communication' -> []; '^Electr' -> [Electrical Engineering]; '^E' -> [Early Childhood Education, East Asian Studies, East European Studies, Ecology, Economics, Education, Education Administration, Educational Psychology, Education of the Deaf, Electrical Engineering, Elementary Education, Engineering Mechanics, Engineering Physics, English, English Composition, English Literature, Entomology, Entrepreneurship, Environmental/Environmental Health Engineering, Environmental Design/Architecture, Environmental Science, Epidemiology, Equine Studies, Ethnic Studies, European History]\nc129  NOT DONE  textbox 'Certification': searched: 'DeepLearning' -> []; 'Generative AI' -> []; 'Large Language' -> []\nc96  ok  textbox 'Job Title #2': shows 'Applied Scientist I'\nc97  ok  textbox 'Company #2': shows 'Amazon Development Centre (India) Pvt. Ltd.'\nc98  ok  textbox 'Location #2': shows 'India'\nc100  ok  spinbutton 'Month #2': shows '10'\nc101  ok  spinbutton 'Year #2': shows '2022'\nc103  ok  spinbutton 'Month #3': shows '6'\nc104  ok  spinbutton 'Year #3': shows '2023'\nc106  ok  textbox 'Role Description #2': shows 'Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targ"
+  "result": "c81  ok  textbox 'Field of Study #1': shows 'Expanded; Artificial Intelligence and Robotics'\nc122  ok  button 'Degree Select One Required': shows 'Bachelors'\nc123  ok  textbox 'Field of Study #2': shows 'Expanded; Electrical Engineering'\nc129  NOT DONE  textbox 'Certification': searched: 'DeepLearning' -> []; 'Generative AI' -> []; 'Large Language' -> []\nc96  ok  textbox 'Job Title #2': shows 'Applied Scientist I'\nc97  ok  textbox 'Company #2': shows 'Amazon Development Centre (India) Pvt. Ltd.'\nc98  ok  textbox 'Location #2': shows 'India'\nc100  ok  spinbutton 'Month #2': shows '10'\nc101  ok  spinbutton 'Year #2': shows '2022'\nc103  ok  spinbutton 'Month #3': shows '6'\nc104  ok  spinbutton 'Year #3': shows '2023'\nc106  ok  textbox 'Role Description #2': shows 'Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting hard samples to lift edge-case recall.'\nc108  ok  textbox 'Job Title #3': shows 'Computer Vision Engineer'\nc109  ok  textbox 'Company #3': shows 'Beltech AI Pvt. Ltd.'\nc110  ok  textbox 'Location #3': shows 'India'\nc112  ok  spinbutton 'Month #4': shows '7'\nc113  ok  spinbutton 'Year #4': shows '2021'\nc115  ok  spinbutton 'Month #5': shows '9'\nc116  ok  spinbutton 'Year #5': shows '2022'\nc118  ok  textbox 'Role Description #3': shows \"Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Rep"
  },
  {
   "n": 11,
   "tool": "search",
   "args": {
-   "id": "c123",
-   "patterns": [
-    "Electronic",
-    "Communicat",
-    "Other"
-   ]
-  },
-  "page": "my experience",
-  "controls": {
-   "c123": {
-    "role": "textbox",
-    "name": "Field of Study",
-    "nth": 2,
-    "group": "Education 2",
-    "above": "Field of Study",
-    "qn": 0
-   }
-  },
-  "result": "c123 searched: 'Electronic' -> []; 'Communicat' -> [Business Communications, Communication Disorders, Communications Studies/Speech Communication and Rhetoric, Digital Communications and Media/Multimedia, Mass Communication, Political Communication, Visual Communication]; 'Other' -> []"
- },
- {
-  "n": 12,
-  "tool": "search",
-  "args": {
    "id": "c129",
    "patterns": [
     "Deep ?Learning",
-    "Coursera|Other"
+    "Coursera|LLM|\\bAI\\b"
    ]
   },
   "page": "my experience",
@@ -1439,48 +1415,10 @@
     "qn": 0
    }
   },
-  "result": "c129 searched: 'Deep ?Learning' -> []; 'Coursera|Other' -> []"
+  "result": "c129 searched: 'Deep ?Learning' -> []; 'Coursera|LLM|\\\\bAI\\\\b' -> []"
  },
  {
-  "n": 13,
-  "tool": "act",
-  "args": {
-   "rows": [
-    [
-     "c123",
-     "select",
-     "guess:Electrical Engineering | Field of Study — Education 2 (Sikkim Manipal Institute of Technology)"
-    ]
-   ]
-  },
-  "page": "my experience",
-  "controls": {
-   "c123": {
-    "role": "textbox",
-    "name": "Field of Study",
-    "nth": 2,
-    "group": "Education 2",
-    "above": "Field of Study",
-    "qn": 0
-   }
-  },
-  "outcomes": [
-   {
-    "id": "c123",
-    "kind": "select",
-    "answer": "guess:Electrical Engineering | Field of Study — Education 2 (Sikkim Manipal Institute of Technology)",
-    "how": "guess",
-    "nature": "list",
-    "ok": true,
-    "shown": "Expanded; Electrical Engineering",
-    "question": "Field of Study — Education 2 (Sikkim Manipal Institute of Technology)",
-    "reads": ""
-   }
-  ],
-  "result": "c123  ok  textbox 'Field of Study #2': shows 'Expanded; Electrical Engineering'   (a placeholder: 'Electrical Engineering', asked later)\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'"
- },
- {
-  "n": 14,
+  "n": 12,
   "tool": "see",
   "args": {
    "scope": "section",
@@ -1488,54 +1426,10 @@
   },
   "page": "my experience",
   "controls": {},
-  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS OF 'Certifications'\nc128  button 'Delete #4'   [a button]   shows: 'Delete'\nc129  textbox 'Certification'   [a text box with an icon, required, placeholder 'Search']   choices: [Adobe Enablement team › [ATS PgM Training - Adobe Enablement team], Adobe Talent Development › [Leadership Circles - Adobe Talent Development], Amazon › [AWS Certified AI Practitioner Certificate - Amazon, AWS Certified Cloud Practitioner - Amazon, AWS Certified Data Engineer - Associate - Amazon, AWS Certified Developer - Associate - Amazon, AWS Certified DevOps Engineer - Professional - Amazon, AWS Certified Solutions Architect - Associate - Amazon, AWS Certified Solutions Architect - Professional - Amazon, AWS Certified SysOps Administrator - Associate - Amazon], American Payroll Association › [Certified Payroll Professional - American Payroll Association], APM › [APM Project Fundamentals Qualification (PFQ) - APM], Association of Certified Fraud Examiners (ACFE) › [Certified Fraud Examiner (CFE) - Association of Certified Fraud Examiners (ACFE)], Axelos › [ITIL Managing Professional - Axelos, \"ITIL Specialist: Create, Deliver & Support - Axelos\", ITIL Specialist: Drive Stakeholder Value​ - Axelos, ITIL Specialist: High Velocity IT​ - Axelos, \"ITIL St"
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS OF 'Certifications'\nc128  button 'Delete #4'   [a button]   shows: 'Delete'\nc129  textbox 'Certification'   [a text box with an icon, required, placeholder 'Search']   choices: [Adobe Enablement team › [ATS PgM Training - Adobe Enablement team], Adobe Talent Development › [Leadership Circles - Adobe Talent Development], Amazon › [AWS Certified AI Practitioner Certificate - Amazon, AWS Certified Cloud Practitioner - Amazon, AWS Certified Data Engineer - Associate - Amazon, AWS Certified Developer - Associate - Amazon, AWS Certified DevOps Engineer - Professional - Amazon, AWS Certified Solutions Architect - Associate - Amazon, AWS Certified Solutions Architect - Professional - Amazon, AWS Certified SysOps Administrator - Associate - Amazon], American Payroll Association › [Certified Payroll Professional - American Payroll Association], APM › [APM Project Fundamentals Qualification (PFQ) - APM], Association of Certified Fraud Examiners (ACFE) › [Certified Fraud Examiner (CFE) - Association of Certified Fraud Examiners (ACFE)], Axelos › [ITIL Managing Professional - Axelos, \"ITIL Specialist: Create, Deliver & Support - Axelos\", ITIL Specialist: Drive Stakeholder Value​ - Axelos, ITIL Specialist: High Velocity IT​ - Axelos, \"ITIL Strategist: Direct, Plan, Improve - Axelos\", ITIL V4 Foundation - Axelos], CFA Institute › [Certified Financial Analyst (CFA) - CFA Institut"
  },
  {
-  "n": 15,
-  "tool": "press",
-  "args": {
-   "id": "c128"
-  },
-  "page": "my experience",
-  "controls": {
-   "c128": {
-    "role": "button",
-    "name": "Delete",
-    "nth": 4,
-    "group": "Certifications 1",
-    "above": "Certifications 1",
-    "qn": 0
-   }
-  },
-  "moved_to": null,
-  "section": "Certifications 1",
-  "section_count": 12,
-  "result": "still on page 'my experience'. It shows no error message. see it for what changed."
- },
- {
-  "n": 16,
-  "tool": "see",
-  "args": {
-   "scope": "outline"
-  },
-  "page": "my experience",
-  "controls": {},
-  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nSECTIONS\n  heading 'Research Engineer': 68 control(s)\n  heading 'My Experience': 68 control(s)\n  group 'Work Experience': 33 control(s)\n    group 'Work Experience 1': 8 control(s)\n      group 'From': 3 control(s)\n    group 'Work Experience 2': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n    group 'Work Experience 3': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n  group 'Education': 16 control(s)\n    group 'Education 1': 7 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n    group 'Education 2': 8 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n  group 'Certifications': 13 control(s)\n    group 'Certifications 1': 12 control(s)\n      group 'Issued Date': 4 control(s)\n      group 'Expiration Date': 4 control(s)\n  group 'Skills': 1 control(s)\n  group 'Resume/CV': 2 control(s)\n  group 'Social Network URLs': 1 control(s)"
- },
- {
-  "n": 17,
-  "tool": "see",
-  "args": {
-   "scope": "section",
-   "name": "Certifications 1",
-   "snapshot": true
-  },
-  "page": "my experience",
-  "controls": {},
-  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS OF 'Certifications 1'\nc128  button 'Delete #4'   [a button]   shows: 'Delete'\nc129  textbox 'Certification'   [a text box with an icon, required, placeholder 'Search']   choices: [Adobe Enablement team › [ATS PgM Training - Adobe Enablement team], Adobe Talent Development › [Leadership Circles - Adobe Talent Development], Amazon › [AWS Certified AI Practitioner Certificate - Amazon, AWS Certified Cloud Practitioner - Amazon, AWS Certified Data Engineer - Associate - Amazon, AWS Certified Developer - Associate - Amazon, AWS Certified DevOps Engineer - Professional - Amazon, AWS Certified Solutions Architect - Associate - Amazon, AWS Certified Solutions Architect - Professional - Amazon, AWS Certified SysOps Administrator - Associate - Amazon], American Payroll Association › [Certified Payroll Professional - American Payroll Association], APM › [APM Project Fundamentals Qualification (PFQ) - APM], Association of Certified Fraud Examiners (ACFE) › [Certified Fraud Examiner (CFE) - Association of Certified Fraud Examiners (ACFE)], Axelos › [ITIL Managing Professional - Axelos, \"ITIL Specialist: Create, Deliver & Support - Axelos\", ITIL Specialist: Drive Stakeholder Value​ - Axelos, ITIL Specialist: High Velocity IT​ - Axelos, \"ITIL "
- },
- {
-  "n": 18,
+  "n": 13,
   "tool": "press",
   "args": {
    "id": "c128"
@@ -1557,17 +1451,7 @@
   "result": "still on page 'my experience'. It shows no error message. see it for what changed."
  },
  {
-  "n": 19,
-  "tool": "see",
-  "args": {
-   "scope": "outline"
-  },
-  "page": "my experience",
-  "controls": {},
-  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nSECTIONS\n  heading 'Research Engineer': 56 control(s)\n  heading 'My Experience': 56 control(s)\n  group 'Work Experience': 33 control(s)\n    group 'Work Experience 1': 8 control(s)\n      group 'From': 3 control(s)\n    group 'Work Experience 2': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n    group 'Work Experience 3': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n  group 'Education': 16 control(s)\n    group 'Education 1': 7 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n    group 'Education 2': 8 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n  group 'Certifications': 1 control(s)\n  group 'Skills': 1 control(s)\n  group 'Resume/CV': 2 control(s)\n  group 'Social Network URLs': 1 control(s)"
- },
- {
-  "n": 20,
+  "n": 14,
   "tool": "press",
   "args": {
    "id": "c54"
@@ -1587,47 +1471,47 @@
   "result": "moved on: now on page 'application questions'. see it."
  },
  {
-  "n": 21,
+  "n": 15,
   "tool": "see",
   "args": {
    "snapshot": true
   },
   "page": "application questions",
   "controls": {},
-  "result": "PAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc152  button 'Select One Required #1'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc153  checkbox 'Employee'   [checkbox: not checked, required]\nc154  checkbox 'Intern'   [checkbox: not checked, required]\nc155  checkbox 'Temporary Agency or Vendor'   [checkbox: not checked, required]\nc156  checkbox 'Other'   [checkbox: not checked, required]\nc157  checkbox 'I have not worked for Adobe in the past.'   [checkbox: not checked, required]\nc158  button 'Select One Required #2'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc159  button 'Select One Required #3'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc160  button 'Select One Required #4'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc161  button 'Select One Required #5'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc91  button 'Back'   [a button]   shows: 'Back'\nc54  button 'Next'   [a button]   shows: 'Next'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"careers home\":\n    - /url: http://careers.adobe.com\n    -"
+  "result": "PAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc151  button 'Select One Required #1'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc152  checkbox 'Employee'   [checkbox: not checked, required]\nc153  checkbox 'Intern'   [checkbox: not checked, required]\nc154  checkbox 'Temporary Agency or Vendor'   [checkbox: not checked, required]\nc155  checkbox 'Other'   [checkbox: not checked, required]\nc156  checkbox 'I have not worked for Adobe in the past.'   [checkbox: not checked, required]\nc157  button 'Select One Required #2'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc158  button 'Select One Required #3'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc159  button 'Select One Required #4'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc160  button 'Select One Required #5'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Yes, No]\nc91  button 'Back'   [a button]   shows: 'Back'\nc54  button 'Next'   [a button]   shows: 'Next'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"careers home\":\n    - /url: http://careers.adobe.com\n    -"
  },
  {
-  "n": 22,
+  "n": 16,
   "tool": "act",
   "args": {
    "rows": [
     [
-     "c152",
+     "c151",
      "select",
      "screening.over_18"
     ],
     [
-     "c157",
+     "c156",
      "select",
      "screening.previously_employed_here"
     ],
     [
-     "c158",
+     "c157",
      "select",
      "screening.agree_to_background_check"
     ],
     [
-     "c159",
+     "c158",
      "select",
      "work_authorization.us.authorized_without_sponsorship"
     ],
     [
-     "c160",
+     "c159",
      "select",
      "location.willing_to_relocate"
     ],
     [
-     "c161",
+     "c160",
      "select",
      "work_authorization.us.requires_sponsorship"
     ]
@@ -1635,7 +1519,7 @@
   },
   "page": "application questions",
   "controls": {
-   "c152": {
+   "c151": {
     "role": "button",
     "name": "Select One Required",
     "nth": 1,
@@ -1643,7 +1527,7 @@
     "above": "Are you of legal age to work in the country in which this position will be based?*",
     "qn": 0
    },
-   "c157": {
+   "c156": {
     "role": "checkbox",
     "name": "I have not worked for Adobe in the past.",
     "nth": 1,
@@ -1651,7 +1535,7 @@
     "above": "Other",
     "qn": 0
    },
-   "c158": {
+   "c157": {
     "role": "button",
     "name": "Select One Required",
     "nth": 2,
@@ -1659,7 +1543,7 @@
     "above": "Are you willing to submit a background check during the hiring process?*",
     "qn": 0
    },
-   "c159": {
+   "c158": {
     "role": "button",
     "name": "Select One Required",
     "nth": 3,
@@ -1667,7 +1551,7 @@
     "above": "If you are offered employment by Adobe, can you provide documentation establishing your identity and right to work in the country where this position will be based?*",
     "qn": 0
    },
-   "c160": {
+   "c159": {
     "role": "button",
     "name": "Select One Required",
     "nth": 4,
@@ -1675,7 +1559,7 @@
     "above": "Are you able to work on a daily basis in the work location listed for this position? If not, are you willing to relocate at your own expense to accept a position with Adobe?*",
     "qn": 0
    },
-   "c161": {
+   "c160": {
     "role": "button",
     "name": "Select One Required",
     "nth": 5,
@@ -1686,7 +1570,7 @@
   },
   "outcomes": [
    {
-    "id": "c152",
+    "id": "c151",
     "kind": "select",
     "answer": "screening.over_18",
     "how": "fact",
@@ -1697,7 +1581,7 @@
     "reads": "Yes"
    },
    {
-    "id": "c157",
+    "id": "c156",
     "kind": "select",
     "answer": "screening.previously_employed_here",
     "how": "fact",
@@ -1708,7 +1592,7 @@
     "reads": "on"
    },
    {
-    "id": "c158",
+    "id": "c157",
     "kind": "select",
     "answer": "screening.agree_to_background_check",
     "how": "fact",
@@ -1719,7 +1603,7 @@
     "reads": "Yes"
    },
    {
-    "id": "c159",
+    "id": "c158",
     "kind": "select",
     "answer": "work_authorization.us.authorized_without_sponsorship",
     "how": "fact",
@@ -1730,7 +1614,7 @@
     "reads": "No"
    },
    {
-    "id": "c160",
+    "id": "c159",
     "kind": "select",
     "answer": "location.willing_to_relocate",
     "how": "fact",
@@ -1741,7 +1625,7 @@
     "reads": "Yes"
    },
    {
-    "id": "c161",
+    "id": "c160",
     "kind": "select",
     "answer": "work_authorization.us.requires_sponsorship",
     "how": "fact",
@@ -1752,10 +1636,10 @@
     "reads": "Yes"
    }
   ],
-  "result": "c152  ok  button 'Select One Required #1': shows 'Yes'\nc157  ok  checkbox 'I have not worked for Adobe in the past.': shows 'checked'\nc158  ok  button 'Select One Required #2': shows 'Yes'\nc159  ok  button 'Select One Required #3': shows 'No'\nc160  ok  button 'Select One Required #4': shows 'Yes'\nc161  ok  button 'Select One Required #5': shows 'Yes'\n\nPAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+  "result": "c151  ok  button 'Select One Required #1': shows 'Yes'\nc156  ok  checkbox 'I have not worked for Adobe in the past.': shows 'checked'\nc157  ok  button 'Select One Required #2': shows 'Yes'\nc158  ok  button 'Select One Required #3': shows 'No'\nc159  ok  button 'Select One Required #4': shows 'Yes'\nc160  ok  button 'Select One Required #5': shows 'Yes'\n\nPAGE: application questions\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
  },
  {
-  "n": 23,
+  "n": 17,
   "tool": "press",
   "args": {
    "id": "c54"
@@ -1775,37 +1659,37 @@
   "result": "moved on: now on page 'voluntary disclosures'. see it."
  },
  {
-  "n": 24,
+  "n": 18,
   "tool": "see",
   "args": {
    "snapshot": true
   },
   "page": "voluntary disclosures",
   "controls": {},
-  "result": "PAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc32  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc33  button 'Sign In'   [a button]   shows: 'Sign In'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc162  button 'Please select your veteran status. Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, I IDENTIFY WITH ONE OR MORE OF THE CLASSIFICATIONS OF PROTECTED VETERANS LISTED ABOVE, \"I IDENTIFY AS A VETERAN, JUST NOT A PROTECTED VETERAN\", I AM NOT A VETERAN, I DO NOT WISH TO SELF-IDENTIFY]\nc163  button 'Please select your gender. Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Female, Male, Not declared]\nc164  button 'Please select your ethnicity. Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, American Indian or Alaska Native (Not Hispanic or Latino) (United States of America), Asian (Not Hispanic or Latino) (United States of America), Black or African American (Not Hispanic or Latino) (United States of America), Declined to State (United States of America), Hispanic or Latino (United States of America), Native Hawaiian or Other Pac"
+  "result": "PAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc32  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc33  button 'Sign In'   [a button]   shows: 'Sign In'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc161  button 'Please select your veteran status. Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, I IDENTIFY WITH ONE OR MORE OF THE CLASSIFICATIONS OF PROTECTED VETERANS LISTED ABOVE, \"I IDENTIFY AS A VETERAN, JUST NOT A PROTECTED VETERAN\", I AM NOT A VETERAN, I DO NOT WISH TO SELF-IDENTIFY]\nc162  button 'Please select your gender. Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, Female, Male, Not declared]\nc163  button 'Please select your ethnicity. Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, American Indian or Alaska Native (Not Hispanic or Latino) (United States of America), Asian (Not Hispanic or Latino) (United States of America), Black or African American (Not Hispanic or Latino) (United States of America), Declined to State (United States of America), Hispanic or Latino (United States of America), Native Hawaiian or Other Pac"
  },
  {
-  "n": 25,
+  "n": 19,
   "tool": "act",
   "args": {
    "rows": [
     [
-     "c162",
+     "c161",
      "select",
      "option:I AM NOT A VETERAN"
     ],
     [
-     "c163",
+     "c162",
      "select",
      "eeo.gender"
     ],
     [
-     "c164",
+     "c163",
      "select",
      "option:Declined to State (United States of America)"
     ],
     [
-     "c172",
+     "c171",
      "select",
      "screening.confirm_form_statements"
     ]
@@ -1813,7 +1697,7 @@
   },
   "page": "voluntary disclosures",
   "controls": {
-   "c162": {
+   "c161": {
     "role": "button",
     "name": "Please select your veteran status. Select One Required",
     "nth": 1,
@@ -1821,7 +1705,7 @@
     "above": "Please select your veteran status.",
     "qn": 0
    },
-   "c163": {
+   "c162": {
     "role": "button",
     "name": "Please select your gender. Select One Required",
     "nth": 1,
@@ -1829,7 +1713,7 @@
     "above": "Please select your gender.",
     "qn": 0
    },
-   "c164": {
+   "c163": {
     "role": "button",
     "name": "Please select your ethnicity. Select One Required",
     "nth": 1,
@@ -1837,7 +1721,7 @@
     "above": "Please select your ethnicity.",
     "qn": 0
    },
-   "c172": {
+   "c171": {
     "role": "checkbox",
     "name": "Check this box to confirm the statement above.",
     "nth": 1,
@@ -1848,7 +1732,7 @@
   },
   "outcomes": [
    {
-    "id": "c162",
+    "id": "c161",
     "kind": "select",
     "answer": "option:I AM NOT A VETERAN",
     "how": "chain",
@@ -1859,7 +1743,7 @@
     "reads": "I AM NOT A VETERAN"
    },
    {
-    "id": "c163",
+    "id": "c162",
     "kind": "select",
     "answer": "eeo.gender",
     "how": "fact",
@@ -1870,7 +1754,7 @@
     "reads": "Male"
    },
    {
-    "id": "c164",
+    "id": "c163",
     "kind": "select",
     "answer": "option:Declined to State (United States of America)",
     "how": "chain",
@@ -1881,7 +1765,7 @@
     "reads": "Declined to State (United States of America)"
    },
    {
-    "id": "c172",
+    "id": "c171",
     "kind": "select",
     "answer": "screening.confirm_form_statements",
     "how": "fact",
@@ -1892,10 +1776,10 @@
     "reads": "on"
    }
   ],
-  "result": "c162  ok  button 'Please select your veteran status. Select One Required': shows 'I AM NOT A VETERAN'\nc163  ok  button 'Please select your gender. Select One Required': shows 'Male'\nc164  ok  button 'Please select your ethnicity. Select One Required': shows 'Declined to State (United States of America)'\nc172  ok  checkbox 'Check this box to confirm the statement above.': shows 'checked'\n\nPAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+  "result": "c161  ok  button 'Please select your veteran status. Select One Required': shows 'I AM NOT A VETERAN'\nc162  ok  button 'Please select your gender. Select One Required': shows 'Male'\nc163  ok  button 'Please select your ethnicity. Select One Required': shows 'Declined to State (United States of America)'\nc171  ok  checkbox 'Check this box to confirm the statement above.': shows 'checked'\n\nPAGE: voluntary disclosures\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
  },
  {
-  "n": 26,
+  "n": 20,
   "tool": "press",
   "args": {
    "id": "c54"
@@ -1915,42 +1799,30 @@
   "result": "moved on: now on page 'review' — the form's LAST PAGE. see it."
  },
  {
-  "n": 27,
+  "n": 21,
+  "tool": "see",
+  "args": {
+   "scope": "outline"
+  },
+  "page": "review",
+  "controls": {},
+  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nSECTIONS\n  heading 'Sr. Applied AI Engineer': 2 control(s)\n  heading 'Voluntary Disclosures': 2 control(s)"
+ },
+ {
+  "n": 22,
   "tool": "see",
   "args": {},
   "page": "review",
   "controls": {},
-  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc32  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc33  button 'Sign In'   [a button]   shows: 'Sign In'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc91  button 'Back'   [a button]   shows: 'Back'\nc54  button 'Submit'   [a button]   shows: 'Submit'\n\nSNAPSHOT\n- link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"careers home\":\n    - /url: http://careers.adobe.com\n    - img \"careers home\"\n  - heading [level=1]\n  - [c32] button \"English\"\n  - [c33] button \"Sign In\"\n  - navigation:\n    - [c34] button \"Search for Jobs\"\n- main:\n  - [c35] link \"Back to Job Posting\"\n  - heading \"Research Engineer\" [level=2]\n  - list:\n    - listitem: completed step 1 of 5 My Information\n    - listitem: completed step 2 of 5 My Experience\n    - listitem: completed step 3 of 5 Application Questions\n    - listitem: completed step 4 of 5 Voluntary Disclosures\n    - listitem: current step 5 of 5 Review\n  - heading \"Review\" [level=3]\n  - heading \"My Information\" [level=3]\n  - group: How Did You Hear About Us? LinkedIn\n  - group: Have you been employed by Adobe in the past? No\n  - heading \"Name\" [level=4]\n  - text: Sunil Sharma\n  - heading \"Address\" [lev"
+  "result": "PAGE: review   — the form's LAST PAGE: do not submit; call finish when it is complete\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc32  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc33  button 'Sign In'   [a button]   shows: 'Sign In'\nc34  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc91  button 'Back'   [a button]   shows: 'Back'\nc54  button 'Submit'   [a button]   shows: 'Submit'"
  },
  {
-  "n": 28,
-  "tool": "press",
-  "args": {
-   "id": "c91"
-  },
-  "page": "review",
-  "controls": {
-   "c91": {
-    "role": "button",
-    "name": "Back",
-    "nth": 1,
-    "group": "",
-    "above": "Check this box to confirm the statement above. Yes",
-    "qn": 0
-   }
-  },
-  "moved_to": null,
-  "section": "",
-  "section_count": null,
-  "result": "refused: this session never sends the application — call finish"
- },
- {
-  "n": 29,
+  "n": 23,
   "tool": "finish",
   "args": {
    "outcome": "last-page",
    "submit_id": "c54",
-   "note": "On Review page, not submitted. PROBLEM: the review shows every work-experience month as 02 (e.g. From 02/2023; should be Aria 12/2023, Amazon 10/2022–06/2023, Beltech 07/2021–09/2022), although the fields showed the right months when filled. The Back button was refused, so I couldn't fix them — please correct before sending. Placeholders to confirm: How did you hear (Job Board › LinkedIn vs Social Media › LinkedIn); Field of Study for Education 2 (Sikkim Manipal) set to Electrical Engineering because the list has no Electronics & Communication. The DeepLearning.AI certification is not in Adobe's list, so that block was removed. Right-to-work documentation answered No, sponsorship Yes."
+   "note": "All pages filled; on Review. For the applicant: 'How Did You Hear About Us?' set to Job Board › LinkedIn (or Social Media › LinkedIn). Certification 'DeepLearning.AI — Generative AI with LLMs' not in Adobe's list, so the block was removed. Education 2 field = Electrical Engineering (his learned answer)."
   },
   "page": "review",
   "controls": {

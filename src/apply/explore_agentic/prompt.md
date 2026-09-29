@@ -88,7 +88,17 @@ job (job.location, job.market in FACTS) — that country's work_authorization fa
 applicant's home country's or another market's.
 
 ROWS FOR act
-A row of act: [id, kind, answer] — one per control you act on
+A row of act: [id, kind, answer] — one per control you act on — and, only when a control did
+not take the usual way, a 4th item saying how:
+  technique:<name>   try this technique first — act names the ones it tried; the others:
+                     text box fill / keys / js · tick click / label / set / force / js ·
+                     choice button click / force / js · list entries / typed ·
+                     <select> label / text / keys · date part keys / keys-slow / fill / js
+  keys:<keys>        your own key sequence, typed into the control after selecting its text:
+                     {Tab} {Enter} {Escape} press those keys ("keys:122023" types a whole date
+                     into its first part, the widget moving on by itself)
+Date parts are checked together after every act: a date whose later part undid an earlier one
+is typed in one go into its first part.
   id    the control's id, exactly as see gave it ("c7"). Never a name, never an
         id see did not give. One row per id.
   kind  one of two:

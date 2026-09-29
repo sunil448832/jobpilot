@@ -35,9 +35,6 @@ import yaml
 
 from jobpilot.core.answers import load_tenant, tenant_path
 
-STOP = {"the", "a", "an", "of", "to", "in", "and", "or", "for", "with", "you",
-        "your", "do", "are", "is", "have", "any", "this", "that", "please",
-        "select", "all", "apply", "following", "which", "what", "if", "at"}
 ESSAY = 25                         # words: a longer answer was written for that one job
 PROJECT = re.compile(r"experience|project|describe|walk (us|me) through|example of|tell (us|me) about|"
                      r"accomplish|proud|worked on|built|hands-on|familiar|proficien|comfortable with|"
@@ -53,19 +50,6 @@ HEAD = ("# =====================================================================
         "# answer is put to him on the questions page first. The stored facts\n"
         "# (config/answers.yaml) always win over it. Edit freely — his own words, must stay true.\n"
         "# ============================================================================\n\n")
-
-
-def keywords(label, n=8):
-    words = re.findall(r"[a-z0-9][a-z0-9.+-]{2,}", (label or "").lower())
-    seen, out = set(), []
-    for w in words:
-        if w in STOP or w in seen:
-            continue
-        seen.add(w)
-        out.append(w)
-        if len(out) >= n:
-            break
-    return out
 
 
 def norm(s):
@@ -103,28 +87,27 @@ def save_tenant(t):
 
 # ------------------------------------------------------------------ merging
 
-def merge(rows, label, answer, source):
+def merge(rows, label, answer):
     """added / unchanged / conflict (a different answer is stored: it stays)."""
     label_n = norm(label)
     for e in rows:
         if norm(e.get("match", "")) == label_n:
             return "unchanged" if e.get("answer") == answer else "conflict"
-    rows.append({"match": label_n[:200], "keywords": keywords(label), "answer": answer, "source": source})
+    rows.append({"match": label_n[:200], "answer": answer})
     return "added"
 
 
-def merge_entry(t, fact, entry, source):
+def merge_entry(t, fact, entry):
     """added / unchanged / conflict, for this portal's entry standing for a stored fact."""
     from jobpilot.apply.explore_agentic import facts as F
     from jobpilot.core.answers import load as load_answers
     if fact in t["entries"]:
         return "unchanged" if t["entries"][fact].get("entry") == entry else "conflict"
-    t["entries"][fact] = {"entry": entry, "stored": F.flatten(load_answers("answers.yaml")).get(fact, ""),
-                          "source": source}
+    t["entries"][fact] = {"entry": entry, "stored": F.flatten(load_answers("answers.yaml")).get(fact, "")}
     return "added"
 
 
-def ask_conflict(label, stored, new, source, who, tenant=None, fact=None):
+def ask_conflict(label, stored, new, who, tenant=None, fact=None):
     """Put a conflict to him: what is stored stays until he replies. With `fact`: a portal
     entry; without: an answer kept for this portal."""
     from jobpilot.review import ask as ask_mod
@@ -140,7 +123,7 @@ def ask_conflict(label, stored, new, source, who, tenant=None, fact=None):
              f"“{stored}”. Which should {where} use from now on?")
     ask_mod.pose(key, q, hint="reply keep (the stored one), new (this form's), or type the one to store",
                  about=f"Stored answer — {label[:60]}",
-                 extra={"learned": {"match": match, "new": new, "source": source, "tenant": tenant, "fact": fact}})
+                 extra={"learned": {"match": match, "new": new, "tenant": tenant, "fact": fact}})
     return key
 
 
@@ -151,18 +134,17 @@ def resolve(q):
     if not info or not reply or reply.lower() == "keep":
         return "kept"
     new = info["new"] if reply.lower() == "new" else reply
-    note = f"{info['source']}; chosen by Sunil over the earlier one, {(q.get('answered_at') or '')[:10]}"
     t = load_tenant(info.get("tenant"))
     if info.get("fact"):
         row = t["entries"].get(info["fact"])
         if not row:
             return "kept (the portal entry is no longer stored)"
-        row.update(entry=new, source=note)
+        row["entry"] = new
     else:
         row = next((e for e in t["answers"] if norm(e.get("match", "")) == info["match"]), None)
         if not row:
             return "kept (the answer is no longer stored)"
-        row.update(answer=new, source=note)
+        row["answer"] = new
     save_tenant(t)
     return f"stored for {info.get('tenant')}: {new}"
 
@@ -207,7 +189,6 @@ def restore(changes):
 def learn(sub):
     """Keep one review decision's answers for the portal they were given on. {what: how many}."""
     who = sub.get("company") or "?"
-    when = (sub.get("decidedAt") or sub.get("decided_at") or "")[:10]
     tenant = sub.get("tenant")
     counts = {}
 
@@ -223,22 +204,21 @@ def learn(sub):
         if not text or ans.get("kind") == "unanswered":
             count("skipped")
             continue
-        src = f"answered by Sunil on the {who} form, {when}"
         if ans.get("stand_in_for"):                       # a stored fact's stand-in: this portal's entry
-            got = merge_entry(t, ans["stand_in_for"], text, src)
+            got = merge_entry(t, ans["stand_in_for"], text)
             count(f"portal entry {got}")
             if got == "conflict":
-                ask_conflict(label, t["entries"][ans["stand_in_for"]]["entry"], text, src, who, tenant, ans["stand_in_for"])
+                ask_conflict(label, t["entries"][ans["stand_in_for"]]["entry"], text, who, tenant, ans["stand_in_for"])
             continue
         why = kept(label, text, bool(ans.get("choice")))
         if why:
             count(f"not kept ({why})")
             continue
-        got = merge(t["answers"], label, text, src)
+        got = merge(t["answers"], label, text)
         count(f"answer {got}")
         if got == "conflict":
             old = next(e["answer"] for e in t["answers"] if norm(e.get("match", "")) == norm(label))
-            ask_conflict(label, old, text, src, who, tenant)
+            ask_conflict(label, old, text, who, tenant)
     save_tenant(t)
     return counts
 

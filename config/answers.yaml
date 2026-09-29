@@ -266,13 +266,13 @@ education:
     field_of_study: "Artificial Intelligence"
     start_date: "2019-07"
     end_date: "2021-06"
-    gpa: "TODO"                       # optional; leave TODO to skip
+    gpa: "3.3"                        # entered only when a form requires a grade
   - institution: "Sikkim Manipal Institute of Technology"
     degree: "Bachelor of Technology (B.Tech)"
     field_of_study: "Electronics and Communication Engineering"
     start_date: "2015-07"
     end_date: "2019-06"
-    gpa: "TODO"
+    gpa: "3.5"
 
 certifications:
   - "DeepLearning.AI — Generative AI with Large Language Models"

@@ -35,7 +35,7 @@ from jobpilot.apply.explore_agentic.controls import LINE, unquote
 
 MAX_PRESSES = 3
 # what a portal says after a press: taken, or refused for good (the filing's watch)
-CONFIRMED_RX = re.compile(r"thank(s| you) for (applying|your application)|application (has been )?(submitted|received)|"
+CONFIRMED_RX = re.compile(r"thank(s| you) for (applying|(submitting )?your application)|application (has been )?(submitted|received)|"
                           r"successfully submitted|we('ve| have) received your application|congratulations|"
                           r"your application (was|has been) (successfully )?(submitted|sent|received)", re.I)
 REFUSED_RX = re.compile(r"(couldn.t|could not|cannot|can.t|unable to) (submit|process) (your )?application|"
@@ -594,18 +594,38 @@ class Form:
                 return "submitted", CONFIRMED_RX.search(text).group(0)
             frame = self.frame()
             step = self.step_name(frame)
-            if step != page_was and step in self.pages:
+            # sent back: to one of the form's own steps (never the posting — a portal's home page
+            # after a submission can read like it), a page with fields, no confirmation after a moment
+            if step != page_was and step in self.pages[1:] and self.form_fields() >= 2:
+                sure = self.confirmed_soon(standing)
+                if sure:
+                    return "submitted", sure
                 self.read()
                 return "not-accepted", f"the portal sent the form back to page {step!r}: " + \
                     ("; ".join(S.errors(self.frame())[:6]) or "no message shown")
             errs = S.errors(frame)
             erred = erred + 1 if errs else 0
             if erred >= 3 and self.still_there(ident):   # errors that stay: the form was not taken
+                sure = self.confirmed_soon(standing)
+                if sure:
+                    return "submitted", sure
                 return "not-accepted", "the page says: " + "; ".join(errs[:6])
             page.wait_for_timeout(1000)
         self.read()
         return "unclear", ("no confirmation and no error; the submit button is " +
                            ("still there" if self.still_there(ident) else "gone") + f", page {self.step!r}")
+
+    def form_fields(self):
+        return sum(1 for c in S.parse(S.snapshot(self.frame())) if c.role in S.FORM_ROLES)
+
+    def confirmed_soon(self, standing, wait_s=5):
+        """A confirmation the page draws within a moment (after its redirect): its words, else None."""
+        for _ in range(wait_s):
+            self.page.wait_for_timeout(1000)
+            m = CONFIRMED_RX.search("\n".join(ln for ln in self.page_lines() if ln not in standing))
+            if m:
+                return m.group(0)
+        return None
 
     def still_there(self, ident):
         """Is the button still on the page — greyed out (disabled) or not?"""

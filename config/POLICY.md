@@ -155,11 +155,11 @@ Ordered by how realistically sponsorship happens, **not** by pay:
 
 | Pri | Market | Ask | Reality |
 |---|---|---|---|
-| 1 | Netherlands | EUR 85,000 + 8% holiday | HSM via recognised sponsor, 2–4 weeks |
+| 1 | Netherlands | EUR 95,000 + 8% holiday | HSM via recognised sponsor, 2–4 weeks |
 | 1 | Remote from India | USD 120,000 (EOR/contract) | No visa, no wait |
 | 1 | Ireland | EUR 90,000 | Critical Skills permit; ML on the CSOL → no labour-market test; 4–8 weeks |
-| 1 | Germany | EUR 88,000 | EU Blue Card, IT-shortage floor ~EUR 43,760; no LMT |
-| 1 | Luxembourg | EUR 98,000 | EU Blue Card, routine — tiny market; watch, don't work it |
+| 1 | Germany | EUR 100,000 | EU Blue Card, IT-shortage floor ~EUR 43,760; no LMT |
+| 1 | Luxembourg | EUR 115,000 | EU Blue Card, routine — tiny market; watch, don't work it |
 | 2 | UAE / Saudi | AED 40,000 / SAR 41,000 per month | Sponsorship is the norm |
 | 3 | Australia | AUD 185,000 + super | Subclass 482, approved sponsors only, slower |
 | 3 | Switzerland | CHF 155,000 | Best pay, hardest permit: federal quota + must prove no Swiss/EU candidate |
@@ -175,11 +175,14 @@ Ordered by how realistically sponsorship happens, **not** by pay:
   grant. The intake rejects these; do not re-add one by hand.
 - **YC companies get +10.** They sponsor readily in NL and the Gulf and hire
   remote contractors; a US YC role is remote-or-nothing unless the JD says otherwise.
-- **Application quotas are scarce.** OpenAI allows **6 per 180 days**; 1 spent
-  (Abu Dhabi, 2026-09-05), **5 remain**. The pipeline counts only applications that
-  go through its queue. Spend a slot only on the best few of the ~50 OpenAI roles.
-- **OpenAI hold lifted 2026-09-22** — the RL project it was waiting on is on the
-  resume. The 5 remaining slots still go only to the best few roles.
+- The NL / DE / LU asks sit at the **top of each researched band** (set 2026-09-29); the
+  ranker boosts a role paying at least the ask and penalises one under 85% of it.
+- **At most 5 applications per company in any 30 days** (`apply.default_quota`; since
+  2026-09-29). A company at the limit is not ranked, screened or tailored — its postings
+  wait as `held` — and its approved cards wait for the next slot. `./jobpilot companies`.
+- **OpenAI is full until 2027-03-28**: its portal allows 5 per 180 days and refused one on
+  2026-09-28 (`apply.quotas`, `data/quota_blocks.json`). A portal's own refusal always
+  holds that company until its window has passed.
 - **Never quote INR to a foreign employer** — it anchors the negotiation to an
   Indian band. Per-market asks: `answers.yaml:compensation.by_market`.
 - **Currency is never a reason to reject** — everything is converted to annual USD
@@ -189,7 +192,7 @@ Ordered by how realistically sponsorship happens, **not** by pay:
 
 ## 5. Asking the human — form and Telegram
 
-Ask **only what `answers.yaml` / the learned answers cannot answer**; every avoidable
+Ask **only what `answers.yaml` / a portal's kept picks cannot answer**; every avoidable
 question costs him evening time. When a question is genuinely open:
 
 1. **Draft 2–3 complete answers**, not hints — tap one and done. Each true and
@@ -210,13 +213,26 @@ the form for anything longer; confirm every decision.
 
 ## 6. Reusing what he has already answered
 
-The stored facts and each portal's kept picks (`applications/_tenants/`) are the memory: an answer given once is never asked again
-(`learn.py` folds submitted forms back in; matching is normalised label → keyword →
-fuzzy overlap ≥0.72). **A stored answer beats every heuristic, including the
-compliance hard-stop** — that guard prevents guessing; a confirmed answer is not a
-guess. Stored answers are his words: never rewrite them silently; surface anything
-that looks stale. `answers.yaml` is the structured profile: add durable new facts,
-never overwrite a value he set.
+**`answers.yaml` holds the stored facts** — his profile, always true, edited only by hand,
+and on every form they win. It includes one "No" for every relatives / affiliations /
+government / conflict-of-interest question, and sponsorship by country: none in India,
+needed everywhere else. **A stored answer beats every heuristic, including the compliance
+hard-stop** — that guard prevents guessing; a confirmed answer is not a guess.
+
+The only thing kept from a card is what can go wrong again on the same portal — **a pick
+from its own list** — in `applications/_tenants/<tenant>.yaml` (one employer's portal:
+`workday:crowdstrike`), reused on that portal's next jobs only:
+- a pick for a list question the stored facts do not cover ("How did you hear about us?");
+- the entry he approved for a stored fact the list cannot hold (no IIT Jodhpur in the
+  list: the agent fills the nearest, he confirms once, it is kept for that portal). The
+  stored fact itself never changes.
+
+Never kept: a written answer (a text box never refuses what is typed), an essay, anything
+about his experience, projects or motivation, and anything a stored fact answers. There is
+no general learned store: what should hold for every employer is moved into `answers.yaml`
+by hand, in a weekly review of these files. Kept picks are his: never overwritten — a
+different pick is put to him on `/questions` (keep / new / his own) while the kept one
+stays in use. Surface anything that looks stale.
 
 ---
 
@@ -242,7 +258,8 @@ with a note — message after they accept.
 5. **Never auto-answer sanctions / export-control / legal declarations** without a
    stored answer.
 6. **Never trust a log over a screenshot.** A clicked button is not a submission.
-7. **Never overwrite something he set** in `answers.yaml` or the learned answers.
+7. **Never overwrite something he set** — `answers.yaml` is edited only by him; a portal's
+   kept pick changes only when he says so on `/questions`.
 
 ---
 

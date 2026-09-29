@@ -74,6 +74,19 @@ def fetch_generic(url):
     }
 
 
+def landing(url):
+    """Where a link ends up after its redirects: an aggregator's Apply ("arbeitnow.ch/.../apply")
+    is a redirect to the employer's own posting (careers.nebius.com/?gh_jid=...)."""
+    import requests
+    try:
+        r = requests.get(url, allow_redirects=True, timeout=20, stream=True,
+                         headers={"User-Agent": "Mozilla/5.0"})
+        r.close()
+        return r.url or url
+    except Exception:
+        return url
+
+
 def fetch_jd(url):
     portal = detect_portal(url)
     jd = None
@@ -90,8 +103,11 @@ def fetch_jd(url):
         jd = fetch_generic(url)
         print(f"  [fetch] HTML scrape -> {len(jd['text'])} chars")
         if not platforms.get(portal):
-            for link in jd.get("apply_links") or []:
+            for link in (jd.get("apply_links") or [])[:6]:
                 pid, known = platforms.detect(link)
+                if not known:                            # an aggregator's own Apply redirects there
+                    link = landing(link)
+                    pid, known = platforms.detect(link)
                 if known and not platforms.is_manual(pid):
                     print(f"  [fetch] the page's Apply goes to {pid}: {link[:90]}")
                     portal, jd["apply_url"] = pid, link

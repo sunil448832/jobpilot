@@ -328,7 +328,9 @@ from what the press left.
 **The card (`card.py`)** — at the end, the placeholders go into `explore.json` (his earlier
 answers kept) and the card into `data/queue/<id>.json`: what was filled, the questions only
 he can answer with the agent's candidates, the last page's screenshot. A re-exploration
-supersedes the job's unsent cards. The card's list of values (`calls.values_by_page`) is
+supersedes the job's unsent cards. Each new card to review sends a short Telegram message
+(📝 *New application to review* — the job, how many questions — with a link to the card and
+one to the review list); an exploration that stopped short says so. The card's list of values (`calls.values_by_page`) is
 what the filing will enter, from the record: each field's fact looked up again, the choice
 picked, his answer — not what the page happened to display.
 

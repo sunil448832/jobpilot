@@ -4,7 +4,8 @@ an exploration left for his approval, and the queue the filing takes approved ca
     write(slug, out, answers)   the card for a finished exploration (session.run's result):
                                 what was filled, the questions only he can answer (the
                                 placeholders, with the agent's candidates), the last page's
-                                screenshot; earlier unsent cards of the job are superseded
+                                screenshot; earlier unsent cards of the job are superseded;
+                                Telegram is told (tell): a short message with the review link
     questions_from(record)      the record's unanswered placeholders as the card's questions
     save(item) / load(id)       one card
     approved(slug=None)         approved cards, oldest first (one job's newest, with a slug)
@@ -89,4 +90,22 @@ def write(slug, out, answers):
         "created": dt.datetime.now().isoformat(timespec="seconds"),
     }
     save(item)
+    tell(item)
     return item
+
+
+def tell(item):
+    """A new card to review: one short Telegram message with the review list's link, so it is
+    not forgotten. A failed exploration says so instead."""
+    try:
+        from jobpilot.core.daily import form_link, telegram
+        link = form_link()
+        nq = len([q for q in item.get("questions", []) if q.get("status") != "answered"])
+        head = {"pending": "📝 <b>New application to review</b>",
+                "needs_input": f"📝 <b>New application to review</b> — {nq} question(s) for you",
+                "failed": "⚠ <b>Exploration stopped short</b>"}.get(item["status"])
+        if head:
+            telegram(f"{head}\n{item.get('company')} — {item.get('role')}"
+                     f"\nOpen it: {link.replace('/?', '/a/' + item['id'] + '?')}\nReview list: {link}")
+    except Exception as e:
+        print(f"  [warn] telegram: {type(e).__name__}: {e}")

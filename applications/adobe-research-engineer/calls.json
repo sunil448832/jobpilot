@@ -1,0 +1,1569 @@
+[
+ {
+  "n": 1,
+  "tool": "see",
+  "args": {},
+  "page": null,
+  "controls": {},
+  "result": "PAGE: page\nPAGE ERRORS: Research Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'Skip to main content'   [a link]\nc3  button 'English'   [a button that opens a list, shows 'English']   shows: 'English'   choices: [English, 日本語 (‏日本)]\nc4  button 'Sign In'   [a button]   shows: 'Sign In'\nc5  button 'Search for Jobs'   [a button]   shows: 'Search for Jobs'\nc6  button 'Apply'   [a button]   shows: 'Apply'\nc7  link 'values and culture'   [a link]\nc8  link 'focus on people, purpose and community'   [a link]\nc9  link 'Adobe for All'   [a link]\nc10  link 'benefits programs'   [a link]\nc11  link 'stories we tell'   [a link]\nc12  link 'customers'   [a link]\nc13  link 'Equal Employment Opportunity'   [a link]\nc14  link 'Learn more.'   [a link]\nc15  link 'accommodations@adobe.com'   [a link]\nc16  link 'AI in the hiring experience'   [a link]\nc17  link 'Research Scientist'   [a link]\nc18  link 'Staff Applied Scientist, 3D - Firefly Foundry'   [a link]\nc19  link 'Senior AI / Machine Learning Engineer — Fraud Detection'   [a link]\nc20  button 'View All 5 Jobs'   [a button]   shows: 'View All 5 Jobs'\nc21  button 'Read More'   [a button]   shows: 'Read More'\nc22  link 'YouTube'   [a link]\nc23  link 'X'   [a link]\nc24  link 'Glassdoor'   [a link]\nc25  link 'LinkedIn'   [a link]\n\nSNAPSHOT\n- [c1] link \"Skip to main content\":\n  - /url: \"\"\n- banner:\n  - link \"careers home\":\n    - /url: http://careers.adobe.com\n    - img \"careers home\"\n  -"
+ },
+ {
+  "n": 2,
+  "tool": "press",
+  "args": {
+   "id": "c6"
+  },
+  "page": "page",
+  "controls": {
+   "c6": {
+    "role": "button",
+    "name": "Apply",
+    "nth": 1,
+    "group": "",
+    "above": "Research Engineer",
+    "qn": 0
+   }
+  },
+  "moved_to": "Start Your Application",
+  "result": "moved on: now on page 'Start Your Application'. see it."
+ },
+ {
+  "n": 3,
+  "tool": "see",
+  "args": {},
+  "page": "Start Your Application",
+  "controls": {},
+  "result": "PAGE: Start Your Application\nPAGE ERRORS: Research Engineer page is loaded\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc26  button 'Close'   [a button]\nc27  button 'Autofill with Resume'   [a button]   shows: 'Autofill with Resume'\nc28  button 'Apply Manually'   [a button]   shows: 'Apply Manually'\nc29  button 'Use My Last Application'   [a button]   shows: 'Use My Last Application'\n\nSNAPSHOT\n- dialog \"Start Your Application\":\n  - [c26] button \"Close\"\n  - heading \"Start Your Application\" [level=2]\n  - heading \"Research Engineer\" [level=3]\n  - paragraph: We are excited to review your application! Please start your application using the options below.\n  - [c27] button \"Autofill with Resume\"\n  - [c28] button \"Apply Manually\"\n  - [c29] button \"Use My Last Application\"\n  - iframe"
+ },
+ {
+  "n": 4,
+  "tool": "press",
+  "args": {
+   "id": "c28"
+  },
+  "page": "Start Your Application",
+  "controls": {
+   "c28": {
+    "role": "button",
+    "name": "Apply Manually",
+    "nth": 1,
+    "group": "",
+    "above": "We are excited to review your application! Please start your application using the options below.",
+    "qn": 1
+   }
+  },
+  "moved_to": "my information",
+  "result": "moved on: now on page 'my information'. see it."
+ },
+ {
+  "n": 5,
+  "tool": "see",
+  "args": {
+   "snapshot": false
+  },
+  "page": "my information",
+  "controls": {},
+  "result": "PAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc36  textbox 'How Did You Hear About Us?'   [a text box with an icon, required, placeholder 'Search']   choices: [Adobe Source › [Adobe.com, Adobe Career Academy, Adobe Digital Academy, Adobe MAX, Adobe Open House, Adobe Recruiting Team, Adobe Summit, Know Someone at the Company, Research - Call for Interns, Research Fellowship program, Research Intern Alumni, University Research Faculty], Contingent Worker-Specific › [Contingent Worker], External Organizations / Events › [\"10,000 Black Interns\", Bright Network, Consortium, GradConnection, Graduate Education for Minorities (GEM), Let's Tech About It, Management Leadership for Tomorrow (MLT), National Society of Black Engineers (NSBE), Re-Writing the Code, Shecodes, Society of Hispanic Professional Engineers, Society of Women Engineers (SWE), Thurgood Mashall College Fund (TMCF)], Job Board › [BizReach, Built In, Findem, Glassdoor, Handshake, Indeed, Instahyre, Jobteaser, LinkedIn, Naukri, RateMyPlacement, ZipRecruiter], Social Media › [Blind, GitHub, Instagram, LinkedIn, X (Twitter), YouTube], Through my University › [Career Fair - In Person, Career Fair - Virtual, \"Conference (GHC, etc.)\", Information / Networking Session - In Person, Information / Networking Session - Virtual, On-Campus Drive]]\nc37  radio 'Yes'   [radio: not checked]\nc3"
+ },
+ {
+  "n": 6,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c36",
+     "select",
+     "guess:Job Board › LinkedIn; Social Media › LinkedIn | How Did You Hear About Us?"
+    ],
+    [
+     "c38",
+     "select",
+     "screening.previously_employed_here"
+    ],
+    [
+     "c39",
+     "select",
+     "keep:location.country"
+    ],
+    [
+     "c40",
+     "write",
+     "personal.first_name"
+    ],
+    [
+     "c41",
+     "write",
+     "personal.last_name"
+    ],
+    [
+     "c44",
+     "write",
+     "location.address_line_1"
+    ],
+    [
+     "c45",
+     "write",
+     "location.city"
+    ],
+    [
+     "c46",
+     "write",
+     "location.postal_code"
+    ],
+    [
+     "c47",
+     "select",
+     "location.state"
+    ],
+    [
+     "c48",
+     "write",
+     "personal.email"
+    ],
+    [
+     "c49",
+     "select",
+     "keep:option:Mobile"
+    ],
+    [
+     "c50",
+     "select",
+     "keep:personal.phone_country_code"
+    ],
+    [
+     "c52",
+     "write",
+     "personal.phone_national"
+    ]
+   ]
+  },
+  "page": "my information",
+  "controls": {
+   "c36": {
+    "role": "textbox",
+    "name": "How Did You Hear About Us?",
+    "nth": 1,
+    "group": "",
+    "above": "How Did You Hear About Us?",
+    "qn": 0
+   },
+   "c38": {
+    "role": "radio",
+    "name": "No",
+    "nth": 1,
+    "group": "Have you been employed by Adobe in the past?",
+    "above": "Yes",
+    "qn": 0
+   },
+   "c39": {
+    "role": "button",
+    "name": "Country India Required",
+    "nth": 1,
+    "group": "",
+    "above": "Country",
+    "qn": 0
+   },
+   "c40": {
+    "role": "textbox",
+    "name": "Given Name(s)",
+    "nth": 1,
+    "group": "Name",
+    "above": "Given Name(s)",
+    "qn": 0
+   },
+   "c41": {
+    "role": "textbox",
+    "name": "Family Name",
+    "nth": 1,
+    "group": "Name",
+    "above": "Family Name",
+    "qn": 0
+   },
+   "c44": {
+    "role": "textbox",
+    "name": "Address Line 1",
+    "nth": 1,
+    "group": "Address",
+    "above": "Address Line 1",
+    "qn": 0
+   },
+   "c45": {
+    "role": "textbox",
+    "name": "City",
+    "nth": 1,
+    "group": "Address",
+    "above": "City",
+    "qn": 0
+   },
+   "c46": {
+    "role": "textbox",
+    "name": "Postal Code",
+    "nth": 1,
+    "group": "Address",
+    "above": "Postal Code",
+    "qn": 0
+   },
+   "c47": {
+    "role": "button",
+    "name": "State Select One Required",
+    "nth": 1,
+    "group": "Address",
+    "above": "State",
+    "qn": 0
+   },
+   "c48": {
+    "role": "textbox",
+    "name": "Email",
+    "nth": 1,
+    "group": "Email Address",
+    "above": "Email",
+    "qn": 0
+   },
+   "c49": {
+    "role": "button",
+    "name": "Phone Device Type Mobile Required",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Device Type",
+    "qn": 0
+   },
+   "c50": {
+    "role": "textbox",
+    "name": "Country Phone Code",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Country Phone Code",
+    "qn": 0
+   },
+   "c52": {
+    "role": "textbox",
+    "name": "Phone Number",
+    "nth": 1,
+    "group": "Phone",
+    "above": "Phone Number",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c36",
+    "kind": "select",
+    "answer": "guess:Job Board › LinkedIn; Social Media › LinkedIn | How Did You Hear About Us?",
+    "how": "guess",
+    "nature": "list",
+    "ok": true,
+    "shown": "1 item selected, LinkedIn; LinkedIn",
+    "question": "How Did You Hear About Us?",
+    "reads": ""
+   },
+   {
+    "id": "c38",
+    "kind": "select",
+    "answer": "screening.previously_employed_here",
+    "how": "fact",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c39",
+    "kind": "select",
+    "answer": "keep:location.country",
+    "how": "keep",
+    "nature": "list",
+    "ok": true,
+    "shown": "India",
+    "question": null,
+    "reads": "India"
+   },
+   {
+    "id": "c47",
+    "kind": "select",
+    "answer": "location.state",
+    "how": "fact",
+    "nature": "list",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null,
+    "reads": "Delhi"
+   },
+   {
+    "id": "c49",
+    "kind": "select",
+    "answer": "keep:option:Mobile",
+    "how": "keep",
+    "nature": "list",
+    "ok": true,
+    "shown": "Mobile",
+    "question": null,
+    "reads": "Mobile"
+   },
+   {
+    "id": "c50",
+    "kind": "select",
+    "answer": "keep:personal.phone_country_code",
+    "how": "keep",
+    "nature": "list",
+    "ok": true,
+    "shown": "1 item selected, India (+91); India (+91)",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c40",
+    "kind": "write",
+    "answer": "personal.first_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sunil",
+    "question": null
+   },
+   {
+    "id": "c41",
+    "kind": "write",
+    "answer": "personal.last_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sharma",
+    "question": null
+   },
+   {
+    "id": "c44",
+    "kind": "write",
+    "answer": "location.address_line_1",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null
+   },
+   {
+    "id": "c45",
+    "kind": "write",
+    "answer": "location.city",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Delhi",
+    "question": null
+   },
+   {
+    "id": "c46",
+    "kind": "write",
+    "answer": "location.postal_code",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "110019",
+    "question": null
+   },
+   {
+    "id": "c48",
+    "kind": "write",
+    "answer": "personal.email",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "sunil4832sharma@gmail.com",
+    "question": null
+   },
+   {
+    "id": "c52",
+    "kind": "write",
+    "answer": "personal.phone_national",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "9641298471",
+    "question": null
+   }
+  ],
+  "result": "c36  ok  textbox 'How Did You Hear About Us?': shows '1 item selected, LinkedIn; LinkedIn'   (a placeholder: 'Job Board › LinkedIn', asked later)\nc38  ok  radio 'No': shows 'checked'\nc39  ok  button 'Country India Required': shows 'India'\nc47  ok  button 'State Select One Required': shows 'Delhi'\nc49  ok  button 'Phone Device Type Mobile Required': shows 'Mobile'\nc50  ok  textbox 'Country Phone Code': shows '1 item selected, India (+91); India (+91)'\nc40  ok  textbox 'Given Name(s)': shows 'Sunil'\nc41  ok  textbox 'Family Name': shows 'Sharma'\nc44  ok  textbox 'Address Line 1': shows 'Delhi'\nc45  ok  textbox 'City': shows 'Delhi'\nc46  ok  textbox 'Postal Code': shows '110019'\nc48  ok  textbox 'Email': shows 'sunil4832sharma@gmail.com'\nc52  ok  textbox 'Phone Number': shows '9641298471'\n\nNEW FIELDS:\nc60  textbox 'Given Name(s)'   [a text box, required]   shows: 'Sunil'\nc61  textbox 'Family Name'   [a text box]   shows: 'Sharma'\nc62  textbox 'Address Line 1'   [a text box]   shows: 'Delhi'\nc63  textbox 'City'   [a text box]   shows: 'Delhi'\nc64  textbox 'Postal Code'   [a text box]   shows: '110019'\nc65  textbox 'Email'   [a text box, required]   shows: 'sunil4832sharma@gmail.com'\nc66  textbox 'Phone Number'   [a text box, required]   shows: '9641298471'\n\nFIELDS GONE: ['c40', 'c41', 'c44', 'c45', 'c46', 'c48', 'c52']\n\nPAGE: my information\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'How Did You Hear About Us?' holds 'Job Board › Linke"
+ },
+ {
+  "n": 7,
+  "tool": "press",
+  "args": {
+   "id": "c54"
+  },
+  "page": "my information",
+  "controls": {
+   "c54": {
+    "role": "button",
+    "name": "Next",
+    "nth": 1,
+    "group": "",
+    "above": "Phone Extension",
+    "qn": 0
+   }
+  },
+  "moved_to": "my experience",
+  "result": "moved on: now on page 'my experience'. see it."
+ },
+ {
+  "n": 8,
+  "tool": "see",
+  "args": {},
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc35  link 'Back to Job Posting'   [a button]   shows: 'Back to Job Posting'\nc67  textbox 'Job Title'   [a text box, required]\nc68  textbox 'Company'   [a text box, required]\nc69  textbox 'Location'   [a text box]\nc70  checkbox 'I currently work here'   [checkbox: not checked]\nc71  spinbutton 'Month #1'   [a number box (a date part, shows 'MM')]\nc72  spinbutton 'Year #1'   [a number box (a date part, shows 'YYYY')]\nc73  button 'Calendar #1'   [a button]\nc74  spinbutton 'Month #2'   [a number box (a date part, shows 'MM')]\nc75  spinbutton 'Year #2'   [a number box (a date part, shows 'YYYY')]\nc76  button 'Calendar #2'   [a button]\nc77  textbox 'Role Description'   [a text area]\nc78  button 'Add Another #1'   [a button]   shows: 'Add Another'\nc79  textbox 'School or University'   [a text box, required]\nc80  button 'Degree Select One Required'   [a button that opens a list, shows 'Select One']   shows: 'Select One'   choices: [Select One, High School, Associates, Bachelors, Masters, Doctorate, JD]\nc81  textbox 'Field of Study'   [a text box with an icon, placeholder 'Search']   choices: [Accounting, Actuarial Science, Advertising, Aerospace Engineering, African-American Studies, \"African Languages, Literatures, and Linguistics\", African Studies, Agricultural/Biological Engineering and Bioengineering, Agricultural Business and Management, Agricultural Economics, Agricu"
+ },
+ {
+  "n": 9,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c67",
+     "write",
+     "employment[0].title"
+    ],
+    [
+     "c68",
+     "write",
+     "employment[0].employer"
+    ],
+    [
+     "c69",
+     "write",
+     "employment[0].location"
+    ],
+    [
+     "c70",
+     "select",
+     "employment[0].current"
+    ],
+    [
+     "c71",
+     "write",
+     "employment[0].start_date.month"
+    ],
+    [
+     "c72",
+     "write",
+     "employment[0].start_date.year"
+    ],
+    [
+     "c77",
+     "write",
+     "employment[0].summary"
+    ],
+    [
+     "c78",
+     "select",
+     "add:2"
+    ],
+    [
+     "c79",
+     "write",
+     "education[0].institution"
+    ],
+    [
+     "c80",
+     "select",
+     "option:Masters"
+    ],
+    [
+     "c81",
+     "select",
+     "search:\\bArtificial Intelligence\\b; ^Artificial; ^A"
+    ],
+    [
+     "c84",
+     "write",
+     "education[0].start_date.year"
+    ],
+    [
+     "c85",
+     "write",
+     "education[0].end_date.year"
+    ],
+    [
+     "c86",
+     "select",
+     "add:1"
+    ],
+    [
+     "c87",
+     "select",
+     "add:1"
+    ],
+    [
+     "c89",
+     "select",
+     "file:resume"
+    ],
+    [
+     "c90",
+     "write",
+     "links.linkedin"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c67": {
+    "role": "textbox",
+    "name": "Job Title",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Job Title",
+    "qn": 0
+   },
+   "c68": {
+    "role": "textbox",
+    "name": "Company",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Company",
+    "qn": 0
+   },
+   "c69": {
+    "role": "textbox",
+    "name": "Location",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Location",
+    "qn": 0
+   },
+   "c70": {
+    "role": "checkbox",
+    "name": "I currently work here",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "I currently work here",
+    "qn": 0
+   },
+   "c71": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 1,
+    "group": "From",
+    "above": "From",
+    "qn": 0
+   },
+   "c72": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 1,
+    "group": "From",
+    "above": "From",
+    "qn": 1
+   },
+   "c77": {
+    "role": "textbox",
+    "name": "Role Description",
+    "nth": 1,
+    "group": "Work Experience 1",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c78": {
+    "role": "button",
+    "name": "Add Another",
+    "nth": 1,
+    "group": "Work Experience",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c79": {
+    "role": "textbox",
+    "name": "School or University",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "School or University",
+    "qn": 0
+   },
+   "c80": {
+    "role": "button",
+    "name": "Degree Select One Required",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "Degree",
+    "qn": 0
+   },
+   "c81": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "Field of Study",
+    "qn": 0
+   },
+   "c84": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 3,
+    "group": "From",
+    "above": "From",
+    "qn": 2
+   },
+   "c85": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 4,
+    "group": "To (Actual or Expected)",
+    "above": "To (Actual or Expected)",
+    "qn": 0
+   },
+   "c86": {
+    "role": "button",
+    "name": "Add Another",
+    "nth": 2,
+    "group": "Education",
+    "above": "To (Actual or Expected)",
+    "qn": 0
+   },
+   "c87": {
+    "role": "button",
+    "name": "Add",
+    "nth": 1,
+    "group": "Certifications",
+    "above": "Certifications",
+    "qn": 0
+   },
+   "c89": {
+    "role": "button",
+    "name": "Select files",
+    "nth": 1,
+    "group": "Resume/CV",
+    "above": "Upload a file (5MB max) Drop files here or",
+    "qn": 0
+   },
+   "c90": {
+    "role": "textbox",
+    "name": "Share your LinkedIn Profile site",
+    "nth": 1,
+    "group": "Social Network URLs",
+    "above": "Share your LinkedIn Profile site",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c78",
+    "kind": "select",
+    "answer": "add:2",
+    "how": "add",
+    "nature": "press",
+    "ok": true,
+    "shown": "added 2 block(s)",
+    "question": null,
+    "section": "Work Experience",
+    "section_count": 33,
+    "blocks": 3
+   },
+   {
+    "id": "c86",
+    "kind": "select",
+    "answer": "add:1",
+    "how": "add",
+    "nature": "press",
+    "ok": true,
+    "shown": "added 1 block(s)",
+    "question": null,
+    "section": "Education",
+    "section_count": 16,
+    "blocks": 2
+   },
+   {
+    "id": "c87",
+    "kind": "select",
+    "answer": "add:1",
+    "how": "add",
+    "nature": "press",
+    "ok": true,
+    "shown": "added 1 block(s)",
+    "question": null,
+    "section": "Certifications",
+    "section_count": 13,
+    "blocks": 1
+   },
+   {
+    "id": "c70",
+    "kind": "select",
+    "answer": "employment[0].current",
+    "how": "fact",
+    "nature": "tick",
+    "ok": true,
+    "shown": "checked",
+    "question": null,
+    "reads": "on"
+   },
+   {
+    "id": "c80",
+    "kind": "select",
+    "answer": "option:Masters",
+    "how": "chain",
+    "nature": "list",
+    "ok": true,
+    "shown": "Masters",
+    "question": null,
+    "reads": "Masters"
+   },
+   {
+    "id": "c81",
+    "kind": "select",
+    "answer": "search:\\bArtificial Intelligence\\b; ^Artificial; ^A",
+    "how": "search",
+    "nature": "list",
+    "ok": false,
+    "shown": "",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c89",
+    "kind": "select",
+    "answer": "file:resume",
+    "how": "file",
+    "nature": "file",
+    "ok": true,
+    "shown": "sunil_resume.docx",
+    "question": null,
+    "reads": "Select files"
+   },
+   {
+    "id": "c67",
+    "kind": "write",
+    "answer": "employment[0].title",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Senior Data Scientist",
+    "question": null
+   },
+   {
+    "id": "c68",
+    "kind": "write",
+    "answer": "employment[0].employer",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Aria Intelligent Solutions",
+    "question": null
+   },
+   {
+    "id": "c69",
+    "kind": "write",
+    "answer": "employment[0].location",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "India",
+    "question": null
+   },
+   {
+    "id": "c71",
+    "kind": "write",
+    "answer": "employment[0].start_date.month",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "12",
+    "question": null,
+    "reads": "2"
+   },
+   {
+    "id": "c72",
+    "kind": "write",
+    "answer": "employment[0].start_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2023",
+    "question": null,
+    "reads": "2023"
+   },
+   {
+    "id": "c77",
+    "kind": "write",
+    "answer": "employment[0].summary",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions). Built IngestIQ, autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running end-to-e",
+    "question": null,
+    "reads": "Architected an Orchestrator Agent on the A2A protocol with LLM-driven task decomposition and human-in-the-loop routing to specialized sub-agents (98% end-to-end success across 500 concurrent sessions). Built IngestIQ, autonomous data-engineering agents (CrewAI + PydanticAI + Claude) running end-to-end ETL from a natural-language task. Built an automated evaluation framework benchmarking the agent fleet at 86% exact-pass and 0.86 mean F1."
+   },
+   {
+    "id": "c79",
+    "kind": "write",
+    "answer": "education[0].institution",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Indian Institute of Technology, Jodhpur",
+    "question": null
+   },
+   {
+    "id": "c84",
+    "kind": "write",
+    "answer": "education[0].start_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2019",
+    "question": null,
+    "reads": "2019"
+   },
+   {
+    "id": "c85",
+    "kind": "write",
+    "answer": "education[0].end_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2021",
+    "question": null,
+    "reads": "2021"
+   },
+   {
+    "id": "c90",
+    "kind": "write",
+    "answer": "links.linkedin",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "https://www.linkedin.com/in/sunil4832sharma",
+    "question": null
+   }
+  ],
+  "result": "c78  ok  button 'Add Another #1': shows 'added 2 block(s)'\nc86  ok  button 'Add Another #2': shows 'added 1 block(s)'\nc87  ok  button 'Add': shows 'added 1 block(s)'\nc70  ok  checkbox 'I currently work here': shows 'checked'\nc80  ok  button 'Degree Select One Required': shows 'Masters'\nc81  NOT DONE  textbox 'Field of Study': searched: '\\\\bArtificial Intelligence\\\\b' -> [Artificial Intelligence and Robotics]; '^Artificial' -> [Artificial Intelligence and Robotics]; '^A' -> [Accounting, Actuarial Science, Advertising, Aerospace Engineering, African-American Studies, \"African Languages, Literatures, and Linguistics\", African Studies, Agricultural/Biological Engineering and Bioengineering, Agricultural Business and Management, Agricultural Economics, Agricultural Education, Agricultural Journalism, Agricultural Mechanization, Agricultural Technology Management, Agriculture, Agronomy and Crop Science, Air Traffic Control, American History, American Literature, American Sign Language, American Studies, Anatomy, Ancient Studies, Animal Behavior and Ethology, Animal Science]\nc89  ok  button 'Select files': shows 'sunil_resume.docx'\nc67  ok  textbox 'Job Title': shows 'Senior Data Scientist'\nc68  ok  textbox 'Company': shows 'Aria Intelligent Solutions'\nc69  ok  textbox 'Location': shows 'India'\nc71  ok  spinbutton 'Month #1': shows '12'\nc72  ok  spinbutton 'Year #1': shows '2023'\nc77  ok  textbox 'Role Description': shows 'Architected an Orchestrator Agent on the A2A protocol with L"
+ },
+ {
+  "n": 10,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c81",
+     "select",
+     "option:Artificial Intelligence and Robotics"
+    ],
+    [
+     "c96",
+     "write",
+     "employment[1].title"
+    ],
+    [
+     "c97",
+     "write",
+     "employment[1].employer"
+    ],
+    [
+     "c98",
+     "write",
+     "employment[1].location"
+    ],
+    [
+     "c100",
+     "write",
+     "employment[1].start_date.month"
+    ],
+    [
+     "c101",
+     "write",
+     "employment[1].start_date.year"
+    ],
+    [
+     "c103",
+     "write",
+     "employment[1].end_date.month"
+    ],
+    [
+     "c104",
+     "write",
+     "employment[1].end_date.year"
+    ],
+    [
+     "c106",
+     "write",
+     "employment[1].summary"
+    ],
+    [
+     "c108",
+     "write",
+     "employment[2].title"
+    ],
+    [
+     "c109",
+     "write",
+     "employment[2].employer"
+    ],
+    [
+     "c110",
+     "write",
+     "employment[2].location"
+    ],
+    [
+     "c112",
+     "write",
+     "employment[2].start_date.month"
+    ],
+    [
+     "c113",
+     "write",
+     "employment[2].start_date.year"
+    ],
+    [
+     "c115",
+     "write",
+     "employment[2].end_date.month"
+    ],
+    [
+     "c116",
+     "write",
+     "employment[2].end_date.year"
+    ],
+    [
+     "c118",
+     "write",
+     "employment[2].summary"
+    ],
+    [
+     "c121",
+     "write",
+     "education[1].institution"
+    ],
+    [
+     "c122",
+     "select",
+     "option:Bachelors"
+    ],
+    [
+     "c123",
+     "select",
+     "search:Electronics.*Communication; ^Electr; ^E"
+    ],
+    [
+     "c126",
+     "write",
+     "education[1].start_date.year"
+    ],
+    [
+     "c127",
+     "write",
+     "education[1].end_date.year"
+    ],
+    [
+     "c129",
+     "select",
+     "search:DeepLearning; Generative AI; Large Language"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c81": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 1,
+    "group": "Education 1",
+    "above": "Field of Study",
+    "qn": 0
+   },
+   "c96": {
+    "role": "textbox",
+    "name": "Job Title",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Job Title",
+    "qn": 0
+   },
+   "c97": {
+    "role": "textbox",
+    "name": "Company",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Company",
+    "qn": 0
+   },
+   "c98": {
+    "role": "textbox",
+    "name": "Location",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Location",
+    "qn": 0
+   },
+   "c100": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 2,
+    "group": "From",
+    "above": "From",
+    "qn": 2
+   },
+   "c101": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 2,
+    "group": "From",
+    "above": "From",
+    "qn": 3
+   },
+   "c103": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 3,
+    "group": "To",
+    "above": "From",
+    "qn": 0
+   },
+   "c104": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 3,
+    "group": "To",
+    "above": "From",
+    "qn": 1
+   },
+   "c106": {
+    "role": "textbox",
+    "name": "Role Description",
+    "nth": 2,
+    "group": "Work Experience 2",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c108": {
+    "role": "textbox",
+    "name": "Job Title",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Job Title",
+    "qn": 0
+   },
+   "c109": {
+    "role": "textbox",
+    "name": "Company",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Company",
+    "qn": 0
+   },
+   "c110": {
+    "role": "textbox",
+    "name": "Location",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Location",
+    "qn": 0
+   },
+   "c112": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 4,
+    "group": "From",
+    "above": "From",
+    "qn": 4
+   },
+   "c113": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 4,
+    "group": "From",
+    "above": "From",
+    "qn": 5
+   },
+   "c115": {
+    "role": "spinbutton",
+    "name": "Month",
+    "nth": 5,
+    "group": "To",
+    "above": "From",
+    "qn": 2
+   },
+   "c116": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 5,
+    "group": "To",
+    "above": "From",
+    "qn": 3
+   },
+   "c118": {
+    "role": "textbox",
+    "name": "Role Description",
+    "nth": 3,
+    "group": "Work Experience 3",
+    "above": "Role Description",
+    "qn": 0
+   },
+   "c121": {
+    "role": "textbox",
+    "name": "School or University",
+    "nth": 2,
+    "group": "Education 2",
+    "above": "School or University",
+    "qn": 0
+   },
+   "c122": {
+    "role": "button",
+    "name": "Degree Select One Required",
+    "nth": 1,
+    "group": "Education 2",
+    "above": "Degree",
+    "qn": 0
+   },
+   "c123": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 2,
+    "group": "Education 2",
+    "above": "Field of Study",
+    "qn": 0
+   },
+   "c126": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 8,
+    "group": "From",
+    "above": "From",
+    "qn": 7
+   },
+   "c127": {
+    "role": "spinbutton",
+    "name": "Year",
+    "nth": 9,
+    "group": "To (Actual or Expected)",
+    "above": "To (Actual or Expected)",
+    "qn": 1
+   },
+   "c129": {
+    "role": "textbox",
+    "name": "Certification",
+    "nth": 1,
+    "group": "Certifications 1",
+    "above": "Certification",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c81",
+    "kind": "select",
+    "answer": "option:Artificial Intelligence and Robotics",
+    "how": "chain",
+    "nature": "list",
+    "ok": true,
+    "shown": "Expanded; Artificial Intelligence and Robotics",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c122",
+    "kind": "select",
+    "answer": "option:Bachelors",
+    "how": "chain",
+    "nature": "list",
+    "ok": true,
+    "shown": "Bachelors",
+    "question": null,
+    "reads": "Bachelors"
+   },
+   {
+    "id": "c123",
+    "kind": "select",
+    "answer": "search:Electronics.*Communication; ^Electr; ^E",
+    "how": "search",
+    "nature": "list",
+    "ok": false,
+    "shown": "",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c129",
+    "kind": "select",
+    "answer": "search:DeepLearning; Generative AI; Large Language",
+    "how": "search",
+    "nature": "list",
+    "ok": false,
+    "shown": "",
+    "question": null,
+    "reads": ""
+   },
+   {
+    "id": "c96",
+    "kind": "write",
+    "answer": "employment[1].title",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Applied Scientist I",
+    "question": null
+   },
+   {
+    "id": "c97",
+    "kind": "write",
+    "answer": "employment[1].employer",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Amazon Development Centre (India) Pvt. Ltd.",
+    "question": null
+   },
+   {
+    "id": "c98",
+    "kind": "write",
+    "answer": "employment[1].location",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "India",
+    "question": null
+   },
+   {
+    "id": "c100",
+    "kind": "write",
+    "answer": "employment[1].start_date.month",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "10",
+    "question": null,
+    "reads": "2"
+   },
+   {
+    "id": "c101",
+    "kind": "write",
+    "answer": "employment[1].start_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2022",
+    "question": null,
+    "reads": "2022"
+   },
+   {
+    "id": "c103",
+    "kind": "write",
+    "answer": "employment[1].end_date.month",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "6",
+    "question": null,
+    "reads": "2"
+   },
+   {
+    "id": "c104",
+    "kind": "write",
+    "answer": "employment[1].end_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2023",
+    "question": null,
+    "reads": "2023"
+   },
+   {
+    "id": "c106",
+    "kind": "write",
+    "answer": "employment[1].summary",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting hard samples to lift edge-case recall.",
+    "question": null,
+    "reads": "Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targeting hard samples to lift edge-case recall."
+   },
+   {
+    "id": "c108",
+    "kind": "write",
+    "answer": "employment[2].title",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Computer Vision Engineer",
+    "question": null
+   },
+   {
+    "id": "c109",
+    "kind": "write",
+    "answer": "employment[2].employer",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Beltech AI Pvt. Ltd.",
+    "question": null
+   },
+   {
+    "id": "c110",
+    "kind": "write",
+    "answer": "employment[2].location",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "India",
+    "question": null
+   },
+   {
+    "id": "c112",
+    "kind": "write",
+    "answer": "employment[2].start_date.month",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "7",
+    "question": null,
+    "reads": "2"
+   },
+   {
+    "id": "c113",
+    "kind": "write",
+    "answer": "employment[2].start_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2021",
+    "question": null,
+    "reads": "2021"
+   },
+   {
+    "id": "c115",
+    "kind": "write",
+    "answer": "employment[2].end_date.month",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "9",
+    "question": null,
+    "reads": "2"
+   },
+   {
+    "id": "c116",
+    "kind": "write",
+    "answer": "employment[2].end_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2022",
+    "question": null,
+    "reads": "2022"
+   },
+   {
+    "id": "c118",
+    "kind": "write",
+    "answer": "employment[2].summary",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extractor with ResNet-34 under ArcFace metric-learning loss for multi-camera re-identification.",
+    "question": null,
+    "reads": "Built and deployed a face-recognition system (fine-tuned ArcFace) at 99% precision and 95% recall on a 1,000-person gallery. Replaced DeepSORT's feature extractor with ResNet-34 under ArcFace metric-learning loss for multi-camera re-identification."
+   },
+   {
+    "id": "c121",
+    "kind": "write",
+    "answer": "education[1].institution",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sikkim Manipal Institute of Technology",
+    "question": null
+   },
+   {
+    "id": "c126",
+    "kind": "write",
+    "answer": "education[1].start_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2015",
+    "question": null,
+    "reads": "2015"
+   },
+   {
+    "id": "c127",
+    "kind": "write",
+    "answer": "education[1].end_date.year",
+    "how": "fact",
+    "nature": "digits",
+    "ok": true,
+    "shown": "2019",
+    "question": null,
+    "reads": "2019"
+   }
+  ],
+  "result": "c81  ok  textbox 'Field of Study #1': shows 'Expanded; Artificial Intelligence and Robotics'\nc122  ok  button 'Degree Select One Required': shows 'Bachelors'\nc123  NOT DONE  textbox 'Field of Study #2': searched: 'Electronics.*Communication' -> []; '^Electr' -> [Electrical Engineering]; '^E' -> [Early Childhood Education, East Asian Studies, East European Studies, Ecology, Economics, Education, Education Administration, Educational Psychology, Education of the Deaf, Electrical Engineering, Elementary Education, Engineering Mechanics, Engineering Physics, English, English Composition, English Literature, Entomology, Entrepreneurship, Environmental/Environmental Health Engineering, Environmental Design/Architecture, Environmental Science, Epidemiology, Equine Studies, Ethnic Studies, European History]\nc129  NOT DONE  textbox 'Certification': searched: 'DeepLearning' -> []; 'Generative AI' -> []; 'Large Language' -> []\nc96  ok  textbox 'Job Title #2': shows 'Applied Scientist I'\nc97  ok  textbox 'Company #2': shows 'Amazon Development Centre (India) Pvt. Ltd.'\nc98  ok  textbox 'Location #2': shows 'India'\nc100  ok  spinbutton 'Month #2': shows '10'\nc101  ok  spinbutton 'Year #2': shows '2022'\nc103  ok  spinbutton 'Month #3': shows '6'\nc104  ok  spinbutton 'Year #3': shows '2023'\nc106  ok  textbox 'Role Description #2': shows 'Developed a FLAVA-based multimodal classifier for inappropriate ad-content detection at 72% precision and 90% recall; introduced active-learning loops targ"
+ },
+ {
+  "n": 11,
+  "tool": "search",
+  "args": {
+   "id": "c123",
+   "patterns": [
+    "Electronic",
+    "Communicat",
+    "Other"
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c123": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 2,
+    "group": "Education 2",
+    "above": "Field of Study",
+    "qn": 0
+   }
+  },
+  "result": "c123 searched: 'Electronic' -> []; 'Communicat' -> [Business Communications, Communication Disorders, Communications Studies/Speech Communication and Rhetoric, Digital Communications and Media/Multimedia, Mass Communication, Political Communication, Visual Communication]; 'Other' -> []"
+ },
+ {
+  "n": 12,
+  "tool": "search",
+  "args": {
+   "id": "c129",
+   "patterns": [
+    "Deep ?Learning",
+    "Coursera|Other"
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c129": {
+    "role": "textbox",
+    "name": "Certification",
+    "nth": 1,
+    "group": "Certifications 1",
+    "above": "Certification",
+    "qn": 0
+   }
+  },
+  "result": "c129 searched: 'Deep ?Learning' -> []; 'Coursera|Other' -> []"
+ },
+ {
+  "n": 13,
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c123",
+     "select",
+     "guess:Electrical Engineering | Field of Study — Education 2 (Sikkim Manipal Institute of Technology)"
+    ]
+   ]
+  },
+  "page": "my experience",
+  "controls": {
+   "c123": {
+    "role": "textbox",
+    "name": "Field of Study",
+    "nth": 2,
+    "group": "Education 2",
+    "above": "Field of Study",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c123",
+    "kind": "select",
+    "answer": "guess:Electrical Engineering | Field of Study — Education 2 (Sikkim Manipal Institute of Technology)",
+    "how": "guess",
+    "nature": "list",
+    "ok": true,
+    "shown": "Expanded; Electrical Engineering",
+    "question": "Field of Study — Education 2 (Sikkim Manipal Institute of Technology)",
+    "reads": ""
+   }
+  ],
+  "result": "c123  ok  textbox 'Field of Study #2': shows 'Expanded; Electrical Engineering'   (a placeholder: 'Electrical Engineering', asked later)\n\nPAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'"
+ },
+ {
+  "n": 14,
+  "tool": "see",
+  "args": {
+   "scope": "section",
+   "name": "Certifications"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS OF 'Certifications'\nc128  button 'Delete #4'   [a button]   shows: 'Delete'\nc129  textbox 'Certification'   [a text box with an icon, required, placeholder 'Search']   choices: [Adobe Enablement team › [ATS PgM Training - Adobe Enablement team], Adobe Talent Development › [Leadership Circles - Adobe Talent Development], Amazon › [AWS Certified AI Practitioner Certificate - Amazon, AWS Certified Cloud Practitioner - Amazon, AWS Certified Data Engineer - Associate - Amazon, AWS Certified Developer - Associate - Amazon, AWS Certified DevOps Engineer - Professional - Amazon, AWS Certified Solutions Architect - Associate - Amazon, AWS Certified Solutions Architect - Professional - Amazon, AWS Certified SysOps Administrator - Associate - Amazon], American Payroll Association › [Certified Payroll Professional - American Payroll Association], APM › [APM Project Fundamentals Qualification (PFQ) - APM], Association of Certified Fraud Examiners (ACFE) › [Certified Fraud Examiner (CFE) - Association of Certified Fraud Examiners (ACFE)], Axelos › [ITIL Managing Professional - Axelos, \"ITIL Specialist: Create, Deliver & Support - Axelos\", ITIL Specialist: Drive Stakeholder Value​ - Axelos, ITIL Specialist: High Velocity IT​ - Axelos, \"ITIL St"
+ },
+ {
+  "n": 15,
+  "tool": "press",
+  "args": {
+   "id": "c128"
+  },
+  "page": "my experience",
+  "controls": {
+   "c128": {
+    "role": "button",
+    "name": "Delete",
+    "nth": 4,
+    "group": "Certifications 1",
+    "above": "Certifications 1",
+    "qn": 0
+   }
+  },
+  "moved_to": null,
+  "section": "Certifications 1",
+  "section_count": 12,
+  "result": "still on page 'my experience'. It shows no error message. see it for what changed."
+ },
+ {
+  "n": 16,
+  "tool": "see",
+  "args": {
+   "scope": "outline"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nSECTIONS\n  heading 'Research Engineer': 68 control(s)\n  heading 'My Experience': 68 control(s)\n  group 'Work Experience': 33 control(s)\n    group 'Work Experience 1': 8 control(s)\n      group 'From': 3 control(s)\n    group 'Work Experience 2': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n    group 'Work Experience 3': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n  group 'Education': 16 control(s)\n    group 'Education 1': 7 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n    group 'Education 2': 8 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n  group 'Certifications': 13 control(s)\n    group 'Certifications 1': 12 control(s)\n      group 'Issued Date': 4 control(s)\n      group 'Expiration Date': 4 control(s)\n  group 'Skills': 1 control(s)\n  group 'Resume/CV': 2 control(s)\n  group 'Social Network URLs': 1 control(s)"
+ },
+ {
+  "n": 17,
+  "tool": "see",
+  "args": {
+   "scope": "section",
+   "name": "Certifications 1",
+   "snapshot": true
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nCONTROLS OF 'Certifications 1'\nc128  button 'Delete #4'   [a button]   shows: 'Delete'\nc129  textbox 'Certification'   [a text box with an icon, required, placeholder 'Search']   choices: [Adobe Enablement team › [ATS PgM Training - Adobe Enablement team], Adobe Talent Development › [Leadership Circles - Adobe Talent Development], Amazon › [AWS Certified AI Practitioner Certificate - Amazon, AWS Certified Cloud Practitioner - Amazon, AWS Certified Data Engineer - Associate - Amazon, AWS Certified Developer - Associate - Amazon, AWS Certified DevOps Engineer - Professional - Amazon, AWS Certified Solutions Architect - Associate - Amazon, AWS Certified Solutions Architect - Professional - Amazon, AWS Certified SysOps Administrator - Associate - Amazon], American Payroll Association › [Certified Payroll Professional - American Payroll Association], APM › [APM Project Fundamentals Qualification (PFQ) - APM], Association of Certified Fraud Examiners (ACFE) › [Certified Fraud Examiner (CFE) - Association of Certified Fraud Examiners (ACFE)], Axelos › [ITIL Managing Professional - Axelos, \"ITIL Specialist: Create, Deliver & Support - Axelos\", ITIL Specialist: Drive Stakeholder Value​ - Axelos, ITIL Specialist: High Velocity IT​ - Axelos, \"ITIL "
+ },
+ {
+  "n": 18,
+  "tool": "press",
+  "args": {
+   "id": "c128"
+  },
+  "page": "my experience",
+  "controls": {
+   "c128": {
+    "role": "button",
+    "name": "Delete",
+    "nth": 4,
+    "group": "Certifications 1",
+    "above": "Certifications 1",
+    "qn": 0
+   }
+  },
+  "moved_to": null,
+  "section": "Certifications 1",
+  "section_count": null,
+  "result": "still on page 'my experience'. It shows no error message. see it for what changed."
+ },
+ {
+  "n": 19,
+  "tool": "see",
+  "args": {
+   "scope": "outline"
+  },
+  "page": "my experience",
+  "controls": {},
+  "result": "PAGE: my experience\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): \n- textbox 'Field of Study #2' holds 'Electrical Engineering' — asked as 'Field of Study — Education 2 (Sikkim Manipal Institute of Technology)'\n\nSECTIONS\n  heading 'Research Engineer': 56 control(s)\n  heading 'My Experience': 56 control(s)\n  group 'Work Experience': 33 control(s)\n    group 'Work Experience 1': 8 control(s)\n      group 'From': 3 control(s)\n    group 'Work Experience 2': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n    group 'Work Experience 3': 12 control(s)\n      group 'From': 3 control(s)\n      group 'To': 3 control(s)\n  group 'Education': 16 control(s)\n    group 'Education 1': 7 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n    group 'Education 2': 8 control(s)\n      group 'From': 1 control(s)\n      group 'To (Actual or Expected)': 1 control(s)\n  group 'Certifications': 1 control(s)\n  group 'Skills': 1 control(s)\n  group 'Resume/CV': 2 control(s)\n  group 'Social Network URLs': 1 control(s)"
+ }
+]

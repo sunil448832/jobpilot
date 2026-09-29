@@ -123,10 +123,11 @@ compensation:
         quoting a package number reads as a lower base.
     netherlands:
       currency: "EUR"
-      expected_annual: "85000"
-      expected_text: "EUR 85,000 gross per year plus 8% holiday allowance"
+      expected_annual: "95000"
+      expected_text: "EUR 95,000 gross per year plus 8% holiday allowance"
       note: >-
-        ESTIMATE — senior MLE Amsterdam with 5 yrs sits ~EUR 75-95k gross.
+        ESTIMATE — senior MLE Amsterdam with 5 yrs sits ~EUR 75-95k gross; the ask is
+        set at the top of that band (Sunil, 2026-09-29).
         Clears the Highly Skilled Migrant salary threshold comfortably. Ask about
         the 30% ruling: it was cut back in 2024-25 and becomes a flat 27% in 2027,
         so confirm the current rate rather than assuming 30%.
@@ -142,19 +143,21 @@ compensation:
         blocker here. Dublin rent is the thing to negotiate against.
     germany:
       currency: "EUR"
-      expected_annual: "88000"
-      expected_text: "EUR 88,000 gross per year"
+      expected_annual: "100000"
+      expected_text: "EUR 100,000 gross per year"
       note: >-
-        ESTIMATE — senior MLE Berlin ~EUR 75-95k, Munich ~EUR 85-105k. Clears the
+        ESTIMATE — senior MLE Berlin ~EUR 75-95k, Munich ~EUR 85-105k; the ask is set at
+        the top of the German band (Sunil, 2026-09-29). Clears the
         EU Blue Card IT-shortage floor (~EUR 43,760) roughly twice over. German
         offers quote gross annual with no equity at most non-startups; ask
         whether the number includes the 13th-month payment before comparing.
     luxembourg:
       currency: "EUR"
-      expected_annual: "98000"
-      expected_text: "EUR 98,000 gross per year"
+      expected_annual: "115000"
+      expected_text: "EUR 115,000 gross per year"
       note: >-
-        ESTIMATE — senior MLE Luxembourg ~EUR 85-115k. Wages run above Germany
+        ESTIMATE — senior MLE Luxembourg ~EUR 85-115k; the ask is set at the top of that
+        band (Sunil, 2026-09-29). Wages run above Germany
         because the finance sector sets the market. Two local specifics to check
         at offer: salaries are indexed to inflation and adjust automatically, and
         most contracts state 13 monthly payments — so confirm whether a quoted

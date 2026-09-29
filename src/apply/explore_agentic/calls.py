@@ -79,8 +79,10 @@ class Redo:
         self.unanswered, self.redone = [], set()
 
     def answer(self, row, o):
-        """The answer a row runs with: a placeholder's -> his approved answer."""
-        q = (o or {}).get("question")
+        """The answer a row runs with: a placeholder's -> his approved answer. A row whose answer
+        is itself one of his approved questions is his answer too (a row recorded without its
+        question — one that failed then)."""
+        q = (o or {}).get("question") or (row[2] if R.norm(str(row[2])) in self.approved else None)
         if not q:
             return row[2]
         mine = self.approved.get(R.norm(q))
@@ -110,7 +112,7 @@ class Redo:
             if call["tool"] != "act":
                 continue
             for o in call.get("outcomes") or []:
-                if o.get("how") not in NOT_CHECKED and o["id"] in call["controls"]:
+                if o.get("how") and o.get("how") not in NOT_CHECKED and o["id"] in call["controls"]:
                     last[o["id"]] = (call["controls"][o["id"]], o)
         return last
 
@@ -134,8 +136,8 @@ class Redo:
                 rows, then = [], {}
                 for row in call["args"].get("rows") or []:
                     o, c = outs.get(row[0]), found.get(row[0])
-                    if o is None or o.get("how") in ("search", "button"):
-                        continue                          # not on the page then, only searched, or a page button
+                    if o is None or not o.get("how") or o.get("how") in ("search", "button"):
+                        continue                          # not on the page then, failed then, only searched, a page button
                     if c is None:                         # judged once the page is redone: a later call may reach it
                         missing.append((call["controls"].get(row[0]), f"{row[0]} ({call['controls'].get(row[0], {}).get('name')!r}: "
                                                                      f"{row[2]}) is not on the page"))

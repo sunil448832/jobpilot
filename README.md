@@ -303,7 +303,12 @@ phone), `text:<his answer>`, `file:resume`, `add:<n>`, `keep:<answer>` (already 
 the question itself. Facts include `job.today` (and its day / month / year), looked up again
 when filing. The routines
 under `act` (`act.py`: tick, pick, type, key digits, give the file, add blocks) are chosen
-from the control's HTML, never from its name; `see.py` reads the accessibility snapshot
+from the control's HTML, never from its name. Each has its techniques in order, tried in turn
+until the control holds what was wanted — a text box: set in one step, key by key, by script;
+a tick: a real click, its label, set checked, forced, by script; a <select>: by label, by
+matching text, by keyboard; a list: its entries clicked, else typed and picked from the
+suggestions; a file: its input, else the file chooser. The one that worked is remembered per
+platform (`data/techniques.json`) and tried first there next time; `see.py` reads the accessibility snapshot
 (`controls.py` parses it). Workday's account gate is passed by code; the credentials are
 never shown to Claude.
 

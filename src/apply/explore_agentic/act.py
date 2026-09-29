@@ -117,6 +117,71 @@ def plain(s):
     return "".join(ch.lower() for ch in str(s or "") if ch.isalnum())
 
 
+# ---------------------------------------------------------------- techniques, tried in turn
+
+# The same kind of control takes a different technique on different sites (Workday redraws a
+# box while it is typed; Lever's location box wants a key press; Ashby's styled radio wants a
+# real click). Each routine lists its techniques; attempt() tries them in turn until the check
+# says the control holds what was wanted. The one that worked is remembered per platform and
+# tried first next time (data/techniques.json).
+PLATFORM = ""                                    # set by form.Form for its application
+_LEARNED = None
+
+
+def _learned():
+    global _LEARNED
+    if _LEARNED is None:
+        import json
+        from jobpilot.core.paths import DATA
+        try:
+            _LEARNED = json.load(open(os.path.join(DATA, "techniques.json")))
+        except (OSError, ValueError):
+            _LEARNED = {}
+    return _LEARNED
+
+
+def _remember(kind, name):
+    import json
+    from jobpilot.core.paths import DATA
+    got = _learned().setdefault(PLATFORM or "any", {})
+    if got.get(kind) != name:
+        got[kind] = name
+        try:
+            json.dump(_LEARNED, open(os.path.join(DATA, "techniques.json"), "w"), indent=1)
+        except OSError:
+            pass
+
+
+def attempt(kind, techniques, check):
+    """Each (name, fn) of `techniques` in turn — the one that worked last time on this platform
+    first — until check() is true: a technique that raises, or leaves the check false, gives way
+    to the next. (ok, the technique that worked, [what the others hit])."""
+    first = (_learned().get(PLATFORM or "any") or {}).get(kind)
+    order = sorted(techniques, key=lambda t: t[0] != first)
+    tried = []
+    for name, fn in order:
+        try:
+            fn()
+            if check():
+                if name != order[0][0] or first is None:
+                    _remember(kind, name)
+                return True, name, tried
+            tried.append(f"{name}: did not take")
+        except Exception as e:
+            tried.append(f"{name}: {type(e).__name__}")
+    return False, None, tried
+
+
+def js_set(el, value):
+    """Set a box's value the way a framework hears it: the native setter, then input / change."""
+    el.evaluate("""(el, v) => {
+      const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, v);
+      el.dispatchEvent(new Event('input', {bubbles: true}));
+      el.dispatchEvent(new Event('change', {bubbles: true}));
+    }""", str(value))
+
+
 # what the control shows now: its value, the choice a <select> or list button displays,
 # and the picks its field holds (a list inside the field's own box — read with every
 # dropdown closed, so an open list is never taken for picks)
@@ -201,14 +266,15 @@ def focus(el):
 
 
 def type_into(frame, el, value, c=None):
-    """Set in one step (a box that redraws while you type — Workday's — keeps up), then the
-    box is left. Suggestions the box offers are read after: the one that is the value, else the
-    first that starts with it, is picked. A box that drops the value when left (it wanted a
-    suggestion picked and the one-step set brought none up) is typed once more key by key; one
-    that still drops it is reported, not taken as done. The box is found again (by `c`) before
-    each read, so a redrawn box is never waited on."""
+    """A text box, by the first technique that makes it hold the value once it is left: set in
+    one step (a box that redraws while typed — Workday's — keeps up), typed key by key (a
+    type-ahead that reacts to key presses — Lever's location), set by script with input /
+    change events. After each, a suggestion the box offers that is the value (or starts with
+    it) is picked. The box is found again (by `c`) before every read: a redrawn box is never
+    waited on. A box that drops the value when left is reported, not taken as done."""
     text, picked = str(value), None
     box = (lambda: locate(frame, c)) if c is not None else (lambda: el)
+    short = len(text) <= 80
 
     def now_value():
         try:
@@ -218,6 +284,8 @@ def type_into(frame, el, value, c=None):
 
     def pick(before):
         nonlocal picked
+        if before is None:
+            return
         want = plain(text)
         got = suggestions_after(frame, box(), before, want)
         best = next((x for x in got if plain(x[0]) == want), None) or \
@@ -229,32 +297,37 @@ def type_into(frame, el, value, c=None):
             S._close(frame)
 
     def leave():
-        typed = now_value()
         try:
             box().blur(timeout=2000)
             frame.wait_for_timeout(250)
         except Exception:
             pass
-        return typed, now_value()
 
-    focus(el)
-    short = len(text) <= 80
-    before = offered_now(frame, el) if short else None
-    el.fill(text, timeout=WAIT)
-    if short:
-        pick(before)
-    typed, got = leave()
-    if short and typed.strip() and not got.strip():      # dropped when left: key by key, as a person types
-        focus(box())
-        box().fill("", timeout=WAIT)
-        before = offered_now(frame, box())
-        box().press_sequentially(text, delay=15)
-        pick(before)
-        typed, got = leave()
-    if typed.strip() and not got.strip():
-        return {"ok": False, "shown": got, "error": f"the box dropped {text!r} when left — it wants an entry picked "
-                                                     "from its suggestions: search it"}
-    return {"ok": plain(got) == plain(value) or (picked is not None and plain(got) == plain(picked)), "shown": got}
+    def by(how):
+        def run():
+            b = box()
+            focus(b)
+            before = offered_now(frame, b) if short else None
+            if how == "keys":
+                b.fill("", timeout=WAIT)
+                b.press_sequentially(text, delay=15)
+            elif how == "js":
+                js_set(b, text)
+            else:
+                b.fill(text, timeout=WAIT)
+            pick(before)
+            leave()
+        return run
+
+    holds_it = lambda: plain(now_value()) in {plain(text)} | ({plain(picked)} if picked else set())
+    techniques = [("fill", by("fill")), ("keys", by("keys")), ("js", by("js"))] if short else \
+        [("fill", by("fill")), ("js", by("js"))]
+    ok, how, tried = attempt("type", techniques, holds_it)
+    got = now_value()
+    if not ok and not got.strip():
+        return {"ok": False, "shown": got, "error": f"the box would not keep {text!r} ({'; '.join(tried)}) — "
+                                                     "it may want an entry picked from its suggestions: search it"}
+    return {"ok": ok, "shown": got, "technique": how}
 
 
 def offered_now(frame, el):
@@ -287,76 +360,112 @@ def suggestions_after(frame, el, before, want, wait_s=2.5):
 
 
 def key_digits(frame, el, value):
-    """A number / date part: its own text selected and typed over key by key (a date widget
-    keeps its own state; a value set directly shows but is not what the page saves), once
-    more slower if the first keys were swallowed, then set directly as a last resort."""
+    """A number / date part (a date widget keeps its own state; a value set directly may show
+    but not be what the page saves): its text selected and typed over, then the same slower
+    (the first keys swallowed), then set in one step, then by script."""
     want = str(value).strip()
-    same = lambda s: s.strip().isdigit() and want.isdigit() and int(s) == int(want)
-    for delay in (40, 120):
-        focus(el)
-        el.evaluate("el => el.select && el.select()")
-        frame.page.keyboard.type(want, delay=delay)
-        frame.page.keyboard.press("Tab")
-        if same(el.input_value()):
-            return {"ok": True, "shown": el.input_value()}
-    try:
-        el.fill(want, timeout=WAIT)
-    except Exception:
-        pass
-    return {"ok": same(el.input_value()), "shown": el.input_value()}
+    same = lambda: (lambda s: s.strip().isdigit() and want.isdigit() and int(s) == int(want))(el.input_value(timeout=2000))
+
+    def keys(delay):
+        def run():
+            focus(el)
+            el.evaluate("el => el.select && el.select()")
+            frame.page.keyboard.type(want, delay=delay)
+            frame.page.keyboard.press("Tab")
+        return run
+    ok, how, _ = attempt("digits", [("keys", keys(40)), ("keys-slow", keys(120)),
+                                    ("fill", lambda: el.fill(want, timeout=WAIT)), ("js", lambda: js_set(el, want))], same)
+    return {"ok": ok, "shown": el.input_value(timeout=2000), "technique": how}
 
 
 def tick(el, on=True):
-    """Tick (or untick) a radio / checkbox. Styled ones hide the real input under a drawing:
-    then force it, then click its label."""
+    """A radio / checkbox, by the first technique that leaves it as wanted: a real click where
+    it lands (a styled one — Ashby's — registers only that), a click on its label, set checked,
+    set checked forced, a click by script."""
     if el.is_checked() == on:
         return {"ok": True, "shown": "checked" if on else "unchecked"}
-    try:
-        el.set_checked(on, timeout=WAIT)
-    except Exception:
-        try:
-            el.set_checked(on, force=True, timeout=WAIT)
-        except Exception:
-            el.evaluate("el => (el.labels && el.labels[0] ? el.labels[0] : el).click()")
-    return {"ok": el.is_checked() == on, "shown": "checked" if el.is_checked() else "unchecked"}
+    still = lambda fn: (lambda: fn() if el.is_checked() != on else None)   # never undo what took
+    ok, how, _ = attempt("tick", [
+        ("click", still(lambda: S.tap(el))),
+        ("label", still(lambda: el.evaluate("el => (el.labels && el.labels[0] ? el.labels[0] : el).click()"))),
+        ("set", still(lambda: el.set_checked(on, timeout=WAIT))),
+        ("force", still(lambda: el.set_checked(on, force=True, timeout=WAIT))),
+        ("js", still(lambda: el.evaluate("el => el.click()"))),
+    ], lambda: el.is_checked() == on)
+    return {"ok": ok, "shown": "checked" if el.is_checked() else "unchecked", "technique": how}
 
 
 def press(frame, el):
     """A choice button (Yes / No): pressed unless it already says it is — a second press
-    would undo it. One that reports no state is taken at its word."""
+    would undo it — by a real click, a forced click, a click by script, until it says it is
+    pressed. One that reports no state is taken at its word after the first click."""
     state = lambda: (el.get_attribute("aria-pressed") or el.get_attribute("aria-checked") or "").lower()
-    if state() != "true":
+    if state() == "true":
+        return {"ok": True, "shown": "pressed"}
+    if state() == "":                                     # no state to read: one click, taken at its word
         S.tap(el)
         frame.wait_for_timeout(200)
-    return {"ok": state() in ("true", ""), "shown": "pressed" if state() == "true" else "clicked"}
+        return {"ok": True, "shown": "clicked"}
+
+    def click(fn):
+        def run():
+            if state() != "true":
+                fn()
+                frame.wait_for_timeout(200)
+        return run
+    ok, how, _ = attempt("press", [("click", click(lambda: S.tap(el))),
+                                   ("force", click(lambda: el.click(force=True, timeout=WAIT))),
+                                   ("js", click(lambda: el.evaluate("el => el.click()")))],
+                         lambda: state() == "true")
+    return {"ok": ok, "shown": "pressed" if state() == "true" else "clicked", "technique": how}
 
 
 def select_native(el, label):
-    el.select_option(label=str(label), timeout=WAIT)
-    got = el.evaluate("el => el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ''")
-    return {"ok": plain(got) == plain(label), "shown": got}
+    """A <select>: by the option's label, by the option whose text means it (spaces, case), by
+    the keyboard (focused, the text typed)."""
+    shown = lambda: el.evaluate("el => el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ''")
+
+    def by_text():
+        want = plain(label)
+        opts = el.evaluate("el => [...el.options].map(o => o.text)")
+        hit = next((o for o in opts if plain(o) == want), None)
+        if hit is None:
+            raise ValueError("no such option")
+        el.select_option(label=hit, timeout=WAIT)
+
+    def keyboard():
+        el.focus()
+        el.press_sequentially(str(label)[:20], delay=30)
+        el.press("Enter")
+    ok, how, _ = attempt("select", [("label", lambda: el.select_option(label=str(label), timeout=WAIT)),
+                                    ("text", by_text), ("keys", keyboard)],
+                         lambda: plain(shown()) == plain(label))
+    return {"ok": ok, "shown": shown(), "technique": how}
 
 
 def give_file(frame, el, path):
-    """The field's own file input, set directly (a drop zone over it may take the click);
-    else the file chooser its button opens. Done when the page shows the file's name."""
-    inp = el if el.evaluate("el => el.tagName === 'INPUT' && el.type === 'file'") else \
+    """The field's own file input, set directly (a drop zone over it may take the click); else
+    the file chooser its button opens. Done when the page shows the file's name."""
+    name = os.path.basename(str(path)).lower()
+    inp = lambda: el if el.evaluate("el => el.tagName === 'INPUT' && el.type === 'file'") else \
         el.locator("xpath=ancestor::*[.//input[@type='file']][1]//input[@type='file']").first
-    try:
-        inp.set_input_files(path, timeout=WAIT)
-    except Exception:
+
+    def chooser():
         with frame.page.expect_file_chooser(timeout=WAIT) as fc:
             el.click(timeout=WAIT)
         fc.value.set_files(path)
-    name = os.path.basename(str(path)).lower()
-    for _ in range(40):
-        try:
-            if name in (frame.inner_text("body") or "").lower():
-                return {"ok": True, "shown": os.path.basename(str(path))}
-        except Exception:
-            pass
-        time.sleep(0.25)
-    return {"ok": False, "shown": "the page never showed the file"}
+
+    def shown():
+        for _ in range(40):
+            try:
+                if name in (frame.inner_text("body") or "").lower():
+                    return True
+            except Exception:
+                pass
+            time.sleep(0.25)
+        return False
+    ok, how, _ = attempt("file", [("input", lambda: inp().set_input_files(path, timeout=WAIT)), ("chooser", chooser)], shown)
+    return {"ok": ok, "shown": os.path.basename(str(path)) if ok else "the page never showed the file", "technique": how}
 
 
 # marks the visible list entry whose words — read exactly as see reads an entry (its text,
@@ -449,6 +558,26 @@ def pick_chain(frame, c, chain):
     S._close(frame, before)
     ok = _wait_for(frame, lambda: holds(frame, c, chain[-1]), 1.5) or holds(frame, c, chain[-1])
     return {"ok": ok, "shown": "; ".join(shows(frame, c))[:300]}
+
+
+def pick_list(frame, c, chain):
+    """A list's entry by the first technique that makes the control show it: its entries
+    clicked, step by step (pick_chain); the last step typed into its box and picked from the
+    suggestions that come up (a list that is only a search)."""
+    result = {}
+
+    def entries():
+        result.update(pick_chain(frame, c, chain))
+
+    def typed():
+        el = locate(frame, c)
+        if not _typeable(el):
+            raise ValueError("not a box to type into")
+        result.update(type_into(frame, el, chain[-1], c))
+
+    ok, how, tried = attempt("list", [("entries", entries), ("typed", typed)],
+                             lambda: holds(frame, c, chain[-1]) or bool(result.get("ok")))
+    return {**result, "ok": ok, "technique": how, **({"tried": tried} if not ok else {})}
 
 
 def pattern(term):
@@ -650,7 +779,7 @@ def act_row(frame, c, kind, answer, facts, resume):
     elif n == "select":
         r = select_native(el, target[-1] if isinstance(target, list) else target)
     elif n == "list" and kind == "select":
-        r = pick_chain(frame, c, target if isinstance(target, list) else chain_of(target))
+        r = pick_list(frame, c, target if isinstance(target, list) else chain_of(target))
     elif n == "digits":
         r = key_digits(frame, el, target[-1] if isinstance(target, list) else target)
     else:

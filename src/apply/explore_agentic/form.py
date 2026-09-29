@@ -131,6 +131,7 @@ class Form:
         self.url = meta.get("Apply URL") or meta.get("Link")
         self.pid = R.load(slug).get("platform") or platforms.detect(self.url)[0]
         self.mod = platforms.get(self.pid)
+        A.PLATFORM = self.pid or ""                      # act remembers which technique works where
         self.ctx = {"market": detect_market(meta.get("Location", ""), jd), "company": meta.get("Company", slug),
                     "role": meta.get("Role / Title", ""), "location": meta.get("Location", ""),
                     "company_slug": slug, "url": self.url}

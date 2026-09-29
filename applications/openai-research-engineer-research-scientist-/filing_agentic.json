@@ -2,27 +2,33 @@
  "slug": "openai-research-engineer-research-scientist-",
  "mode": "submit",
  "outcome": "refused",
- "why": "autofill key application fields.\n\nUpload file\nThis job has application limits\n\nPlease Note: we have set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span.\n\nLegal",
+ "why": "ave set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span. Please submit again once 180 days have passed since submitting your 5th most recent application.\nWe couldn't s",
  "redo": {
-  "redone": [],
+  "redone": [
+   "Research Engineer / Research Scientist- Personal AGI (Post T"
+  ],
   "at": "Research Engineer / Research Scientist- Personal AGI (Post T",
-  "end": false,
-  "why": "it differs from the record",
-  "differs": [
-   "c18 button 'Yes': should hold 'Yes', holds 'on'"
-  ]
+  "end": true,
+  "why": "the record's last page",
+  "differs": []
  },
- "agent": "resume",
- "agent_cost_usd": 0.181,
- "screenshot": "data/queue/openai-research-engineer-research-scientist--submitted-0928-1518.png",
- "seconds": 64,
+ "agent": "fix",
+ "agent_cost_usd": 0.224,
+ "screenshot": "data/queue/openai-research-engineer-research-scientist--submitted-0929-0726.png",
+ "seconds": 70,
  "new_placeholders": {},
  "presses": [
   {
    "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
    "button": "Submit Application",
+   "outcome": "not-accepted",
+   "detail": "the page says: Your form needs corrections Missing entry for required field: Legal Name"
+  },
+  {
+   "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
+   "button": "Submit Application",
    "outcome": "refused",
-   "detail": "autofill key application fields.\n\nUpload file\nThis job has application limits\n\nPlease Note: we have set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span.\n\nLegal"
+   "detail": "ave set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span. Please submit again once 180 days have passed since submitting your 5th most recent application.\nWe couldn't s"
   }
  ]
 }

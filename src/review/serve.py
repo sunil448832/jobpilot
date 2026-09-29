@@ -222,17 +222,28 @@ class H(BaseHTTPRequestHandler):
                          "later": "kept for later" + (f" · {nq} to answer" if nq else ""),
                          "approved": "✅ approved" + (" · last try: " + i["fail_reason"][:40] if i.get("fail_reason") else ""),
                          "unconfirmed": "❓ may have been sent — never pressed again",
-                         "submitted": "submitted", "submitting": "⏳ filing now",
+                         "submitted": "✋ submitted by hand" if i.get("submitted_via") == "manual" else "submitted",
+                         "submitting": "⏳ filing now",
                          "exploring": "🔄 re-exploring",
                          "failed": ("⚠ exploration stopped short" if i.get("reached_end") is False
                                     else f"⚠ attempt {i.get('attempts', 1)} failed")}[key]
-                return (f'<a class="card {colour}" href="/a/{i["id"]}{t}">'
+                link = (f'<a class="card {colour}" href="/a/{i["id"]}{t}">'
                         f'<div class="r">{i.get("role","?")}</div>'
                         f'<div class="m">{i.get("company","?")} · {i.get("location","")}</div>'
                         f'<div class="b {colour}">{label}</div></a>')
+                if key not in ("failed", "unconfirmed"):
+                    return link
+                # a filing that did not go through: he may have sent it himself
+                return (link + f'<label class="m" style="display:block;margin:-6px 0 14px 4px">'
+                        f'<input type="checkbox" onchange="byHand(this, \'{i["id"]}\')"> I submitted this by hand</label>')
             counts = " · ".join(f"{len(groups[k])} {title.split(' —')[0].lower()}"
                                 for k, title, _ in SECT if groups[k])
             sections = ""
+            by_hand_js = (f"<script>async function byHand(box,id){{if(!box.checked)return;"
+                          f"if(!confirm('Mark it as submitted by hand? It will never be filed again.')){{box.checked=false;return;}}"
+                          f"const r=await fetch('/a/'+id+'/submit{t}',{{method:'POST',headers:{{'Content-Type':'application/json'}},"
+                          f"body:JSON.stringify({{item:id,decision:'submitted'}})}});"
+                          f"if(r.ok)location.reload();else{{box.checked=false;alert('Failed: '+r.status);}}}}</script>")
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue
@@ -242,7 +253,7 @@ class H(BaseHTTPRequestHandler):
                     f"<style>{INDEX_CSS}</style>"
                     f'<div class="wrap"><h1>Applications to review</h1>'
                     f'<p class="m">{counts or "Queue is empty."}</p>'
-                    + sections
+                    + sections + by_hand_js
                     + f'<a class="card" href="/add{t}">'
                       f'<div class="r">Add job links →</div>'
                       f'<div class="m">Paste company-site apply links you found; they go straight to tailoring</div></a>'
@@ -500,8 +511,10 @@ class H(BaseHTTPRequestHandler):
         with LOCK:
             item = json.load(open(p))
             decision = payload.get("decision")
-            # "submitted" is only for apply-by-hand items: Sunil filed it himself.
-            allowed = ("approved", "deferred", "rejected") + (("submitted",) if item.get("manual") else ())
+            # "submitted" is for apply-by-hand items and for filings that did not go through
+            # (failed, unconfirmed): Sunil filed it himself.
+            by_hand = item.get("manual") or item.get("status") in ("failed", "unconfirmed")
+            allowed = ("approved", "deferred", "rejected") + (("submitted",) if by_hand else ())
             if decision not in allowed:
                 return self._err(400, "bad decision")
             # An application that has actually been filed is final. A tap on its
@@ -535,6 +548,11 @@ class H(BaseHTTPRequestHandler):
             if decision == "submitted":
                 item["submitted_at"] = dt.datetime.now().isoformat(timespec="seconds")
                 item["submitted_via"] = "manual"
+                try:                                     # the record says so too: never filed again
+                    from jobpilot.apply.explore_agentic import record as R
+                    R.note_attempt(item["company_slug"], "submitted", why="submitted by hand (marked on the review list)")
+                except Exception as e:
+                    print(f"  [warn] record not updated: {e}")
             elif item.get("manual") and decision == "deferred":
                 item["status"] = "manual"          # stays in the apply-by-hand section
             item["decided_at"] = dt.datetime.now().isoformat(timespec="seconds")

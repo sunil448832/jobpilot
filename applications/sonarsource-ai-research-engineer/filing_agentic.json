@@ -1,40 +1,32 @@
 {
  "slug": "sonarsource-ai-research-engineer",
  "mode": "submit",
- "outcome": "stuck",
- "why": "Sonar Lever form (the last page, Submit application = c52): every field is filled except the required 'Current location' (c14). Its location suggestions list comes back empty for Delhi / New Delhi / India, and the box drops typed text that isn't picked from a suggestion. The Lever location lookup may be down. Retry later. The sponsorship dropdown c17 is now set to Yes.",
+ "outcome": "captcha",
+ "why": "the portal shows a captcha after Submit: nothing is sent until a person solves it",
  "redo": {
   "redone": [],
   "at": "AI Research Engineer",
   "end": false,
   "why": "it differs from the record",
   "differs": [
-   "c9 ('ATTACH RESUME/CV Resume/CV ✱': file:resume) is not on the page",
-   "c11 ('Full name ✱': personal.full_name) is not on the page",
-   "c12 ('Email ✱': personal.email) is not on the page",
-   "c13 ('Phone ✱': personal.phone) is not on the page",
-   "c14 ('Current location ✱': location.city) is not on the page",
-   "c15 ('Current company': employment[0].employer) is not on the page",
-   "c16 ('LinkedIn URL ✱': links.linkedin) is not on the page",
-   "c17 ('': guess:Yes; No | Would you now or at any time require employer sponsorship to work in Switzerland?) is not on the page",
-   "c18 ('Type your response': availability.notice_period) is not on the page",
-   "c20 ('': location.willing_to_relocate) is not on the page",
-   "c22 ('I require sponsorship': guess:I require sponsorship; I am eligible to work in this country (e.g., I am a local citizen or have a visa) | Are you eligible to work in Switzerland or would you require sponsorship?) is not on the page",
-   "c23 ('Type your response': availability.notice_period) is not on the page",
-   "c24 ('Yes': guess:Yes; No | Are you willing to work from the Geneva office 3-4 days a week (5 days during the 1st onboarding month)?) is not on the page",
-   "c28 ('Gender': eeo.gender) is not on the page",
-   "c30 ('Race Click to see details about each option.': eeo.race_ethnicity) is not on the page",
-   "c31 ('Veteran status': option:I am not a veteran) is not on the page",
-   "c47 ('Male': eeo.gender) is not on the page",
    "c17 (learned:98) took then, not now: shows ''",
-   "c14 (location.city) took then, not now: shows ''",
-   "c17 combobox '': should hold 'Yes', holds 'Select...'"
+   "c11 (personal.full_name) took then, not now: shows 'Sunil Kumar Sharmal Kumar Sharma'",
+   "c17 (learned:102) took then, not now: shows ''",
+   "c17 combobox '': should hold 'Yes', holds 'Select...'",
+   "c14 textbox 'Current location ✱': should hold '', holds 'Delhi, New Delhi, Delhi, IND'"
   ]
  },
  "agent": "resume",
- "agent_cost_usd": 0.255,
- "screenshot": "data/queue/sonarsource-ai-research-engineer-submitted-0928-1656.png",
- "seconds": 199,
+ "agent_cost_usd": 0.204,
+ "screenshot": "data/queue/sonarsource-ai-research-engineer-submitted-0929-0728.png",
+ "seconds": 88,
  "new_placeholders": {},
- "presses": []
+ "presses": [
+  {
+   "page": "AI Research Engineer",
+   "button": "Submit application",
+   "outcome": "captcha",
+   "detail": "the portal shows a captcha after Submit: nothing is sent until a person solves it"
+  }
+ ]
 }

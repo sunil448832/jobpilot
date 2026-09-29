@@ -412,30 +412,6 @@
   "n": 2
  },
  {
-  "n": 3,
-  "tool": "see",
-  "args": {
-   "scope": "ids",
-   "ids": [
-    "c18"
-   ],
-   "snapshot": true
-  },
-  "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
-  "controls": {
-   "c18": {
-    "role": "button",
-    "name": "Yes",
-    "nth": 3,
-    "group": "",
-    "above": "Are you able to work from our US office three days per week?*",
-    "qn": 0
-   }
-  },
-  "result": "PAGE: Research Engineer / Research Scientist- Personal AGI (Post T\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc18  button 'Yes #3'   [a button]   shows: 'Yes'"
- },
- {
-  "n": 4,
   "tool": "act",
   "args": {
    "rows": [
@@ -470,31 +446,81 @@
     "reads": "on"
    }
   ],
-  "result": "c18  ok  button 'Yes #3': shows 'pressed'\n\nPAGE: Research Engineer / Research Scientist- Personal AGI (Post T\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
+  "result": "c18  ok  button 'Yes #3': shows 'pressed'\n\nPAGE: Research Engineer / Research Scientist- Personal AGI (Post T\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)",
+  "n": 3
+ },
+ {
+  "n": 4,
+  "tool": "see",
+  "args": {
+   "snapshot": false
+  },
+  "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
+  "controls": {},
+  "result": "PAGE: Research Engineer / Research Scientist- Personal AGI (Post T\nPAGE ERRORS: Your form needs corrections Missing entry for required field: Legal Name\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'OpenAI'   [a link]\nc2  link 'Back to OpenAI’s Job Listings'   [a link]\nc4  button 'Upload file'   [a file picker]   shows: 'Upload file'\nc45  button 'Legal Name'   [a button]   shows: 'Legal Name'\nc5  textbox 'Legal Name*'   [a text box, required, placeholder 'Type here...']\nc6  textbox 'Preferred Name (if applicable)'   [a text box, placeholder 'Type here...']\nc7  textbox 'Email*'   [a text box type=email, required, placeholder 'hello@example.com...']\nc44  button 'Delete file'   [a file picker]\nc9  button 'Replace'   [a file picker]   shows: 'Replace'\nc10  textbox 'Phone Number*'   [a text box type=tel, required, placeholder '1-415-555-1234...']\nc11  combobox 'Start typing...'   [a search box: type, then pick from the list that appears, placeholder 'Start typing...']   shows: 'Delhi, India'   a list that fills in as you type: search it\nc12  button ''   [a button]\nc13  textbox 'Pick date...'   [a text box, required, placeholder 'Pick date...']   shows: '11/04/2026'\nc14  button 'Yes #1'   [a button]   shows: 'Yes'\nc15  button 'No #1'   [a button]   shows: 'No'\nc16  button 'Yes #2'   [a button]   shows: 'Yes'\nc17  button 'No #2'   [a button]   shows: 'No'\nc18  button 'Yes #3'   [a button]   shows: 'Yes'\nc19  button 'No #3'   [a button]   shows: "
  },
  {
   "n": 5,
-  "tool": "replay",
-  "args": {},
+  "tool": "clear",
+  "args": {
+   "id": "c5"
+  },
   "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
-  "controls": {},
-  "result": "redone: (no page); now on page 'Research Engineer / Research Scientist- Personal AGI (Post T' — the record's last page\nthis is where the record ends: see the page, fill what is left, and carry on."
+  "controls": {
+   "c5": {
+    "role": "textbox",
+    "name": "Legal Name*",
+    "nth": 1,
+    "group": "",
+    "above": "Please enter your legal name exactly as shown on your government-issued ID. This helps keep records accurate for later hiring steps.",
+    "qn": 0
+   }
+  },
+  "result": "c5 emptied: shows ''"
  },
  {
   "n": 6,
-  "tool": "see",
-  "args": {},
+  "tool": "act",
+  "args": {
+   "rows": [
+    [
+     "c5",
+     "write",
+     "personal.full_name"
+    ]
+   ]
+  },
   "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
-  "controls": {},
-  "result": "PAGE: Research Engineer / Research Scientist- Personal AGI (Post T\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)\n\nCONTROLS\nc1  link 'OpenAI'   [a link]\nc2  link 'Back to OpenAI’s Job Listings'   [a link]\nc4  button 'Upload file'   [a file picker]   shows: 'Upload file'\nc5  textbox 'Legal Name*'   [a text box, required, placeholder 'Type here...']\nc6  textbox 'Preferred Name (if applicable)'   [a text box, placeholder 'Type here...']\nc7  textbox 'Email*'   [a text box type=email, required, placeholder 'hello@example.com...']\nc44  button 'Delete file'   [a file picker]\nc9  button 'Replace'   [a file picker]   shows: 'Replace'\nc10  textbox 'Phone Number*'   [a text box type=tel, required, placeholder '1-415-555-1234...']\nc11  combobox 'Start typing...'   [a search box: type, then pick from the list that appears, placeholder 'Start typing...']   shows: 'Delhi, India'   a list that fills in as you type: search it\nc12  button ''   [a button]\nc13  textbox 'Pick date...'   [a text box, required, placeholder 'Pick date...']   shows: '11/04/2026'\nc14  button 'Yes #1'   [a button]   shows: 'Yes'\nc15  button 'No #1'   [a button]   shows: 'No'\nc16  button 'Yes #2'   [a button]   shows: 'Yes'\nc17  button 'No #2'   [a button]   shows: 'No'\nc18  button 'Yes #3'   [a button]   shows: 'Yes'\nc19  button 'No #3'   [a button]   shows: 'No'\nc20  textbox 'Additional Information'   [a text area, placeholder 'Type here...']\nc21  link 'Applicant Arbitration Agreem"
+  "controls": {
+   "c5": {
+    "role": "textbox",
+    "name": "Legal Name*",
+    "nth": 1,
+    "group": "",
+    "above": "Please enter your legal name exactly as shown on your government-issued ID. This helps keep records accurate for later hiring steps.",
+    "qn": 0
+   }
+  },
+  "outcomes": [
+   {
+    "id": "c5",
+    "kind": "write",
+    "answer": "personal.full_name",
+    "how": "fact",
+    "nature": "type",
+    "ok": true,
+    "shown": "Sunil Kumar Sharma",
+    "question": null,
+    "reads": "Sunil Kumar Sharma"
+   }
+  ],
+  "result": "c5  ok  textbox 'Legal Name*': shows 'Sunil Kumar Sharma'\n\nFIELDS GONE: ['c45']\n\nPAGE: Research Engineer / Research Scientist- Personal AGI (Post T\nPAGE ERRORS: (none)\nPLACEHOLDERS ON THIS PAGE (not the applicant's answers): (none)"
  },
  {
   "n": 7,
-  "tool": "finish",
+  "tool": "submit",
   "args": {
-   "outcome": "last-page",
-   "note": "Re-pressed 'Yes' (US office 3 days/week, learned:98); rest of page filled per record.",
-   "submit_id": "c38"
+   "id": "c38"
   },
   "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
   "controls": {
@@ -507,10 +533,21 @@
     "qn": 0
    }
   },
-  "result": "finished."
+  "result": "the portal REFUSED it: ave set up limits for applications across roles. Candidates may not apply more than 5 times in any 180 day span. Please submit again once 180 days have passed since submitting your 5th most recent application.\nWe couldn't s. Do not press again; call finish('refused', note)."
  },
  {
   "n": 8,
+  "tool": "finish",
+  "args": {
+   "outcome": "refused",
+   "note": "Fixed Legal Name (re-entered Sunil Kumar Sharma). On resubmit, OpenAI refused: applicant hit the limit of 5 applications per 180 days; can reapply once 180 days pass since his 5th most recent application."
+  },
+  "page": "Research Engineer / Research Scientist- Personal AGI (Post T",
+  "controls": {},
+  "result": "finished."
+ },
+ {
+  "n": 9,
   "tool": "see",
   "args": {},
   "page": null,

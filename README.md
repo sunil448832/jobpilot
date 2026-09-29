@@ -354,7 +354,10 @@ it leaves (a captcha: nothing sent, finish by hand) are on their own page, **/qu
 the waiting ones first with their answer box and the time the wait ends, then the answered
 and expired ones of the last 7 days. A new one sends a short Telegram message — 🔐 *Filing
 needs your input — <job>* — with that page's link and the review list's.
-**Sent? — check your email** lists cards whose Submit was pressed but not confirmed; they are
+A card in **Failed** or **Sent? — check your email** has a tick, *I submitted this by hand*:
+it moves the card to Submitted, labelled *✋ submitted by hand*, and the application's record
+notes it, so it is never filed again. **Sent? — check your email** lists cards whose Submit
+was pressed but not confirmed; they are
 never pressed again, and the queue dedupe never removes them. A re-exploration replaces every earlier unsent card of that application. Stable
 token in `~/.config/jobbot/env`. It runs as `jobpilot-form.service`: restart it after
 changing code, or it keeps serving the old version.

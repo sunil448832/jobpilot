@@ -406,8 +406,8 @@ deduplication so a network timeout cannot replay a tap.
 ### Submit and track
 
 **`./jobpilot submit`** (`python -m jobpilot.apply.explore_agentic.replay`) — files
-`approved` cards, oldest first (`<slug> --submit` for one job; `<slug>` alone is a dry run
-that stops before Submit). **Gate first**, before a browser opens: the card approved and
+`approved` cards, oldest first (`./jobpilot submit <slug>` for one job; `./jobpilot dryrun
+<slug>` stops before Submit). **Gate first**, before a browser opens: the card approved and
 never pressed before, every placeholder answered. Then code **redoes** `calls.json` page by
 page with his answers — no Claude while the pages are as they were; where one differs the
 agent resumes from there with its tools. On the last page code presses the recorded Submit
@@ -496,10 +496,12 @@ jobpilot-daily.timer
   └─ daily.py                          (exclusive lock: two runs never collide)
        ├─ intake.py     203 boards, 7 platforms → filter → dedupe into state.db
        ├─ rank.py       score, route, market-weight, per-company cap
-       ├─ autotailor.py for each of the top N roles:
+       ├─ screen.py     Claude screens until enough roles are usable
+       ├─ autotailor.py for each of the top N roles (one posting once per batch):
        │                  claude -p  #1  tailor the resume   (reads POLICY.md)
+       │                  optimize → build
+       │                  form agent explores the form → calls.json → card (+ Telegram)
        │                  claude -p  #2  draft answers for open questions
-       │                  optimize → build → autofill → queue
        ├─ tracker.py    sync job-tracker.xlsx, follow-ups at 5 business days
        └─ referral_tracker.py --digest
 ```
@@ -512,13 +514,16 @@ It is the CLI binary, not an interactive session — it runs at 04:00 with nobod
 press Approve on the phone. The 07:00 / 19:00 review run then files whatever is approved
 (`pipeline.submit_limit` per run) and sends one Telegram line per outcome:
 
-- ✅ filed;
-- ❓ the form wanted something the stored answers could not give → the item comes back
-  as *Need your answers* with those exact fields as questions (label + the menu's own
-  options — no LLM involved); answer + Approve and the next run files it;
-- ⏳ an emailed verification code did not arrive in time → stays approved, retried next run;
-- ⚠️ anything else, or a third failed attempt → *Failed — needs a look*, with the reason and
-  the screenshot, and a Retry button.
+- ✅ submitted — the portal's own confirmation, after the press;
+- ❓ the form asked something your answers do not cover → the card comes back as *Review now
+  — need your answers*; answer + Approve and the next run files it;
+- ⏳ an emailed code asked on `/questions` went unanswered → nothing sent, stays approved,
+  filed again next run;
+- 🧩 a captcha after Submit → nothing sent; *Failed*, with the job's link to finish by hand
+  (then tick *I submitted this by hand*);
+- ❓ no confirmation and no error → *Sent? — check your email*: never pressed again;
+- ⚠️ refused by the portal, or stuck → *Failed — needs a look*, with the reason, the
+  screenshot, and a notice on `/questions`.
 
 **Links you found yourself** (`/add` on the review page, `./jobpilot add <url>…`, 2026-09-23).
 Paste the company-site apply links (Greenhouse / Lever / Ashby / Workday / employer page — not
@@ -536,21 +541,23 @@ asks for an emailed verification code on Telegram. It knows the account gate by 
 password boxes (its step name varies by tenant), reads the current step from the progress bar,
 and knows Review is the last page. Everything on the wizard pages is filled by the form agent
 like any form: the Degree and Country lists, the phone code search, "How did you hear" and its
-categories, the repeated job and education blocks, the segmented Month / Year dates. It stops at
-**Review**; submit replays the recorded pages and presses Submit there. Explored end to end on
-Adobe; earlier (old engine) on NVIDIA, Capital One and Just Eat Takeaway. Tenants are registered with `./jobpilot careers <tenant URL>` and pulled
+categories, the repeated job and education blocks, the segmented Month / Year dates (typed
+into their first part in one go when the year's first key lands in the month). Exploring stops
+at **Review**; filing redoes the record and presses Submit there. Filed end to end on Adobe (two
+tenants' roles), Blackstone and Just Eat Takeaway (2026-09-29). A resume upload makes Workday
+fill in the job, education and website blocks from the resume; the record's Adds are redone
+only for blocks still missing, and duplicate website links are removed. A sign-in the code
+cannot pass is asked on `/questions`. Tenants are registered with `./jobpilot careers <tenant URL>` and pulled
 by intake through the tenant jobs API (`discovery.workday_max` postings per tenant).
-Conflict-of-interest / relationship declarations (Mastercard asks four) are hard-stopped in the
-resolver and always come to you as questions.
+Conflict-of-interest / relationship declarations (Mastercard asks four) are never answered from
+your own facts: the form agent's prompt makes a question about someone else (a relative who
+works there, who referred you) a question for you.
 
-The whole submit / retry path is LLM-free: the question is the portal's label, the options are
-the menu's own entries, the code prompt is a fixed template. One known gap, left on purpose
-(2026-09-23): a **free-text** field that appears only at submit time gets no drafted answers —
-just "Write my own answer". Prep already harvests the form's questions and drafts options for
-them (`draft_questions`, one Sonnet session), so this only bites when a portal changes its form
-between prep and submit. If it turns out to be common, route those cases through
-`draft_questions` behind a `pipeline.draft_on_retry` switch (dropdowns and Yes/No would stay
-LLM-free — nothing to draft).
+Filing spends no Claude while the pages are as recorded: code redoes `calls.json`. The form
+agent is started only for a page that differs from its record, or a Submit the portal did not
+accept (at most 3 presses). A question that appears only at filing time and that his answers
+do not cover is never answered by the agent: the filing stops and the card comes back to the
+phone with that question.
 
 ### On demand — a normal terminal
 
@@ -579,10 +586,12 @@ Each stage on its own:
 ./jobpilot tracker         # sync the xlsx tracker
 ./jobpilot digest          # review prompt + file approved items (--no-submit: prompt only)
 ./jobpilot apply <url>     # one job you found yourself
-./jobpilot explore <slug>  # explore an application's form again, resuming from its record (never submits)
+./jobpilot explore <slug>  # explore an application's form again, resuming from its record (never submits; --fresh)
 ./jobpilot submit 4        # file at most 4 of the approved items (oldest first); bare `submit` files all
+./jobpilot submit <slug>   # file one approved job
+./jobpilot dryrun <slug>   # a filing that stops before Submit
 ./jobpilot queue           # what is waiting
-./jobpilot link            # the review URL
+./jobpilot link            # the review URL, and /questions (what a filing needs from you)
 ./jobpilot refer <slug>    # referral targets for a submitted application
 ./jobpilot chase           # referral follow-ups due
 ./jobpilot status          # services, timer, counts, CLI

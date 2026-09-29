@@ -31,15 +31,18 @@ usage() { cat <<'TXT'
     ./jobpilot stages          the stage names --only accepts, in order
     ./jobpilot status          ON/OFF, services, counts
 
-    `stop` is the Claude-usage control: autotailor spends 2 sessions per role,
-    6 roles a scan, 3 scans a day. It leaves the review form up, so approving
-    what is already queued keeps working while the scheduler is off.
+    `stop` is the Claude-usage control: autotailor spends 2 sessions per role plus
+    one form-agent session to explore it, 6 roles a scan, 3 scans a day. Filing
+    uses Claude only where a page differs from its record. It leaves the review
+    form up, so approving what is already queued keeps working while it is off.
 
   EVERY DAY
-    ./jobpilot link            review-form URL (open on your phone)
+    ./jobpilot link            review-list URL, and /questions (what a filing needs from you now)
     ./jobpilot queue           what is waiting for your approval
     ./jobpilot submit [N]      file what you approved now (N = at most N, oldest first)
                                the 07:00/19:00 review run also files approved items itself
+    ./jobpilot submit <slug>   file one approved job
+    ./jobpilot dryrun <slug>   a filing that stops before Submit (presses nothing there)
     ./jobpilot log [N]         follow the run log
 
   EACH STAGE ON ITS OWN  (same order as the pipeline)
@@ -62,7 +65,8 @@ usage() { cat <<'TXT'
                                reviewed, tailored FIRST — no rank, no screen. Also on the phone: /add
     ./jobpilot inbox           what you have added and where each one stands
     ./jobpilot apply <url>     scaffold ONE job by hand (no queueing)
-    ./jobpilot explore <slug>  explore an application's form (never submits); `fill` works too
+    ./jobpilot explore <slug>  explore an application's form with the agent (never submits); it
+                               resumes from the job's record, --fresh starts over; `fill` works too
     ./jobpilot keywords        what applied JDs ask for vs targets.yaml (--dry-run / --promote)
 
   ADDING SOURCES
@@ -166,11 +170,15 @@ case "$cmd" in
   link)       tok=$(grep FORM_TOKEN ~/.config/jobbot/env 2>/dev/null | cut -d= -f2)
               ts=$(tailscale status --json 2>/dev/null | "$PY" -c "import json,sys;print(json.load(sys.stdin)['Self']['DNSName'].rstrip('.'))" 2>/dev/null)
               [ -n "${ts:-}" ] && echo "  anywhere:  http://$ts:8765/?t=$tok"
-              echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok" ;;
+              echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok"
+              [ -n "${ts:-}" ] && echo "  questions: http://$ts:8765/questions?t=$tok" ;;
   queue)      py review.bot --status ;;
-  submit)     # ./jobpilot submit [N]  — file the approved items (oldest first); N caps how many today
+  submit)     # ./jobpilot submit [N | <slug>]  — file the approved items (oldest first; N caps how many), or one job
               if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.explore_agentic.replay --limit "$1"
+              elif [ -n "${1:-}" ]; then py apply.explore_agentic.replay "$1" --submit "${@:2}"
               else py apply.explore_agentic.replay; fi ;;
+  dryrun)     [ $# -ge 1 ] || { echo "  usage: ./jobpilot dryrun <slug>"; exit 1; }
+              py apply.explore_agentic.replay "$1" "${@:2}" ;;
   log)        tail -n "${1:-40}" -f "$DATA/daily.log" ;;
   scan)       py discover.intake && py rank.rank --all --top 12 ;;
   intake)     py discover.intake "$@" ;;

@@ -1,8 +1,10 @@
 # The form agent: exploring and filing applications
 
 Code: `src/apply/explore_agentic/`. Commands: `./jobpilot explore <slug>` (explore, never
-submits) and `./jobpilot submit [N]` (file what he approved). The tailoring stage runs the
-explore for every role it prepares; the review run files approved cards.
+submits; resumes from the record, `--fresh` starts over), `./jobpilot submit [N]` (file what he
+approved, oldest first), `./jobpilot submit <slug>` (one job), `./jobpilot dryrun <slug>` (a
+filing that stops before Submit), `./jobpilot link` (the review list and `/questions`). The
+tailoring stage runs the explore for every role it prepares; the review run files approved cards.
 
 ```
 posting ──► EXPLORE: one Claude agent, tools on the live page ──► calls.json (the record)

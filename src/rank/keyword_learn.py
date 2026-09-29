@@ -5,13 +5,14 @@ keyword_learn.py — let targets.yaml learn from the JDs you actually applied to
 The application history IS the counter: every applications/<slug>/JD.md is a JD
 that passed screening and was worth tailoring. Once a week this mines them —
 document frequency of hard-skill keywords, using the same extractor ats_score.py
-already runs — and promotes the top few that targets.yaml does not yet cover.
+already runs — and puts the top few that targets.yaml does not yet cover on his
+keyword page (/keywords) to tick.
 
 Two rules keep it honest and free:
-  * TRUTH GATE — targets.yaml is the boundary of what Sunil HAS (its own header
-    says never add a keyword that is not true). A candidate is promoted only if
-    optimize.is_safe() finds the same fact already on the BASE resume in other
-    words. Everything else is a GAP: recorded, reported on Sunday, never added.
+  * HE DECIDES — targets.yaml is the boundary of what Sunil HAS. Nothing is added by
+    code: no rule can tell a synonym from a look-alike (an automatic "same fact" check
+    once made "distributed systems" true from "distributed training"). Each candidate
+    waits on the page: done (true — confirmed), interest (ranking only), or dismissed.
   * NO LLM — pure Python over files already on disk. Zero tokens.
 
     ./jobpilot keywords              # what the history says (report)
@@ -133,7 +134,6 @@ def covered(term, existing):
 def candidates(min_docs=3):
     df, n = mine()
     existing = targets_keywords()
-    resume_norm = base_resume_norm()
     st = load_state()
     deny, companies = denylist(), company_names()
     dismissed = set(st["dismissed"]) | set(st["interest"]) | set(st["confirmed"]) | set(st["promoted"])
@@ -145,9 +145,7 @@ def candidates(min_docs=3):
             continue
         if not specific_enough(term, deny, companies, dismissed):
             continue
-        ok, why = optimize.is_safe(term, resume_norm, resume_norm, "")
-        out.append(dict(term=term, docs=d["docs"], category=d["category"],
-                        safe=ok, why=why, slugs=d["slugs"]))
+        out.append(dict(term=term, docs=d["docs"], category=d["category"], slugs=d["slugs"]))
     return out, n
 
 
@@ -166,23 +164,18 @@ def promote(dry_run=False):
             print(f"  promoted {st['last_promoted']}; next run after {period} days")
             return [], []
     cands, n = candidates(min_docs)
-    picks = cands[:top_n]
-    safe = [c for c in picks if c["safe"]]
-    gaps = [c for c in picks if not c["safe"]]
-    print(f"  {n} applied JDs mined; {len(cands)} uncovered hard skills with >= {min_docs} JDs; top {top_n}:")
-    for c in picks:
-        print(f"    {c['docs']:3d} JDs  {c['term']:<28} {'SAFE -> add' if c['safe'] else 'GAP  (not on resume)'}   {c['why'][:50]}")
+    gaps = cands[:top_n]                            # every one waits for his tick; none is added here
+    safe = []
+    print(f"  {n} applied JDs mined; {len(cands)} uncovered hard skills with >= {min_docs} JDs; top {top_n}, to tick:")
+    for c in gaps:
+        print(f"    {c['docs']:3d} JDs  {c['term']}")
     if dry_run:
         return safe, gaps
-    if safe:
-        add_to_targets([c["term"] for c in safe], {c["term"]: c["docs"] for c in safe})
     if gaps:
         with open(GAPS, "a", encoding="utf-8") as g:
             g.write(f"\n## {week()} — asked for by the market, not on the resume\n")
             for c in gaps:
                 g.write(f"- **{c['term']}** — {c['docs']} of {n} applied JDs\n")
-    for c in safe:
-        st["promoted"][c["term"]] = {"week": week(), "docs": c["docs"]}
     for c in gaps:
         st["gaps"][c["term"]] = {"week": week(), "docs": c["docs"]}
         st["pending"][c["term"]] = {"week": week(), "docs": c["docs"], "slugs": c["slugs"][:6]}

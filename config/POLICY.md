@@ -89,8 +89,20 @@ there. A fabricated resume is a fired employee.
 
 **Allowed:** reorder skills so the JD's priorities come first; use the JD's
 vocabulary for a thing he has ("GenAI" if the JD says GenAI); spell out an acronym
-he already uses; lead with the most relevant project; put the JD's exact title in
-the header.
+he already uses; lead with the most relevant project; head the summary with the JD's
+role title at his own level (§3).
+
+**Same fact, or a new claim?** A JD's word may replace or join the resume's only
+when it names the SAME thing he already shows: a synonym, a spelling, an acronym or
+its expansion, a hyphen or plural, the JD's wording for a tool or technique the
+resume names ("Retrieval-Augmented Generation" for RAG, "LLM fine-tuning" for LoRA
+fine-tuning of LLMs). Something RELATED is a new claim and never goes in: another
+tool of the same kind (Triton or TensorRT for vLLM, W&B for MLflow unless he used it),
+a neighbouring technique (distillation for quantization), a broader or different
+area built from his words ("distributed systems" from distributed training, "model
+monitoring", "observability", "model serving" with no bullet that shows it), a
+level or scope (Lead, owned the roadmap). When unsure, leave it out: a missed
+keyword costs a point, a false one costs the offer.
 **`targets.yaml` has three kinds of keyword.** `strong`, `strong_recent`,
 `learned` and `confirmed` are things he HAS — `confirmed` being work he ticked as
 DONE on the Sunday keyword page that the resume never wrote up (his own
@@ -116,29 +128,40 @@ base resume's sections taken at scaffold time**, plus `resume.tex` (imports
 **Build and score come first.** The untailored copy is built and scored against
 the JD. If it already meets `pipeline.ats_target`, nothing is edited and no LLM
 session runs. Only a below-target score starts a tailoring session, which gets
-the scorer's report: the missing JD keywords, split into SAFE (already true,
-word it the JD's way) and NOT SAFE (a new claim — never add).
+the scorer's report: the missing JD keywords, by weight. The session decides for
+each whether it is the same fact as something the resume shows (§2) — the report
+does not.
 
 A session edits **only these four files in `sections/`**, in place:
 
-- **`objective.tex`** — 3–4 lines. Open with the JD's exact job title in bold.
-  Name the 3–4 capabilities the JD leads with, in the JD's words. Close with
-  M.Tech AI from IIT Jodhpur + Applied Scientist at Amazon. "5+ years" as digits.
+- **`objective.tex`** — 3–4 lines. Open with the JD's role title in bold — its
+  **function** (AI Engineer, Machine Learning Engineer, Data Scientist, Research
+  Engineer, Applied Scientist) at a level he has held: **"Senior" at most**. Drop a
+  level word he has not held (Lead, Staff, Principal, Head of, Manager, Director, VP,
+  Chief) and any team or specialisation after a comma or dash: "Lead AI Engineer" ->
+  "Senior AI Engineer"; "Research Engineer, Post-Training Model Evaluations" ->
+  "Research Engineer". The headline says what he is, not the job being filled; the
+  Experience section keeps his real titles. Name the 3–4 capabilities the JD leads
+  with, in the JD's words — only ones his bullets evidence. Close with M.Tech AI
+  from IIT Jodhpur + Applied Scientist at Amazon. "5+ years" as digits.
 - **`skills.tex`** — reorder buckets so the JD's priorities come first; rename
   bucket labels to the JD's framing. Keep the `\skills{Label:} ... \par\vspace{2pt}`
   structure. Every entry already true.
 - **`experience.tex`** — reorder bullets within a job so the JD-relevant ones
-  lead; reword a bullet into the JD's vocabulary *for the same fact*. Never change
-  an employer, title, date or number; never add a bullet for work not already
-  there; never drop the `\jobentry` / `zitemize` structure.
+  lead; reword a bullet into the JD's vocabulary *for the same fact*. A reworded
+  bullet keeps the kind of work it describes: RL training rollouts stay RL
+  training, not "inference serving"; an evaluation study stays a study. Never
+  change an employer, title, date or number; never add a bullet for work not
+  already there; never drop the `\jobentry` / `zitemize` structure.
 - **`projects.tex`** — lead with the most JD-relevant project. Exactly three exist
   (RL post-training with GRPO; VLM fine-tuning; RAG QA bot). Reorder; do not
   invent a fourth.
 
 Not touched: `_header`, `education`, `achievements`, `resume.tex`, `ats.md`.
-After a session: `optimize.py --apply` adds SAFE terms to `skills.tex`, the
-application is rebuilt and rescored. Up to `pipeline.ats_rounds` rounds; stop
-early if the score does not improve or the anti-stuffing penalty leaves zero.
+After a session the application is rebuilt and rescored; no code adds or removes
+terms — every word on the resume is the session's judgment under §2. Up to
+`pipeline.ats_rounds` rounds; a round is undone if the score does not improve, the
+anti-stuffing penalty leaves zero or the resume runs past two pages.
 
 Output filenames are always **`sunil_resume.pdf`** / **`sunil_resume.docx`**.
 

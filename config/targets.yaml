@@ -281,7 +281,6 @@ keywords:
   learned:
     - "claude"   # learned 2026-W39, 18 JDs
     - "sql"   # learned 2026-W39, 14 JDs
-    - "distributed systems"   # learned 2026-W39, 9 JDs
 
   # Ticked DONE by Sunil on the keyword page: work he has actually done that the
   # resume does not mention yet. Counts as TRUE (optimize.py includes it in the

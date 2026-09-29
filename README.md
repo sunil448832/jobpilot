@@ -74,8 +74,9 @@ messages and a human presses send. Always.
 
 **2. Never claim anything untrue.**
 Tailoring is reordering, emphasis, and matching the JD's wording — never a new skill.
-`optimize.py` enforces this mechanically: a keyword is added only if it is the same fact
-in different words, and new claims are reported, never written.
+The tailoring session judges each keyword — the same fact in other words may go in,
+anything merely related never does (POLICY §2); no code writes or filters terms, since a
+mechanical rule either passed look-alikes (Triton for vLLM) or refused plain synonyms.
 
 ---
 
@@ -98,7 +99,7 @@ in different words, and new claims are reported, never written.
  │  fetch JD      JD.md + overrides          (judgment, in-        PDF +  │
  │  detect ATS                                session)             docx   │
  │                       │                                                │
- │                  optimize.py ── add only TRUE keywords, rescore        │
+ │                  build → rescore; a round undone if it does not help   │
  └───────────────────────┼────────────────────────────────────────────────┘
                          ▼
  ┌─ EXPLORE ─ real Chrome, persistent profile ────────────────────────────┐
@@ -268,14 +269,15 @@ writes `JD.md` with the platform module's autofill route.
 **Tailoring is deliberately not automated.** Claude does it in-session so the
 never-fabricate rule is enforced by judgment, not a prompt string.
 
-**`optimize.py`** — *raise the ATS score without lying*
-1. Build a truth vocabulary from the base resume, `answers.yaml`, the learned answers.
-2. For each missing JD keyword, drop extraction noise, then classify:
-   - **SAFE** — same fact, different words: an acronym already spelled out, a plural, a
-     synonym, or the target job title. Applied automatically.
-   - **UNSAFE** — a new claim. Reported, never written.
-3. Insert SAFE terms beside the form already on the resume, rebuild, rescore, and warn if
-   the anti-stuffing penalty moves off zero.
+**Tailoring rounds** (`autotailor.py`, up to `pipeline.ats_rounds`): the session gets the
+JD keywords the resume misses, by weight, and decides for each whether it is the same fact
+as something the resume shows (`src/agents/tailor/prompt.md`, POLICY §2 — synonyms, spellings,
+acronyms yes; another tool of the same kind, a neighbouring technique, a broader area or a
+level no). Its headline is the JD's role title at his level ("Senior" at most). The round is
+rebuilt and rescored, and undone if the score does not improve, keyword stuffing shows or the
+resume passes two pages. No code adds or removes terms (until 2026-09-29 `optimize.py --apply`
+did, and put Triton and Distillation on a resume); `optimize.py` is only a report now
+(`python -m jobpilot.tailor.optimize <slug>`).
 
 ### Explore
 
@@ -542,7 +544,7 @@ jobpilot-daily.timer
        ├─ screen.py     Claude screens until enough roles are usable
        ├─ autotailor.py for each of the top N roles (one posting once per batch):
        │                  claude -p  #1  tailor the resume   (reads POLICY.md)
-       │                  optimize → build
+       │                  build → rescore (a round undone if it does not help)
        │                  form agent explores the form → calls.json → card (+ Telegram)
        │                  claude -p  #2  draft answers for open questions
        └─ referral_tracker.py --digest

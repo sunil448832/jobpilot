@@ -280,7 +280,8 @@ def main():
 Next — tailoring (Claude does this in-session, never fabricating):
   1. Read applications/{company}/JD.md and pull the exact keywords.
   2. Tailoring (only if the score is below pipeline.ats_target) edits, in place:
-     {company}/sections/objective.tex   -> JD's exact job title, its lead capabilities
+     {company}/sections/objective.tex   -> the JD's role title at his level ("Senior" at most, no
+                                           Lead/Staff/Principal, no team suffix), its lead capabilities
      {company}/sections/skills.tex      -> JD priorities first, buckets in the JD's framing
      {company}/sections/experience.tex  -> reorder / reword bullets, same facts only
      {company}/sections/projects.tex    -> most relevant project first

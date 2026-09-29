@@ -291,30 +291,15 @@ def technical_missing(r):
     return out
 
 
-def safe_unsafe(company):
-    """optimize.py's split of the missing SKILL keywords: SAFE (same fact already on
-    the resume, worded the JD's way) vs NOT SAFE (a new claim)."""
-    try:
-        from jobpilot.tailor import optimize
-        _, _, _, _, safe, unsafe = optimize.analyse(company)
-    except SystemExit:
-        return [], []
-    return ([t for t, c, w in safe if c in ("hard", "soft")],
-            [t for t, c, w in unsafe if c in ("hard", "soft")])
-
-
 def score_report(company, r):
-    """Missing SKILL keywords, split into SAFE / NOT SAFE, for the prompt."""
+    """What the JD asks for that the resume does not say, for the prompt. Which of these are
+    his is the session's judgment (prompt.md, POLICY §2) — no code decides it."""
     lines = [f"ATS match {r['match_rate']}% | title present: {r.get('title_present')} | "
              f"matched {r['counts']['matched']} / missing {r['counts']['missing']} of "
              f"{r['counts']['jd_keywords']} JD keywords"]
-    safe, unsafe = safe_unsafe(company)
-    if safe:
-        lines.append("SAFE to add (already true, word it the JD's way): " + ", ".join(safe[:20]))
-    if unsafe:
-        lines.append("NOT SAFE (would be a new claim — do NOT add): " + ", ".join(unsafe[:20]))
     tech = technical_missing(r)[:25]
-    lines.append("Missing skill keywords, by weight: " + (", ".join(tech) if tech else "(none)"))
+    lines.append("Missing skill keywords, by weight (only the same fact as something he shows may go in): "
+                 + (", ".join(tech) if tech else "(none)"))
     lines.append("Role language and boilerplate the scorer also counts are deliberately NOT listed; do not chase them.")
     return "\n".join(lines)
 
@@ -370,11 +355,8 @@ def process_role(p, cli, tag=""):
     log(f"  {tag}score: {best['match_rate']}% untailored (target {target})")
     rnd = 0
     while best["match_rate"] < target and rnd < rounds:
-        safe, unsafe = safe_unsafe(p["slug"])
-        if not safe:
-            log(f"  {tag}nothing SAFE left to add"
-                + (f" (only new claims: {', '.join(unsafe[:6])})" if unsafe else " — remaining gap is role language")
-                + "; not running a round")
+        if not technical_missing(best):
+            log(f"  {tag}no skill keyword missing — the remaining gap is role language; not running a round")
             break
         rnd += 1
         snap = snapshot_sections(p["slug"])
@@ -383,8 +365,6 @@ def process_role(p, cli, tag=""):
         log(f"  {tag}tailor round {rnd}: {'ok' if ok else 'FAILED — ' + out[-120:]}")
         if not ok:
             restore_sections(p["slug"], snap); break
-        run([sys.executable, "-m", "jobpilot.tailor.optimize", p["slug"],
-             "--apply"], timeout=300)
         ok, _ = run([sys.executable, "-m", "jobpilot.tailor.scaffold",
                      "--build", p["slug"]], timeout=600)
         if not ok:

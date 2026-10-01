@@ -505,7 +505,15 @@ Referred | No Response`. The evening digest lists who is due to chase.
 ./jobpilot refer <slug>      # build targets for a submitted application
 ./jobpilot referrals         # list + link to the page
 ./jobpilot chase             # follow-ups due
+./jobpilot ask <slug>        # referral ask for a NEW connection, once they accept
 ```
+
+**Companies where he knows no one.** For each role applied to in the last 30 days at a company
+his connections export has nobody at, the referral page leads with a ready message
+(`outreach.cold_referral`): he connects without a note, and once someone accepts, copies the
+role's message and puts their first name in. It names the role and its link, asks plainly for a
+referral, and carries the two lines of his resume the JD asks most about (`outreach.FIT`, each a
+resume bullet compressed — never more than the resume says).
 
 **`outreach.py`** — drafts the 300-char connection note (with character count), referral
 ask, post-accept opener, recruiter note, and paper-author note. Every claim true to the

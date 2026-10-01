@@ -14,6 +14,7 @@ Usage:
     python jobs/outreach.py --company Adyen --role "Senior FDE" --kind referral \\
         --name "Rajesh" --their-role "Staff Engineer"
     python jobs/outreach.py --queue
+    python -m jobpilot.outreach.outreach --cold <slug>   # after a new connection accepts: the referral ask
 """
 import argparse
 import os
@@ -32,6 +33,55 @@ PROOF = [
     "Phi-3 Vision on vLLM at 20 ms median latency in production",
     "a Qdrant hybrid-retrieval index compressed 8x at nDCG parity across 8 BEIR datasets",
 ]
+
+
+# What a referral message may say he did, each a line of his base resume compressed
+# (resume/sections/experience.tex, projects.tex) — never more than the resume says — with
+# the JD words that make it the relevant one. fit() picks the two a JD asks most about.
+FIT = [
+    (("agent", "agentic", "multi-agent", "orchestrat", "a2a", "crewai", "tool use", "llm application", "autonomous"),
+     "built an orchestrator agent on the A2A protocol that routes work to autonomous sub-agents, at 98% "
+     "end-to-end success across 500 concurrent sessions"),
+    (("evaluat", "eval", "benchmark", "grading", "judge", "quality", "test", "metric", "experiment"),
+     "built an agent evaluation service (28 graded tasks, a cell-level F1 grader and an LLM root-cause "
+     "analyzer) that benchmarks our agent fleet at 86% exact-pass"),
+    (("inference", "serving", "vllm", "latency", "quantiz", "deploy", "gpu", "throughput", "production"),
+     "run Phi-3 Vision on vLLM at 20 ms median latency and a self-hosted FP8 LLaMA 3 in production"),
+    (("rag", "retrieval", "search", "vector", "embedding", "rank", "semantic", "index"),
+     "compressed a production Qdrant hybrid-retrieval index 8x (4-bit) at nDCG/Recall parity across 8 BEIR datasets"),
+    (("reinforcement", " rl ", "rlhf", "post-train", "grpo", "reward", "alignment", "fine-tun", "finetun"),
+     "implemented GRPO with verifiable rewards from scratch and RL-post-trained Qwen3-4B (QLoRA) for competition math"),
+    (("multimodal", "vision", "image", "vlm", "computer vision", "video", "moderation", "classif"),
+     "built a FLAVA multimodal classifier for ad moderation at Amazon (72% precision, 90% recall)"),
+    (("data pipeline", "etl", "data engineering", "sql", "analytics", "warehouse", "duckdb", "spark", "data platform"),
+     "built agents that plan and run end-to-end ETL over databases and S3 from one natural-language task, "
+     "cutting manual data-engineering effort by 90%"),
+    (("document", "pdf", "extraction", "nlp", "ocr", "parsing", "text"),
+     "built an NLP + CV pipeline that parses millions of scientific PDFs and tags them with a self-hosted LLM"),
+]
+
+
+def fit(jd, n=2):
+    """The n lines of FIT whose topics the JD mentions most (the first ones on a tie)."""
+    t = " " + " ".join((jd or "").lower().split()) + " "
+    scored = [(sum(t.count(k) for k in keys), -i, line) for i, (keys, line) in enumerate(FIT)]
+    return [line for _, _, line in sorted(scored, reverse=True)[:n]]
+
+
+def cold_referral(company, role, url=None, jd=""):
+    """After a new connection accepts (someone he did not know, asked to connect without a
+    note): the referral ask for this role. [First name] is his to fill."""
+    a, b = fit(jd)
+    link = f" ({url})" if url else ""
+    # one line per paragraph: a LinkedIn message keeps every line break it is pasted with
+    return "\n\n".join([
+        "Hi [First name],",
+        f"Thanks for connecting! I've applied for the {role} role at {company}{link} and wanted to "
+        "ask whether you'd be open to referring me.",
+        f"A little about me: {HOOK}. Most relevant to this role, I {a}, and I {b}.",
+        "If it helps, I can send my resume and a two-line summary you could paste into the referral "
+        "form. And no worries at all if it's not something you can do.",
+        "Thanks,\nSunil"])
 
 
 def wrap(s, w=76):
@@ -114,7 +164,7 @@ about how you evaluate these systems in practice, I'd value it.
 Sunil"""
 
 
-KINDS = {"note": None, "accept": post_accept, "referral": referral_ask,
+KINDS = {"note": None, "accept": post_accept, "referral": referral_ask, "cold": cold_referral,
          "recruiter": recruiter_note, "paper": paper_author}
 
 
@@ -127,7 +177,18 @@ def main():
     ap.add_argument("--their-role")
     ap.add_argument("--paper")
     ap.add_argument("--queue", action="store_true")
+    ap.add_argument("--cold", metavar="SLUG", help="the referral ask for a new connection, after they accept "
+                                                   "(an application he submitted; [First name] is his to fill)")
     a = ap.parse_args()
+
+    if a.cold:
+        from jobpilot.core import cards as CD
+        from jobpilot.core.answers import read_jd
+        meta, jd = read_jd(a.cold)
+        fs = CD.of(a.cold)
+        url = (CD.load(os.path.basename(fs[-1])[:-5]).get("url") if fs else None) or meta.get("Apply URL") or meta.get("Link")
+        print(cold_referral(meta.get("Company", a.cold), meta.get("Role / Title", "the role"), url, jd))
+        return
 
     if a.queue:
         import sqlite3

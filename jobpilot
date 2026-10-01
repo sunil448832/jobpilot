@@ -86,6 +86,8 @@ usage() { cat <<'TXT'
     ./jobpilot known           who you already know (needs data/Connections.csv)
     ./jobpilot connections     install the LinkedIn export from ~/Downloads
     ./jobpilot refer <slug>    referral targets for a submitted application
+    ./jobpilot ask <slug>      the referral message for a NEW connection, once they accept (no one
+                               known there): also on the referral page, per role
     ./jobpilot referrals       open list + link to the referral page
     ./jobpilot chase           referral follow-ups due
 
@@ -216,6 +218,7 @@ case "$cmd" in
   known)      py outreach.referrals ;;
   connections) bash "$TOOL/scripts/install_connections.sh" ;;
   refer)      [ $# -ge 1 ] || { echo "  usage: ./jobpilot refer <slug>"; exit 1; }; py outreach.referral_tracker --for "$1" ;;
+  ask)        [ $# -ge 1 ] || { echo "  usage: ./jobpilot ask <slug>"; exit 1; }; py outreach.outreach --cold "$1" ;;
   referrals)  py outreach.referral_tracker --list ;;
   chase)      py outreach.referral_tracker --due ;;
   follow)     py core.tracker --followups ;;

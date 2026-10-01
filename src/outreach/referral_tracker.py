@@ -88,6 +88,24 @@ def add(entries):
     return added
 
 
+def invited(company, role, person, profile_url="", message=""):
+    """Someone he invited himself (a new connection, no note) for this role: tracked like the
+    rest, status Invite Sent (dates stamped), with the role's referral ask in their name for
+    when they accept. Their row id."""
+    person = " ".join((person or "").split())
+    if not person:
+        raise ValueError("a name is needed")
+    first = person.split()[0]
+    add([{"Person": person, "Company": company, "Role Applied": role, "Relationship": "new connection",
+          "Why Them": "you invited them on LinkedIn", "Profile URL": profile_url or "",
+          "Status": "To Contact", "Message Used": (message or "").replace("[First name]", first)}])
+    with db() as con:
+        row = con.execute("SELECT id FROM referrals WHERE person=? COLLATE NOCASE AND role_applied=? COLLATE NOCASE",
+                          (person, role)).fetchone()
+    set_status(row[0], "Invite Sent")
+    return row[0]
+
+
 def set_status(row, status):
     """A status tap (the referral page) or --set: the status, and the dates it implies."""
     if status not in STATUSES:

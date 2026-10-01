@@ -304,9 +304,8 @@ class H(BaseHTTPRequestHandler):
 
                 def refs(i):
                     n = people.get((key(i.get("company")), key(i.get("role"))), {}).get("people", 0)
-                    if not n:
-                        return "—"
                     url = f'/referrals{t}{"&" if t else "?"}company={quote(i.get("company",""))}&role={quote(i.get("role",""))}'
+                    # 0 people still links: the role's page has its referral message and "Invitation sent"
                     return f'<a href="{url}">{n} people →</a>'
 
                 def referred(i):
@@ -616,6 +615,20 @@ class H(BaseHTTPRequestHandler):
             return self._ok(json.dumps({"results": results, "started": started}), "application/json")
 
         # referral status updates save straight into the referrals table (data/state.db)
+        # someone he invited himself for a role (a new connection): tracked from Invite Sent
+        if parts[:2] == ["referrals", "invited"]:
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                payload = json.loads(self.rfile.read(n) or b"{}")
+                from jobpilot.outreach import referral_tracker
+                with LOCK:
+                    row = referral_tracker.invited(payload["company"], payload["role"], payload.get("person", ""),
+                                                   payload.get("url", ""), payload.get("message", ""))
+                print(f"  [referral] invited {payload.get('person')!r} for {payload['company']} — {payload['role']} (row {row})")
+                return self._ok(json.dumps({"ok": True, "row": row}), "application/json")
+            except Exception as e:
+                return self._err(400, f"{type(e).__name__}: {e}")
+
         if parts[:2] == ["referrals", "status"]:
             n = int(self.headers.get("Content-Length") or 0)
             try:

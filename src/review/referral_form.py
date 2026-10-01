@@ -88,6 +88,8 @@ button:hover,a.btn:hover{filter:brightness(1.06)}
 .st b{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
   margin-right:2px;font-weight:700}
 .st button{padding:6px 10px;font-size:12.5px}
+.inv input{font:inherit;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-2);border-radius:8px;
+  background:var(--surface);color:var(--ink);flex:1 1 140px;min-width:0}
 .st button.on{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
 .cur{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
 .empty{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;
@@ -104,6 +106,7 @@ button:hover,a.btn:hover{filter:brightness(1.06)}
     <h1>Referral queue</h1>
     <div class="sub" id="sub"></div>
   </header>
+  <div id="tpl"></div>
   <div id="groups"></div>
 </div>
 <div class="toast" id="toast"></div>
@@ -121,6 +124,32 @@ for (const p of DATA.people) {
 }
 const open = DATA.people.filter(p => !["Referred","No Response"].includes(p.status)).length;
 $("#sub").textContent = `${DATA.people.length} people · ${open} still open · ★ = you already know them`;
+
+// Roles where he knows no one: the message to send a NEW connection once they accept.
+const T = DATA.templates || [];
+$("#tpl").innerHTML = T.length ? `
+  <section class="grp">
+    <h2>No connection there yet — send after they accept<span>${T.length}</span></h2>
+    <div class="sub">Connect without a note; when they accept, copy the role's message and put their first name in.</div>
+    ${T.map((x, i) => `
+      <article class="card">
+        <div class="hd">
+          <span class="badge cold">new</span>
+          <div>
+            <div class="nm">${esc(x.company)} — ${esc(x.role)}</div>
+            <div class="wy">applied ${esc(x.date)}</div>
+          </div>
+        </div>
+        <div class="msg" id="mt${i}">${esc(x.message)}</div>
+        <div class="acts"><button class="p" onclick="copyMsg('t${i}')">Copy message</button></div>
+        ${DATA.one_role ? `
+        <div class="acts inv">
+          <input id="n${i}" placeholder="Their name" autocomplete="off">
+          <input id="u${i}" placeholder="LinkedIn URL (optional)" autocomplete="off">
+          <button onclick="invited(${i})">Invitation sent</button>
+        </div>` : ""}
+      </article>`).join("")}
+  </section>` : "";
 
 $("#groups").innerHTML = Object.entries(groups).map(([k, ppl]) => `
   <section class="grp">
@@ -154,14 +183,43 @@ function toast(t) {
   const el = $("#toast"); el.textContent = t; el.classList.add("show");
   clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("show"), 1600);
 }
-async function copyMsg(row) {
-  const t = $("#m" + row).textContent;
-  try { await navigator.clipboard.writeText(t); toast("Copied — paste into LinkedIn"); }
-  catch (e) {
-    const r = document.createRange(); r.selectNodeContents($("#m" + row));
-    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
-    toast("Selected — long-press to copy");
-  }
+async function invited(i) {
+  const x = T[i], person = $("#n" + i).value.trim();
+  if (!person) { toast("Their name first"); return; }
+  try {
+    const res = await fetch(location.pathname.replace(/\/$/, "") + "/invited" + location.search, {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({company: x.company, role: x.role, person, url: $("#u" + i).value.trim(), message: x.message}),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    toast("Tracked: " + person + " — invite sent");
+    setTimeout(() => location.reload(), 700);
+  } catch (e) { toast("Could not save: " + e.message); }
+}
+
+// The review site is plain HTTP over Tailscale: navigator.clipboard does not exist there
+// (secure pages only). Copy through a selected textarea, inside the tap itself — what every
+// mobile browser allows (readonly + setSelectionRange + 16px font for iOS Safari).
+function copyText(t) {
+  const ta = document.createElement("textarea");
+  ta.value = t; ta.setAttribute("readonly", "");
+  ta.style.cssText = "position:absolute;left:-9999px;top:" + (window.pageYOffset || 0) + "px;font-size:16px;";
+  document.body.appendChild(ta);
+  const sel = document.getSelection(), prev = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+  ta.select(); ta.setSelectionRange(0, t.length);
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) {}
+  document.body.removeChild(ta);
+  if (prev) { sel.removeAllRanges(); sel.addRange(prev); }
+  if (!ok && navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(t).catch(() => {}); ok = true; }
+  return ok;
+}
+
+function copyMsg(row) {
+  if (copyText($("#m" + row).textContent)) { toast("Copied — paste into LinkedIn"); return; }
+  const r = document.createRange(); r.selectNodeContents($("#m" + row));   // the browser refused: select it
+  const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  toast("Selected — tap Copy in the menu");
 }
 async function setStatus(row, status) {
   try {
@@ -204,6 +262,41 @@ def counts():
     return out
 
 
+def templates(company=None, role=None, days=30):
+    """For each role he applied to in the last `days` at a company where his LinkedIn
+    connections hold nobody: the referral ask to send a NEW connection once they accept
+    (outreach.cold_referral, [First name] his to fill). Newest first."""
+    import datetime as dt
+    from jobpilot.core import cards as CD
+    from jobpilot.core.answers import read_jd
+    from jobpilot.outreach import outreach, referrals
+    since = (dt.date.today() - dt.timedelta(days=days)).isoformat()
+    one = bool(company and role)                 # one role's page: its message whatever its date or contacts
+    if one:
+        since = ""
+    sent = sorted((d for d in CD.cards() if d.get("status") == "submitted" and (d.get("submitted_at") or "") >= since),
+                  key=lambda d: d.get("submitted_at") or "", reverse=True)
+    try:
+        conns = referrals.load_connections()
+    except Exception:
+        conns = []
+    known = referrals.match(conns, sorted({d.get("company") or "" for d in sent})) if conns else {}
+    out, seen = [], set()
+    for d in sent:
+        co, ro = d.get("company") or "", d.get("role") or ""
+        if (company and not same(co, company)) or (role and not same(ro, role)) or (known.get(co) and not one) \
+                or (co.lower(), ro.lower()) in seen:
+            continue
+        seen.add((co.lower(), ro.lower()))
+        try:
+            _, jd = read_jd(d["company_slug"])
+        except SystemExit:
+            jd = ""
+        out.append({"company": co, "role": ro, "date": (d.get("submitted_at") or "")[:10],
+                    "message": outreach.cold_referral(co, ro, d.get("url"), jd)})
+    return out
+
+
 def build(company=None, role=None):
     """The referral page: every candidate, or one company's, or one role's."""
     from jobpilot.outreach import referral_tracker as RT
@@ -227,7 +320,8 @@ def build(company=None, role=None):
         })
     # open ones first, warm before cold
     people.sort(key=lambda p: (p["status"] in ("Referred", "No Response"), not p["warm"]))
-    return TEMPLATE.replace("__DATA__", json.dumps({"people": people}, ensure_ascii=False))
+    return TEMPLATE.replace("__DATA__", json.dumps({"people": people, "templates": templates(company, role),
+                                                    "one_role": bool(company and role)}, ensure_ascii=False))
 
 
 def main():

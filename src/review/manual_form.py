@@ -37,10 +37,25 @@ const D=__DATA__, Q=location.search;
 document.getElementById("role").textContent=D.role; document.getElementById("meta").textContent=D.company+" · "+(D.location||"")+" · "+(D.market||"");
 document.getElementById("why").textContent=D.reason||""; document.getElementById("open").href=D.apply_url||D.url;
 document.getElementById("files").innerHTML=`<a class="file" href="/file/${D.id}/docx${Q}">sunil_resume.docx</a><a class="file" href="/file/${D.id}/pdf${Q}">sunil_resume.pdf</a>`;
+// The review site is plain HTTP over Tailscale: navigator.clipboard does not exist there
+// (secure pages only). Copy through a selected textarea, inside the tap itself — what every
+// mobile browser allows (readonly + setSelectionRange + 16px font for iOS Safari).
+function copyText(t) {
+  const ta = document.createElement("textarea");
+  ta.value = t; ta.setAttribute("readonly", "");
+  ta.style.cssText = "position:absolute;left:-9999px;top:" + (window.pageYOffset || 0) + "px;font-size:16px;";
+  document.body.appendChild(ta);
+  const sel = document.getSelection(), prev = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+  ta.select(); ta.setSelectionRange(0, t.length);
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) {}
+  document.body.removeChild(ta);
+  if (prev) { sel.removeAllRanges(); sel.addRange(prev); }
+  if (!ok && navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(t).catch(() => {}); ok = true; }
+  return ok;
+}
 function copyBtn(getText){const b=document.createElement("button");b.className="cp";b.textContent="Copy";
-  b.onclick=()=>{const t=getText();let ok=false;
-    try{const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();ok=document.execCommand("copy");document.body.removeChild(ta);}catch(e){}
-    if(!ok&&navigator.clipboard){navigator.clipboard.writeText(t).then(()=>{},()=>{});ok=true;}
+  b.onclick=()=>{const ok=copyText(getText());
     b.textContent=ok?"Copied":"Select & copy";b.classList.add("ok");setTimeout(()=>{b.textContent="Copy";b.classList.remove("ok");},1500);};return b;}
 function card(label,text,parent){const c=document.createElement("div");c.className="card";const l=document.createElement("div");l.className="lbl";l.textContent=label;
   const ta=document.createElement("textarea");ta.readOnly=true;ta.value=text;ta.rows=Math.min(12,Math.max(1,Math.ceil(text.length/60)));ta.onclick=()=>ta.select();

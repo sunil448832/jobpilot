@@ -1,1001 +1,180 @@
-# jobpilot — job application pipeline
+# jobpilot
 
-Finds roles, tailors a resume to each, fills the form, asks for approval on a phone,
-submits, and tracks the result. Runs overnight so mornings cost nothing.
+Finds AI/ML roles, tailors the resume to each, fills the application form, asks for approval
+on the phone, submits, and tracks follow-ups and referrals. Runs three times a day; Sunil only
+reviews and taps Approve.
 
-Design rationale: the original plan is preserved as the last section of this file.
+423 job boards across 8 ATS platforms · 56 applications submitted (first: OpenAI, 2026-09-05).
+The original plan is in [docs/original-plan.md](docs/original-plan.md); how forms are filled
+is in [docs/form-agent.md](docs/form-agent.md).
 
-**19 modules, ~5,500 lines. 203 boards across 7 ATS platforms.**
-First real application submitted and confirmed 2026-09-05 (OpenAI Applied AI Engineer,
-Abu Dhabi).
+## Three rules
 
----
+1. **Nothing is submitted without his tap.** The pipeline stops at "filled and waiting"; only an
+   Approved card is ever filed.
+2. **Nothing untrue goes on a resume or a form.** Tailoring rewords and reorders what his resume
+   already says; a related tool or skill is never added (POLICY §2).
+3. **LinkedIn is never automated.** Messages are drafted; he sends them.
+
+## A day
+
+| Time (IST) | What runs | What he does |
+|---|---|---|
+| 04:00 · 12:00 · 20:00 | `jobpilot-daily.timer`: scan → rank → screen → tailor + fill up to 6 roles | nothing |
+| 07:00 · 19:00 | `jobpilot-review.timer`: Telegram "N waiting" + link; files every approved card | review on the phone |
+
+On the phone (review site over Tailscale) each card is **Approve**, **Later** (comes back next
+time) or **Reject** (dropped). Approved cards are filed at the next 07:00 / 19:00 run, or at once
+with `./jobpilot submit`.
+
+## Commands
+
+```bash
+./jobpilot start | stop | status       # scheduler on / off (stop also kills a run in progress)
+./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 6)
+    --only screen,tailor               #   just those stages (./jobpilot stages lists them)
+    --source-limit 200                 #   intake stops at 200 matching postings
+    --dry-run                          #   build nothing, fill nothing
+./jobpilot log                         # follow the run log (logs/daily.log)
+./jobpilot link                        # review-site URL and /questions
+
+./jobpilot queue                       # what waits for approval
+./jobpilot submit [N | <slug>]         # file approved cards now (all, at most N, or one)
+./jobpilot dryrun <slug>               # a filing that stops before Submit
+./jobpilot explore <slug> [--fresh]    # fill a form again (never submits)
+./jobpilot add <url>...                # jobs he found himself: tailored first (also /add)
+./jobpilot companies                   # applications per company and the limit (also /companies)
+./jobpilot follow                      # follow-ups due
+
+./jobpilot refer <slug>                # referral targets for a submitted job
+./jobpilot ask <slug>                  # referral message for a new connection, once they accept
+./jobpilot referrals | chase           # referral list | follow-ups due
+```
+
+`./jobpilot --help` lists the rest (intake, rank, screen, careers, tenants, keywords, ...).
+
+## How a job flows
+
+| Stage | Module | What it does | Claude |
+|---|---|---|---|
+| intake | `discover/intake.py` | pulls every board in `boards.yaml` in parallel; keeps target titles in target markets; drops "no sponsorship" / "must be based in" JDs and country-locked remote; stores new rows in `state.db` | — |
+| hold | `core/quota.py` | parks the postings of a company at its application limit as `held` | — |
+| rank | `rank/rank.py` | score = keyword fit + title fit + market bonus (NL/IE/DE/LU/remote 22, Gulf 18, AU/CH 12, US 2) + boosts (pay ≥ ask, sponsorship stated, YC +10) − penalties (8+ years asked, pay < 85% of ask) | — |
+| screen | `screen/screen.py` | reads the top 30 JDs: keep / reject + a 0–100 fit score | Sonnet |
+| tailor | `tailor/autotailor.py` | builds the resume, scores it against the JD; under 60%, up to 2 tailoring rounds, each undone if it does not raise the score, stuffs keywords or runs past 2 pages | Sonnet |
+| explore | `apply/explore_agentic/` | one agent fills the form page by page in real Chrome, records every step in `calls.json`, stops before Submit; a card goes to the phone | Opus |
+| draft | `apply/draft/` | 2–3 drafted answers for each question only he can answer | Sonnet |
+| review | `review/serve.py` | the phone site: approve, answer, undo | — |
+| submit | `apply/explore_agentic/replay.py` | redoes the record by code with his answers; the agent only where a page differs; presses Submit and waits for the portal's confirmation | only if a page differs |
+| track | `core/tracker.py`, `outreach/` | follow-up 5 business days later; referral targets and messages | — |
+
+Roles pass rank, screen (keep, fit ≥ 45) and the tailor floor (score ≥ 45) before any Claude
+session is spent on them. Links he adds with `./jobpilot add` skip rank and screen.
 
 ## Where things live
 
-Two trees, on purpose. The **tool** owns everything it produces; the **resume
-repo** is read-only source of truth.
-
 ```
-~/work/projects/jobpilot/            THE TOOL  (pip install -e .; run stages as python -m jobpilot.<pkg>.<mod>)
-  jobpilot                           the only entry point — ./jobpilot <command>
-  README.md  pyproject.toml
-  src/                               the package (imported as `jobpilot`), one sub-package per stage:
-    core/       paths.py config.py daily.py dedupe.py tracker.py      — locations, settings, orchestration
-    discover/   intake.py careers.py find_careers.py startups.py       — find roles
-    rank/       rank.py keywords.py salary.py keyword_learn.py …       — score a JD against what Sunil has
-    screen/     screen.py llm_eval.py                                  — Claude: eligibility + fit score
-    tailor/     autotailor.py scaffold.py optimize.py build.py tex2md.py ats_score.py — per-application work
-    apply/      the form:
-      explore_agentic/  session.py form.py calls.py replay.py card.py — one Claude agent per application, tools on the live page (docs/form-agent.md)
-                        see.py act.py controls.py facts.py record.py browser.py — what the tools read and do
-      draft/      draft.py learn.py manual.py                        — drafted answers, learned answers, apply-by-hand
-      platforms/  greenhouse.py lever.py ashby.py workday.py …       — only what is truly platform-specific (account gate, steps)
-    agents/     screen/ tailor/ draft_answers/                       — each Claude CLI agent: prompt.md + tools.yaml
-    review/     serve.py form.py bot.py keyword_form.py referral_form.py — what Sunil sees
-    outreach/   referrals.py referral_tracker.py prospects.py outreach.py — referral drafting (never sending)
-  config/                            what you edit: POLICY.md config.yaml targets.yaml answers.yaml boards.yaml
-  data/                              general state only: state.db (jobs, referrals) connections.csv, per-platform
-                                     techniques, per-company quota blocks, caches — nothing about one application
-  logs/                              what runs print, read once: daily.log, sessions/<slug>/ (each agent session
-                                     and filing), old/ (earlier ad-hoc run logs); safe to delete
-  applications/<slug>/               one application: sections/ (copy of the base), resume.tex, JD.md, built pdf+docx,
-                                     cards/ (its phone cards, their answers, its screenshots: core/cards.py),
-                                     asks/ (questions and notices its filings left),
-                                     calls.json (every tool call of the form agent: what filing redoes),
-                                     explore.json (placeholders and his answers), agentic.json (the last exploration)
-  scripts/                           one-off setup
-  docs/                              form-agent.md — how applications are explored and filed
-
-~/work/docs/sunil_resume_v2/         THE RESUME REPO — read-only for the tool  (config.yaml -> paths.tracking_repo)
-  resume/sections/*.tex              the base resume
-  project-memory-backup/             code-grounded notes on real work (last resort, see POLICY §1)
-  target-companies/                  market research, hand-written
+jobpilot/
+  jobpilot                     the only entry point
+  config/                      edited by hand
+    POLICY.md                  who he is, what is true, how to tailor — read by every agent
+    answers.yaml               stored facts: what forms get (profile, education, salary per market, ...)
+    targets.yaml               which jobs: titles, markets, keywords, rejects, weights
+    config.yaml                how the pipeline runs: limits, models, schedule
+    boards.yaml                the boards intake pulls
+  src/                         core/ discover/ rank/ screen/ tailor/ apply/ review/ outreach/ agents/
+  data/                        general state: state.db (jobs, referrals), connections.csv, caches
+  applications/<slug>/         one job: JD.md, sections/ (its resume copy), sunil_resume.pdf/.docx,
+                               calls.json (the form record), explore.json, cards/ (its cards and
+                               screenshots), asks/ (questions its filings left)
+  applications/_tenants/       per employer portal: its list picks (below)
+  logs/                        daily.log, sessions/<slug>/ (each agent session) — safe to delete
+~/work/docs/sunil_resume_v2/   the base resume and project notes — read-only for the tool
 ```
 
-Dependencies between stages point one way — `core` ← `discover` ← `rank` ← `screen` ←
-`tailor` ← `apply` ← `review`/`outreach` — and every stage runs as a module
-(`python -m jobpilot.tailor.autotailor --limit 2`), so there are no path hacks: `src/core/paths.py`
-is the only file that knows where anything is. Each application carries its own `sections/`
-copy of the base resume and `resume.tex` imports that locally, so an application is
-self-contained and hand-compilable; the `.docx` is derived from the same `.tex` files
-(`tex2md.py` → `ats.md` → pandoc), nobody writes `ats.md`. Tailoring is double-gated
-(screener fit score, then ATS score) — see *Prepare* below. `./jobpilot paths` prints every root.
+## Facts and answers
 
-Study material is deliberately **not** here — `~/work/study-materials/ai/`.
+- **Stored facts** — `config/answers.yaml`, edited only by him; they win on every form. Includes
+  one "No" for every relatives / affiliations / conflict-of-interest question, and sponsorship by
+  country: none in India, needed everywhere else.
+- **Portal picks** — `applications/_tenants/<tenant>.yaml` (e.g. `workday-crowdstrike.yaml`): his
+  picks from that portal's own lists ("How did you hear about us?" → Job Board › LinkedIn), and
+  the entry he approved where its list cannot hold a stored fact (no IIT Jodhpur → IIT Delhi).
+  Reused on that portal's next jobs only. Written answers, essays and experience answers are
+  never kept; a different pick is asked on `/questions`, never overwritten.
+- The form agent answers in this order: his answers for this form → stored facts → this
+  portal's entries → this portal's picks → otherwise a question on the card.
+- Resume uploads: the **PDF** in the resume field; when the form has a second attachment field
+  (cover letter, additional documents) the **.docx** there too.
 
-## The two rules everything else follows
+## Tailoring
 
-**1. Automate submits on external ATS. Never on LinkedIn.**
-There is no account to lose on Greenhouse or Ashby — a bad application is just a
-rejection. LinkedIn is the only channel that has converted in four years, and automated
-invites and DMs are the most heavily detected behaviour on it. So `outreach.py` writes
-messages and a human presses send. Always.
+The tailor session gets the JD keywords the resume misses and decides each one
+([src/agents/tailor/prompt.md](src/agents/tailor/prompt.md)):
 
-**2. Never claim anything untrue.**
-Tailoring is reordering, emphasis, and matching the JD's wording — never a new skill.
-The tailoring session judges each keyword — the same fact in other words may go in,
-anything merely related never does (POLICY §2); no code writes or filters terms, since a
-mechanical rule either passed look-alikes (Triton for vLLM) or refused plain synonyms.
+- **same fact** in other words — use it ("Retrieval-Augmented Generation" for RAG);
+- **related, not the same** — never (Triton for vLLM, distillation for quantization,
+  "distributed systems" from distributed training, a level like Lead);
+- headline = the JD's role at his level, "Senior" at most ("Lead AI Engineer" → "Senior AI Engineer");
+- a reworded bullet keeps its kind of work.
 
----
+A low score from a real gap is reported, not chased. No code adds or removes terms.
 
-## Architecture
+## The form and filing
 
-```
- ┌─ DISCOVERY ─ overnight, unattended ────────────────────────────────────┐
- │                                                                        │
- │  careers.py ──► boards.yaml ──► intake.py ──► rank.py ──► state.db     │
- │  fingerprint     203 boards      9,900+        score +      207 live   │
- │  the ATS         7 platforms     postings      route        matches    │
- │       ▲                             │                                  │
- │  startups.py                    salary.py ── any currency → USD,       │
- │  6,203 YC cos                                estimate when unstated    │
- └────────────────────────────────────┼───────────────────────────────────┘
-                                      ▼
- ┌─ PREPARE ─ per application ────────────────────────────────────────────┐
- │                                                                        │
- │  apply.py ──► applications/<company>/ ──► Claude tailors ──► build.py  │
- │  fetch JD      JD.md + overrides          (judgment, in-        PDF +  │
- │  detect ATS                                session)             docx   │
- │                       │                                                │
- │                  build → rescore; a round undone if it does not help   │
- └───────────────────────┼────────────────────────────────────────────────┘
-                         ▼
- ┌─ EXPLORE ─ real Chrome, persistent profile ────────────────────────────┐
- │                                                                        │
- │  one Claude agent per application, started once, facts in its system   │
- │  prompt; tools: see, act, options, search, clear, inspect, press,      │
- │  finish (+ replay when a record exists). It fills page after page.     │
- │  every tool call ──► calls.json (resumable at any point)               │
- │  ──► cards/<id>.json + .png + explore.json.  NEVER presses Submit.     │
- └───────────────────────┬────────────────────────────────────────────────┘
-                         ▼
- ┌─ APPROVE ─ phone, any network via Tailscale ───────────────────────────┐
- │                                                                        │
- │  serve.py ──► one page: job, flags, every value, open questions        │
- │  (systemd)    with drafted options + "write my own"                    │
- │       │                                                                │
- │       ├── approve / later / reject ──► queue JSON (Undo on the card)   │
- │       └── picks ──► learn.py ──► applications/_tenants (that portal)    │
- └───────────────────────┬────────────────────────────────────────────────┘
-                         ▼
- ┌─ SUBMIT + TRACK ───────────────────────────────────────────────────────┐
- │                                                                        │
- │  replay.py ──► redo calls.json by code with the approved values; the   │
- │                agent only where a page differs; Submit (≤3 presses,    │
- │                code-gated), VERIFY, screenshot                         │
- │  tracker.py ──► follow-ups at 5 business days, from the queue cards    │
- └────────────────────────────────────────────────────────────────────────┘
+- Exploring: the agent sees each page through `see`, fills it with `act`, presses Next, and ends
+  on the last page with `finish`, naming the Submit button. It never presses Submit.
+- Filing: code redoes `calls.json` with his approved answers (no Claude while pages match), then
+  presses Submit — at most 3 presses — and reads what the portal says:
 
- ┌─ REFERRALS ─ parallel track, sending always manual ────────────────────┐
- │  referrals.py   who you already know      (LinkedIn CSV export)        │
- │  prospects.py   who to meet, scoped to the hiring office               │
- │  outreach.py    the message, drafted; you press send                   │
- └────────────────────────────────────────────────────────────────────────┘
-```
-
-### The loop
-
-```
-04:00 / 12:00 / 20:00   scan → rank → tailor → explore → queue  (unattended)
-07:00 / 19:00           📱 "N waiting" + link                   (your cue)
-                             │
-                        review on the phone over Tailscale
-                             │
-                   Approve ──┴── Later (stays) ── Reject (dropped)
-                        │
-                   laptop replays, submits, verifies
-                        │
-                   referral targets found automatically → one link
-```
-
----
-
-## Components and their algorithms
-
-### Discovery
-
-**`careers.py`** — *careers-site-first ATS detection*
-1. Match the URL against known ATS hosts (greenhouse.io, lever.co, …) — no fetch needed.
-2. Otherwise GET the page and fingerprint the markup (`phenompeople`, `hcmRestApi`,
-   `myworkdayjobs`, …).
-3. For Phenom, **confirm by calling its search endpoint** rather than trusting the
-   fingerprint; try the path prefix and the bare host.
-4. Write the resolved platform + slug/base into `boards.yaml`.
-
-> Target the company's own careers site, not a job board. It is canonical, and carries
-> requisitions no board ever sees. This is how TII and G42 were found after board-slug
-> probing missed them entirely — UAE roles went 3 → 8.
-
-`find_careers.py --market <name>` sweeps a curated domain list per country:
-`gulf`, `netherlands`, `ireland`, `germany`, `luxembourg`, `switzerland`,
-`australia`. The US is deliberately absent — it is oversupplied and H-1B-gated, so
-discovery effort spent there displaces reachable markets.
-
-### Pausing the pipeline
-
-```
-./jobpilot stop      # timers off, kills anything mid-run, form stays up
-./jobpilot start     # timers back on
-./jobpilot status    # says ON or OFF outright
-./jobpilot pipeline  # one full end-to-end run, in the foreground
-```
-
-`stop` is the Claude-usage control. The cost is `autotailor.py`: 2 Claude
-sessions per role x 6 roles x 3 scans a day. `stop` also disables the units, so
-a reboot does not quietly restart them. It leaves `jobpilot-form.service` up, so
-approving already-queued work still functions while the scheduler is off.
-
-Note `jobpilot-daily.timer` is `Persistent=true` — if a scheduled run was missed
-while the machine was off, `start` fires the catch-up immediately. That is the
-intended behaviour for a laptop that sleeps, but it means `start` is not free.
-
-**`startups.py`** — *YC company sweep*
-
-Postings from YC companies are tagged with their batch in `state.db` and get a **+10
-boost** in ranking. The premise splits by market, which is why the boost is modest
-rather than large: startups sponsor readily in **NL and the Gulf**, hire
-internationally as contractors far more willingly than enterprises (the
-**remote-from-India** channel), but in the **US** an early-stage company often cannot
-do H-1B at all. The market weighting already handles that, so this only tips
-otherwise-equal roles.
-
-1. Fetch the public YC dataset (6,203 companies), cache it.
-2. Keep Active + AI/ML-tagged + `team_size >= N` (default 20). Headcount is a filter,
-   not a detail: a 5-person seed company cannot sponsor anyone.
-3. Derive slug candidates from name, YC slug, and website domain.
-4. Probe all six board APIs in parallel; append hits to `boards.yaml`.
-
-**`intake.py`** — *pull, filter, dedupe*
-1. Fetch every board in `boards.yaml` (7 platform adapters) plus two open aggregators,
-   **in parallel** (`--workers`). This loop was serial and fine at 46 boards; at 296 one
-   scan ran past 16 minutes printing nothing, because each board waited on the previous
-   board's network round-trip. `discovery.deny_boards` drops slugs that resolve but are
-   not employers — `agency` returns 829 *"Freelance AI Trainer Project"* gigs and its req
-   count cleared the `enterprise` scale tier, so every gig collected the largest
-   company-scale bonus in the ranker.
-2. **Title filter** on word boundaries — substring matching let "AI Engineering" satisfy
-   "AI Engineer" and pulled in Ruby backend roles.
-3. **Market classify** from the location string. Country-locked remote
-   (`Remote - US`, `Remote, United Kingdom`, `Remote – Ireland`) is REJECTED **before**
-   the location hints run: it means resident-there-already and is unreachable from India.
-   The ordering matters — `Remote – Ireland` contains "ireland", so with the hints first
-   it would have classified as the Ireland market and collected a priority-1 bonus for a
-   role that is the opposite of a sponsorship opening.
-4. Hard-reject on JD phrases (`no visa sponsorship`, `must be based in`, …).
-5. Dedupe on `company|title|location` into SQLite; only new rows are stored.
-
-**`rank.py`** — *score and route*
-```
-score = 40 x keyword fit      (GenAI/agentic set weighted 60/40 over core ML)
-      + 20 x title fit
-      +      market bonus     NL/IE/DE/LU/remote 22 · Gulf 18 · AU/CH 12 · US 2
-      +      boosts           sponsorship stated, fully remote, GenAI focus,
-                              pay ≥ ask, YC company (+10)
-
-Keyword matching is synonym-aware via `keywords.py`: ~55 canonical terms, each expanded
-to acronym/expansion, hyphen/space, plural/gerund and vendor/category forms. A JD saying
-"Retrieval-Augmented Generation", "vector store" or "parameter efficient fine tuning"
-matches RAG, Qdrant and LoRA respectively.
-      -      penalties        asks 8+ years, pay < 85% of ask
-```
-Market weights are wide on purpose: US postings state the highest salaries and were
-collecting the pay boost every time, pushing roles to the top that the H-1B lottery
-mostly gates out. A salary you cannot access is worth little. A **max-2-per-company cap**
-stops one employer with nine near-identical reqs owning the shortlist.
-
-**`salary.py`** — *currency is never a rejection reason*
-1. Parse pay in any currency: symbols, ISO codes, `k`/`m`, **Indian lakh/crore grouping**
-   (`45,00,000` is 2-2-3, not 3-3-3).
-2. Infer the period from nearby words; fall back to magnitude.
-3. Convert to annual USD via live ECB rates (cached daily, static fallback; AED and SAR
-   are USD-pegged and held fixed).
-4. Compare to the per-market ask from `answers.yaml`.
-5. **When pay is unstated**, estimate: median of that company's stated pay *in the same
-   market* (medium confidence), else the market band from Sunil's own research (low).
-   Estimates move the score at half weight and are always labelled.
-
-> `INR 1,20,00,000/yr = USD 126,998` — beats the remote ask, so it passes. Judged on
-> value, never on the symbol.
-
-### Prepare
-
-**`scaffold.py`** — URL in, buildable application folder out. Recognises the platform and
-pulls the JD through its native API via `apply/platforms` (Greenhouse `gh_jid` on
-self-hosted domains included), scaffolds `applications/<company>/` from `_template`,
-writes `JD.md` with the platform module's autofill route.
-
-**Tailoring is deliberately not automated.** Claude does it in-session so the
-never-fabricate rule is enforced by judgment, not a prompt string.
-
-**Tailoring rounds** (`autotailor.py`, up to `pipeline.ats_rounds`): the session gets the
-JD keywords the resume misses, by weight, and decides for each whether it is the same fact
-as something the resume shows (`src/agents/tailor/prompt.md`, POLICY §2 — synonyms, spellings,
-acronyms yes; another tool of the same kind, a neighbouring technique, a broader area or a
-level no). Its headline is the JD's role title at his level ("Senior" at most). The round is
-rebuilt and rescored, and undone if the score does not improve, keyword stuffing shows or the
-resume passes two pages. No code adds or removes terms (until 2026-09-29 `optimize.py --apply`
-did, and put Triton and Distillation on a resume); `optimize.py` is only a report now
-(`python -m jobpilot.tailor.optimize <slug>`).
-
-### Explore
-
-`./jobpilot explore <slug>` (`python -m jobpilot.apply.explore_agentic`) fills an
-application's form to its last page and queues it for approval. It **never presses Submit**.
-The whole design — exploring, the record, filing and every Submit outcome, the techniques per
-control, questions during filing, the safety rules — is in `docs/form-agent.md`.
-
-**One agent per application (`session.py`)** — a Claude Agent SDK session, started once.
-Its system prompt is sent once: `prompt.md` (how to work, the answer grammar, the rules —
-history kept whole, identity questions only from his own facts, work authorization by the
-job's own market), his approved answers for this form, and every fact (`facts.py`:
-answers.yaml flattened, learned answers, this job's market). What its tools return is its
-observation; it decides what to do next, in any order. Model and effort: `llm.form_agent`.
-
-**Tools (`form.py`)** — on the live page, each on the browser's own thread:
-
-| tool | what it does |
+| Portal shows | Card becomes |
 |---|---|
-| `see(scope)` | the page, one section, an outline, or given ids — every control with a lasting id (`c7`), what its HTML says, what it shows, a list's choices |
-| `act(rows)` | only these rows `[id, write\|select, answer]`; reports what took, and what else the page changed (new fields, cleared fields) |
-| `options(id)` / `search(id, patterns)` | a list read whole / searched — nothing picked |
-| `clear(id)` / `inspect(id)` | one field emptied / its HTML, read-only |
-| `press(id)` | a page button (Apply, Next, a block's Delete …) — never one that sends; page buttons are never act rows |
-| `finish(outcome, note, submit_id)` | the end; on the last page it names the Submit button (recorded, not pressed) |
-| `replay()` | only when a record exists: redo it from the page shown (see Record) |
-| `submit(id)` | only when filing: press Submit behind code checks (see Submit) |
+| a confirmation | **Submitted** |
+| errors on the form | the agent fixes them and submits again |
+| a captcha | **Failed** — nothing sent; finish by hand, then tick *I submitted this by hand* |
+| an emailed code asked | asked on `/questions` and Telegram; no answer in time → filed again next run |
+| no confirmation, no error | **Sent? — check your email** — never pressed again |
+| a refusal (applied already, closed) | **Failed — needs a look** |
 
-An answer is a fact key, `option:<choice or a › b chain>`, `search:<regex>; …`,
-`guess:<top-5 candidates> | <question>` (the first stands in, the question goes to the
-phone), `text:<his answer>`, `file:resume`, `add:<n>`, `keep:<answer>` (already shown), or
-the question itself. Facts include `job.today` (and its day / month / year), looked up again
-when filing. The routines
-under `act` (`act.py`: tick, pick, type, key digits, give the file, add blocks) are chosen
-from the control's HTML, never from its name. Each has its techniques in order, tried in turn
-until the control holds what was wanted — a text box: set in one step, key by key, by script;
-a tick: a real click, its label, set checked, forced, by script; a <select>: by label, by
-matching text, by keyboard; a list: its entries clicked, else typed and picked from the
-suggestions; a file: its input, else the file chooser. The one that worked is remembered per
-platform (`data/techniques.json`) and tried first there next time. A control that still does
-not take is reported with the techniques tried, and the agent may name another
-(`technique:<name>`) or give its own keys (`keys:122023`, `{Tab}`) as a row's 4th item. Date and
-number parts are checked by the widget's own value (`aria-valuenow`), and all parts of a date
-are read again after every act: on Workday, typing the year puts its first key in the month
-(12 → 2), so a date a later part undid is typed in one go into its first part; `see.py` reads the accessibility snapshot
-(`controls.py` parses it). Workday's account gate is passed by code; the credentials are
-never shown to Claude.
+- Workday: the account gate (sign in, create account, email verification) is passed by code with
+  credentials from `~/.config/jobbot/env`; Claude never sees them.
 
-**Record (`calls.py`)** — every tool call, in order, into `applications/<slug>/calls.json`:
-the tool, its arguments, the page, the lasting identity of each control it names (role,
-name, which one of that name, section, the question above it), and what it did (each act
-row's outcome and the value read back). Saved after every call. When a record exists, a
-new session gets the `replay` tool and starts from it: the record's steps are redone page
-by page, each field checked against what it held, then the page's Next — until a page
-differs, a page the record does not know, or where the record ends; the agent carries on
-from there. A run stopped anywhere resumes; `--fresh` ignores the record. A record keeps the
-pages a portal shows only some days (Workday's *Start Your Application* before a draft
-exists); a control is found again inside its own block (a Delete in *Certifications 1*,
-never "the 6th Delete"); a Delete / Add is redone only while its section's size differs
-from what the press left.
+## Review site
 
-**The card (`card.py`)** — at the end, the placeholders go into `explore.json` (his earlier
-answers kept) and the card into `applications/<slug>/cards/<id>.json`: what was filled, the questions only
-he can answer with the agent's candidates, the last page's screenshot. A re-exploration
-supersedes the job's unsent cards. Each new card to review sends a short Telegram message
-(📝 *New application to review* — the job, how many questions — with a link to the card and
-one to the review list); an exploration that stopped short says so. The card's list of values (`calls.values_by_page`) is
-what the filing will enter, from the record: each field's fact looked up again, the choice
-picked, his answer — not what the page happened to display.
+`jobpilot-form.service`, port 8765, over Tailscale; restart it after changing its code.
 
-**Platforms (`apply/platforms/`)** — only what cannot be read off the page: Workday's
-account gate, passed by code (credentials from `~/.config/jobbot/env`, never shown to Claude;
-the agent has no sign-in tool and finishes as stuck at a login it cannot pass). A refused
-password, a locked account or a missing account form is asked on `/questions`: he fixes the
-account on the employer's Workday and answers *done* (or *skip*), then one more try — never a
-password asked, never a second account. A filing that ends stuck or unsent leaves a notice
-there with the agent's reason. Its step
-name and last page; each platform's JD API and apply URL. No button names, no field
-lists — Claude reads those off each page. The gate sends its forms the way a person does
-(the form's own submit, else Enter in the password box): a tenant may hide that button from
-assistive technology while the page header shows a *Sign In* of the same name.
-
-### Approve
-
-**`serve.py`** — the review form, served from the laptop. No login, because an artifact
-with a database is org-internal and always demands one. Answers POST straight back into
-the queue file and run `learn.py`. On Approve, each answer is also written into the
-application's `explore.json` (its placeholder's `answer`), so the submit replay uses it.
-Every decision keeps what it changed, so the card's **Undo** takes it back — status,
-answers, the record, what was learned from it — until the item is being filed. No
-Telegram message per decision: the card says it was saved. The list has **Review now**
-and **For later review** (cards kept with *Later*), then Approved, *Filing now*,
-Submitted — each a table, newest first. Approved: the date approved, company, role, portal,
-and where its filing stands (ready to file / explore first, when it has no record / what its
-last try hit). Submitted: the date, company, role, how it went (filed, or ✋ by hand), and **Referrals** —
-how many people could refer him for that role, linking to that role's own referral page
-(`/referrals?company=…&role=…`: the same people cards, only that role's) — and **Referred?**:
-✅ with the name when someone is marked *Referred*, else how far it got (*2 asked, 1 replied*,
-*not yet asked*), from the statuses set on those cards — and **After**: what happened since
-(see `tracker.py`). Questions a filing asks mid-run (an emailed code, a Workday email verification) and notices
-it leaves (a captcha: nothing sent, finish by hand) are on their own page, **/questions**:
-the waiting ones first with their answer box and the time the wait ends, then the answered
-and expired ones of the last 7 days. A new one sends a short Telegram message — 🔐 *Filing
-needs your input — <job>* — with that page's link and the review list's.
-A card in **Failed** or **Sent? — check your email** has a tick, *I submitted this by hand*:
-it moves the card to Submitted, labelled *✋ submitted by hand*, and the application's record
-notes it, so it is never filed again. **Sent? — check your email** lists cards whose Submit
-was pressed but not confirmed; they are
-never pressed again, and the queue dedupe never removes them. A re-exploration replaces every earlier unsent card of that application. Stable
-token in `~/.config/jobbot/env`. It runs as `jobpilot-form.service`: restart it after
-changing code, or it keeps serving the old version.
-
-**`form.py`** — renders one queue item as one page: header, honest flags, a link to the
-filled form's screenshot, each open question (with the page and field it sits on, the
-value it was explored with preselected, and for a long list the nearest real entries),
-and every value that will be submitted — grouped by page (from `calls.json` for an agent's
-record), readable ("Education 1 · Field of Study"),
-marked with where it came from (*from your profile*, *picked from the form's choices*,
-*your answer*, *already on the form*). Dual transport: the artifact `db` when hosted, a same-origin POST when
-local.
-
-**Stored facts and portal picks.** `config/answers.yaml` holds the **stored facts** — his
-profile (identity, contact, education, employment, work authorization — India needs no
-sponsorship, every other country does — EEO, pay, and one "No" for every relatives /
-affiliations / conflict-of-interest question): always true, edited only by hand, and on every
-form they win. Nothing general is learned any more; the only thing kept from a card is what can
-go wrong again on the same portal — a **pick from its list** (`learn.py`):
-
-- `applications/_tenants/<tenant>.yaml` (`workday:crowdstrike`, `greenhouse:anthropic`;
-  `platforms.tenant()`): its `answers` — his pick for a list question the stored facts do not
-  cover ("How did you hear about us?" -> Job Board › LinkedIn) — and its `entries` — the list entry
-  he approved for a stored fact the list cannot hold (no IIT Jodhpur). Reused on that portal's
-  next jobs only.
-- Never kept: a written answer (a text box never refuses what is typed), an essay, anything
-  about his experience, projects or motivation, and anything a stored fact answers.
-- Anything that should hold everywhere is moved into `answers.yaml` by hand, in a weekly review
-  of these files.
-
-Nothing kept is overwritten: a different pick is put to him on `/questions` (keep / new / his
-own) while the kept one stays in use. The form agent answers in this order: his answers for this
-form → stored facts → this portal's entries (`tenant:<fact>`) → this portal's picks
-(`employer:<key>`); anything else is a placeholder he answers on the card. A key comes from its
-question's words, so a record's key keeps its meaning; a row recorded with a key that no longer
-exists (the old numbered `learned:<n>`, a renamed fact) replays the value it entered then. A grade
-(GPA) is filled only when the form requires it.
-
-> Effect on one real form: 13 fields / 4 questions → **17 fields / 0 questions**.
-
-**`bot.py`** — Telegram. Card-per-question flow (superseded by the form for bulk review,
-kept for notifications), approval gating, persisted update offset and per-update
-deduplication so a network timeout cannot replay a tap.
-
-### Submit and track
-
-**`./jobpilot submit`** (`python -m jobpilot.apply.explore_agentic.replay`) — files
-`approved` cards, oldest first (`./jobpilot submit <slug>` for one job; `./jobpilot dryrun
-<slug>` stops before Submit). **Gate first**, before a browser opens: the card approved and
-never pressed before, every placeholder answered. Then code **redoes** `calls.json` page by
-page with his answers — no Claude while the pages are as they were; where one differs the
-agent resumes from there with its tools. On the last page code presses the recorded Submit
-(the press is written to the card first, so a rerun never presses blind) and **watches**:
-a confirmation → `submitted`; a refusal → `failed`; errors on the form or sent back to a
-page → the agent fixes it and submits again with its `submit` tool (`filing.md`: never
-change the meaning of his answer, never invent one) — at most 3 presses; a captcha →
-`failed`, nothing sent, the card says to submit by hand; anything else → `unconfirmed`,
-never pressed again. The page is judged only by text that appeared after the press (a
-standing "application limits" banner is not a refusal). An emailed code asked for after the
-press is requested on Telegram; none in time → `code-needed`, not sent, filed again later. The
-account gate is never signed into while a Submit is watched, and never tried twice in a
-session after a refused sign-in (a retry can lock the account). A clicked button is not a
-submission. After a
-submission: the outcome to his phone, the attempt in `explore.json`, referral targets.
-
-**`tracker.py`** — follow-ups from the queue cards: a submitted card is due one **5 business
-days** after `submitted_at`, and the digest lists it until it is marked. The review list's
-Submitted table has an **After** column (*Followed up*, *Heard back*, *Rejected*; *⏰ follow up*
-while one is due), and any mark ends the reminder. It used to sync `tracking/job-tracker.xlsx`;
-nothing read that sheet but these reminders and nobody updated its Stage, so a reminder could
-never be closed. The sheet and the `tracking/` folder were removed on 2026-09-29.
-
-**`quota.py`** — *at most 5 applications per company a month*. Every company takes at most
-`apply.default_quota` (5 in a rolling 30 days); an entry under `apply.quotas` replaces it
-for that company (OpenAI's portal: 5 in 180 days), and a portal's own refusal
-(`data/quota_blocks.json`) holds the company until that date. Counted from the queue cards.
-Filing holds an approved card while its company is at the limit (it stays approved and files
-once a slot opens); tailoring also counts the cards waiting for review or filing, so it
-prepares no card the limit would hold; and before ranking, the pipeline's `hold` stage parks a full
-company's unworked postings as `held` (rank, screen and tailoring skip them) and puts them back once it
-has room. `./jobpilot companies` prints the table; `/companies` on
-the review page shows it, linked from the list with who is at the limit.
-
-**`daily.py`** — intake → rank → tracker → one Telegram digest, non-US first. It never
-tailors or fills: filling a form unattended at 2am, with nobody to read the screenshot,
-is how a wrong answer gets submitted.
-
-### Referrals
-
-**`referrals.py`** — joins the LinkedIn connections export against companies in the
-queue, ranked by role usefulness (works in your field > hiring manager > senior engineer
-> engineer > recruiter).
-
-**`prospects.py`** — people you do not know yet, **scoped to the hiring office** (a
-referral only carries weight inside the office that owns the req):
-1. IIT Jodhpur alumni there — highest accept rate available
-2. Ex-Amazon people there
-3. **Paper authors via OpenAlex** — named researchers with their actual publications, so
-   the opener is specific. Strongest angle for TII (913 recent AI papers), MBZUAI, G42.
-4. ML engineers there — GitHub org members, else active commit authors
-5. Hiring manager, then recruiter
-
-Ranked by shared context and locality, never inferred nationality.
-
-**`referral_tracker.py` + `referral_form.py`** — the loop from *applied* to *seen*.
-On every successful submit it picks 3-4 people at that company (warm from the
-connections export, always at least one cold from GitHub or published papers),
-drafts a message for each, adds them to the `referrals` table in `data/state.db`, and
-sends **one Telegram link** to a page listing them all.
-
-The page is the tracker: tap to copy the message, tap to open the profile, tap a
-status — which saves straight back to the table and stamps a 7-day follow-up.
-Status flow: `To Contact → Invite Sent → Accepted → Message Sent → Replied →
-Referred | No Response`. The evening digest lists who is due to chase.
-
-```bash
-./jobpilot refer <slug>      # build targets for a submitted application
-./jobpilot referrals         # list + link to the page
-./jobpilot chase             # follow-ups due
-./jobpilot ask <slug>        # referral ask for a NEW connection, once they accept
-```
-
-**Companies where he knows no one.** For each role applied to in the last 30 days at a company
-his connections export has nobody at, the referral page leads with a ready message
-(`outreach.cold_referral`): he connects without a note, and once someone accepts, copies the
-role's message and puts their first name in. It names the role and its link, asks plainly for a
-referral, and carries the two lines of his resume the JD asks most about (`outreach.FIT`, each a
-resume bullet compressed — never more than the resume says).
-
-**`outreach.py`** — drafts the 300-char connection note (with character count), referral
-ask, post-accept opener, recruiter note, and paper-author note. Every claim true to the
-resume. Sending is manual.
-
----
-
-## Running it
-
-### Automatic — nothing to do
-
-Two systemd **user** timers, both enabled, with lingering on so they run when you are
-logged out and survive reboots. No terminal open, no Claude session, nothing.
-
-| Timer | IST | What happens |
-|---|---|---|
-| `jobpilot-daily.timer` | **04:00, 12:00, 20:00** | scan every 8h: pull 203 boards → rank → tailor + fill up to 6 roles |
-| `jobpilot-review.timer` | **07:00, 19:00** | "N applications waiting" + the link, plus referral follow-ups |
-
-Each scan lands 2–3 hours before a review prompt, so tailoring and filling have
-finished by the time you are asked. Up to **18 roles/day**; tune with `--tailor-limit`.
-
-`Persistent=true` means a scan missed because the laptop was asleep runs as soon as it
-wakes, rather than being skipped.
-
-**What one scan actually does**
-
-```
-jobpilot-daily.timer
-  └─ daily.py                          (exclusive lock: two runs never collide)
-       ├─ intake.py     203 boards, 7 platforms → filter → dedupe into state.db
-       │                (--source-limit N: stop at N matching postings, stalest boards first)
-       ├─ quota.py      hold: a company at its application limit is parked ('held') — not
-       │                ranked, screened or tailored until it has room again
-       ├─ rank.py       score, route, market-weight, per-company cap
-       ├─ screen.py     Claude screens until enough roles are usable
-       ├─ autotailor.py for each of the top N roles (one posting once per batch):
-       │                  claude -p  #1  tailor the resume   (reads POLICY.md)
-       │                  build → rescore (a round undone if it does not help)
-       │                  form agent explores the form → calls.json → card (+ Telegram)
-       │                  claude -p  #2  draft answers for open questions
-       └─ referral_tracker.py --digest
-```
-
-`claude -p` runs from `jobs/.auto/` with `Read,Edit,Write,Glob,Grep` and **no Bash**, so
-its transcripts stay out of `claude --resume` and it can only edit the application files.
-It is the CLI binary, not an interactive session — it runs at 04:00 with nobody logged in.
-
-**It never submits without your tap.** Every chain stops at "filled and queued" until you
-press Approve on the phone. The 07:00 / 19:00 review run then files whatever is approved
-(`pipeline.submit_limit` per run) and sends one Telegram line per outcome:
-
-- ✅ submitted — the portal's own confirmation, after the press;
-- ❓ the form asked something your answers do not cover → the card comes back as *Review now
-  — need your answers*; answer + Approve and the next run files it;
-- ⏳ an emailed code asked on `/questions` went unanswered → nothing sent, stays approved,
-  filed again next run;
-- 🧩 a captcha after Submit → nothing sent; *Failed*, with the job's link to finish by hand
-  (then tick *I submitted this by hand*);
-- ❓ no confirmation and no error → *Sent? — check your email*: never pressed again;
-- ⚠️ refused by the portal, or stuck → *Failed — needs a look*, with the reason, the
-  screenshot, and a notice on `/questions`.
-
-**Links you found yourself** (`/add` on the review page, `./jobpilot add <url>…`, 2026-09-23).
-Paste the company-site apply links (Greenhouse / Lever / Ashby / Workday / employer page — not
-LinkedIn URLs) — the JD is fetched from the ATS, the row is filed as `source=inbox` with a keep
-verdict and full fit, and autotailor takes those before anything the scanner found: no rank, no
-screen, no per-company cap (they are your picks). "Start tailoring now" on the page runs
-`autotailor --inbox` immediately; otherwise the next pipeline run picks them up. From there it
-is the normal flow — build, score, tailor if needed, fill, review on the phone, submit after
-Approve. `./jobpilot inbox` shows where each one stands.
-
-**Workday** (added 2026-09-23, `src/apply/platforms/workday.py`). One account per employer tenant, credentials
-in `~/.config/jobbot/env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo, never shown to
-Claude): the module signs in, creates the account if the tenant does not know the address, and
-asks for an emailed verification code on Telegram. It knows the account gate by its email and
-password boxes (its step name varies by tenant), reads the current step from the progress bar,
-and knows Review is the last page. Everything on the wizard pages is filled by the form agent
-like any form: the Degree and Country lists, the phone code search, "How did you hear" and its
-categories, the repeated job and education blocks, the segmented Month / Year dates (typed
-into their first part in one go when the year's first key lands in the month). Exploring stops
-at **Review**; filing redoes the record and presses Submit there. Filed end to end on Adobe (two
-tenants' roles), Blackstone and Just Eat Takeaway (2026-09-29). A resume upload makes Workday
-fill in the job, education and website blocks from the resume; the record's Adds are redone
-only for blocks still missing, and duplicate website links are removed. A sign-in the code
-cannot pass is asked on `/questions`. Tenants are registered with `./jobpilot careers <tenant URL>` and pulled
-by intake through the tenant jobs API (`discovery.workday_max` postings per tenant).
-Conflict-of-interest / relationship declarations (Mastercard asks four) are never answered from
-your own facts: the form agent's prompt makes a question about someone else (a relative who
-works there, who referred you) a question for you.
-
-Filing spends no Claude while the pages are as recorded: code redoes `calls.json`. The form
-agent is started only for a page that differs from its record, or a Submit the portal did not
-accept (at most 3 presses). A question that appears only at filing time and that his answers
-do not cover is never answered by the agent: the filing stops and the card comes back to the
-phone with that question.
-
-### On demand — a normal terminal
-
-Nothing here needs Claude Code. Plain bash:
-
-```bash
-cd ~/work/projects/jobpilot
-./jobpilot pipeline 10                     # full run now; tailor 10 roles today (default 6)
-./jobpilot pipeline 5 --only screen,tailor # re-run just those stages on what is already in the store
-./jobpilot pipeline --dry-run              # walk every stage, build/fill nothing
-./jobpilot log                             # follow it live
-```
-
-`./jobpilot pipeline` runs in the foreground; the timer runs the same thing silently — use `./jobpilot log`.
-`./jobpilot stages` prints the stage names `--only` accepts (dedupe, intake, hold, rank, screen,
-tailor, referrals, digest — always executed in that order, whichever subset you pick).
-
-Each stage on its own:
-
-```bash
-./jobpilot intake          # pull all boards (no Claude, no cost)
-./jobpilot rank 20         # re-score, show the top 20
-./jobpilot scan            # intake + rank in one go
-./jobpilot screen          # Claude screens until 10 are usable
-./jobpilot prep 3          # tailor + build + fill the top 3   (alias: tailor)
-./jobpilot follow          # follow-ups due
-./jobpilot digest          # review prompt + file approved items (--no-submit: prompt only)
-./jobpilot apply <url>     # one job you found yourself
-./jobpilot explore <slug>  # explore an application's form again, resuming from its record (never submits; --fresh)
-./jobpilot submit 4        # file at most 4 of the approved items (oldest first); bare `submit` files all
-./jobpilot submit <slug>   # file one approved job
-./jobpilot dryrun <slug>   # a filing that stops before Submit
-./jobpilot queue           # what is waiting
-./jobpilot companies       # per company: sent, the limit, room now, next slot
-./jobpilot link            # the review URL, and /questions (what a filing needs from you)
-./jobpilot refer <slug>    # referral targets for a submitted application
-./jobpilot chase           # referral follow-ups due
-./jobpilot status          # services, timer, counts, CLI
-```
-
-### Your day
-
-```
-04:00  scan + tailor            (asleep)
-07:00  📱 "N waiting"           review over breakfast
-12:00  scan + tailor            (at work)
-19:00  📱 "N waiting"           review in the evening, outside
-20:00  scan + tailor            (asleep)
-```
-
-Open one link over Tailscale, read, tap. Three outcomes:
-
-- **Approve** — the laptop re-fills and submits, verifying the confirmation
-- **Later** — stays in the queue and comes back next time. **Nothing is discarded.**
-- **Reject** — dropped permanently, behind a confirmation
-
-Only Reject discards. An application you never got to is still there tomorrow.
-
-### Checking on it
-
-```bash
-./jobpilot status
-./jobpilot log
-journalctl --user -u jobpilot-daily -n 40
-systemctl --user list-timers 'jobbot*'
-```
-
-Every failure path is loud: a broken stage names itself in the Telegram digest, because
-silence is indistinguishable from success.
-
-## Config
-
-**[`POLICY.md`](POLICY.md) is the standing operating policy** — who Sunil is, the truth
-boundary, the tailoring procedure, market and salary rules, how to ask him things, how
-learned answers are reused, and the hard nevers. Every automated run reads it first.
-It exists because the reasoning behind these rules otherwise lives in conversations that
-end. **Edit it to change how the scheduler behaves** — do not edit prompts in code.
-
-| file | answers |
+| Page | Shows |
 |---|---|
-| `answers.yaml` | *What do I type into this form?* — contact, per-market salary, visa status, skill-years, EEO |
-| `targets.yaml` | *Is this job worth applying to?* — markets, titles, keywords, hard rejects, scoring weights |
-| `applications/_tenants/` | *What did I pick on this portal's list before?* — his approved picks |
-| `boards.yaml` | 203 boards across 7 platforms |
-| `connections.csv` | LinkedIn export (not in repo; `install_connections.sh`) |
-
-Resume outputs are always **`sunil_resume.pdf`** / **`sunil_resume.docx`** — a recruiter
-sees the filename, and a company-suffixed one reads as machine-generated.
-
-### Growing the alias table from evidence — `mine_keywords.py`
-
-The aliases started as a hand-written list, which only catches synonyms someone
-thought of. `mine_keywords.py` mines the ~250 real JDs already in `state.db`:
-
-```bash
-python3 src/mine_keywords.py --for rag        # what co-occurs with one keyword
-python3 src/mine_keywords.py --title "forward deployed"
-python3 src/mine_keywords.py --top 40         # frequent uncovered terms
-```
-
-The `--for` mode is the useful one: it ranks co-occurring terms by **lift**, which
-surfaces genuine synonyms (`retrieval` 4.6 with RAG, `gpu` 11.8 with vLLM, `loops`
-4.8 and `tool` 5.0 with multi-agent). Plain frequency just returns "systems",
-"data", "engineering".
-
-It is a DISCOVERY tool, never a scorer — every candidate is reviewed, because an
-alias asserts that two phrases mean the same thing. Two high-lift terms were
-deliberately **rejected**: `customer-facing` (lift 2.3 on forward-deployed roles) is
-a real gap for Sunil rather than a synonym, and `reinforcement`/RLHF (lift 3.7 on
-fine-tuning) is work he does not do.
-
-**Result: 1,054 -> 1,512 keyword hits across 251 JDs (+43%)**, from 39 canonical
-keywords. The biggest additions by coverage: `customer-facing` (45% of postings),
-`RLHF` (19%), `post-training` (18%).
-
-## Tried and rejected
-
-**Embedding-based matching** (`semantic.py`, kept unwired). Dense MiniLM and sparse
-SPLADE were both measured against the alias table and both lost. Sparse ranked
-"Apache Spark" — Sunil's best-known gap — as the single best-covered probe, above
-vLLM serving, while the RAG paraphrase came last. Both score topical similarity when
-the question is capability possession; "build data pipelines with Spark" is topically
-near-identical to his DuckDB work, which is why it wins. BGE-M3 is the same objective
-at 2.2GB and would not separate them either. Full numbers in that file's docstring.
-
-## Lessons that cost a failed submit each
-
-1. **A clicked button is not a submission.** Verify confirmation text; a visible submit
-   button or any `aria-invalid` field means FAILURE.
-2. **The portal's own resume parser rewrites the form.** Upload first, wait, re-extract.
-3. **`page.fill()` lies on React typeaheads.** Read every value back.
-4. **Yes/No is often `<button>`, not `<input>`.**
-5. **Screenshot and look before believing anything.**
-
----
-
-# Appendix — the original automation plan (2026-09-05)
-
-Kept as the design rationale. Where it conflicts with the sections above, the sections above are current.
-
-## Job Application Automation — Full Plan
-
-**Goal:** reclaim ~8 hrs/week. Mornings stay free for real work; evenings are phone-only
-approval from outside. The desktop does the labour, the phone does the deciding.
-
-**Status:** ALL SIX PHASES BUILT 2026-09-05. First real application submitted and
-confirmed (OpenAI Applied AI Engineer, Abu Dhabi).
-Decision A resolved: Claude tailors in-session (no API key, no per-job cost).
-See [../jobs/README.md](../jobs/README.md) for usage and phase status.
-
----
-
-### 1. The core split
-
-An asymmetry decides the whole architecture:
-
-| Channel | Automate submit? | Why |
-|---|---|---|
-| **External ATS** (Greenhouse, Lever, Ashby, Workday) | **Yes** | No account to lose. Worst case = a rejected application. This is the actual pain: re-typing the same details into every portal. |
-| **LinkedIn** (Easy Apply, DMs, connection requests) | **No** | Automation risks the one channel that has converted in 4 years. Easy Apply is ~30s on the phone anyway, and hand-sent messages convert better. |
-
-So: the machine applies where it's safe and tedious. The phone handles LinkedIn natively,
-where it's risky to automate and pleasant to do by hand.
-
-Supporting evidence (from 4 years of results): ATS-portal applications never got
-shortlisted; managed platforms (LinkedIn / Wellfound / Instahyre) did. Evening phone time
-therefore lands on the highest-converting activity by design, not by accident.
-
----
-
-### 2. Architecture
-
-```
-                    ┌─ MORNING (unattended, desktop) ────────────────┐
-                    │                                                │
-  LinkedIn job      │  intake.py ──► rank.py ──► apply.py            │
-  alert emails ────►│  (IMAP)        (score,     (tailor + build     │
-  Greenhouse/Lever/ │                 route)      PDF + ATS docx)    │
-  Ashby board APIs  │                                │               │
-                    │                                ▼               │
-                    │                          autofill.py           │
-                    │                    (Playwright fills the       │
-                    │                     external form, screenshots,│
-                    │                     STOPS before submit)       │
-                    │                                │               │
-                    │  referrals.py ─► outreach.py   │               │
-                    │  (connections    (draft DMs)   │               │
-                    │   CSV match)          │        │               │
-                    └───────────────────────┼────────┼───────────────┘
-                                            ▼        ▼
-                                        queue/*.json + *.png
-                                            │
-                    ┌───────────────────────▼────────────────────────┐
-                    │  bot.py  (long-lived daemon, python-telegram-bot)│
-                    └───────────────────────┬────────────────────────┘
-                                            │  push
-                    ┌─ EVENING (phone, outside) ─────────────────────┐
-                    │  Telegram card: role, score, form screenshot   │
-                    │  [Approve] [Skip] [Fix field]                  │
-                    │     └─ Approve ──► desktop re-fills + submits  │
-                    │                    ──► appends to job-tracker  │
-                    │                                                │
-                    │  Referral cards: tap-copy message ──► LinkedIn │
-                    │  app, paste, send by hand                      │
-                    └────────────────────────────────────────────────┘
-```
-
-#### Why two passes on the form
-The morning pass fills and screenshots but does **not** hold a browser open for hours
-waiting on approval. On approve (evening), the desktop re-opens and re-fills from the same
-deterministic `answers.yaml`, then submits — ~20s, reliable because it is the same script
-and the same data. The morning pass is effectively a dry run that proves the form is
-fillable and shows exactly what will be sent.
-
----
-
-### 3. File layout
-
-All new code lives in `jobs/` at the repo root. Existing `applications/` tooling
-(`build.py`, `ats_score.py`, `_template/`) is reused, not replaced.
-
-| File | Purpose | Phase |
-|---|---|---|
-| `jobs/targets.yaml` | Market strategy + discovery filters: 5 sponsorship markets + remote-from-India, titles, keywords, hard reject rules, scoring weights. Read by `intake.py` and `rank.py`. | 1 |
-| `jobs/answers.yaml` | Canonical profile: every repeated form field written once — contact, work authorization, notice period, salary expectation, EEO, links, per-question stock answers. Single source of truth for autofill. | 1 |
-| `jobs/apply.py` | `apply.py <url>` → fetch JD, detect portal, scaffold `applications/<company>/` from `_template`, fill `JD.md`, build PDF + ATS docx via `build.py`, report `ats_score.py`. | 1 |
-| `jobs/autofill.py` | Playwright, **headed** real Chrome with persistent profile. Fills one external application from `answers.yaml`, uploads the tailored resume, screenshots, stops before submit. `--submit` does the second pass. | 2 |
-| `jobs/bot.py` | Telegram daemon. Watches `queue/`, pushes approval cards with inline buttons, drives approve/skip/fix, triggers submit, writes results. | 3 |
-| `jobs/intake.py` | Passive job discovery: parses LinkedIn saved-search alert emails over IMAP + polls Greenhouse/Lever/Ashby board APIs for target companies. Dedupes against the tracker. | 4 |
-| `jobs/rank.py` | Scores each job with `ats_score.py`, routes it: `easy-apply` / `external-mobile` / `external-desktop` (Workday-class) / `drop`. | 4 |
-| `jobs/referrals.py` | Joins the LinkedIn connections CSV export against target companies → who you already know, their role, tie strength. | 5 |
-| `jobs/prospects.py` | Shortlists NEW people to connect with at a company: builds LinkedIn alumni/ex-employer/title search URLs, plus named candidates from GitHub orgs, paper authors, and the JD's recruiter. Ranked by shared context. See §5b. | 5 |
-| `jobs/outreach.py` | Drafts personalised referral / recruiter messages + 300-char connection notes. Draft only — never sends. | 5 |
-| `jobs/queue/` | Working state: one JSON + screenshot per pending application. | 2 |
-| `jobs/state.db` | SQLite: seen jobs, applied, skipped, follow-up dates. Feeds `job-tracker.xlsx`. | 4 |
-
----
-
-### 4. Build phases
-
-Each phase is independently useful. Mobile approval — the main want — lands at Phase 3.
-
-#### Phase 0 — Setup (Sunil, ~30 min, blocking)
-1. **Telegram bot**: message `@BotFather` → `/newbot` → save the token. Then message the new
-   bot once and grab your chat id (`https://api.telegram.org/bot<TOKEN>/getUpdates`).
-2. `pip install python-telegram-bot` (only missing dependency).
-3. `playwright install chromium` (package present, browser binaries need confirming).
-4. **Request LinkedIn data export** — Settings → Data Privacy → *Get a copy of your data* →
-   **Connections** → CSV. Takes ~10 min to arrive; needed for Phase 5. Do this early.
-5. Fill the `TODO` fields in `answers.yaml` once it exists.
-6. *Optional:* Tailscale on laptop + phone, for SSH/GUI fallback when something breaks.
-
-#### Phase 1 — `answers.yaml` + `apply.py`  ✅ DONE
-The foundation. Usable immediately by hand: paste an external JD URL, get a tailored,
-scored, built resume pair. **Payoff: external application prep drops from ~20 min to ~3.**
-
-#### Phase 2 — `autofill.py`  ✅ DONE
-Playwright fills external portals from `answers.yaml` and screenshots. Still desktop-only
-and manual. **Payoff: form-filling drops from ~3 min to ~20s.**
-
-#### Phase 3 — `bot.py`  ✅ DONE (built before Phase 2)
-The Telegram approval loop. Reordered ahead of Phase 2: the bot is testable immediately
-with a synthetic queue item, so the Telegram integration is de-risked early and the phone
-loop works before autofill exists. Built dependency-free on `requests` — the planned
-`pip install python-telegram-bot` is no longer needed.
-
-#### Phase 4 — `intake.py` + `rank.py`  ✅ DONE
-Passive discovery so the queue fills itself overnight. **Payoff: morning cost hits zero.**
-
-#### Phase 5 — `referrals.py` + `prospects.py` + `outreach.py`  ✅ DONE
-Referral matching and drafted messages, delivered as tap-to-copy Telegram cards.
-**Payoff: the highest-converting activity becomes the easiest one.**
-
-#### Phase 6 — Scheduling + tracker sync  ✅ DONE
-Cron for the morning run, auto-append to `job-tracker.xlsx`, follow-up reminders at 5
-business days.
-
----
-
-### 5. One job, end to end
-
-1. **02:00** `intake.py` parses last night's LinkedIn alert email → 14 new roles.
-2. `rank.py` scores them → 5 above threshold. Routes: 2 Easy Apply, 2 Greenhouse, 1 Workday.
-3. `apply.py` tailors + builds resumes for the 3 external roles.
-4. `autofill.py` fills the 2 Greenhouse forms, screenshots each. Workday goes to the
-   desktop queue (fragile, and it's the dead channel).
-5. `referrals.py` finds a 1st-degree connection at one company; `outreach.py` drafts the ask.
-6. **19:30, outside, phone.** Telegram has 5 cards. Two form screenshots → tap Approve,
-   desktop submits. One referral card → tap copy, paste into LinkedIn, send. Two Easy
-   Applies → tap through in the LinkedIn app.
-7. **Elapsed: ~6 minutes.** Everything lands in `job-tracker.xlsx` with follow-up dates set.
-
----
-
-### 5b. Finding people to connect with (no existing connection)
-
-`referrals.py` only covers people already in the network. For companies where Sunil knows
-nobody, `prospects.py` shortlists new people to send connection requests to.
-
-**Sourcing rule: never scrape LinkedIn people-search.** It is the most heavily detected
-behaviour on the platform. Two legitimate routes instead:
-
-#### Route 1 — build the URL, let LinkedIn do the search (primary)
-LinkedIn's own tools beat any scraper because they apply the network graph. `prospects.py`
-constructs these per target company and sends them as tappable Telegram links:
-- **Alumni filter** — `linkedin.com/school/<school>/people/` filtered by company →
-  IIT Jodhpur alumni at the target. Highest accept rate available.
-- **Ex-employer filter** — same on Amazon's company page → shared-employer angle.
-- **Company people search** filtered by title (e.g. "Machine Learning Engineer").
-
-#### Route 2 — named candidates from public, non-LinkedIn sources
-- **The job posting** — Greenhouse / Lever JSON often names the recruiter or hiring manager.
-- **GitHub** — `github.com/orgs/<company>/people` + commit authors on company repos.
-  High-signal for AI/ML targets: real engineers with visible evidence of their work.
-- **Papers** — Semantic Scholar API filtered by author affiliation. A technical comment on
-  someone's paper is the highest-converting cold outreach there is, and it plays to the
-  M.Tech-in-AI / ex-Amazon background.
-- **Team pages, conference speaker lists.**
-- *Optional:* Apollo.io / RocketReach free tiers return LinkedIn URLs without touching
-  LinkedIn. Usable, but weaker than the above for AI/ML roles.
-
-#### Ranking (accept-likelihood x referral value)
-1. IIT Jodhpur alum at the company
-2. Ex-Amazon
-3. Engineer **on the hiring team** — beats a recruiter: referral bonus + internal weight
-4. Hiring manager for the specific role
-5. Recruiter
-Skip VPs / C-level: they will not accept and it burns invite quota.
-
-#### Platform limits that shape the design
-- **~100 invites/week**, and a high ignore-rate triggers "withdraw your invitations"
-  warnings. Target **5-10 well-chosen per week**, never bulk.
-- **Connection notes cap at 300 chars**; free accounts have had monthly limits on
-  *personalised* invites (verify current state before relying on notes).
-- **A bare request often out-accepts one with a note** — then message after acceptance.
-  `outreach.py` should draft both paths: a 300-char note, and a post-accept opener.
-
-#### Delivery
-Telegram card per candidate: name, role, **why them** (the shared-context reason), tap-copy
-note, tap-open profile URL. Sending stays manual, always.
-
----
-
-### 6. Open decisions
-
-**A. Who does the tailoring judgment in the unattended run?**
-`apply.py` can scaffold and score without an LLM, but choosing which project leads and how
-to reorder skills needs judgment — and the golden rule (never fabricate) has to hold.
-- *Option 1 (recommended):* a scheduled `claude -p` run does the tailoring in-session. No
-  API key, no per-job cost, and the no-fabrication rule is enforced by judgment rather than
-  by a prompt.
-- *Option 2:* Anthropic API call from inside `apply.py`. Needs a key, costs a few cents per
-  job, simpler to schedule.
-
-**B. Submit confirmation depth.** Screenshot-only, or also a diff of every field value in
-the card text? Screenshot is faster to scan on a phone; the field list is safer for
-screening questions. Probably: screenshot + flag any field the script was unsure about.
-
-**C. Prospect sourcing depth.** Route 1 (LinkedIn search URLs) alone is free and zero-risk
-and probably covers 80% of the value. Route 2 (GitHub / papers / recruiter extraction) is
-more build effort but produces *named* people with a real reason to reach out. Start with
-Route 1, add Route 2 only if accept rates disappoint?
-
-**D. Workday.** Build fragile automation for it, or formally drop the channel? Given 4
-years of zero conversions, dropping is defensible and saves the most maintenance.
-
----
-
-### 7. Risks and caveats
-
-- **Machine must be awake** for the morning run and for evening submits. Sunil is leaving
-  the system on.
-- **Playwright selectors break** when portals redesign. Greenhouse / Lever / Ashby are
-  stable and simple. Workday is the fragile one — different tenant configs, session
-  timeouts, occasional bot checks even with a real Chrome profile.
-- **A wrong auto-filled answer can be submitted.** The screenshot approval step is the only
-  thing preventing this — do not skip it later for speed.
-- **Never automate LinkedIn sending.** Connection requests and DMs are the most heavily
-  detected behaviours; a restriction would cost the only channel that has worked.
-- **Truthfulness rule carries over unchanged:** tailoring is reordering, emphasis, and
-  keyword-matching only. Never invent experience, tools, or metrics.
-
----
-
-### 8. Environment (verified 2026-09-05)
-
-Present: `playwright`, `yaml`, `requests`, `bs4`, `openpyxl`, `docx`, `pandoc`, `pdflatex`,
-`google-chrome`, `chromium`, Python 3.12.2.
-Missing: `python-telegram-bot`. Unconfirmed: Playwright browser binaries.
+| `/` | Review now, For later, Approved, Failed, Submitted (10 a page, with Referrals, Referred? and After columns) |
+| `/a/<id>` | one card: every value to be submitted, open questions with drafted answers, Approve / Later / Reject / Undo |
+| `/questions` | what a filing needs now (a code, a verification) and notices (a captcha) |
+| `/companies` | per company: submitted, sent in window, limit, room, next slot |
+| `/referrals` | people to contact per role, messages to copy, status buttons |
+| `/add` · `/keywords` | paste job links · tick weekly keywords (done / interest / dismiss) |
+
+## Limits
+
+- **Per company: 5 applications in any 30 days** (`apply.default_quota`). A full company is held
+  before ranking and its approved cards wait for a slot. OpenAI: 5 per 180 days, full until
+  2027-03-28 (its portal refused one).
+- **Per run:** 6 roles tailored, at most 3 from one company; 10 cards filed per review run.
+- **Intake:** `--source-limit N` stops after N matching postings (about 40 s for 200 instead of
+  3.5 min for all), stalest boards first.
+
+## Referrals
+
+- After each submission, 3–4 people at the company: connections from `data/connections.csv`
+  first, then engineers from GitHub or paper authors. Each gets a drafted message on `/referrals`.
+- **Companies where he knows no one:** he connects without a note; the role's page has a referral
+  message to send once they accept (the role, its link, a plain ask, two resume lines matching the
+  JD). The Submitted table links "0 people →" to it; *Invitation sent* there tracks the person.
+- Statuses: To Contact → Invite Sent → Accepted → Message Sent → Replied → Referred / No Response.
+  Each status stamps a 7-day follow-up.
+
+## Lessons from failed submits
+
+1. A clicked button is not a submission — only the portal's confirmation text is.
+2. A portal's resume parser rewrites the form: upload first, then read every field again.
+3. `page.fill()` lies on React typeaheads: read every value back.
+4. Yes / No is often a `<button>`, not an `<input>`.
+5. Look at the screenshot before believing a log.

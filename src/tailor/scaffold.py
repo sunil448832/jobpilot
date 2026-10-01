@@ -2,7 +2,7 @@
 """
 scaffold.py — turn an external job URL into a scaffolded, buildable application folder.
 
-Step 1 of the pipeline (see README.md, appendix). Fetches the JD, detects
+Step 1 of the pipeline (see docs/original-plan.md). Fetches the JD, detects
 the portal, scaffolds applications/<company>/ from the _template, and writes JD.md
 with the full JD text so ats_score.py has real prose to score against.
 

@@ -1,3 +1,5 @@
+# secrets (tokens, passwords): NEVER versioned, the repo is public
+.env
 # machine-written state and run output: never versioned
 data/
 logs/

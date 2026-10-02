@@ -96,6 +96,11 @@ def claude_bin():
               "/usr/local/bin/claude", "/usr/bin/claude"):
         if c and os.path.isfile(c) and os.access(c, os.X_OK):
             return c
+    # no standalone install: the binary the VSCode extension bundles (newest version)
+    for c in sorted(glob.glob(os.path.expanduser(
+            "~/.vscode/extensions/anthropic.claude-code-*/resources/native-binary/claude")), reverse=True):
+        if os.access(c, os.X_OK):
+            return c
     return None
 
 

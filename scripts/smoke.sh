@@ -2,7 +2,7 @@
 # smoke.sh — is the tool healthy? No LLM calls, no network beyond localhost.
 #   ./jobpilot check
 set -uo pipefail
-T="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"; PY="${JOBPILOT_PYTHON:-/home/sunil/miniconda3/bin/python3}"
+T="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"; PY="${JOBPILOT_PYTHON:-/home/sunil/softwares/miniconda3/bin/python3}"
 fail=0; ok(){ printf "  %-34s %s\n" "$1" "$2"; }; bad(){ printf "  %-34s FAIL %s\n" "$1" "$2"; fail=1; }
 n=$("$PY" - <<'PY' 2>&1
 import importlib, pkgutil, jobpilot
@@ -35,7 +35,7 @@ for t in test_agents; do
 done
 rm -rf "$TD"
 if systemctl --user is-active jobpilot-form.service >/dev/null 2>&1; then
-  tok=$(grep FORM_TOKEN ~/.config/jobbot/env 2>/dev/null | cut -d= -f2); codes=$(for u in "/" "/keywords" "/referrals"; do curl -s -m 5 -o /dev/null -w '%{http_code} ' "http://127.0.0.1:8765$u?t=$tok"; done)
+  tok=$(grep FORM_TOKEN "$T/.env" 2>/dev/null | cut -d= -f2); codes=$(for u in "/" "/keywords" "/referrals"; do curl -s -m 5 -o /dev/null -w '%{http_code} ' "http://127.0.0.1:8765$u?t=$tok"; done)
   [ "$codes" = "200 200 200 " ] && ok "form routes" "$codes" || bad "form routes" "$codes"
 else ok "form service" "not running (start: ./jobpilot services)"; fi
 ok "claude cli" "$("$PY" -c 'from jobpilot.tailor import autotailor;print(autotailor.claude_bin() or "MISSING")')"

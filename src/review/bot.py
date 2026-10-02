@@ -38,11 +38,11 @@ import time
 import requests
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY, ENV_FILE)
 from jobpilot.core import cards as CD  # noqa: E402
 REPLIES = os.path.join(DATA, "bot_replies.json")
 OFFSET_F = os.path.join(DATA, "bot_offset.json")
-ENV_PATH = os.path.expanduser("~/.config/jobbot/env")
+ENV_PATH = ENV_FILE
 API = "https://api.telegram.org/bot{token}/{method}"
 
 PENDING, NEEDS_INPUT, NEEDS_REVISION = "pending", "needs_input", "needs_revision"
@@ -53,7 +53,7 @@ APPROVED, SKIPPED, SUBMITTED, FAILED = "approved", "skipped", "submitted", "fail
 
 def load_creds():
     if not os.path.isfile(ENV_PATH):
-        sys.exit(f"No credentials at {ENV_PATH}.\nRun: python jobs/telegram_setup.py")
+        sys.exit(f"No credentials at {ENV_PATH}.\nRun: python -m jobpilot.review.telegram_setup")
     env = {}
     for line in open(ENV_PATH):
         line = line.strip()

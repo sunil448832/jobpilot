@@ -22,7 +22,7 @@ the way a person sends them — the form's own submit button, else Enter in the
 password box — because a tenant may hide that button from assistive technology
 (aria-hidden) while the page header carries a visible "Sign In" of the same name.
 
-Credentials: ~/.config/jobbot/env (WORKDAY_EMAIL / WORKDAY_PASSWORD), never
+Credentials: .env (WORKDAY_EMAIL / WORKDAY_PASSWORD), never
 printed and never shown to Claude.
 """
 import re
@@ -272,7 +272,7 @@ def _gate(page, ctx, log, asked=False):
     f = page.main_frame
     email, pw = creds()
     if not (email and pw):
-        log("    [workday] WORKDAY_EMAIL / WORKDAY_PASSWORD missing in ~/.config/jobbot/env")
+        log("    [workday] WORKDAY_EMAIL / WORKDAY_PASSWORD missing in .env")
         return False
     creating = _box(f, r"verify.*password") is not None
     if not creating:

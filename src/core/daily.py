@@ -29,10 +29,10 @@ import urllib.parse
 import urllib.request
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, LOGS, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY, ENV_FILE, TAILSCALE)
 from jobpilot.core.config import cfg  # noqa: E402
 DB = os.path.join(DATA, "state.db")
-ENV = os.path.expanduser("~/.config/jobbot/env")
+ENV = ENV_FILE
 LOG = os.path.join(LOGS, "daily.log")
 LOCK = os.path.join(DATA, ".daily.lock")
 
@@ -103,7 +103,7 @@ def form_link():
     host = cfg("server.tailscale_host", "") or ""
     if not host:
         try:
-            out = subprocess.run(["tailscale", "status", "--json"],
+            out = subprocess.run(TAILSCALE + ["status", "--json"],
                                  capture_output=True, timeout=6).stdout
             host = json.loads(out).get("Self", {}).get("DNSName", "").rstrip(".")
         except Exception:

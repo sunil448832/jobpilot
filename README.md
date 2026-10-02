@@ -349,7 +349,7 @@ what the filing will enter, from the record: each field's fact looked up again, 
 picked, his answer — not what the page happened to display.
 
 **Platforms (`apply/platforms/`)** — only what cannot be read off the page: Workday's
-account gate, passed by code (credentials from `~/.config/jobbot/env`, never shown to Claude;
+account gate, passed by code (credentials from `.env`, never shown to Claude;
 the agent has no sign-in tool and finishes as stuck at a login it cannot pass). A refused
 password, a locked account or a missing account form is asked on `/questions`: he fixes the
 account on the employer's Workday and answers *done* (or *skip*), then one more try — never a
@@ -387,7 +387,7 @@ it moves the card to Submitted, labelled *✋ submitted by hand*, and the applic
 notes it, so it is never filed again. **Sent? — check your email** lists cards whose Submit
 was pressed but not confirmed; they are
 never pressed again, and the queue dedupe never removes them. A re-exploration replaces every earlier unsent card of that application. Stable
-token in `~/.config/jobbot/env`. It runs as `jobpilot-form.service`: restart it after
+token in `.env`. It runs as `jobpilot-form.service`: restart it after
 changing code, or it keeps serving the old version.
 
 **`form.py`** — renders one queue item as one page: header, honest flags, a link to the
@@ -579,7 +579,7 @@ is the normal flow — build, score, tailor if needed, fill, review on the phone
 Approve. `./jobpilot inbox` shows where each one stands.
 
 **Workday** (added 2026-09-23, `src/apply/platforms/workday.py`). One account per employer tenant, credentials
-in `~/.config/jobbot/env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo, never shown to
+in `.env` (`WORKDAY_EMAIL` / `WORKDAY_PASSWORD`, never in the repo, never shown to
 Claude): the module signs in, creates the account if the tenant does not know the address, and
 asks for an emailed verification code on Telegram. It knows the account gate by its email and
 password boxes (its step name varies by tenant), reads the current step from the progress bar,

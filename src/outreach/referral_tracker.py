@@ -35,10 +35,10 @@ import sys
 import urllib.parse
 import urllib.request
 
-from jobpilot.core.paths import DATA  # noqa: E402
+from jobpilot.core.paths import DATA, ENV_FILE, TAILSCALE  # noqa: E402
 from jobpilot.core.config import cfg  # noqa: E402
 DB = os.path.join(DATA, "state.db")
-ENV = os.path.expanduser("~/.config/jobbot/env")
+ENV = ENV_FILE
 
 COLS = ["Person", "Their Title", "Company", "Role Applied", "Relationship",
         "Why Them", "Profile URL", "Status", "Invite Sent", "Message Sent",
@@ -242,7 +242,7 @@ def referral_link():
     host = ""
     try:
         import subprocess
-        out = subprocess.run(["tailscale", "status", "--json"],
+        out = subprocess.run(TAILSCALE + ["status", "--json"],
                              capture_output=True, timeout=6).stdout
         host = json.loads(out).get("Self", {}).get("DNSName", "").rstrip(".")
     except Exception:

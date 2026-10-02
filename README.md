@@ -27,6 +27,69 @@ On the phone (review site over Tailscale) each card is **Approve**, **Later** (c
 time) or **Reject** (dropped). Approved cards are filed at the next 07:00 / 19:00 run, or at once
 with `./jobpilot submit`.
 
+## Setup (a new machine)
+
+Everything the tool keeps lives under `~/work`, so an OS reinstall that keeps `~/work` keeps the
+secrets (`.env`), the state (`data/`: jobs, Chrome sign-ins, the Tailscale login) and every
+application. Only steps 1, 4 and 8 have to be redone.
+
+**1. System packages** (the only step that needs sudo):
+
+```bash
+sudo apt install git pandoc texlive-latex-extra texlive-fonts-extra   # pdflatex + .docx build
+sudo apt install xvfb          # optional: Chrome fills forms on a hidden display (else off-screen)
+```
+
+and Google Chrome (`google-chrome-stable`, the .deb from google.com/chrome): forms are filled in
+real Chrome, never Playwright's bundled Chromium.
+
+**2. Python** (3.11+; Miniconda in `~/softwares/miniconda3`, or set `$JOBPILOT_PYTHON`). The
+libraries are declared once, in `pyproject.toml` (pyyaml, requests, openpyxl, playwright,
+python-docx, beautifulsoup4, claude-agent-sdk):
+
+```bash
+~/softwares/miniconda3/bin/python3 -m pip install -e .
+```
+
+**3. Resume repo** at `~/work/docs/resume_v2` (`paths.tracking_repo` in `config/config.yaml`, or
+`$JOBPILOT_TRACKING`). `./jobpilot paths` shows every location and whether it exists.
+
+**4. Claude CLI**, signed in (`claude`, then `/login`). A standalone install anywhere on the
+usual paths, or the one bundled with the VSCode extension: `claude_bin()` in
+`src/tailor/autotailor.py` finds either.
+
+**5. `.env`** in the checkout: secrets, one `KEY=value` per line, mode 600, gitignored (the repo
+is public: never commit it). Steps 6 and 8 write their keys; add the rest by hand.
+
+| Key | For | Written by |
+|---|---|---|
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | digests, "N waiting", codes asked mid-filing | `./jobpilot setup-telegram` |
+| `FORM_TOKEN` | the review site's `?t=` link | the review site, on first start |
+| `WORKDAY_EMAIL`, `WORKDAY_PASSWORD` | the Workday account gate (one password used nowhere else) | by hand; without them Workday jobs are skipped |
+| `BRAVE_API_KEY` or `GOOGLE_CSE_KEY` + `GOOGLE_CSE_CX` | weekly tenant discovery: web search | by hand, optional |
+| `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | weekly tenant discovery: Adzuna | by hand, optional |
+
+**6. Telegram**: create a bot with @BotFather (`/newbot`), then run `./jobpilot setup-telegram`
+in a terminal. It asks for the token (hidden), waits for you to tap START on the bot, saves both
+keys to `.env` (keeping the others) and sends a confirmation. `--test` sends another.
+
+**7. Tailscale** (the review site from any network): `./jobpilot setup-tailscale`. No sudo and no
+system change: the static binaries go to `~/softwares/tailscale`, the daemon runs as you in
+userspace-networking mode (no network device; routing, DNS and firewall untouched), and its
+state and socket live in `data/tailscale/`. The first run prints a login URL; install the
+Tailscale app on the phone with the same account. After a reboot, run it again to start the
+daemon (no login). After a reinstall, remove the old machine in the
+[admin console](https://login.tailscale.com/admin/machines) so the name stays free.
+
+**8. Review site and timers.** On demand: `~/softwares/miniconda3/bin/python3 -m jobpilot.review.serve`
+prints the home Wi-Fi and Tailscale links. `./jobpilot services` (the site) and `./jobpilot start`
+(the timers) enable `jobpilot-form.service`, `jobpilot-daily.timer` and `jobpilot-review.timer`
+in `~/.config/systemd/user/`. Those unit files are **not in this repo**, so a reinstall loses them
+and they have to be written again first.
+
+**9. Check:** `./jobpilot check` (imports, paths, config, a resume build, the tests, the CLI — no
+Claude spent) ends in `ALL OK`.
+
 ## Commands
 
 ```bash
@@ -83,7 +146,9 @@ jobpilot/
     config.yaml                how the pipeline runs: limits, models, schedule
     boards.yaml                the boards intake pulls
   src/                         core/ discover/ rank/ screen/ tailor/ apply/ review/ outreach/ agents/
-  data/                        general state: state.db (jobs, referrals), connections.csv, caches
+  .env                         secrets: Telegram, review link, Workday (gitignored, mode 600)
+  data/                        general state: state.db (jobs, referrals), connections.csv, caches,
+                               chrome-profile/ (the form filler's sign-ins), tailscale/ (its login)
   applications/<slug>/         one job: JD.md, sections/ (its resume copy), sunil_resume.pdf/.docx,
                                calls.json (the form record), explore.json, cards/ (its cards and
                                screenshots), asks/ (questions its filings left)
@@ -141,7 +206,8 @@ A low score from a real gap is reported, not chased. No code adds or removes ter
 
 ## Review site
 
-`jobpilot-form.service`, port 8765, over Tailscale; restart it after changing its code.
+`jobpilot-form.service` (or `python -m jobpilot.review.serve`), port 8765, on home Wi-Fi and over
+Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its code.
 
 | Page | Shows |
 |---|---|

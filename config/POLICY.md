@@ -4,7 +4,7 @@ Standing instructions for every automated run and every Claude session working o
 an application. **If a rule here conflicts with a clever idea, the rule wins.**
 
 Layout (since 2026-09-22): the tool is `~/work/projects/jobpilot` — `src/`,
-`config/` (this file lives there, with everything else hand-edited), `data/`, and its outputs `applications/<slug>/`. The resume repo, `~/work/docs/sunil_resume_v2`, is **read-only**
+`config/` (this file lives there, with everything else hand-edited), `data/`, and its outputs `applications/<slug>/`. The resume repo, `~/work/docs/resume_v2`, is **read-only**
 for the tool: `resume/sections/*.tex` (the base resume), `project-memory-backup/`,
 `target-companies/`. Both trees are passed as `--add-dir`; prompts give absolute
 paths. `config.yaml`, `targets.yaml`, `answers.yaml` live in `config/`; his picks from a portal's

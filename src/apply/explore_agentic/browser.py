@@ -17,9 +17,9 @@ import re
 import time
 
 from jobpilot.core.config import cfg
-from jobpilot.core.paths import TOOL, RESUME
+from jobpilot.core.paths import TOOL, RESUME, CHROME_PROFILE
 
-PROFILE_DIR = os.path.expanduser("~/.config/jobbot/chrome-profile")
+PROFILE_DIR = CHROME_PROFILE
 
 
 def norm(s):
@@ -87,7 +87,8 @@ def _wait_for_profile(max_s=None):
 def open_browser(pw):
     """Real Chrome on the persistent profile. browser.display: `virtual` (Xvfb, the
     default when installed), `offscreen`, or `own` (on the desktop, to watch it)."""
-    os.makedirs(PROFILE_DIR, exist_ok=True)
+    os.makedirs(PROFILE_DIR, mode=0o700, exist_ok=True)
+    os.chmod(PROFILE_DIR, 0o700)   # cookies and portal sign-ins
     _wait_for_profile()
     mode = cfg("browser.display", "auto")
     args, env = ["--disable-blink-features=AutomationControlled"], None

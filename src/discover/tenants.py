@@ -106,7 +106,7 @@ def src_search(markets, titles, log, per_market=6):
     e = env()
     key, gkey, gcx = e.get("BRAVE_API_KEY"), e.get("GOOGLE_CSE_KEY"), e.get("GOOGLE_CSE_CX")
     if not key and not (gkey and gcx):
-        log("search: no BRAVE_API_KEY / GOOGLE_CSE_KEY+CX in ~/.config/jobbot/env — skipped")
+        log("search: no BRAVE_API_KEY / GOOGLE_CSE_KEY+CX in .env — skipped")
         return []
     out = []
     for m in markets:

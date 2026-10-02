@@ -89,7 +89,7 @@ jobpilot/
                                screenshots), asks/ (questions its filings left)
   applications/_tenants/       per employer portal: its list picks (below)
   logs/                        daily.log, sessions/<slug>/ (each agent session) — safe to delete
-~/work/docs/sunil_resume_v2/   the base resume and project notes — read-only for the tool
+~/work/docs/resume_v2/          the base resume and project notes — read-only for the tool
 ```
 
 ## Facts and answers
@@ -137,7 +137,7 @@ A low score from a real gap is reported, not chased. No code adds or removes ter
 | a refusal (applied already, closed) | **Failed — needs a look** |
 
 - Workday: the account gate (sign in, create account, email verification) is passed by code with
-  credentials from `~/.config/jobbot/env`; Claude never sees them.
+  credentials from `.env` in the checkout (gitignored); Claude never sees them.
 
 ## Review site
 

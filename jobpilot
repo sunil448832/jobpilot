@@ -13,7 +13,7 @@
 set -uo pipefail
 TOOL="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
 SRC="$TOOL/src"; DATA="$TOOL/data"; LOGS="$TOOL/logs"
-PY="${JOBPILOT_PYTHON:-/home/sunil/miniconda3/bin/python3}"   # has playwright; /usr/bin/python3 does not
+PY="${JOBPILOT_PYTHON:-/home/sunil/softwares/miniconda3/bin/python3}"   # has playwright; /usr/bin/python3 does not
 py() { "$PY" -m "jobpilot.$1" "${@:2}"; }                      # every stage is a module: jobpilot.<stage>.<mod> (pip install -e .)
 TIMERS="jobpilot-daily.timer jobpilot-review.timer"
 
@@ -99,7 +99,7 @@ usage() { cat <<'TXT'
 
   ONE-OFF SETUP
     ./jobpilot setup-telegram  create/verify the Telegram bot
-    ./jobpilot setup-tailscale install Tailscale (needs your password)
+    ./jobpilot setup-tailscale start Tailscale as you (no sudo, no system changes); first run logs in
     ./jobpilot services        (re)install + enable the systemd units
 
   EDIT THESE, NOT CODE          config/config.yaml   how the pipeline runs
@@ -174,8 +174,8 @@ case "$cmd" in
               echo "  claude cli   : $("$PY" -c 'from jobpilot.tailor import autotailor;print(autotailor.claude_bin() or "MISSING")' 2>/dev/null)" ;;
   paths)      py core.paths ;;
   check)      bash "$TOOL/scripts/smoke.sh" ;;
-  link)       tok=$(grep FORM_TOKEN ~/.config/jobbot/env 2>/dev/null | cut -d= -f2)
-              ts=$(tailscale status --json 2>/dev/null | "$PY" -c "import json,sys;print(json.load(sys.stdin)['Self']['DNSName'].rstrip('.'))" 2>/dev/null)
+  link)       tok=$(grep FORM_TOKEN "$TOOL/.env" 2>/dev/null | cut -d= -f2)
+              ts=$("$HOME/softwares/tailscale/tailscale" --socket "$DATA/tailscale/tailscaled.sock" status --json 2>/dev/null | "$PY" -c "import json,sys;print(json.load(sys.stdin)['Self']['DNSName'].rstrip('.'))" 2>/dev/null)
               [ -n "${ts:-}" ] && echo "  anywhere:  http://$ts:8765/?t=$tok"
               echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok"
               [ -n "${ts:-}" ] && echo "  questions: http://$ts:8765/questions?t=$tok" ;;

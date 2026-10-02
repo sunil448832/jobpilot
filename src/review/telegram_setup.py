@@ -3,12 +3,12 @@
 telegram_setup.py — one-shot Telegram bot setup for the approval pipeline.
 
 Verifies the token, waits for you to message the bot, captures your chat id,
-writes ~/.config/jobbot/env (mode 600), and sends a confirmation message.
+writes .env (mode 600), and sends a confirmation message.
 
 Usage:
-    python jobs/telegram_setup.py                 # prompts for the token
-    python jobs/telegram_setup.py --token 123:ABC
-    python jobs/telegram_setup.py --test          # just send a test message
+    python -m jobpilot.review.telegram_setup                 # prompts for the token
+    python -m jobpilot.review.telegram_setup --token 123:ABC
+    python -m jobpilot.review.telegram_setup --test          # just send a test message
 """
 import argparse
 import getpass
@@ -16,19 +16,27 @@ import json
 import os
 import sys
 import time
+import urllib.error
+import urllib.parse
 import urllib.request
 
-ENV_PATH = os.path.expanduser("~/.config/jobbot/env")
+from jobpilot.core.paths import ENV_FILE as ENV_PATH
 API = "https://api.telegram.org/bot{token}/{method}"
 
 
 def call(token, method, **params):
     url = API.format(token=token, method=method)
     if params:
-        import urllib.parse
         url += "?" + urllib.parse.urlencode(params)
-    with urllib.request.urlopen(url, timeout=40) as r:
-        return json.load(r)
+    try:
+        with urllib.request.urlopen(url, timeout=40) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        # a bad token is a 401 / 404 whose body says why: hand it back like any reply
+        try:
+            return json.load(e)
+        except ValueError:
+            return {"ok": False, "error_code": e.code, "description": e.reason}
 
 
 def load_env():
@@ -43,9 +51,13 @@ def load_env():
 
 
 def write_env(token, chat_id):
-    os.makedirs(os.path.dirname(ENV_PATH), exist_ok=True)
-    with open(ENV_PATH, "w") as f:
-        f.write(f"TELEGRAM_BOT_TOKEN={token}\nTELEGRAM_CHAT_ID={chat_id}\n")
+    # keep every other key (FORM_TOKEN, WORKDAY_*): only the two Telegram ones change
+    env = load_env()
+    env.update(TELEGRAM_BOT_TOKEN=token, TELEGRAM_CHAT_ID=chat_id)
+    os.makedirs(os.path.dirname(ENV_PATH), mode=0o700, exist_ok=True)
+    fd = os.open(ENV_PATH, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        f.write("".join(f"{k}={v}\n" for k, v in env.items()))
     os.chmod(ENV_PATH, 0o600)
     print(f"  [saved] {ENV_PATH} (mode 600)")
 
@@ -69,9 +81,12 @@ def main():
 
     token = args.token or env.get("TELEGRAM_BOT_TOKEN") or getpass.getpass("Bot token: ").strip()
 
+    if not token:
+        sys.exit("No token entered. Get one from @BotFather (/newbot) and run again.")
     me = call(token, "getMe")
     if not me.get("ok"):
-        sys.exit(f"Token rejected: {me}")
+        sys.exit(f"Token rejected by Telegram ({me.get('error_code')}: {me.get('description')}). "
+                 "Copy it again from @BotFather and rerun.")
     bot = me["result"]["username"]
     print(f"  [bot] @{bot} — token valid")
 

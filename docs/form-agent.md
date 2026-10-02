@@ -49,7 +49,7 @@ his own facts; work authorization by the job's own market; website links a porta
 duplicates are removed (the portal read them from the resume); signing in is not the agent's.
 
 **Sign-in** is done by code (`platforms/workday.py`), with credentials from
-`~/.config/jobbot/env` that the agent never sees: sign in, or create the account; an email
+`.env` that the agent never sees: sign in, or create the account; an email
 verification, a refused password, a locked account or a missing account form is asked on
 `/questions` (he fixes the account himself and answers *done* / *skip*; never a password asked,
 never a second account, no second try in a session after a refusal).

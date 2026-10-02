@@ -54,7 +54,7 @@ check(any(k.startswith("compensation.by_market.netherlands.") for k in f)
 check(not any(v in ("PER_COMPANY", "TODO") for v in f.values()), "no 'not written yet' markers")
 check(not any(s in k.lower() for k in f for s in ("password", "token", "secret")), "no secrets")
 shown = facts.for_prompt(f)
-check("file:resume: (the resume file)" in shown and "/x/sunil_resume.docx" not in shown, "the resume by name, not its path")
+check("file:resume: (the resume file, PDF)" in shown and "/x/sunil_resume.docx" not in shown, "the resume by name, not its path")
 
 print()
 print("ALL PASSED" if not fails else f"{len(fails)} FAILED:\n  " + "\n  ".join(fails))

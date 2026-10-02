@@ -1,6 +1,6 @@
 # tests
 
-    /home/sunil/miniconda3/bin/python3 tests/test_agents.py    # the agents folder renders; the job facts the form agent sees
+    /home/sunil/softwares/miniconda3/bin/python3 tests/test_agents.py    # the agents folder renders; the job facts the form agent sees
     bash tests/agentic_batch.sh <slug> [<slug> ...]           # the form agent on real applications, one after another
                                                                # (live: a browser, Claude; never submits)
 

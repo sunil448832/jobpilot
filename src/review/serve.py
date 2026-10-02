@@ -35,14 +35,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, LOGS, TRACKING, POLICY,  # noqa: E402
-                   RESUME, APPLICATIONS, MEMORY)
+                   RESUME, APPLICATIONS, MEMORY, ENV_FILE, TAILSCALE)
 from jobpilot.core.config import cfg  # noqa: E402
 from jobpilot.core import cards as CD  # noqa: E402
 from jobpilot.review import form as form_mod                                    # noqa: E402
 
 TOKEN = None
 LOCK = threading.Lock()
-TG_ENV = os.path.expanduser("~/.config/jobbot/env")
+TG_ENV = ENV_FILE
 
 
 def telegram(text):
@@ -814,7 +814,7 @@ def lan_ip():
 
 def tailscale_host():
     try:
-        out = subprocess.run(["tailscale", "status", "--json"],
+        out = subprocess.run(TAILSCALE + ["status", "--json"],
                              capture_output=True, timeout=5).stdout
         return json.loads(out).get("Self", {}).get("DNSName", "").rstrip(".") or None
     except Exception:
@@ -834,7 +834,7 @@ def main():
     ap.add_argument("--no-token", action="store_true")
     a = ap.parse_args()
     # A token that changes every restart invalidates the link on your phone and
-    # every bookmark. Persist it in ~/.config/jobbot/env instead.
+    # every bookmark. Persist it in .env instead.
     if a.no_token:
         TOKEN = None
     else:
@@ -845,8 +845,8 @@ def main():
                     env_tok = line.split("=", 1)[1].strip()
         if not env_tok:
             env_tok = secrets.token_urlsafe(9)
-            os.makedirs(os.path.dirname(TG_ENV), exist_ok=True)
-            with open(TG_ENV, "a") as f:
+            fd = os.open(TG_ENV, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+            with os.fdopen(fd, "a") as f:
                 f.write(f"FORM_TOKEN={env_tok}\n")
             os.chmod(TG_ENV, 0o600)
             print(f"  [token] generated and saved to {TG_ENV}")

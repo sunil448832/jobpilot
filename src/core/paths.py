@@ -20,7 +20,7 @@ configured, not inferred.
 Resolution order for TRACKING:
   1. $JOBPILOT_TRACKING
   2. config/config.yaml  ->  paths.tracking_repo
-  3. ~/work/docs/sunil_resume_v2
+  3. ~/work/docs/resume_v2
 """
 import os
 
@@ -32,8 +32,11 @@ DATA = os.path.join(TOOL, "data")
 LOGS = os.path.join(TOOL, "logs")
 SCRIPTS = os.path.join(TOOL, "scripts")
 POLICY = os.path.join(CONFIG, "POLICY.md")     # hand-edited rules live with the other hand-edited files
+# Secrets live in the checkout so an OS reinstall that keeps ~/work keeps them; .env is
+# gitignored (the repo is public) and mode 600. Tokens and passwords, KEY=value lines.
+ENV_FILE = os.path.join(TOOL, ".env")
 
-_DEFAULT_TRACKING = os.path.expanduser("~/work/docs/sunil_resume_v2")
+_DEFAULT_TRACKING = os.path.expanduser("~/work/docs/resume_v2")
 
 
 def _tracking():
@@ -58,6 +61,12 @@ RESUME = os.path.join(TRACKING, "resume")
 MEMORY = os.path.join(TRACKING, "project-memory-backup")
 # ... and what it WRITES, which lives with the tool.
 APPLICATIONS = os.path.join(TOOL, "applications")
+CHROME_PROFILE = os.path.join(DATA, "chrome-profile")   # the form filler's own Chrome: its portal sign-ins, owner-only
+# Tailscale runs as Sunil, not as a system service: the static binaries, a userspace daemon,
+# its state (the device key) and socket here. scripts/setup_tailscale.sh starts it.
+TAILSCALE_STATE = os.path.join(DATA, "tailscale")
+TAILSCALE = [os.path.expanduser("~/softwares/tailscale/tailscale"),
+             "--socket", os.path.join(TAILSCALE_STATE, "tailscaled.sock")]   # + ["status", "--json"]
 
 os.makedirs(DATA, exist_ok=True)
 os.makedirs(LOGS, exist_ok=True)

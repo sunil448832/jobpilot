@@ -16,9 +16,9 @@ by the pin see put on it. An answer:
     search:<regex>; <regex>        the agent's patterns, most specific first (\bIndia\b, ^I):
                                    each run over the list's entries (a nested list's chains);
                                    what each matches is reported, nothing picked
-    file:resume                    the resume file for the resume / CV field (the PDF)
-    file:resume_docx               the same resume as a .docx, for a second attachment field
-                                   (cover letter, additional documents)
+    file:resume                    the resume file for the resume / CV field (the .docx)
+    file:resume_second             the same resume in the other format (the PDF), for a second
+                                   attachment field (cover letter, additional documents)
     add:<n>                        a repeated section's Add, pressed n times, each checked
     <the question itself>          nothing stored: a required box gets a placeholder text
     text:<value>                   a literal value — the applicant's approved answer, at filing
@@ -74,10 +74,10 @@ def read_answer(answer, facts, resume):
         return "search", [t.strip() for t in a[7:].split(";") if t.strip()][:3]
     if low == "file:resume":
         return "file", resume
-    if low == "file:resume_docx":
-        return "file", facts.get(low)
-    if low == "file:resume_pdf":                         # a record's SECOND attachment field (cover letter,
-        return "file", facts.get("file:resume_docx") or facts.get(low)   # additional): it now takes the .docx
+    if low in ("file:resume_second", "file:resume_docx", "file:resume_pdf"):
+        # a SECOND attachment field (cover letter, additional documents): the resume in the
+        # other format. Records before 2026-10-05 name it file:resume_docx / file:resume_pdf.
+        return "file", facts.get("file:resume_second") or facts.get(low)
     if low.startswith("add:"):
         n = "".join(ch for ch in a[4:] if ch.isdigit())
         return "add", int(n or 0)
@@ -526,9 +526,20 @@ def select_native(el, label):
 def give_file(frame, el, path):
     """The field's own file input, set directly (a drop zone over it may take the click); else
     the file chooser its button opens. Done when the page shows the file's name."""
-    name = os.path.basename(str(path)).lower()
     inp = lambda: el if el.evaluate("el => el.tagName === 'INPUT' && el.type === 'file'") else \
         el.locator("xpath=ancestor::*[.//input[@type='file']][1]//input[@type='file']").first
+    # a field that names the formats it takes (accept=".pdf") and not this one: the same
+    # resume in the other format, when it is built
+    try:
+        accept = (inp().get_attribute("accept", timeout=2000) or "").lower()
+    except Exception:
+        accept = ""
+    ext = os.path.splitext(str(path))[1].lower()
+    if accept and "*" not in accept and ext not in accept:
+        other = os.path.splitext(str(path))[0] + (".pdf" if ext == ".docx" else ".docx")
+        if os.path.isfile(other) and os.path.splitext(other)[1] in accept:
+            path = other
+    name = os.path.basename(str(path)).lower()
 
     def chooser():
         with frame.page.expect_file_chooser(timeout=WAIT) as fc:

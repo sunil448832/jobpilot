@@ -179,6 +179,11 @@ def candidates(limit, floor, per_company=3, require_screen=None):
     # A refusal ("no") never gets here — visa.py or the screener rejected it.
     silent_cap = int(limit * float(cfg("pipeline.visa_silent_share", 0.3)) + 1e-9)
     silent = 0
+    # The market mix (pipeline.market_max_share): no market fills more than its share of
+    # the run, so a run is not all one country when the others have roles to offer.
+    # Shares are caps, not quotas: slots a market cannot fill go to the next-best roles.
+    shares = cfg("pipeline.market_max_share", {}) or {}
+    per_market = {}
     for k, co, title, loc, url, mk, sc, fit, src, vtag in rows:
         ck = Q.key(co)
         inbox = src == "inbox"
@@ -207,11 +212,14 @@ def candidates(limit, floor, per_company=3, require_screen=None):
             continue
         if vtag == "no" and not inbox:
             continue
+        if mk in shares and not inbox and per_market.get(mk, 0) >= max(1, int(limit * float(shares[mk]) + 1e-9)):
+            continue
         if vtag not in ("explicit", "implicit") and not inbox:
             if silent >= silent_cap:
                 continue
             silent += 1
         seen[co] = seen.get(co, 0) + 1
+        per_market[mk] = per_market.get(mk, 0) + 1
         urls.add(norm_url(url))
         out.append({"key": k, "company": co, "title": title, "location": loc,
                     "url": url, "market": mk, "score": sc, "fit": fit, "slug": slug,

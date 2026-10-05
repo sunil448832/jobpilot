@@ -17,10 +17,12 @@ value is looked up here when the code acts.
     learned:<key>               his answer for this very form, approved on the phone
                                 — a <key> comes from the question's words (answers.question_key),
                                 so a recorded key keeps meaning the same answer
-    file:resume                 the resume file built for this application (the PDF)
-    file:resume_docx            the same resume as a .docx, for a second attachment field
-    (file:resume_pdf            a record's second attachment field, from before 2026-09-29: it
-                                now takes the .docx (act.read_answer); not shown to the agent)
+    file:resume                 the resume for the resume / CV field: the .docx
+                                (answers.yaml files.upload_for_ats_portal; the PDF if no .docx)
+    file:resume_second          the same resume in the other format (the PDF), for a second
+                                attachment field — one field: the .docx only; two: both
+    (file:resume_docx,          what records made before 2026-10-05 name a second attachment
+     file:resume_pdf             field: both now take file:resume_second; not shown to the agent)
 
 Salary rows of other markets are left out: only this market's asking figure applies.
 """
@@ -86,6 +88,11 @@ def job_facts(answers, ctx, learned=None, resume=None, tenant=None, resume_pdf=N
                 facts[f"{kind}:{question_key(e.get('match', ''))}"] = str(e["answer"]).strip()
     if resume:
         facts["file:resume"] = resume
+    # a second attachment field (cover letter, additional documents) gets the OTHER format:
+    # the PDF when the resume field takes the .docx (files.upload_for_ats_portal)
+    second = resume_pdf if str(resume or "").endswith(".docx") else resume_docx
+    if second and second != resume:
+        facts["file:resume_second"] = second
     if resume_docx:
         facts["file:resume_docx"] = resume_docx
     if resume_pdf:
@@ -118,11 +125,12 @@ def for_prompt(facts, asked=None, tenant=""):
     stored, portal, employer, got = [], [], [], []
     for k, v in facts.items():
         if k == "file:resume":
-            stored.append("file:resume: (the resume file, PDF)")
-        elif k == "file:resume_docx":
-            stored.append("file:resume_docx: (the same resume as a .docx)")
-        elif k == "file:resume_pdf":
-            continue                                     # a key older records name; not offered
+            stored.append(f"file:resume: (the resume file, {'.docx' if str(v).endswith('.docx') else 'PDF'})")
+        elif k == "file:resume_second":
+            stored.append(f"file:resume_second: (the same resume as a {'.docx' if str(v).endswith('.docx') else 'PDF'},"
+                          " for a second attachment field)")
+        elif k in ("file:resume_docx", "file:resume_pdf"):
+            continue                                     # keys older records name; not offered
         elif k.startswith("tenant:"):
             own = facts.get(k[len("tenant:"):], "")
             portal.append(f"{k}: {v[:120]}" + (f"   (stands for the stored {own[:60]!r})" if own else ""))

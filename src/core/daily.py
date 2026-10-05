@@ -115,6 +115,22 @@ def online(wait_s=0):
             time.sleep(30)
 
 
+def discover_if_stale():
+    """Employer discovery (tenants.py) when its last run is more than discovery.every_days
+    old. It ran only on Sunday mornings, so a laptop off on a Sunday (and a reinstall)
+    left boards.yaml unchanged from 2026-09-23 to 10-05 — and the US-heavy boards it
+    had supplied 355 US postings to ~20 per other market."""
+    stamp = os.path.join(DATA, ".tenants_last")
+    every = float(cfg("discovery.every_days", 3)) * 86400
+    try:
+        if dt.datetime.now().timestamp() - os.path.getmtime(stamp) < every:
+            return
+    except OSError:
+        pass
+    if run("tenants.py", "--quiet", timeout=1800):
+        open(stamp, "w").write(dt.datetime.now().isoformat(timespec="seconds"))
+
+
 def form_link():
     """Review URL: tailnet host if configured or detectable, else the LAN IP."""
     host = cfg("server.tailscale_host", "") or ""
@@ -259,8 +275,8 @@ def main():
         # JDs. Pure Python over files on disk; the digest carries the result.
         now = dt.datetime.now()
         if now.weekday() == 6 and now.hour < 12:
-            # Weekly: let boards.yaml find new employers' boards on its own.
-            run("tenants.py", "--quiet", timeout=1800)
+            # boards.yaml finds new employers' boards on its own (also from the scans)
+            discover_if_stale()
             try:
                 from jobpilot.rank import keyword_learn
                 safe, gaps = keyword_learn.promote()
@@ -299,6 +315,7 @@ def main():
         run("dedupe.py", timeout=600)
 
     if want("intake"):
+        discover_if_stale()
         if not run("intake.py", *(["--limit", str(a.source_limit)] if a.source_limit else []), timeout=1800):
             failures.append("intake.py")
     # A company at its application limit takes no ranking, screening or tailoring: its

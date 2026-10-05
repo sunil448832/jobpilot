@@ -80,6 +80,7 @@ def item_path(i):
 
 
 PAGE = 10                                        # rows per page of the Submitted table
+LATER_PAGE = 5                                   # rows per page of the For later table
 
 INDEX_CSS = """
 body{background:#F3F6F9;color:#131A23;font-family:"Source Sans 3",system-ui,sans-serif;
@@ -250,6 +251,13 @@ class H(BaseHTTPRequestHandler):
                     ("approved", "Approved — files on the next run", "green"),
                     ("submitted", "Submitted", "grey")]
             groups = {k: [] for k, _, _ in SECT}
+
+            def page_of(name):
+                try:
+                    return max(1, int((q.get(name) or ["1"])[0]))
+                except ValueError:
+                    return 1
+            sp, lp = page_of("sp"), page_of("lp")      # the Submitted and For later tables' pages
             for i in items():
                 st = i.get("status")
                 # a role he tapped "keep for later" on waits in its own list, apart
@@ -334,7 +342,7 @@ class H(BaseHTTPRequestHandler):
                 except ValueError:
                     page = 1
                 shown = rows[(page - 1) * PAGE: page * PAGE]
-                go = lambda n: f'/{t}{"&" if t else "?"}sp={n}#submitted'
+                go = lambda n: f'/{t}{"&" if t else "?"}sp={n}&lp={lp}#submitted'
                 nav = ("" if pages == 1 else
                        '<p class="m pager">'
                        + (f'<a href="{go(page - 1)}">← Newer</a> · ' if page > 1 else "")
@@ -373,7 +381,36 @@ class H(BaseHTTPRequestHandler):
                             for i in rows)
                         + "</table></div>")
 
-            tables = {"submitted": submitted_table, "approved": approved_table}
+            def later_table(rows):
+                """The roles he kept for later, the last kept first, 5 a page (?lp=<page>): when
+                it was kept, company, role, where, what is left to answer, how often kept."""
+                rows = sorted(rows, key=lambda i: i.get("decided_at") or i.get("created") or "", reverse=True)
+                pages = max(1, -(-len(rows) // LATER_PAGE))
+                page = min(lp, pages)
+                shown = rows[(page - 1) * LATER_PAGE: page * LATER_PAGE]
+                go = lambda n: f'/{t}{"&" if t else "?"}lp={n}&sp={sp}#later'
+                nav = ("" if pages == 1 else
+                       '<p class="m pager">'
+                       + (f'<a href="{go(page - 1)}">← Newer</a> · ' if page > 1 else "")
+                       + f"page {page} of {pages} ({len(rows)} kept)"
+                       + (f' · <a href="{go(page + 1)}">Older →</a>' if page < pages else "") + "</p>")
+
+                def left(i):
+                    n = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
+                    return f"{n} to answer" if n else "ready to approve"
+                return ('<div class="tbl"><table class="sub"><tr><th>Kept</th><th>Company</th><th>Role</th>'
+                        '<th>Where</th><th>Left</th><th>Times</th></tr>'
+                        + "".join(
+                            f'<tr><td class="d">{(i.get("decided_at") or "")[:10]}</td>'
+                            f'<td>{i.get("company","?")}</td>'
+                            f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
+                            f'<td class="d">{(i.get("location") or "")[:28]}</td>'
+                            f'<td class="d">{left(i)}</td>'
+                            f'<td class="d">{i.get("deferred_count") or 1}</td></tr>'
+                            for i in shown)
+                        + "</table></div>" + nav)
+
+            tables = {"submitted": submitted_table, "approved": approved_table, "later": later_table}
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue

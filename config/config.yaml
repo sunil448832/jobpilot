@@ -73,6 +73,20 @@ pipeline:
   # be silent; the rest must say explicit or implicit. Fewer sponsoring roles than
   # that means a shorter run, never more silent ones. 1.0 turns the cap off.
   visa_silent_share: 0.3
+  # The country mix: no market fills more than this share of a run's roles (a cap,
+  # not a quota — slots a market cannot fill go to the next-best roles elsewhere).
+  # Markets not listed are uncapped. Ranking still orders them by visa odds
+  # (targets.yaml market_bonus): NL / IE / DE first, then UAE, AU / CH, the US last.
+  market_max_share:
+    usa: 0.3
+    uae: 0.3
+    australia: 0.3
+    germany: 0.4
+    netherlands: 0.4
+    ireland: 0.4
+    switzerland: 0.2
+    luxembourg: 0.2
+    remote_india: 0.2
   # Only tailor roles screen.py has returned a `keep` verdict on. Without this,
   # score alone decided, and 45 of 78 roles above the floor had never been
   # screened — the top-scoring one included. Turning it off means unvetted roles
@@ -185,12 +199,16 @@ followups:
   referral_days: 7
 
 discovery:
-  # Weekly tenant discovery (Sunday digest): which sources may add boards.
+  # Tenant discovery: which sources may add boards.
   # search needs BRAVE_API_KEY or GOOGLE_CSE_KEY+GOOGLE_CSE_CX, adzuna needs
   # ADZUNA_APP_ID+KEY (all in .env). linkedin = guest search
   # for employer NAMES only, never Sunil's account; names resolve to careers
   # pages under tenant_budget_s seconds, registered as they resolve.
   tenant_sources: sweep,search,adzuna,linkedin
+  # Discovery runs from a scan when its last run is older than this (it was Sunday-only,
+  # and a laptop off on Sunday skipped it). Markets with enough employers are not searched.
+  every_days: 3
+  skip_markets: [usa]
   linkedin_max_searches: 40
   tenant_budget_s: 420
   yc_min_size: 10       # smaller than this cannot sponsor anyone

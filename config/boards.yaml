@@ -213,6 +213,8 @@ greenhouse:
   jobs: 131
 - slug: robinhood
   jobs: 163
+- slug: sonatus
+  jobs: 22
 lever:
 - slug: aldar
   jobs: 46
@@ -267,6 +269,12 @@ lever:
   jobs: 0
 - slug: palantir
   jobs: 312
+- slug: deputy
+  jobs: 7
+- slug: gravisrobotics
+  jobs: 10
+- slug: rivr
+  jobs: 35
 ashby:
 - slug: abacum
   jobs: 12
@@ -801,6 +809,14 @@ ashby:
   jobs: 27
 - slug: gen-digital
   jobs: 122
+- slug: xero
+  jobs: 113
+- slug: neara
+  jobs: 31
+- slug: cosuno
+  jobs: 18
+- slug: rivia
+  jobs: 8
 smartrecruiters:
 - slug: alemhealth
   jobs: 1
@@ -850,6 +866,12 @@ workable:
   yc: Winter 2018
 - slug: visium
   jobs: 56
+- slug: destinusgroup
+  jobs: 162
+- slug: fioneer
+  jobs: 174
+- slug: integral-2
+  jobs: 0
 recruitee:
 - slug: alex
   jobs: 5
@@ -878,6 +900,8 @@ recruitee:
   jobs: 5
 - slug: conflux
   jobs: 10
+- slug: ethonai
+  jobs: 1
 phenom:
 - slug: careers.g42.ai
   base: https://careers.g42.ai/global/en

@@ -340,10 +340,10 @@ def values_by_page(slug):
         low = a.lower()
         if low.startswith(("option:", "text:")):
             return a.split(":", 1)[1].strip()
-        if low in ("file:resume", "file:resume_docx"):
+        if low == "file:resume":
             return os.path.basename(str(facts.get(low) or ""))
-        if low == "file:resume_pdf":                     # a record's second attachment field: the .docx now
-            return os.path.basename(str(facts.get("file:resume_docx") or facts.get(low) or ""))
+        if low in ("file:resume_second", "file:resume_docx", "file:resume_pdf"):   # a second attachment field
+            return os.path.basename(str(facts.get("file:resume_second") or facts.get(low) or ""))
         return facts.get(a)
 
     pages, order = {}, []

@@ -78,7 +78,10 @@ def board_key(url):
 
 def targets():
     t = yaml.safe_load(open(os.path.join(CONFIG, "targets.yaml")))
-    markets = [m for m in t.get("markets", []) if m.get("id") not in ("remote_india",)]
+    # remote_india has no hub to search; discovery.skip_markets (usa) already has more
+    # employers than every other market together, so its searches go to the rest
+    skip = {"remote_india", *(cfg("discovery.skip_markets", ["usa"]) or [])}
+    markets = [m for m in t.get("markets", []) if m.get("id") not in skip]
     titles = list((t.get("titles") or {}).get("primary") or [])
     return markets, titles
 

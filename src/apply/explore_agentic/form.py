@@ -35,9 +35,13 @@ from jobpilot.apply.explore_agentic.controls import LINE, unquote
 
 MAX_PRESSES = 3
 # what a portal says after a press: taken, or refused for good (the filing's watch)
-CONFIRMED_RX = re.compile(r"thank(s| you) for (applying|(submitting )?your application)|application (has been )?(submitted|received)|"
+CONFIRMED_RX = re.compile(r"thank(s| you) for (applying|(submitting )?your application)|"
+                          r"application (has )?(successfully )?(been )?(successfully )?(submitted|received)|"
                           r"successfully submitted|we('ve| have) received your application|congratulations|"
                           r"your application (was|has been) (successfully )?(submitted|sent|received)", re.I)
+# a status the page announces in its alert region that is not an error ("sunil_resume.pdf
+# successfully uploaded" stayed up after Workday's Submit and read as one, 2026-10-05)
+NOT_ERROR_RX = re.compile(r"success|uploaded|saved|loading|complete[d]?\b|please wait|processing", re.I)
 REFUSED_RX = re.compile(r"(couldn.t|could not|cannot|can.t|unable to) (submit|process) (your )?application|"
                         r"may not apply more than|application limit|already applied|you have already applied", re.I)
 ID_IN_LINE = re.compile(r"^(\s*- )\[(c\d+)\] ")
@@ -615,7 +619,7 @@ class Form:
                 self.read()
                 return "not-accepted", f"the portal sent the form back to page {step!r}: " + \
                     ("; ".join(S.errors(self.frame())[:6]) or "no message shown")
-            errs = S.errors(frame)
+            errs = [e for e in S.errors(frame) if not NOT_ERROR_RX.search(e)]
             erred = erred + 1 if errs else 0
             if erred >= 3 and self.still_there(ident):   # errors that stay: the form was not taken
                 sure = self.confirmed_soon(standing)

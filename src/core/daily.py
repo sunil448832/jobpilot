@@ -47,7 +47,7 @@ def log(msg):
         pass
 
 
-MODULES = {"scaffold.py": "jobpilot.tailor.scaffold", "ats_score.py": "jobpilot.tailor.ats_score", "explore": "jobpilot.apply.explore_agentic", "submit": "jobpilot.apply.explore_agentic.replay", "autotailor.py": "jobpilot.tailor.autotailor", "bot.py": "jobpilot.review.bot", "build.py": "jobpilot.tailor.build", "build_reference.py": "jobpilot.tailor.build_reference", "careers.py": "jobpilot.discover.careers", "config.py": "jobpilot.core.config", "daily.py": "jobpilot.core.daily", "dedupe.py": "jobpilot.core.dedupe", "find_careers.py": "jobpilot.discover.find_careers", "form.py": "jobpilot.review.form", "intake.py": "jobpilot.discover.intake", "keyword_form.py": "jobpilot.review.keyword_form", "keyword_learn.py": "jobpilot.rank.keyword_learn", "keywords.py": "jobpilot.rank.keywords", "learn.py": "jobpilot.apply.draft.learn", "llm_eval.py": "jobpilot.screen.llm_eval", "mine_keywords.py": "jobpilot.rank.mine_keywords", "optimize.py": "jobpilot.tailor.optimize", "outreach.py": "jobpilot.outreach.outreach", "paths.py": "jobpilot.core.paths", "prospects.py": "jobpilot.outreach.prospects", "rank.py": "jobpilot.rank.rank", "referral_form.py": "jobpilot.review.referral_form", "referral_tracker.py": "jobpilot.outreach.referral_tracker", "referrals.py": "jobpilot.outreach.referrals", "salary.py": "jobpilot.rank.salary", "screen.py": "jobpilot.screen.screen", "semantic.py": "jobpilot.rank.semantic", "serve.py": "jobpilot.review.serve", "startups.py": "jobpilot.discover.startups", "telegram_setup.py": "jobpilot.review.telegram_setup", "tenants.py": "jobpilot.discover.tenants", "tex2md.py": "jobpilot.tailor.tex2md", "tracker.py": "jobpilot.core.tracker", "quota.py": "jobpilot.core.quota"}
+MODULES = {"scaffold.py": "jobpilot.tailor.scaffold", "ats_score.py": "jobpilot.tailor.ats_score", "explore": "jobpilot.apply.explore_agentic", "submit": "jobpilot.apply.explore_agentic.replay", "autotailor.py": "jobpilot.tailor.autotailor", "bot.py": "jobpilot.review.bot", "build.py": "jobpilot.tailor.build", "build_reference.py": "jobpilot.tailor.build_reference", "careers.py": "jobpilot.discover.careers", "config.py": "jobpilot.core.config", "daily.py": "jobpilot.core.daily", "dedupe.py": "jobpilot.core.dedupe", "find_careers.py": "jobpilot.discover.find_careers", "form.py": "jobpilot.review.form", "intake.py": "jobpilot.discover.intake", "keyword_form.py": "jobpilot.review.keyword_form", "keyword_learn.py": "jobpilot.rank.keyword_learn", "keywords.py": "jobpilot.rank.keywords", "learn.py": "jobpilot.apply.draft.learn", "llm_eval.py": "jobpilot.screen.llm_eval", "mine_keywords.py": "jobpilot.rank.mine_keywords", "optimize.py": "jobpilot.tailor.optimize", "outreach.py": "jobpilot.outreach.outreach", "paths.py": "jobpilot.core.paths", "prospects.py": "jobpilot.outreach.prospects", "rank.py": "jobpilot.rank.rank", "referral_form.py": "jobpilot.review.referral_form", "referral_tracker.py": "jobpilot.outreach.referral_tracker", "referrals.py": "jobpilot.outreach.referrals", "salary.py": "jobpilot.rank.salary", "screen.py": "jobpilot.screen.screen", "semantic.py": "jobpilot.rank.semantic", "serve.py": "jobpilot.review.serve", "startups.py": "jobpilot.discover.startups", "telegram_setup.py": "jobpilot.review.telegram_setup", "tenants.py": "jobpilot.discover.tenants", "tex2md.py": "jobpilot.tailor.tex2md", "tracker.py": "jobpilot.core.tracker", "quota.py": "jobpilot.core.quota", "visa.py": "jobpilot.rank.visa"}
 
 
 def run(script, *args, timeout=900):
@@ -98,6 +98,23 @@ def telegram(text):
         return False
 
 
+def online(wait_s=0):
+    """True once the internet answers (DNS + a TCP connect to Telegram's API). Waits up to
+    wait_s for it: a laptop on a phone hotspot loses it for minutes at a time, and a filing
+    started offline crashed on its first page (2026-10-04 19:00) and filed nothing."""
+    import socket
+    import time
+    end = time.time() + wait_s
+    while True:
+        try:
+            socket.create_connection(("api.telegram.org", 443), timeout=10).close()
+            return True
+        except OSError:
+            if time.time() >= end:
+                return False
+            time.sleep(30)
+
+
 def form_link():
     """Review URL: tailnet host if configured or detectable, else the LAN IP."""
     host = cfg("server.tailscale_host", "") or ""
@@ -142,10 +159,7 @@ def digest(since_iso):
     from jobpilot.core import tracker
     due = tracker.followups()
 
-    e = env()
-    token = e.get("FORM_TOKEN", "")
-    host = "sunil-latitude-3420.taild263f7.ts.net"
-    link = f"http://{host}:{cfg('server.port', 8765)}/?t={token}" if token else ""
+    link = form_link() if env().get("FORM_TOKEN") else ""
 
     lines = [f"☀️ <b>Overnight scan</b> — {dt.date.today():%a %d %b}", ""]
     if fresh:
@@ -166,7 +180,7 @@ def digest(since_iso):
 
 # Every stage of the unattended run, in order. `--only` picks a subset so a
 # stage can be re-run on demand without paying for the ones before it.
-STAGES = ("dedupe", "intake", "hold", "rank", "screen", "tailor", "referrals", "digest")
+STAGES = ("dedupe", "intake", "hold", "visa", "rank", "screen", "tailor", "referrals", "digest")
 
 
 def main():
@@ -224,7 +238,7 @@ def main():
 
     failures = []
     if a.digest_only:
-        # The 07:00 / 19:00 approval prompts: nothing to scan, just tell him what
+        # The 09:00 / 19:00 approval prompts: nothing to scan, just tell him what
         # is waiting. Anything deferred is still here, by design.
         pend = 0
         try:
@@ -261,6 +275,9 @@ def main():
                 log(f"keywords: +{len(safe)} learned, {len(gaps)} gaps")
             except Exception as ex:
                 log(f"keywords: FAILED {type(ex).__name__}: {ex}")
+        if not online(int(cfg("pipeline.offline_wait_s", 900))):
+            log("offline — no internet for 15 min: digest and filing skipped; approved cards wait for the next run")
+            return
         log(f"digest-only: {pend} pending")
         if not a.no_telegram:
             log("telegram: " + ("sent" if telegram(text) else "FAILED"))
@@ -270,8 +287,9 @@ def main():
         # the only human gate; pending / needs_input / manual are never touched.
         # Each outcome (filed / needs answers / failed) is its own Telegram line.
         if not a.no_submit and not a.dry_run:
+            # a filing takes up to ~7 min (Workday): the cap grows with the cards allowed
             if not run("submit", "--limit", str(a.submit_limit),
-                       timeout=3600):
+                       timeout=max(3600, 600 * a.submit_limit)):
                 log("   !! submit-approved failed — see each card's fail_reason (applications/<slug>/cards/)")
         return
 
@@ -287,6 +305,10 @@ def main():
     # postings wait as 'held' until it has room (core/quota.py).
     if want("hold") and not run("quota.py", "--hold", *(["--dry-run"] if a.dry_run else []), timeout=120):
         failures.append("quota.py")
+    # What each posting says about a visa, by keywords: a refusal is dropped here, before
+    # ranking; the rest are tagged explicit / implicit / silent for rank and the tailor mix.
+    if want("visa") and not run("visa.py", timeout=300):
+        failures.append("visa.py")
     if want("rank") and "intake.py" not in failures:
         if not run("rank.py", "--all", "--top", "1", timeout=900):
             failures.append("rank.py")
@@ -302,7 +324,8 @@ def main():
     if want("tailor") and not a.no_tailor:
         if not run("autotailor.py", "--limit", str(a.tailor_limit),
                    "--per-company", str(a.per_company),
-                   *(["--dry-run"] if a.dry_run else []), timeout=2400):
+                   # fills are serialised, 2-20 min each: the cap grows with the roles asked for
+                   *(["--dry-run"] if a.dry_run else []), timeout=max(2400, 900 * a.tailor_limit)):
             failures.append("autotailor.py")
     # Referral follow-ups are the highest-converting thing he does, so they get
     # their own line in the evening digest rather than living only on a page.

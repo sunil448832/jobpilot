@@ -51,7 +51,18 @@ without use counts little. Nice-to-haves move the score by a few points at most.
 A keep with fit 30 is normal. Judge as a hiring manager reads it, not by
 counting keywords.
 
+VISA — what the posting says about sponsoring him, from its ELIGIBILITY lines and
+location (a keyword reading is given as "visa (keywords)"; correct it when wrong):
+  explicit  it says it sponsors visas or gives visa / immigration support
+  implicit  a hint, not a promise: sponsorship case by case, relocation help for
+            new hires, hiring internationally, or a market where every expat hire
+            is sponsored (UAE)
+  silent    nothing either way; "sponsorship not guaranteed" is silent; equal-
+            opportunity text that lists "citizenship" says nothing about visas
+  no        it will not sponsor or needs existing work authorisation (then REJECT)
+A job application form asking "will you require sponsorship?" is not an offer.
+
 Reply with ONLY the JSON array — no reasoning, no lists, no prose, no code fence:
-[{"id": "<the id given>", "verdict": "keep"|"reject", "fit": <0-100>, "reason": "<12 words max>"}]
+[{"id": "<the id given>", "verdict": "keep"|"reject", "fit": <0-100>, "visa": "explicit"|"implicit"|"silent"|"no", "reason": "<12 words max>"}]
 
 Roles:

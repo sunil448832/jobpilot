@@ -39,4 +39,7 @@ if systemctl --user is-active jobpilot-form.service >/dev/null 2>&1; then
   [ "$codes" = "200 200 200 " ] && ok "form routes" "$codes" || bad "form routes" "$codes"
 else ok "form service" "not running (start: ./jobpilot services)"; fi
 ok "claude cli" "$("$PY" -c 'from jobpilot.tailor import autotailor;print(autotailor.claude_bin() or "MISSING")')"
+# without Xvfb, Chrome falls back to an off-screen window, which a Wayland desktop puts in front of him
+command -v Xvfb >/dev/null && command -v xdpyinfo >/dev/null && ok "virtual display" "Xvfb (Chrome hidden)" \
+  || bad "virtual display" "Xvfb/xdpyinfo missing: Chrome will show on the desktop (sudo apt install xvfb x11-utils)"
 [ $fail = 0 ] && echo "  ALL OK" || { echo "  PROBLEMS ABOVE"; exit 1; }

@@ -10,7 +10,7 @@ well above 5.
     score = 40 x keyword fit
           + 20 x title fit
           + market priority bonus
-          + boosts (sponsorship stated, fully remote, GenAI focus)
+          + boosts (sponsorship stated or hinted — rank/visa.py, fully remote, GenAI focus)
           - penalties (years required over the cap)
 
 Usage:
@@ -31,6 +31,7 @@ from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, 
 from jobpilot.discover.intake import db, load_targets                      # noqa: E402
 from jobpilot.rank import salary as sal                                      # noqa: E402
 from jobpilot.rank import keywords as KW                                     # noqa: E402
+from jobpilot.rank import visa                                               # noqa: E402
 from jobpilot.core.config import cfg                                    # noqa: E402
 import yaml as _yaml                                      # noqa: E402
 
@@ -97,10 +98,14 @@ def score_job(job, t, con=None):
     reasons.append(f"{job['market']} (priority {pri})")
 
     b = t["scoring"]["boost"]
-    if re.search(r"sponsor\w*|visa support|relocation (package|assistance|support)", blob):
-        if not re.search(r"(cannot|unable to|do not|will not|no)\s+sponsor", blob):
-            score += b["sponsorship_explicit"]
-            reasons.append("sponsorship mentioned")
+    # the tag visa.py stored before ranking (the screener's own answer once it has one)
+    tag = job.get("visa") or visa.classify(jd, job["market"])[0]
+    if tag == "explicit":
+        score += b["sponsorship_explicit"]
+        reasons.append("sponsors visas")
+    elif tag == "implicit":
+        score += b.get("sponsorship_implicit", b["sponsorship_explicit"] / 2)
+        reasons.append("visa support hinted")
     if re.search(r"fully remote|work from anywhere|remote.{0,12}(global|worldwide|anywhere)", blob):
         score += b["fully_remote_global"]
         reasons.append("fully remote")
@@ -185,19 +190,20 @@ def main():
 
     t = load_targets()
     con = db()
+    visa.ensure_columns(con)
     # 'held': a company at its application limit (core/quota.py) — not ranked until it has room
     where = "WHERE status != 'held'" if a.all else "WHERE status='new'"
     rows = list(con.execute(
         f"SELECT key,company,title,location,market,url,jd,yc,"
-        f"COALESCE(board_size,0),COALESCE(team_size,0),status FROM jobs {where}"))
+        f"COALESCE(board_size,0),COALESCE(team_size,0),COALESCE(screen_visa,visa),status FROM jobs {where}"))
     if not rows:
         print("  nothing to rank — run: python jobs/intake.py")
         return
 
     scored = []
-    for k, co, title, loc, market, url, jd, yc, bsize, tsize, _ in rows:
+    for k, co, title, loc, market, url, jd, yc, bsize, tsize, vtag, _ in rows:
         job = {"title": title, "jd": jd or "", "location": loc, "market": market,
-               "yc": yc, "board_size": bsize, "team_size": tsize}
+               "yc": yc, "board_size": bsize, "team_size": tsize, "visa": vtag}
         job["company"] = co
         s, why = score_job(job, t, con)
         con.execute("UPDATE jobs SET score=?, reason=? WHERE key=?",

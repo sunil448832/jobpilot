@@ -23,9 +23,9 @@ usage() { cat <<'TXT'
   ────────────────────────────────────────────────────────────────────────
 
   RUN / PAUSE
-    ./jobpilot start           scheduler ON  (scans 04/12/20, asks 07/19)
+    ./jobpilot start           scheduler ON  (scans 07/17, asks 09/19)
     ./jobpilot stop            scheduler OFF + kill anything mid-run
-    ./jobpilot pipeline [N]    one full end-to-end run now; N = roles to tailor (default 6)
+    ./jobpilot pipeline [N]    one full end-to-end run now; N = roles to tailor (default 10)
                                --only screen,tailor   re-run just those stages
                                --source-limit 200     intake stops at 200 matching postings (boards
                                                       scanned longest ago first); default config
@@ -35,7 +35,7 @@ usage() { cat <<'TXT'
     ./jobpilot status          ON/OFF, services, counts
 
     `stop` is the Claude-usage control: autotailor spends 2 sessions per role plus
-    one form-agent session to explore it, 6 roles a scan, 3 scans a day. Filing
+    one form-agent session to explore it, 10 roles a scan, 2 scans a day. Filing
     uses Claude only where a page differs from its record. It leaves the review
     form up, so approving what is already queued keeps working while it is off.
 
@@ -43,7 +43,7 @@ usage() { cat <<'TXT'
     ./jobpilot link            review-list URL, and /questions (what a filing needs from you now)
     ./jobpilot queue           what is waiting for your approval
     ./jobpilot submit [N]      file what you approved now (N = at most N, oldest first)
-                               the 07:00/19:00 review run also files approved items itself
+                               the 09:00/19:00 review run also files approved items itself
     ./jobpilot submit <slug>   file one approved job
     ./jobpilot dryrun <slug>   a filing that stops before Submit (presses nothing there)
     ./jobpilot log [N]         follow the run log
@@ -150,7 +150,7 @@ sched_start() {
   systemctl --user enable --now $TIMERS 2>&1 | sed 's/^/  /'
   systemctl --user start jobpilot-form.service 2>/dev/null
   echo "  scheduler on:"
-  systemctl --user list-timers --all 2>/dev/null | awk 'NR==1 || /jobbot/' | sed 's/^/  /'
+  systemctl --user list-timers --all 2>/dev/null | awk 'NR==1 || /jobpilot/' | sed 's/^/  /'
 }
 
 cmd="${1:-help}"; shift || true
@@ -160,7 +160,7 @@ case "$cmd" in
   pipeline|now) # ./jobpilot pipeline [N] [--only stage,stage] [--dry-run]  — N = roles to tailor today
               if [[ "${1:-}" =~ ^[0-9]+$ ]]; then n="$1"; shift; py core.daily --tailor-limit "$n" "$@"
               else py core.daily "$@"; fi ;;
-  stages)     echo "  dedupe intake hold rank screen tailor referrals digest"
+  stages)     echo "  dedupe intake hold visa rank screen tailor referrals digest"
               echo "  e.g.  ./jobpilot pipeline 5 --only screen,tailor" ;;
   status)     en=$(systemctl --user is-enabled jobpilot-daily.timer 2>/dev/null)
               ac=$(systemctl --user is-active  jobpilot-daily.timer 2>/dev/null)
@@ -224,7 +224,24 @@ case "$cmd" in
   follow)     py core.tracker --followups ;;
   setup-telegram)  py review.telegram_setup "$@" ;;
   setup-tailscale) bash "$TOOL/scripts/setup_tailscale.sh" ;;
-  services)   systemctl --user daemon-reload && systemctl --user enable --now jobpilot-form.service
-              echo "  form service enabled. Timers are NOT enabled here — ./jobpilot start does that." ;;
+  services)   # user units only (~/.config/systemd/user, all jobpilot-*): no sudo, nothing system-wide
+              ud="$HOME/.config/systemd/user"; mkdir -p "$ud"
+              for f in "$TOOL"/systemd/jobpilot-*; do
+                out="$ud/$(basename "$f")"
+                sed -e "s|@TOOL@|$TOOL|g" -e "s|@PY@|$PY|g" "$f" > "$out.new"
+                if [ -f "$out" ] && ! cmp -s "$out" "$out.new"; then echo "  updated   $(basename "$f") (old copy: $out.bak)"; cp "$out" "$out.bak"
+                elif [ ! -f "$out" ]; then echo "  installed $(basename "$f")"; fi
+                mv "$out.new" "$out"
+              done
+              systemctl --user daemon-reload
+              systemctl --user enable --now jobpilot-form.service 2>&1 | sed 's/^/  /'
+              systemctl --user enable --now jobpilot-lid.service 2>&1 | sed 's/^/  /'   # lid keeps it awake only while plugged in
+              # tailscaled started by hand (setup-tailscale) keeps running; the unit takes over at the next login
+              if pgrep -u "$USER" -f "$HOME/softwares/tailscale/tailscaled" >/dev/null; then
+                systemctl --user enable jobpilot-tailscale.service 2>&1 | sed 's/^/  /'
+              else
+                systemctl --user enable --now jobpilot-tailscale.service 2>&1 | sed 's/^/  /'
+              fi
+              echo "  review site, Tailscale and the plugged-in lid lock enabled. Timers are NOT enabled here — ./jobpilot start does that." ;;
   help|*)     usage ;;
 esac

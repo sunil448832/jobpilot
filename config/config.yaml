@@ -52,9 +52,9 @@ pipeline:
   # off resumes from its record (calls.json) on the next explore.
   explore_timeout_s: 2400
   # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
-  # dial: 6 x 3 scans/day = up to 18/day.
-  tailor_limit: 6
-  # Approved applications filed per review run (07:00 / 19:00). Approval on the
+  # dial: 10 x 2 scans/day = up to 20/day.
+  tailor_limit: 10
+  # Approved applications filed per review run (09:00 / 19:00). Approval on the
   # phone is the only gate; this just caps how many go out per run.
   submit_limit: 10
   # A submit that fails this many times stays 'failed' (own section on the
@@ -68,6 +68,11 @@ pipeline:
   # require_screen on, a role below the screening floor never gets a verdict and
   # so can never be tailored, which would make lowering this a no-op.
   tailor_floor: 45.0
+  # The mix of a run's picks by what the posting says about a visa (rank/visa.py,
+  # the screener's answer winning): at most this share of the roles asked for may
+  # be silent; the rest must say explicit or implicit. Fewer sponsoring roles than
+  # that means a shorter run, never more silent ones. 1.0 turns the cap off.
+  visa_silent_share: 0.3
   # Only tailor roles screen.py has returned a `keep` verdict on. Without this,
   # score alone decided, and 45 of 78 roles above the floor had never been
   # screened — the top-scoring one included. Turning it off means unvetted roles
@@ -98,6 +103,11 @@ pipeline:
   # browser fill is serialised (one Chrome profile). 3 keeps the concurrent
   # claude -p sessions modest; pdflatex and the rest are cheap.
   tailor_workers: 3
+
+visa:
+  # Markets where every expat hire is sponsored, so a silent posting there counts
+  # as an implicit offer.
+  implicit_markets: [uae]
 
 screen:
   # A role asking for (your years in answers.yaml experience_summary.total_years
@@ -224,9 +234,15 @@ browser:
   #   own        on the desktop, to watch it work
   display: auto
   virtual_display: 99   # the Xvfb display number
+  # Which browser fills forms: auto = Brave when installed, else Chrome; `chrome`
+  # forces Chrome; or a path to another Chromium build. Each keeps its own profile
+  # (data/brave-profile, data/chrome-profile): one cannot read the other's sign-ins.
+  # Chrome since 2026-10-05: Ashby flagged the first Brave submission (a fresh profile)
+  # as spam, where 17 Ashby submissions from the Chrome profile had gone through.
+  executable: chrome
 
 schedule:
   # Documentation of the systemd timers. Editing this does NOT move them —
   # change the .timer files and `systemctl --user daemon-reload`.
-  scans: "04:00, 12:00, 20:00 IST"
-  reviews: "07:00, 19:00 IST"
+  scans: "07:00, 17:00 IST"
+  reviews: "09:00, 19:00 IST"

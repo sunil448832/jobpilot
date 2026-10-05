@@ -1,0 +1,12 @@
+# Plugged in, closing the lid keeps the laptop awake (scripts/lid_on_ac.sh). On battery
+# the lid suspends as usual. A user inhibitor lock only; stop or disable this unit to undo.
+[Unit]
+Description=jobpilot: lid does not suspend while on AC
+
+[Service]
+ExecStart=@TOOL@/scripts/lid_on_ac.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

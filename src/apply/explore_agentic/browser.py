@@ -2,7 +2,7 @@
 """
 browser.py — the browser and what surrounds a fill, platform-independent:
 
-    open_browser(pw)          real Chrome on the persistent profile, on its own
+    open_browser(pw)          real Brave (else Chrome) on its persistent profile, on its own
                               virtual display (Xvfb) so it never covers the desktop
     resume_path(...)          the resume file built for this application
     dead_posting(page)        a closed / withdrawn posting, checked before anything
@@ -19,7 +19,22 @@ import time
 from jobpilot.core.config import cfg
 from jobpilot.core.paths import TOOL, RESUME, CHROME_PROFILE
 
-PROFILE_DIR = CHROME_PROFILE
+
+
+def _pick_browser():
+    """Brave when installed, else Chrome (browser.executable names one by path; `chrome`
+    forces Chrome). Each has its own profile: one cannot read the other's sign-ins."""
+    import shutil
+    exe = cfg("browser.executable", "auto") or "auto"
+    if exe == "auto":
+        exe = next(filter(None, map(shutil.which, ("brave-browser", "brave-browser-stable", "brave"))), "chrome")
+    if exe == "chrome":
+        return None, CHROME_PROFILE
+    name = "brave" if "brave" in os.path.basename(exe) else re.sub(r"\W+", "-", os.path.basename(exe))
+    return exe, os.path.join(os.path.dirname(CHROME_PROFILE), f"{name}-profile")
+
+
+BROWSER_EXE, PROFILE_DIR = _pick_browser()
 
 
 def norm(s):
@@ -85,7 +100,7 @@ def _wait_for_profile(max_s=None):
 
 
 def open_browser(pw):
-    """Real Chrome on the persistent profile. browser.display: `virtual` (Xvfb, the
+    """Real Brave, else Chrome, on its persistent profile. browser.display: `virtual` (Xvfb, the
     default when installed), `offscreen`, or `own` (on the desktop, to watch it)."""
     os.makedirs(PROFILE_DIR, mode=0o700, exist_ok=True)
     os.chmod(PROFILE_DIR, 0o700)   # cookies and portal sign-ins
@@ -95,13 +110,26 @@ def open_browser(pw):
     if mode in ("auto", "virtual"):
         disp = _virtual_display()
         if disp:
-            env = dict(os.environ, DISPLAY=disp)
+            # on a Wayland desktop Chrome prefers WAYLAND_DISPLAY over DISPLAY and opens in
+            # front of him: drop it and pin X11 so the window goes to Xvfb
+            env = {k: v for k, v in os.environ.items() if k != "WAYLAND_DISPLAY"}
+            env["DISPLAY"] = disp
+            args += ["--ozone-platform=x11"]
         else:
             mode = "offscreen"
+            # an off-screen position is only a request: a Wayland desktop ignores it and
+            # Chrome opens in front of him. Say so instead of degrading silently.
+            print("  [browser] no Xvfb (sudo apt install xvfb x11-utils): Chrome opens off-screen"
+                  + (", which Wayland ignores — it will show on the desktop"
+                     if os.environ.get("WAYLAND_DISPLAY") else ""), flush=True)
     if mode == "offscreen" and env is None:
         args += ["--window-position=-32000,-32000", "--window-size=1280,1600"]
-    kw = {"channel": "chrome", "headless": cfg("browser.headless", False),
+    kw = {"headless": cfg("browser.headless", False),
           "viewport": {"width": 1280, "height": 1600}, "args": args}
+    if BROWSER_EXE:
+        kw["executable_path"] = BROWSER_EXE
+    else:
+        kw["channel"] = "chrome"
     if env:
         kw["env"] = env
     return pw.chromium.launch_persistent_context(PROFILE_DIR, **kw)

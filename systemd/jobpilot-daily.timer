@@ -1,0 +1,11 @@
+[Unit]
+Description=jobpilot scans at 07:00 and 17:00 (local time), two hours before each review run
+
+[Timer]
+OnCalendar=*-*-* 07,17:00:00
+RandomizedDelaySec=300
+# no catch-up run after the laptop wakes or boots
+Persistent=false
+
+[Install]
+WantedBy=timers.target

@@ -17,7 +17,8 @@ So before anything gets tailored:
      OpenAI and Anthropic. In --loop mode a short round therefore lowers the
      floor and re-draws instead of screening a stub batch.
   3. Send all 30 to `claude -p` in ONE call with the sponsorship-relevant and
-     requirement-relevant parts of each JD, and get back keep/reject + a reason.
+     requirement-relevant parts of each JD, and get back keep/reject, a fit score,
+     what it says about a visa (explicit / implicit / silent / no) and a reason.
   4. Rejected roles are marked in state.db and never reach autotailor.py.
 
 One Claude call for 30 jobs is far cheaper than tailoring even one role that was
@@ -91,6 +92,8 @@ VISA_RX = re.compile(
     r"[^.\n]{0,160}(sponsor\w*|visa|work authoriz\w*|work permit|right to work|"
     r"eligible to work|must reside|based in|relocat\w*|citizen|clearance)"
     r"[^.\n]{0,160}", re.I)
+# equal-opportunity text: "without regard to ... citizenship" is not about visas
+EEO_RX = re.compile(r"regard to|discriminat|equal (employment )?opportunity|protected (veteran|status|class)", re.I)
 REQ_RX = re.compile(
     r"[^.\n]{0,140}(\d+\+?\s*years|experience (with|in)|proficien|expertise|"
     r"required|must have|you have)[^.\n]{0,140}", re.I)
@@ -100,7 +103,8 @@ def digest_jd(jd, limit=1100):
     """The parts a screener actually needs: eligibility + requirements."""
     from jobpilot.rank import keywords as KW
     t = KW.normalize(jd or "")
-    visa = [m.group(0).strip() for m in VISA_RX.finditer(t)][:4]
+    visa = [m.group(0).strip() for m in VISA_RX.finditer(t)
+            if not EEO_RX.search(m.group(0))][:5]
     reqs = [m.group(0).strip() for m in REQ_RX.finditer(t)][:6]
     out = ""
     if visa:
@@ -127,11 +131,14 @@ def build_prompt(rows):
         citizenship=a["work_authorization"]["citizenship"],
         country=a["work_authorization"]["current_work_country"],
         years=years, max_years=years + int(cfg("screen.years_margin", 2)))]
+    from jobpilot.rank import visa
     for i, (key, co, title, loc, market, score, url, jd) in enumerate(rows, 1):
+        tag, why = visa.classify(jd, market)
         parts.append(
             f"\n--- id: {i} ---\n"
             f"{title} @ {co}\n"
             f"location: {loc}   (classified market: {market}, score {score})\n"
+            f"visa (keywords): {tag}" + (f" — \"{why[:120]}\"" if why else "") + "\n"
             f"{digest_jd(jd)}")
     return "".join(parts)
 
@@ -160,7 +167,9 @@ def parse_verdicts(text, n):
                 fit = max(0, min(100, int(float(d.get("fit")))))
             except (TypeError, ValueError):
                 fit = None
-            out[i] = (str(d.get("verdict", "")).lower(), str(d.get("reason", ""))[:90], fit)
+            v = str(d.get("visa", "")).strip().lower()
+            out[i] = (str(d.get("verdict", "")).lower(), str(d.get("reason", ""))[:90], fit,
+                      v if v in ("explicit", "implicit", "silent", "no") else None)
     return out
 
 
@@ -203,7 +212,8 @@ def main():
         pass
 
     con = sqlite3.connect(DB)
-    for ddl in ("ALTER TABLE jobs ADD COLUMN screen TEXT", "ALTER TABLE jobs ADD COLUMN fit INTEGER"):
+    for ddl in ("ALTER TABLE jobs ADD COLUMN screen TEXT", "ALTER TABLE jobs ADD COLUMN fit INTEGER",
+                "ALTER TABLE jobs ADD COLUMN screen_visa TEXT"):
         try:
             con.execute(ddl); con.commit()
         except sqlite3.OperationalError:
@@ -332,26 +342,32 @@ def screen_round(rows, con):
         v = verdicts.get(i)
         if not v:
             continue
-        verdict, reason, fit = v
+        verdict, reason, fit, vtag = v
         cur_status = con.execute("SELECT status FROM jobs WHERE key=?", (key,)).fetchone()
         if cur_status and cur_status[0] == "queued":
             # Already tailored and in Sunil's queue: record the fit, leave the verdict.
-            con.execute("UPDATE jobs SET fit=COALESCE(?, fit) WHERE key=?", (fit, key))
+            con.execute("UPDATE jobs SET fit=COALESCE(?, fit), screen_visa=COALESCE(?, screen_visa) WHERE key=?",
+                        (fit, vtag, key))
             kept += 1
             continue
+        # the screener read the whole eligibility text: a "no" on the visa is a reject
+        # even when the verdict says keep
+        if vtag == "no" and not verdict.startswith("reject"):
+            verdict, reason = "reject", f"will not sponsor — {reason}"[:90]
         if verdict.startswith("reject"):
             # "Demands 8+ years" is true of the role in New York AND in San
             # Francisco. Propagate to every location copy, or the sibling row
             # survives and gets tailored anyway.
             cur = con.execute(
-                "UPDATE jobs SET status='rejected', screen=?, fit=COALESCE(?, fit) "
+                "UPDATE jobs SET status='rejected', screen=?, fit=COALESCE(?, fit), screen_visa=COALESCE(?, screen_visa) "
                 "WHERE company=? AND lower(title)=lower(?)",
-                (f"reject: {reason}", fit, co, title))
+                (f"reject: {reason}", fit, vtag, co, title))
             rejected += cur.rowcount
             print(f"  ✗ {score:5.1f} fit {fit if fit is not None else '?':>3} {co[:14]:<16} {title[:34]:<36} {reason}")
         else:
-            con.execute("UPDATE jobs SET screen=?, fit=COALESCE(?, fit) WHERE company=? AND lower(title)=lower(?)",
-                        (f"keep: {reason}", fit, co, title))
+            con.execute("UPDATE jobs SET screen=?, fit=COALESCE(?, fit), screen_visa=COALESCE(?, screen_visa) "
+                        "WHERE company=? AND lower(title)=lower(?)",
+                        (f"keep: {reason}", fit, vtag, co, title))
             kept += 1
     con.commit()
     print(f"    kept {kept}, rejected {rejected} of {len(rows)}")

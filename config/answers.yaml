@@ -38,7 +38,7 @@ location:
   # If one rejects it, a real street line is needed.
   address_line_1: "Delhi"
   willing_to_relocate: true
-  preferred_locations: "UAE, Saudi Arabia, Singapore, US, Remote"
+  preferred_locations: "USA, UAE, Australia, Germany, Netherlands, Ireland, Remote"
 
 links:
   linkedin: "https://www.linkedin.com/in/sunil4832sharma"

@@ -1,0 +1,12 @@
+# One scan: intake -> visa -> rank -> screen -> tailor + fill (config pipeline.tailor_limit).
+# Never submits. Low priority so the desktop stays responsive.
+[Unit]
+Description=jobpilot scan (tailor + fill, never submits)
+
+[Service]
+Type=oneshot
+WorkingDirectory=@TOOL@
+ExecStart=@TOOL@/jobpilot pipeline
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=6h

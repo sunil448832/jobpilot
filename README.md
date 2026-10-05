@@ -1,7 +1,7 @@
 # jobpilot
 
 Finds AI/ML roles, tailors the resume to each, fills the application form, asks for approval
-on the phone, submits, and tracks follow-ups and referrals. Runs three times a day; Sunil only
+on the phone, submits, and tracks follow-ups and referrals. Scans twice a day; Sunil only
 reviews and taps Approve.
 
 423 job boards across 8 ATS platforms · 56 applications submitted (first: OpenAI, 2026-09-05).
@@ -20,11 +20,11 @@ is in [docs/form-agent.md](docs/form-agent.md).
 
 | Time (IST) | What runs | What he does |
 |---|---|---|
-| 04:00 · 12:00 · 20:00 | `jobpilot-daily.timer`: scan → rank → screen → tailor + fill up to 6 roles | nothing |
-| 07:00 · 19:00 | `jobpilot-review.timer`: Telegram "N waiting" + link; files every approved card | review on the phone |
+| 07:00 · 17:00 | `jobpilot-daily.timer`: scan → rank → screen → tailor + fill up to 10 roles (at least 70% with a visa offer or hint) | nothing |
+| 09:00 · 19:00 | `jobpilot-review.timer`: Telegram "N waiting" + link; files every approved card | review on the phone |
 
 On the phone (review site over Tailscale) each card is **Approve**, **Later** (comes back next
-time) or **Reject** (dropped). Approved cards are filed at the next 07:00 / 19:00 run, or at once
+time) or **Reject** (dropped). Approved cards are filed at the next 09:00 / 19:00 run, or at once
 with `./jobpilot submit`.
 
 ## Setup (a new machine)
@@ -37,8 +37,12 @@ application. Only steps 1, 4 and 8 have to be redone.
 
 ```bash
 sudo apt install git pandoc texlive-latex-extra texlive-fonts-extra   # pdflatex + .docx build
-sudo apt install xvfb          # optional: Chrome fills forms on a hidden display (else off-screen)
+sudo apt install xvfb x11-utils   # Chrome fills forms on a hidden display
 ```
+
+Xvfb is what keeps Chrome out of sight. Without it Chrome asks for an off-screen window, which
+an X11 desktop honours and a Wayland desktop (Ubuntu's default) ignores: Chrome opens in front
+of you. The run says so in its log, and `./jobpilot check` fails until it is installed.
 
 and Google Chrome (`google-chrome-stable`, the .deb from google.com/chrome): forms are filled in
 real Chrome, never Playwright's bundled Chromium.
@@ -81,11 +85,15 @@ Tailscale app on the phone with the same account. After a reboot, run it again t
 daemon (no login). After a reinstall, remove the old machine in the
 [admin console](https://login.tailscale.com/admin/machines) so the name stays free.
 
-**8. Review site and timers.** On demand: `~/softwares/miniconda3/bin/python3 -m jobpilot.review.serve`
-prints the home Wi-Fi and Tailscale links. `./jobpilot services` (the site) and `./jobpilot start`
-(the timers) enable `jobpilot-form.service`, `jobpilot-daily.timer` and `jobpilot-review.timer`
-in `~/.config/systemd/user/`. Those unit files are **not in this repo**, so a reinstall loses them
-and they have to be written again first.
+**8. Review site and timers.** The unit files live in `systemd/` in this repo.
+`./jobpilot services` installs them into `~/.config/systemd/user/` (user units only, no sudo,
+nothing system-wide) and starts the review site (`jobpilot-form.service`) and Tailscale
+(`jobpilot-tailscale.service`, so no `setup-tailscale` after a reboot). `./jobpilot start`
+turns on the scans and review runs (`jobpilot-daily.timer`, `jobpilot-review.timer`);
+`./jobpilot stop` turns them off. The runs are low priority (nice, idle I/O) and never
+catch up after the laptop sleeps. While plugged in, closing the lid does not suspend the laptop
+(`jobpilot-lid.service`, a user inhibitor lock held only on AC); on battery it sleeps as before. User units run while he is logged in; to keep them
+running after logout, `loginctl enable-linger`.
 
 **9. Check:** `./jobpilot check` (imports, paths, config, a resume build, the tests, the CLI — no
 Claude spent) ends in `ALL OK`.
@@ -94,7 +102,7 @@ Claude spent) ends in `ALL OK`.
 
 ```bash
 ./jobpilot start | stop | status       # scheduler on / off (stop also kills a run in progress)
-./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 6)
+./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 10)
     --only screen,tailor               #   just those stages (./jobpilot stages lists them)
     --source-limit 200                 #   intake stops at 200 matching postings
     --dry-run                          #   build nothing, fill nothing
@@ -223,7 +231,7 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Per company: 5 applications in any 30 days** (`apply.default_quota`). A full company is held
   before ranking and its approved cards wait for a slot. OpenAI: 5 per 180 days, full until
   2027-03-28 (its portal refused one).
-- **Per run:** 6 roles tailored, at most 3 from one company; 10 cards filed per review run.
+- **Per run:** 10 roles tailored, at most 3 from one company, at most 30% silent on visas; 10 cards filed per review run.
 - **Intake:** `--source-limit N` stops after N matching postings (about 40 s for 200 instead of
   3.5 min for all), stalest boards first.
 

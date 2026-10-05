@@ -56,7 +56,7 @@ automattic zapier doist deel oyster remotecom toptal gitpod supabase vercel
 netlify render fly digitalocean linear notion figma airtable retool
 
 # --- aimed at Sunil's actual priority markets, not US AI labs ---
-# Gulf (UAE / Saudi) — priority 2, sponsorship is the norm
+# Gulf (UAE) — priority 2, sponsorship is the norm (Saudi postings are dropped by classify)
 g42 tii mbzuai core42 presight bayanat aramco stc sdaia neom alinma tabby
 talabat careem swvl kitopi property-finder propertyfinder emiratesnbd mashreq
 dubizzle noon alef anghami
@@ -541,8 +541,13 @@ def classify(job, t):
     if "remote" in loc and LOCKED_REMOTE.search(loc):
         if not re.search(r"\b(india|worldwide|anywhere|global)\b", loc):
             return None, f"country-locked remote: {job['location'][:40]}"
+    wanted = {m["id"] for m in t.get("markets", [])}
     for market, hints in MARKET_HINTS.items():
         if any(h in loc for h in hints):
+            # a place the hints know but targets.yaml no longer lists (Saudi, from
+            # 2026-10-05) is out: targets.yaml alone decides where he looks
+            if market not in wanted:
+                return None, f"not a target market ({market}): {job['location'][:40]}"
             return market, "target market"
     if "remote" in loc or "anywhere" in loc or "worldwide" in loc:
         # "Remote - US", "Remote, United Kingdom", "Remote - Spain" are

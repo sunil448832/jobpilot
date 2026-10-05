@@ -1,0 +1,12 @@
+# Review run: Telegram "N waiting" + link, and files the cards he APPROVED
+# (config pipeline.submit_limit per run). Nothing unapproved is ever submitted.
+[Unit]
+Description=jobpilot review (digest + file approved cards)
+
+[Service]
+Type=oneshot
+WorkingDirectory=@TOOL@
+ExecStart=@TOOL@/jobpilot pipeline --digest-only
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=3h

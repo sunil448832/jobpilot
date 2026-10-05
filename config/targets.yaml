@@ -58,16 +58,6 @@ markets:
       Large Indian talent pipeline already established. Fast processing.
     resume_location_line: "Open to relocation to the UAE | Employment visa sponsorship required"
 
-  - id: saudi
-    priority: 2
-    country: "Saudi Arabia"
-    hubs: ["Riyadh", "NEOM", "Dhahran", "Jeddah"]
-    visa_route: "Employer-sponsored work visa (Iqama)"
-    sponsorship_reality: >-
-      Same as UAE — sponsorship is standard. Heavy AI hiring push (NEOM, Aramco,
-      SDAIA, stc). Often pays above UAE for the same level.
-    resume_location_line: "Open to relocation to Saudi Arabia | Employment visa sponsorship required"
-
   - id: australia
     priority: 3
     country: "Australia"
@@ -314,7 +304,7 @@ scoring:
   market_bonus:
     1: 22        # Netherlands, Ireland, Germany, Luxembourg, remote-from-India
                  #   — no labour-market test, no lottery, weeks not months
-    2: 18        # UAE, Saudi
+    2: 18        # UAE (Saudi Arabia dropped 2026-10-05 on his instruction)
                  #   — routine: nearly every hire there is an expat
     3: 12        # Australia, Switzerland
                  #   — real but rationed: approved-sponsor list / Permit B quota
@@ -326,7 +316,8 @@ scoring:
   min_score_to_queue: 50        # below this, do not build a resume
   auto_queue_above: 60          # above this, tailor and fill without asking
   boost:
-    sponsorship_explicit: 15    # JD explicitly says it sponsors
+    sponsorship_explicit: 15    # JD explicitly says it sponsors (rank/visa.py: explicit)
+    sponsorship_implicit: 7     # a hint: case by case, relocation help, a market where it is the norm
     fully_remote_global: 12
     genai_agentic_focus: 10
     referral_available: 20      # referrals.py found a connection there

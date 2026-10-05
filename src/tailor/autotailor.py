@@ -158,8 +158,11 @@ def candidates(limit, floor, per_company=3, require_screen=None):
                   # abstract ones and "one of" lists included) gates entry. Keyword scores
                   # cannot read a JD like Adyen's (5 hard keywords in 87 terms); this can.
                   f"AND fit >= {int(cfg('pipeline.fit_min', 45))} ")
+    from jobpilot.rank import visa
+    visa.ensure_columns(con)
     rows = con.execute(
-        "SELECT key, company, title, location, url, market, score, fit, source FROM jobs "
+        "SELECT key, company, title, location, url, market, score, fit, source, "
+        "COALESCE(screen_visa, visa, 'silent') FROM jobs "
         "WHERE status='new' AND url != '' AND (source='inbox' OR (" + gates + ")) "
         # Blend: fit says how well he matches the role, rank says how worth
         # pursuing it is (market, sponsorship, pay). Non-US markets still come
@@ -167,11 +170,16 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         + "ORDER BY CASE WHEN source='inbox' THEN 0 ELSE 1 END, "
           "CASE market WHEN 'usa' THEN 1 ELSE 0 END, "
           f"(COALESCE(fit, 0) * {w} + score * {1 - w}) DESC LIMIT ?",
-        (floor, max(limit * 8, 60))).fetchall()
+        (floor, max(limit * 15, 200))).fetchall()
     held = {Q.key(c) for c in (cfg("apply.hold_companies", []) or [])}
     quota = Q.companies()
     out, seen, roles, urls = [], {}, set(), set()
-    for k, co, title, loc, url, mk, sc, fit, src in rows:
+    # The visa mix (pipeline.visa_silent_share): roles whose posting says nothing about a
+    # visa fill at most this share of the run; the rest must say explicit or implicit.
+    # A refusal ("no") never gets here — visa.py or the screener rejected it.
+    silent_cap = int(limit * float(cfg("pipeline.visa_silent_share", 0.3)) + 1e-9)
+    silent = 0
+    for k, co, title, loc, url, mk, sc, fit, src, vtag in rows:
         ck = Q.key(co)
         inbox = src == "inbox"
         # One role, several cities = several rows. Two workers scaffolding the same
@@ -197,11 +205,17 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         # was throttling the whole pipeline down to ~5 candidates.
         if seen.get(co, 0) >= per_company and not inbox:   # his own picks are never capped per company
             continue
+        if vtag == "no" and not inbox:
+            continue
+        if vtag not in ("explicit", "implicit") and not inbox:
+            if silent >= silent_cap:
+                continue
+            silent += 1
         seen[co] = seen.get(co, 0) + 1
         urls.add(norm_url(url))
         out.append({"key": k, "company": co, "title": title, "location": loc,
                     "url": url, "market": mk, "score": sc, "fit": fit, "slug": slug,
-                    "source": src,
+                    "source": src, "visa": vtag,
                     "pick": round((fit or 0) * w + sc * (1 - w), 1)})
         if len(out) >= limit:
             break
@@ -330,7 +344,7 @@ def process_role(p, cli, tag=""):
     fill (serialised), question drafting, DB update. Runs on a worker thread;
     opens its own sqlite connection because connections are not thread-safe."""
     t0 = dt.datetime.now()
-    log(f"{tag}{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
+    log(f"{tag}{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']}, visa {p.get('visa', '?')})")
 
     ok, out = run([sys.executable, "-m", "jobpilot.tailor.scaffold",
                    p["url"], "--company", p["slug"], "--market", p["market"],
@@ -470,11 +484,13 @@ def main():
     if not picks:
         log(f"nothing new above {a.floor}")
         return 0
-    log(f"{len(picks)} role(s) to prepare (floor {a.floor})")
+    nv = sum(1 for p in picks if p.get("visa") in ("explicit", "implicit"))
+    log(f"{len(picks)} role(s) to prepare (floor {a.floor}): {nv} with a visa offer or hint, "
+        f"{len(picks) - nv} silent (at most {int(a.limit * float(cfg('pipeline.visa_silent_share', 0.3)) + 1e-9)})")
 
     if a.dry_run:
         for p in picks:
-            log(f"{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']})")
+            log(f"{p['company']} — {p['title'][:44]} (pick {p['pick']}: rank {p['score']}, fit {p.get('fit', '?')}, {p['market']}, visa {p.get('visa', '?')})")
             log(f"  [dry-run] would scaffold {p['slug']}, build, score, tailor-if-needed, fill")
         return 0
 

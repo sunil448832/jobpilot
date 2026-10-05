@@ -1,0 +1,13 @@
+# Tailscale as the user, userspace networking (no network device; routing, DNS, firewall
+# untouched) — the review site from any network. Same command as scripts/setup_tailscale.sh.
+[Unit]
+Description=jobpilot Tailscale (userspace, as the user)
+After=network-online.target
+
+[Service]
+ExecStart=%h/softwares/tailscale/tailscaled --tun=userspace-networking --statedir=@TOOL@/data/tailscale --socket=@TOOL@/data/tailscale/tailscaled.sock
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

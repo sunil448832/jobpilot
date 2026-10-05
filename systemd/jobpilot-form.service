@@ -1,0 +1,13 @@
+# The review site (port 8765): cards, approvals, /questions. Installed by ./jobpilot services.
+[Unit]
+Description=jobpilot review site
+After=network-online.target
+
+[Service]
+WorkingDirectory=@TOOL@
+ExecStart=@PY@ -m jobpilot.review.serve
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

@@ -44,7 +44,7 @@ from jobpilot.core.config import cfg
 from jobpilot.core import cards as CD, quota as Q
 from jobpilot.core.paths import LOGS, TOOL
 from jobpilot.apply.explore_agentic import browser as B, record as R
-from jobpilot.apply.explore_agentic.form import Form
+from jobpilot.apply.explore_agentic.form import Form, CONFIRMED_RX
 from jobpilot.apply.explore_agentic import calls as C, card as K, session as SS
 
 
@@ -191,8 +191,14 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
                 out["agent_cost_usd"] = round((out.get("agent_cost_usd") or 0) + (getattr(res, "total_cost_usd", 0) or 0), 3)
             if not form.sent:
                 done = form.done or ("stuck", said)
-                out["outcome"] = "needs-answers" if done[0] == "needs-answer" else "not-sent"
-                out["why"] = done[1]
+                if done[0] == "submitted" and form.presses:
+                    # the agent saw a confirmation the watch missed: read the page again. A press
+                    # was made, so it is never "not sent": confirmed, or unclear (never pressed again)
+                    seen = await on_browser(lambda: CONFIRMED_RX.search("\n".join(form.page_lines())))
+                    form.sent = ("submitted", seen.group(0)) if seen else ("unclear", f"the agent reports it sent: {done[1]}")
+                else:
+                    out["outcome"] = "needs-answers" if done[0] == "needs-answer" else "not-sent"
+                    out["why"] = done[1]
         if form.sent:
             out["outcome"], out["why"] = form.sent
         os.makedirs(CD.folder(slug), exist_ok=True)
@@ -280,7 +286,14 @@ def main():
     print(f"  {len(todo)} approved card(s) to file")
     for it in todo:
         print(f"\n=== {it['id']}")
-        file_one(it["company_slug"], True, it["id"], a.model, a.effort)
+        # one card's crash (a dropped connection, 2026-10-04) must not leave the rest unfiled;
+        # the card keeps the state file_one gave it, so it is never filed twice
+        try:
+            file_one(it["company_slug"], True, it["id"], a.model, a.effort)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            print(f"  !! {it['id']}: {type(e).__name__}: {str(e)[:200]} — next card", flush=True)
 
 
 if __name__ == "__main__":

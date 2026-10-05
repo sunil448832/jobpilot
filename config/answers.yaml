@@ -351,11 +351,10 @@ files:
   # name reads as machine-generated. The folder keeps them apart.
   resume_pdf_pattern: "applications/{company}/sunil_resume.pdf"
   resume_docx_pattern: "applications/{company}/sunil_resume.docx"
-  # Which one to upload where. The resume PDF's text extracts cleanly (checked 2026-09-29:
-  # single column, no broken ligatures), so the resume field gets the PDF — the layout a
-  # recruiter should see. A form with a second attachment field (cover letter, additional
-  # documents) gets the .docx there too.
-  upload_for_ats_portal: "pdf"
+  # Which one to upload where (his instruction, 2026-10-05): the resume field gets the
+  # .docx; a form with a second attachment field (cover letter, additional documents) gets
+  # the PDF there too. A field that accepts only PDF gets the PDF.
+  upload_for_ats_portal: "docx"
   upload_for_human_review: "pdf"
   default_fallback_pdf: "sunil_resume.pdf"
 

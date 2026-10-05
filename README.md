@@ -70,8 +70,8 @@ is public: never commit it). Steps 6 and 8 write their keys; add the rest by han
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | digests, "N waiting", codes asked mid-filing | `./jobpilot setup-telegram` |
 | `FORM_TOKEN` | the review site's `?t=` link | the review site, on first start |
 | `WORKDAY_EMAIL`, `WORKDAY_PASSWORD` | the Workday account gate (one password used nowhere else) | by hand; without them Workday jobs are skipped |
-| `BRAVE_API_KEY` or `GOOGLE_CSE_KEY` + `GOOGLE_CSE_CX` | weekly tenant discovery: web search | by hand, optional |
-| `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | weekly tenant discovery: Adzuna | by hand, optional |
+| `BRAVE_API_KEY` or `GOOGLE_CSE_KEY` + `GOOGLE_CSE_CX` | employer discovery: web search | by hand, optional |
+| `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | employer discovery: Adzuna | by hand, optional |
 
 **6. Telegram**: create a bot with @BotFather (`/newbot`), then run `./jobpilot setup-telegram`
 in a terminal. It asks for the token (hidden), waits for you to tap START on the bot, saves both
@@ -177,8 +177,8 @@ jobpilot/
   never kept; a different pick is asked on `/questions`, never overwritten.
 - The form agent answers in this order: his answers for this form → stored facts → this
   portal's entries → this portal's picks → otherwise a question on the card.
-- Resume uploads: the **PDF** in the resume field; when the form has a second attachment field
-  (cover letter, additional documents) the **.docx** there too.
+- Resume uploads: the **.docx** in the resume field; when the form has a second attachment field
+  (cover letter, additional documents) the **PDF** there too. A field that accepts only PDF gets the PDF.
 
 ## Tailoring
 
@@ -219,7 +219,7 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 
 | Page | Shows |
 |---|---|
-| `/` | Review now, For later, Approved, Failed, Submitted (10 a page, with Referrals, Referred? and After columns) |
+| `/` | Review now, For later (5 a page), Approved, Failed, Submitted (10 a page, with Referrals, Referred? and After columns) |
 | `/a/<id>` | one card: every value to be submitted, open questions with drafted answers, Approve / Later / Reject / Undo |
 | `/questions` | what a filing needs now (a code, a verification) and notices (a captcha) |
 | `/companies` | per company: submitted, sent in window, limit, room, next slot |
@@ -231,7 +231,11 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Per company: 5 applications in any 30 days** (`apply.default_quota`). A full company is held
   before ranking and its approved cards wait for a slot. OpenAI: 5 per 180 days, full until
   2027-03-28 (its portal refused one).
-- **Per run:** 10 roles tailored, at most 3 from one company, at most 30% silent on visas; 10 cards filed per review run.
+- **Per run:** 10 roles tailored, at most 3 from one company, at most 30% silent on visas, and no
+  country above its share (`pipeline.market_max_share`: US, UAE, AU 30%; DE, NL, IE 40%; CH, LU,
+  remote 20%); 10 cards filed per review run.
+- **Employer discovery** (`tenants.py`: curated lists per market + LinkedIn guest search for names)
+  runs from a scan when its last run is over 3 days old; the US is not searched (it has the most).
 - **Intake:** `--source-limit N` stops after N matching postings (about 40 s for 200 instead of
   3.5 min for all), stalest boards first.
 

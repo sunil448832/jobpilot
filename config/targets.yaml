@@ -46,7 +46,7 @@ markets:
     sponsorship_reality: >-
       Best odds of the five. Recognised sponsors hire non-EU routinely and the
       permit lands in roughly 2-4 weeks. Salary threshold is well below the ask.
-    resume_location_line: "Open to relocation to the Netherlands | EU Blue Card / Highly Skilled Migrant sponsorship required"
+    resume_location_line: "Open to relocation to the Netherlands"
 
   - id: uae
     priority: 2
@@ -56,7 +56,7 @@ markets:
     sponsorship_reality: >-
       Sponsorship is the norm, not an exception — nearly every hire is an expat.
       Large Indian talent pipeline already established. Fast processing.
-    resume_location_line: "Open to relocation to the UAE | Employment visa sponsorship required"
+    resume_location_line: "Open to relocation to the UAE"
 
   - id: australia
     priority: 3
@@ -66,7 +66,7 @@ markets:
     sponsorship_reality: >-
       Real but slower. Employer must be an approved sponsor, so it skews toward
       larger companies. ML/software roles are on the skills list. 6-12 weeks.
-    resume_location_line: "Open to relocation to Australia | Subclass 482 sponsorship required"
+    resume_location_line: "Open to relocation to Australia"
 
   - id: ireland
     priority: 1
@@ -82,7 +82,7 @@ markets:
       EMEA engineering base for Google, Meta, Microsoft, Stripe, Intercom,
       Workday, HubSpot, Datadog and Amazon. Permit typically 4-8 weeks, and it
       carries immediate family reunification.
-    resume_location_line: "Open to relocation to Ireland | Critical Skills Employment Permit sponsorship required"
+    resume_location_line: "Open to relocation to Ireland"
 
   - id: germany
     priority: 1
@@ -97,7 +97,7 @@ markets:
       DeepL, Celonis, Merantix, plus SAP and Bosch research. English is the
       working language in most engineering teams; German is not a blocker for
       the job, only for daily life.
-    resume_location_line: "Open to relocation to Germany | EU Blue Card sponsorship required"
+    resume_location_line: "Open to relocation to Germany"
 
   - id: luxembourg
     priority: 1
@@ -118,7 +118,7 @@ markets:
       innovation centre, the LIST research institute and the SnT centre at the
       University of Luxembourg. Worth including precisely because it costs
       nothing to watch a small board.
-    resume_location_line: "Open to relocation to Luxembourg | EU Blue Card sponsorship required"
+    resume_location_line: "Open to relocation to Luxembourg"
 
   - id: switzerland
     priority: 3
@@ -137,7 +137,7 @@ markets:
       genuine door rather than a cold application. Treat Switzerland as a
       high-value, low-volume target: apply where the fit is exceptional, do not
       let it consume the calendar.
-    resume_location_line: "Open to relocation to Switzerland | Permit B sponsorship required"
+    resume_location_line: "Open to relocation to Switzerland"
 
   - id: usa
     priority: 4
@@ -153,7 +153,7 @@ markets:
         - O-1 (needs a documented case: publications, patents, press, awards)
         - L-1 after a year at a company with a US entity
         - fully-remote contractor via EOR  <- the realistic near-term path
-    resume_location_line: "Open to relocation to the US | Visa sponsorship required"
+    resume_location_line: "Open to relocation to the US"
 
   - id: remote_india
     priority: 1
@@ -164,7 +164,7 @@ markets:
       No visa, no lottery, no relocation. Pays in USD/EUR rather than INR. Equal
       top priority with the Netherlands because there is nothing to wait for.
       Screen hard for "remote (US only)" style restrictions.
-    resume_location_line: "India | Available for fully-remote roles | Open to relocation with sponsorship"
+    resume_location_line: "India | Available for fully-remote roles | Open to relocation"
 
 # Titles to search for. Matched loosely; rank.py scores the real fit.
 titles:

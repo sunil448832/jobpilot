@@ -43,10 +43,16 @@ def key(company):
     return re.sub(r"[^a-z0-9]+", "", (company or "").lower())
 
 
-def limit(k):
-    """(max, window_days) for a company key; max 0 is no limit."""
+def limits(k):
+    """[(max, window_days), ...] for a company key: an entry under apply.quotas may be one
+    limit or a list (OpenAI: 2 in 30 days AND its portal's 5 in 180); max 0 is no limit."""
     q = (cfg("apply.quotas", {}) or {}).get(k) or cfg("apply.default_quota", {}) or {}
-    return int(q.get("max", 0)), int(q.get("window_days", 30))
+    return [(int(x.get("max", 0)), int(x.get("window_days", 30))) for x in (q if isinstance(q, list) else [q])]
+
+
+def limit(k):
+    """(max, window_days) for a company key — the first of its limits; max 0 is no limit."""
+    return limits(k)[0]
 
 
 def _time(s):
@@ -82,12 +88,15 @@ def companies(now=None):
     for k in set(blocks) | set(cfg("apply.quotas", {}) or {}):
         rows.setdefault(k, {"company": k, "sent": [], "submitted": [], "waiting": 0})
     for k, r in rows.items():
-        mx, days = limit(k)
-        inside = sorted(t for t in r["sent"] if t > now - dt.timedelta(days=days))
-        r.update(max=mx, window=days, used=len(inside), last=max(r["submitted"], default=None),
-                 room=mx - len(inside) if mx else None, blocked=None,
-                 # the send that must leave the window before one more fits
-                 opens=inside[len(inside) - mx] + dt.timedelta(days=days) if mx and len(inside) >= mx else None)
+        best = None                                  # the binding limit: least room left
+        for mx, days in limits(k):
+            inside = sorted(t for t in r["sent"] if t > now - dt.timedelta(days=days))
+            cand = dict(max=mx, window=days, used=len(inside), room=mx - len(inside) if mx else None,
+                        # the send that must leave the window before one more fits
+                        opens=inside[len(inside) - mx] + dt.timedelta(days=days) if mx and len(inside) >= mx else None)
+            if best is None or (cand["room"] is not None and (best["room"] is None or cand["room"] < best["room"])):
+                best = cand
+        r.update(**best, last=max(r["submitted"], default=None), blocked=None)
         until = _time((blocks.get(k) or {}).get("until"))
         if until and until > now:                    # the portal said its limit is reached
             r.update(room=0, blocked=until, opens=max(until, r["opens"] or until))
@@ -100,7 +109,8 @@ def room(company, waiting=False, rows=None):
     rows = companies() if rows is None else rows
     r = rows.get(key(company))
     if r is None:
-        return limit(key(company))[0] or None
+        mxs = [mx for mx, _ in limits(key(company)) if mx]
+        return min(mxs) if mxs else None
     if r["room"] is None:
         return None
     return r["room"] - (r["waiting"] if waiting else 0)

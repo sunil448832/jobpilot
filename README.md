@@ -139,7 +139,7 @@ Claude spent) ends in `ALL OK`.
 | submit | `apply/explore_agentic/replay.py` | redoes the record by code with his answers; the agent only where a page differs; presses Submit and waits for the portal's confirmation | only if a page differs |
 | track | `core/tracker.py`, `outreach/` | follow-up 5 business days later; referral targets and messages | — |
 
-Roles pass rank, screen (keep, fit ≥ 45) and the tailor floor (score ≥ 45) before any Claude
+Roles pass rank, screen (keep, fit ≥ 55) and the tailor floor (score ≥ 45) before any Claude
 session is spent on them. Links he adds with `./jobpilot add` skip rank and screen.
 
 ## Where things live
@@ -234,6 +234,11 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Per run:** 10 roles tailored, at most 3 from one company, at most 30% silent on visas, and no
   country above its share (`pipeline.market_max_share`: US, UAE, AU 30%; DE, NL, IE 40%; CH, LU,
   remote 20%); 10 cards filed per review run.
+- **Visa:** US roles only when the posting says it sponsors; a silent posting in the Netherlands,
+  Ireland, Germany, Luxembourg or the UAE counts as a likely yes. The resume header says only
+  "Open to relocation to X" — the forms answer the sponsorship question.
+- **Frontier labs:** at most 2 applications a month each (Anthropic, OpenAI, DeepMind, xAI,
+  Mistral, Reflection, Meta, Cohere).
 - **Employer discovery** (`tenants.py`: curated lists per market + LinkedIn guest search for names)
   runs from a scan when its last run is over 3 days old; the US is not searched (it has the most).
 - **Intake:** `--source-limit N` stops after N matching postings (about 40 s for 200 instead of

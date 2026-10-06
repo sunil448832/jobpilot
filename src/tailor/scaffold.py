@@ -150,16 +150,21 @@ def copy_sections(dest):
 def set_location(dest, market):
     r"""Write the \location line for this role's market (targets.yaml). Code, not
     the LLM: with the score gate a role may never see an LLM session at all."""
-    if not market:
-        return
     import yaml
     t = yaml.safe_load(open(os.path.join(CONFIG, "targets.yaml")))
     line = next((m.get("resume_location_line") for m in t.get("markets", [])
-                 if m.get("id") == market), None)
-    if not line:
-        return
+                 if m.get("id") == market), None) if market else None
     p = os.path.join(dest, "resume.tex")
     tex = open(p, encoding="utf-8").read()
+    if not line:
+        # no line for this market: keep the copied one, less any "... sponsorship required"
+        # part — the forms answer that question; a resume that opens with it is skipped
+        # unread (2026-10-06). The base resume itself is never written.
+        m = re.search(r"\\def\\location\{(.*)\}", tex)
+        if not m:
+            return
+        line = " | ".join(x.strip() for x in re.split(r"\s*\\hspace\{\.3em\}\$\\vert\$\\hspace\{\.3em\}\s*", m.group(1))
+                          if "sponsorship" not in x.lower())
     # "India | Open to relocation ... | Visa sponsorship required" -> TeX separators
     parts = [x.strip() for x in line.split("|")]
     texline = " \\hspace{.3em}$\\vert$\\hspace{.3em} ".join(parts)

@@ -212,6 +212,8 @@ def candidates(limit, floor, per_company=3, require_screen=None):
             continue
         if vtag == "no" and not inbox:
             continue
+        if mk in (cfg("visa.explicit_only_markets", []) or []) and vtag != "explicit" and not inbox:
+            continue                       # e.g. the US: silence there is an automatic reject
         if mk in shares and not inbox and per_market.get(mk, 0) >= max(1, int(limit * float(shares[mk]) + 1e-9)):
             continue
         if vtag not in ("explicit", "implicit") and not inbox:

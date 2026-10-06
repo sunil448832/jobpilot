@@ -107,7 +107,7 @@ pipeline:
   # lists (DeepJudge: PyTorch OR JAX). Set to 45 on 2026-09-23 — level with
   # tailor_floor — after the screener scored Adyen (a role Sunil judged a fit)
   # at 50; the screener is conservative on abstract research JDs.
-  fit_min: 45
+  fit_min: 55           # raised 45 -> 55 on 2026-10-06: 57 sent, no positive reply
   # Selection order for tailoring = fit_weight * fit + (1 - fit_weight) * rank
   # score, non-US markets first. Rank measures "worth pursuing" (market,
   # sponsorship, keywords); fit measures "matches the role as a human reads it".
@@ -121,7 +121,14 @@ pipeline:
 visa:
   # Markets where every expat hire is sponsored, so a silent posting there counts
   # as an implicit offer.
-  implicit_markets: [uae]
+  # Netherlands / Ireland / Germany / Luxembourg: a skilled-worker permit (HSM, Critical
+  # Skills, Blue Card) is routine once there is an offer, so a silent posting there is a
+  # likely yes (2026-10-06, on his go).
+  implicit_markets: [uae, netherlands, ireland, germany, luxembourg]
+  # Markets where only a posting that SAYS it sponsors is worth applying to: a US
+  # employer silent on it answers "requires sponsorship: yes" with an automatic reject
+  # (2026-10-06: 26 of 57 sent were US, no positive reply).
+  explicit_only_markets: [usa]
 
 screen:
   # A role asking for (your years in answers.yaml experience_summary.total_years
@@ -174,7 +181,18 @@ apply:
   # ./jobpilot companies.
   default_quota: {max: 5, window_days: 30}
   quotas:
-    openai: {max: 5, window_days: 180}     # the portal refuses a 6th in 180 days (seen 2026-09-29)
+    # Frontier labs: at most 2 a month (2026-10-06 — 7 to Anthropic in a week, no reply;
+    # cold applications there rarely get one). OpenAI also keeps its portal's limit.
+    openai: [{max: 2, window_days: 30}, {max: 5, window_days: 180}]   # the portal refuses a 6th in 180 days (seen 2026-09-29)
+    anthropic: {max: 2, window_days: 30}
+    googledeepmind: {max: 2, window_days: 30}
+    deepmind: {max: 2, window_days: 30}
+    xai: {max: 2, window_days: 30}
+    mistralai: {max: 2, window_days: 30}
+    mistral: {max: 2, window_days: 30}
+    reflectionai: {max: 2, window_days: 30}
+    meta: {max: 2, window_days: 30}
+    cohere: {max: 2, window_days: 30}
   # Companies to skip tailoring entirely. OpenAI was held from 2026-09-07 until
   # the RL post-training project reached the resume; it landed 2026-09-22 and the
   # hold was lifted the same day. Its 5-per-180-days quota still applies above.

@@ -35,7 +35,7 @@ from jobpilot.apply.explore_agentic.controls import LINE, unquote
 
 MAX_PRESSES = 3
 # what a portal says after a press: taken, or refused for good (the filing's watch)
-CONFIRMED_RX = re.compile(r"thank(s| you) for (applying|(submitting )?your application)|"
+CONFIRMED_RX = re.compile(r"thank(s| you)( so much| a lot| very much)? for (applying|(submitting )?your application)|"
                           r"application (has )?(successfully )?(been )?(successfully )?(submitted|received)|"
                           r"successfully submitted|we('ve| have) received your application|congratulations|"
                           r"your application (was|has been) (successfully )?(submitted|sent|received)", re.I)

@@ -1,0 +1,15 @@
+# The review site on a public https link (Cloudflare quick tunnel), for when Tailscale is
+# not up. Every page still needs the ?t= token. The address changes on each start; the new
+# one is sent on Telegram (src/review/tunnel.py). Stop or disable this unit to undo.
+[Unit]
+Description=jobpilot review site tunnel (Cloudflare)
+After=network-online.target jobpilot-form.service
+
+[Service]
+WorkingDirectory=@TOOL@
+ExecStart=@PY@ -m jobpilot.review.tunnel
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

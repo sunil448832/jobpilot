@@ -132,7 +132,12 @@ def discover_if_stale():
 
 
 def form_link():
-    """Review URL: tailnet host if configured or detectable, else the LAN IP."""
+    """Review URL: the public tunnel while it runs (review/tunnel.py: any network, no app),
+    else the tailnet host if configured or detectable, else the LAN IP."""
+    from jobpilot.review import tunnel
+    tun, tok = tunnel.current(), env().get("FORM_TOKEN", "")
+    if tun and tok:
+        return f"{tun}/?t={tok}"
     host = cfg("server.tailscale_host", "") or ""
     if not host:
         try:

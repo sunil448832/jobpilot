@@ -175,6 +175,9 @@ case "$cmd" in
   paths)      py core.paths ;;
   check)      bash "$TOOL/scripts/smoke.sh" ;;
   link)       tok=$(grep FORM_TOKEN "$TOOL/.env" 2>/dev/null | cut -d= -f2)
+              tun=$(cat "$DATA/tunnel_url" 2>/dev/null)
+              [ -n "${tun:-}" ] && echo "  any network: $tun/?t=$tok"
+              echo "  this laptop: http://localhost:8765/?t=$tok"
               ts=$("$HOME/softwares/tailscale/tailscale" --socket "$DATA/tailscale/tailscaled.sock" status --json 2>/dev/null | "$PY" -c "import json,sys;print(json.load(sys.stdin)['Self']['DNSName'].rstrip('.'))" 2>/dev/null)
               [ -n "${ts:-}" ] && echo "  anywhere:  http://$ts:8765/?t=$tok"
               echo "  home wifi: http://$(hostname -I | awk '{print $1}'):8765/?t=$tok"
@@ -236,6 +239,7 @@ case "$cmd" in
               systemctl --user daemon-reload
               systemctl --user enable --now jobpilot-form.service 2>&1 | sed 's/^/  /'
               systemctl --user enable --now jobpilot-lid.service 2>&1 | sed 's/^/  /'   # lid keeps it awake only while plugged in
+              [ -x "$HOME/softwares/cloudflared/cloudflared" ] && systemctl --user enable --now jobpilot-tunnel.service 2>&1 | sed 's/^/  /'   # public link, token-guarded
               # tailscaled started by hand (setup-tailscale) keeps running; the unit takes over at the next login
               if pgrep -u "$USER" -f "$HOME/softwares/tailscale/tailscaled" >/dev/null; then
                 systemctl --user enable jobpilot-tailscale.service 2>&1 | sed 's/^/  /'

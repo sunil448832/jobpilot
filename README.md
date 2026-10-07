@@ -214,6 +214,13 @@ A low score from a real gap is reported, not chased. No code adds or removes ter
 
 ## Review site
 
+Three ways in, all needing the `FORM_TOKEN` link (`./jobpilot link` prints them):
+**any network** — `jobpilot-tunnel.service` (src/review/tunnel.py): his fixed ngrok address
+(`NGROK_AUTHTOKEN` + `NGROK_DOMAIN` in `.env`, ngrok in `~/softwares/ngrok`; the bookmark — the
+first visit in a browser shows ngrok's "You are about to visit" page once), else a Cloudflare
+quick tunnel whose address changes on restart and is sent on Telegram; **this laptop** —
+`localhost:8765`; **Tailscale** — still running, but the phone does not need it.
+
 `jobpilot-form.service` (or `python -m jobpilot.review.serve`), port 8765, on home Wi-Fi and over
 Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its code.
 

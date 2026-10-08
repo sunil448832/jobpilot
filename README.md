@@ -227,7 +227,7 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 | Page | Shows |
 |---|---|
 | `/` | Review now, For later (5 a page), Approved, Failed, Submitted (10 a page, with Referrals, Referred? and After columns) |
-| `/a/<id>` | one card: every value to be submitted, open questions with drafted answers, Approve / Later / Reject / Undo |
+| `/a/<id>` | one card: every value to be submitted, open questions with drafted answers, Approve / Later / Reject / Undo, and **Redraft**: a note ("fill the optional fields", "rephrase it shorter") — the form is filled again with it and the answers redrafted; the new card comes back (Telegram says so). Notes are kept in `applications/<slug>/feedback.json` and apply to later redrafts too |
 | `/questions` | what a filing needs now (a code, a verification) and notices (a captcha) |
 | `/companies` | per company: submitted, sent in window, limit, room, next slot |
 | `/referrals` | people to contact per role, messages to copy, status buttons |

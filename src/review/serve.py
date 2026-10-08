@@ -699,6 +699,52 @@ class H(BaseHTTPRequestHandler):
             print(f"  [after] {parts[1]} -> {payload.get('status') or '(cleared)'}")
             return self._ok(json.dumps({"ok": True}), "application/json")
 
+        # "Redraft with feedback" on a card: his note is kept with the application, the form is
+        # walked again from the posting with it and the open questions drafted again with it;
+        # the new card replaces this one and Telegram says so. Never sends anything.
+        if len(parts) == 3 and parts[0] == "a" and parts[2] == "redraft":
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                text = str(json.loads(self.rfile.read(n) or b"{}").get("feedback") or "").strip()[:2000]
+            except json.JSONDecodeError:
+                return self._err(400, "bad json")
+            p = item_path(parts[1])
+            if not text:
+                return self._err(400, "write what to change")
+            if not os.path.isfile(p):
+                return self._err(404, "no such application")
+            with LOCK:
+                item = json.load(open(p))
+                if item.get("status") in ("submitted", "submitting") or item.get("submitted_at"):
+                    return self._err(409, "already sent — it cannot be redrafted")
+                slug = item["company_slug"]
+                unit = "jobpilot-redraft-" + "".join(ch for ch in slug if ch.isalnum() or ch == "-")[:60]
+                busy = subprocess.run(["systemctl", "--user", "is-active", unit],
+                                      capture_output=True, text=True).stdout.strip() in ("active", "activating")
+                if busy:
+                    return self._err(409, "a redraft of this application is already running")
+                fb_path = os.path.join(TOOL, "applications", slug, "feedback.json")
+                try:
+                    notes = json.load(open(fb_path))
+                except (OSError, ValueError):
+                    notes = []
+                notes.append({"at": dt.datetime.now().isoformat(timespec="seconds"), "card": item["id"], "text": text})
+                json.dump(notes, open(fb_path, "w"), indent=2)
+                item["status"] = "exploring"                 # "Re-exploring — back when done" on the list
+                item["redraft"] = notes[-1]
+                json.dump(item, open(p, "w"), indent=2)
+            # its own user unit: it outlives a restart of this site and runs after any fill
+            # holding the browser (the profile lock makes it wait)
+            cmd = [sys.executable, "-m", "jobpilot.apply.explore_agentic", slug, "--fresh",
+                   "--feedback-file", fb_path, "--draft"]
+            r = subprocess.run(["systemd-run", "--user", "--collect", f"--unit={unit}",
+                                f"--working-directory={TOOL}", *cmd], capture_output=True, text=True)
+            if r.returncode != 0:                              # no systemd: a detached child instead
+                logf = open(os.path.join(LOGS, f"redraft-{slug}.log"), "a")
+                subprocess.Popen(cmd, cwd=TOOL, stdout=logf, stderr=subprocess.STDOUT, start_new_session=True)
+            print(f"  [redraft] {parts[1]}: {text[:80]!r}")
+            return self._ok(json.dumps({"ok": True}), "application/json")
+
         if not (len(parts) == 3 and parts[0] == "a" and parts[2] == "submit"):
             return self._err(404, "not found")
 

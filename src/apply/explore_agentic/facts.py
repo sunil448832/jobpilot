@@ -129,8 +129,8 @@ def for_prompt(facts, asked=None, tenant=""):
         elif k == "file:resume_second":
             stored.append(f"file:resume_second: (the same resume as a {'.docx' if str(v).endswith('.docx') else 'PDF'},"
                           " for a second attachment field)")
-        elif k in ("file:resume_docx", "file:resume_pdf"):
-            continue                                     # keys older records name; not offered
+        elif k in ("file:resume_docx", "file:resume_pdf") or k.startswith("meta:"):
+            continue                                     # keys older records name, and switches; not offered
         elif k.startswith("tenant:"):
             own = facts.get(k[len("tenant:"):], "")
             portal.append(f"{k}: {v[:120]}" + (f"   (stands for the stored {own[:60]!r})" if own else ""))

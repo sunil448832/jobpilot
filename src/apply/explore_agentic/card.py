@@ -78,7 +78,8 @@ def write(slug, out, answers):
         "created": dt.datetime.now().isoformat(timespec="seconds"),
     }
     save(item)
-    tell(item)
+    if not out.get("defer_tell"):
+        tell(item)
     return item
 
 

@@ -230,6 +230,15 @@ def captcha(page):
             continue
         if box and box["width"] > 150 and box["height"] > 150:
             return True
+        # Cloudflare Turnstile's "Verify you are human" is a checkbox strip (~300x65), not a
+        # puzzle: it held Destinus's Workable form at "Submitting…" three times (2026-10-07/08)
+        if box and "challenges.cloudflare" in (fr.url or "") and box["width"] > 150 and box["height"] > 40:
+            return True
+    try:
+        if re.search(r"verify you are human", page.main_frame.inner_text("body", timeout=2000) or "", re.I):
+            return True
+    except Exception:
+        pass
     return False
 
 

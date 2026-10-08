@@ -561,6 +561,16 @@ class Form:
             return "this session does not send the application — call finish"
         if self.item.get("status") != "approved" or self.item.get("submitted_at"):
             return f"the application is not approved for sending ({self.item.get('status')})"
+        # the card and the record as they are NOW: a run that waited for the browser may find
+        # another run pressed Submit meanwhile (Destinus, 2026-10-07: two runs, two presses)
+        from jobpilot.core import cards as _CD
+        from jobpilot.apply.explore_agentic import record as _R
+        fresh = _CD.load(self.item["id"]) or self.item
+        if fresh.get("status") != "approved" or fresh.get("submitted_at") \
+                or len(fresh.get("submit_presses") or []) > len(self.item.get("submit_presses") or []):
+            return "another run pressed Submit on this application meanwhile — never press again; call finish('stuck', note)"
+        if any(a.get("outcome") in ("submitted", "unconfirmed") for a in (_R.load(self.slug).get("attempts") or [])):
+            return "this application was sent, or maybe sent, by another run — never press again; call finish('stuck', note)"
         if self.sent:
             return f"a press already ended as {self.sent[0]} — never press again"
         if len(self.presses) >= MAX_PRESSES:

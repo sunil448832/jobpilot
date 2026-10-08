@@ -155,6 +155,9 @@ button:not(:disabled):hover{filter:brightness(1.08)}
 .flag.done b{color:var(--accent)}
 .result p{margin:0;color:var(--ink-2);font-size:14.5px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+details.redraft{margin-top:16px} details.redraft textarea{width:100%;box-sizing:border-box;
+margin:8px 0;padding:10px;border-radius:10px;border:1px solid #C9D3DD;font:inherit;background:transparent;color:inherit}
+details.redraft button{width:100%}
 </style>
 
 <div class="wrap">
@@ -175,6 +178,16 @@ button:not(:disabled):hover{filter:brightness(1.08)}
   <details>
     <summary><span>Values that will be submitted</span><span class="count" id="nfields"></span></summary>
     <dl class="fields" id="fields"></dl>
+  </details>
+
+  <details class="redraft" id="redraft-box">
+    <summary><span>✍️ Redraft</span></summary>
+    <p class="m">Say what to change — "fill the optional fields too", "rephrase the why-us answer, shorter",
+    "pick Remote for work preference". The form is filled again with your note, the answers are redrafted,
+    and the new card comes back here (Telegram tells you). Nothing is sent.</p>
+    <textarea id="fb" rows="4" placeholder="What should change?"></textarea>
+    <button class="approve" id="redraft-btn">Redraft</button>
+    <div class="hint" id="fb-hint"></div>
   </details>
 
   <div class="result" id="result"><h2 id="rtitle"></h2><p id="rbody"></p></div>
@@ -407,6 +420,25 @@ $("#approve").addEventListener("click", () => send("approved"));
 $("#skip").addEventListener("click", () => send("deferred"));
 $("#reject").addEventListener("click", () => {
   if (confirm("Reject this role permanently? It will be dropped from the queue.")) send("rejected");
+});
+/* redraft with feedback ----------------------------------------------- */
+if (DATA.status === "submitted" || DATA.submitted_at) $("#redraft-box").style.display = "none";
+$("#redraft-btn").addEventListener("click", async () => {
+  const text = $("#fb").value.trim(), h = $("#fb-hint");
+  if (!text) { h.className = "hint bad"; h.textContent = "Write what should change."; return; }
+  h.className = "hint"; h.textContent = "Sending…";
+  try {
+    const url = location.pathname.replace(/\/$/, "") + "/redraft" + location.search;
+    const res = await fetch(url, {method: "POST", headers: {"Content-Type": "application/json"},
+                                  body: JSON.stringify({feedback: text})});
+    if (!res.ok) throw new Error(await res.text());
+    $("#redraft-btn").disabled = true; $("#fb").disabled = true;
+    decided = true; $("#approve").disabled = true; $("#skip").disabled = true;
+    h.className = "hint good";
+    h.textContent = "Redrafting — usually 5–15 minutes. The new card arrives here and on Telegram.";
+  } catch (e) {
+    h.className = "hint bad"; h.textContent = "Not sent: " + (e.message || e);
+  }
 });
 refresh();
 </script>

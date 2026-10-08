@@ -41,7 +41,7 @@ def open_question_count(qfile):
     return len([q for q in d.get("questions", []) if not q.get("options")])
 
 
-def draft_questions(slug, qfile, cli):
+def draft_questions(slug, qfile, cli, feedback=None):
     """One `claude -p` session: tappable answers for every question without options."""
     from jobpilot.core import agents
     from jobpilot.tailor.autotailor import policy_sections, jd_text, run, AUTO_CWD
@@ -54,13 +54,15 @@ def draft_questions(slug, qfile, cli):
               answers_file=os.path.join(CONFIG, "answers.yaml"),
               policy=policy_sections([1, 5, 6, 8]), jd=jd_text(slug), tracking=TRACKING)
     try:
-        ok, out = run(ag.argv(cli, ag.render(**kw), **kw), timeout=ag.timeout(600), cwd=AUTO_CWD)
+        from jobpilot.apply.explore_agentic.session import feedback_block
+        ok, out = run(ag.argv(cli, ag.render(**kw) + feedback_block(feedback), **kw),
+                      timeout=ag.timeout(600), cwd=AUTO_CWD)
         return ok, out[-300:]
     except subprocess.TimeoutExpired:
         return False, "question drafting timed out"
 
 
-def draft_for(slug, cli, log=print):
+def draft_for(slug, cli, log=print, feedback=None):
     """Draft the open questions of the application's newest queue item, if any.
     A question with no drafted answers makes him type on a phone, which is what
     this system exists to avoid (POLICY.md section 5)."""
@@ -73,7 +75,7 @@ def draft_for(slug, cli, log=print):
         before = "needs_input"
     set_status(qfile, "preparing")
     try:
-        ok, out = draft_questions(slug, qfile, cli)
+        ok, out = draft_questions(slug, qfile, cli, feedback)
         log(f"questions: {'drafted' if ok else 'FAILED — ' + out[-100:]}")
         return ok
     finally:

@@ -198,7 +198,23 @@ async def agent(form, on_browser, task, model, effort, max_turns, log, logf):
     return calls, result
 
 
-async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
+def feedback_block(feedback):
+    """His feedback on the last version of this application, as a block for an agent's task:
+    what to change, never a licence to invent (POLICY: nothing untrue)."""
+    notes = [f.strip() for f in (feedback or []) if f and f.strip()]
+    if not notes:
+        return ""
+    return ("\n\nHIS FEEDBACK on the previous version of this application (newest last) — follow it:\n"
+            + "\n".join(f"- {n}" for n in notes)
+            + "\nIt may ask you to fill optional fields, choose differently, or word answers differently, "
+              "and it overrides the default \"leave it empty\" rules for the fields it names. It never "
+              "overrides the truth rules: write only what the facts, the resume and his answers support; "
+              "where it asks for something they cannot support, use the question itself as a placeholder "
+              "so it is asked on the phone. Identity questions (gender, ethnicity, disability, veteran) "
+              "and marketing consents keep their own rules unless the feedback names them.")
+
+
+async def run(slug, model="opus", effort="low", max_turns=200, fresh=False, feedback=None):
     stamp = dt.datetime.now().strftime("%m%d-%H%M")
     base = os.path.join(LOGS, "sessions", slug, f"agentic-{stamp}")
     os.makedirs(os.path.dirname(base), exist_ok=True)
@@ -212,6 +228,8 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
         logf.flush()
 
     form = Form(slug, load("answers.yaml"), log)
+    if feedback:                                 # a redraft: optional fields he asks about are asked, not skipped
+        form.facts["meta:fill_optional"] = True
     rec, former = C.load(slug)
     if former and not fresh:                     # resumable: the replay tool redoes the former record
         form.redo = C.Redo(form, rec, former, C.approved_answers(slug, rec), True, log)
@@ -230,7 +248,8 @@ async def run(slug, model="opus", effort="low", max_turns=200, fresh=False):
         log(f"agentic explore: {slug} ({form.pid}) model={model} effort={effort}")
         try:
             task = "The browser shows the job posting. Fill the application." + (
-                " A former session's record exists: start with replay (see RESUMING)." if form.redo else "")
+                " A former session's record exists: start with replay (see RESUMING)." if form.redo else "") \
+                + feedback_block(feedback)
             calls, result = await agent(form, on_browser, task, model, effort, max_turns, log, logf)
             os.makedirs(CD.folder(slug), exist_ok=True)
             shot = os.path.relpath(os.path.join(CD.folder(slug), f"{slug}-{stamp}.png"), TOOL)

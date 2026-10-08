@@ -849,7 +849,10 @@ def act_row(frame, c, kind, answer, facts, resume):
         placeholder = {"question": what["question"], "candidates": [" › ".join(x) for x in cands],
                        "used": " › ".join(cands[0]), "for": what.get("for") or ""}
     else:                                                 # the question itself: nothing stored
-        if n in ("type", "digits") and (c.facts or {}).get("required"):
+        # required: a placeholder so the form goes on. Optional: left empty — unless his feedback
+        # on a redraft asked for the optional fields (meta:fill_optional), then it is asked too;
+        # a card with an unanswered question is never filed, so the placeholder never goes out
+        if n in ("type", "digits") and ((c.facts or {}).get("required") or facts.get("meta:fill_optional")):
             target = PLACEHOLDER_TEXT if n == "type" else "1"
             placeholder = {"question": what, "candidates": [], "used": target}
         else:

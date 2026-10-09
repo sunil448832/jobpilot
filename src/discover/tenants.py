@@ -14,6 +14,8 @@ Sources, cheapest and safest first (each can be switched off):
   search    Brave Search API (BRAVE_API_KEY) or Google Custom Search
             (GOOGLE_CSE_KEY + GOOGLE_CSE_CX): site:myworkdayjobs.com "<title>" <hub>.
   adzuna    Adzuna API (ADZUNA_APP_ID + ADZUNA_APP_KEY): redirect URLs resolved.
+  sponsors  employers on the government sponsor registers (rank/sponsors.py: the IND list,
+            Ireland's permits issued), largest first, a batch a run (discovery.sponsor_batch).
   linkedin  the account-free guest job search: employer NAMES only (guest pages
             hide the apply link), resolved to careers pages by domain guessing —
             existence-checked first, streamed, time-budgeted. Never Sunil's
@@ -212,6 +214,36 @@ MARKET_TLD = {"ireland": "ie", "netherlands": "nl", "germany": "de", "switzerlan
               "australia": "com.au", "uae": "ae", "luxembourg": "lu", "usa": "com", "saudi": "sa"}
 
 
+# first words that do not name an employer on their own ("Applied Materials", "General Mills")
+COMMON_FIRST = {"applied", "general", "united", "first", "national", "central", "advanced", "american",
+                "european", "irish", "dutch", "new", "smart", "bright", "green", "blue", "red", "open",
+                "global", "international", "royal", "standard", "modern", "future", "next", "prime", "eli"}
+
+
+def src_sponsors(log, batch=None):
+    """Employers on the government sponsor registers (rank/sponsors.py) — the largest Irish
+    sponsors first, then multinationals on both lists, then tech-looking Dutch names — as
+    {name: market} for companies_to_urls, a batch at a time, skipping names already tried."""
+    from jobpilot.rank import sponsors
+    batch = batch or int(cfg("discovery.sponsor_batch", 120))
+    seen = load_seen()
+    out = {}
+    for name, market, _n, _why in sponsors.candidates():
+        # the employer, not its legal entity: "Google Ireland Limited" -> "Google", whose
+        # domain guess is google.com; the three Amazon entities are one employer
+        w = sponsors.words(name)
+        common = w and (len(w[0]) < 4 or w[0] in sponsors.GENERIC or w[0] in COMMON_FIRST)
+        clean = " ".join(w[:2] if common and len(w) > 1 else w[:1]).title()
+        slug = re.sub(r"[^a-z0-9]+", "", clean.lower())
+        if len(slug) < 3 or f"company:{slug}" in seen or clean in out:
+            continue
+        out[clean] = market
+        if len(out) >= batch:
+            break
+    log(f"sponsors: {len(out)} employers from the sponsor registers to look up")
+    return out
+
+
 def domain_exists(domain):
     """One cheap request per candidate domain, before any careers-page probing."""
     try:
@@ -222,7 +254,113 @@ def domain_exists(domain):
         return False
 
 
-def companies_to_urls(names, log, workers=8, budget=420, on_url=None):
+CAREERS = os.path.join(DATA, "sponsor_careers.json")
+
+
+def remember_careers(name, url, platform):
+    """data/sponsor_careers.json: {employer: {careers_url, platform, at}} — the careers page found
+    for a sponsor-register employer (platform: ats = a board intake reads, custom = read by the
+    generic reader, null = found but not readable)."""
+    try:
+        d = json.load(open(CAREERS))
+    except (OSError, ValueError):
+        d = {}
+    d[name or url] = {"careers_url": url, "platform": platform, "at": dt.date.today().isoformat()}
+    json.dump(d, open(CAREERS, "w"), indent=1)
+
+
+def add_custom_site(url, name, log, quiet=False):
+    """An employer's own careers site with no known ATS: a `custom:` generic entry in boards.yaml,
+    when the generic reader finds job links on it. Returns its slug or None."""
+    from jobpilot.apply.platforms import generic
+    from jobpilot.discover import careers
+    try:
+        links = generic.job_links(url, 20)
+    except Exception:
+        links = []
+    if not links:
+        if not quiet:
+            log(f"  {name}: careers site with no readable job links — {url[:60]}")
+        return None
+    slug = re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")[:40] or board_key(url)
+    boards = yaml.safe_load(open(careers.BOARDS)) or {}
+    lst = boards.setdefault("custom", [])
+    if any(e.get("url") == url or e.get("slug") == slug for e in lst):
+        return None
+    lst.append({"slug": slug, "site": "generic", "company": name, "url": url, "limit": 25})
+    yaml.safe_dump(boards, open(careers.BOARDS, "w"), sort_keys=False, allow_unicode=True)
+    log(f"  {name}: own careers site, {len(links)} job links -> custom (generic reader)")
+    return slug
+
+
+LISTING = re.compile(r"(see|view|browse|explore|search) (all )?(open |current )?(jobs|roles|positions|openings)|search (all )?jobs|view (all )?(jobs|openings|positions|roles|vacancies)|open (positions|roles)|"
+                     r"job (openings|search|opportunities)|current (openings|vacancies|opportunities)|see (all )?"
+                     r"(jobs|openings|roles)|explore (jobs|roles|careers|opportunities)|all jobs|find (a |your )?job|"
+                     r"vacancies|join (our team|us)|career opportunities|browse jobs", re.I)
+
+
+NOT_LISTING = re.compile(r"scam|fraud|privacy|benefit|culture|blog|news|stor(y|ies)|faq|life-at|diversity|"
+                         r"students?|graduates?|internships?|events?|cookie|legal", re.I)
+
+
+def listing_pages(url):
+    """A careers landing page's links to the page that lists its jobs ("Search jobs", "See open
+    jobs"), at most four, in page order."""
+    from jobpilot.apply.platforms import generic
+    try:
+        html = requests.get(url, headers={"User-Agent": UA}, timeout=20).text
+        anchors = generic._anchors(html, url)
+    except Exception:
+        anchors = []
+    if not any(LISTING.search(t) for _, t in anchors):
+        try:
+            anchors = generic._rendered_anchors(url)
+        except Exception:
+            anchors = []
+    out = []
+    for href, label in anchors:
+        if NOT_LISTING.search(href):
+            continue
+        if LISTING.search(label) and href not in out and href.rstrip("/") != url.rstrip("/"):
+            out.append(href)
+    return out[:4]
+
+
+def make_readable(url, name, log, dry=False):
+    """A careers page found for an employer, made readable by intake, best route first: its own
+    ATS; an ATS one click deeper (deepen); its job links (generic reader); the listing page its
+    "Search jobs" link opens (generic reader). Returns (key, platform) — (None, None) when none."""
+    k = register_one(url, log, dry=dry)
+    if k:
+        return k, "ats"
+    if dry:
+        return None, None
+    deeper = deepen(url, log)
+    if deeper:
+        k = register_one(deeper, log, force=True)
+        if k:
+            return k, "ats"
+    k = add_custom_site(url, name, log, quiet=True)
+    if k:
+        return k, "custom"
+    from jobpilot.apply.platforms import generic
+    for page in listing_pages(url):              # one click deeper: its job search page
+        k = register_one(page, log, force=True)  # a known ATS there (eBay: Phenom)
+        if k:
+            return k, "ats"
+        try:
+            readable = bool(generic.job_links(page, 10))
+        except Exception:
+            readable = False
+        if readable:
+            k = add_custom_site(page, name, log)
+            if k:
+                return k, "custom"
+    log(f"  {name}: careers site with no readable job links — {url[:60]}")
+    return None, None
+
+
+def companies_to_urls(names, log, workers=8, budget=420, on_url=None, with_name=False):
     """Employer name -> careers page. Domain guesses are checked for existence
     first (one HEAD each) so the 11 careers-page patterns are only probed on
     real domains; results stream to `on_url` as they arrive; `budget` seconds
@@ -239,10 +377,8 @@ def companies_to_urls(names, log, workers=8, budget=420, on_url=None):
         key = f"company:{slug}"
         if key in seen:
             continue
-        seen[key] = {"first_seen": dt.datetime.now().isoformat(timespec="seconds"), "name": name}
         tlds = ["com", "ai", "io"] + ([MARKET_TLD[market]] if market in MARKET_TLD and MARKET_TLD[market] != "com" else [])
         todo.append((name, slug, [f"{slug}.{t}" for t in tlds]))
-    save_seen(seen)
     if not todo:
         log("companies: nothing new to resolve")
         return []
@@ -263,11 +399,17 @@ def companies_to_urls(names, log, workers=8, budget=420, on_url=None):
     try:
         for fut in as_completed(futs, timeout=budget):
             name, url = fut.result()
+            # tried: remembered only now — names the time budget did not reach stay for next run
+            # (they were marked at queue time, and 79 of 119 sponsor employers were lost so)
+            slug = re.sub(r"[^a-z0-9]+", "", COMPANY_NOISE.sub("", name.strip()).strip(" .,-").lower())
+            seen[f"company:{slug}"] = {"first_seen": dt.datetime.now().isoformat(timespec="seconds"),
+                                       "name": name, "url": url}
+            save_seen(seen)
             if url:
                 out.append(url)
                 log(f"  {name[:28]:<28} -> {url[:60]}")
                 if on_url:
-                    on_url(url)
+                    on_url(url, name) if with_name else on_url(url)
     except _TO:
         log(f"companies: time budget ({budget}s) reached — {len(out)} resolved so far")
     finally:
@@ -376,7 +518,7 @@ def register(urls, log, dry=False):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--sources", default=cfg("discovery.tenant_sources", "sweep,search,adzuna,linkedin"))
+    ap.add_argument("--sources", default=cfg("discovery.tenant_sources", "sweep,search,adzuna,linkedin,sponsors"))
     ap.add_argument("--max-searches", type=int, default=cfg("discovery.linkedin_max_searches", 40))
     ap.add_argument("--budget", type=int, default=cfg("discovery.tenant_budget_s", 420),
                     help="seconds allowed for resolving employer names to careers pages")
@@ -412,6 +554,34 @@ def main():
                 streamed.append(k)
         names = src_linkedin(markets, titles, log, max_searches=a.max_searches)
         companies_to_urls(names, log, budget=a.budget, on_url=on_url)
+        added += streamed
+        tried += len(streamed)
+    if "sponsors" in srcs:
+        # employers the government lists as sponsoring permits (NL / IE): their boards
+        streamed = []
+        names = src_sponsors(log)
+        def on_sponsor(u, name=None):
+            k, platform = make_readable(u, name or board_key(u), log, dry=a.dry_run)
+            remember_careers(name, u, platform)
+            if k:
+                streamed.append(k)
+        # careers pages found on an earlier run but not readable then: tried once more
+        try:
+            found = json.load(open(CAREERS))
+        except (OSError, ValueError):
+            found = {}
+        until = time.time() + a.budget / 2              # half the budget at most: the rest next run
+        for name, v in list(found.items()):
+            if time.time() > until:
+                log("sponsors: retry budget used — the rest next run")
+                break
+            if v.get("platform") is None and not v.get("retried") and not a.dry_run:
+                k, platform = make_readable(v["careers_url"], name, log)
+                found[name].update(platform=platform, retried=dt.date.today().isoformat())
+                json.dump(found, open(CAREERS, "w"), indent=1)
+                if k:
+                    streamed.append(k)
+        companies_to_urls(names, log, budget=a.budget, on_url=on_sponsor, with_name=True)
         added += streamed
         tried += len(streamed)
     print(f"  tenants: {len(urls)} urls seen, {tried} new boards tried, {len(added)} registered"

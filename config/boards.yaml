@@ -275,6 +275,8 @@ lever:
   jobs: 10
 - slug: rivr
   jobs: 35
+- slug: firstup
+  jobs: 11
 ashby:
 - slug: abacum
   jobs: 12
@@ -872,6 +874,8 @@ workable:
   jobs: 174
 - slug: integral-2
   jobs: 0
+- slug: kepak
+  jobs: 81
 recruitee:
 - slug: alex
   jobs: 5
@@ -1010,6 +1014,21 @@ phenom:
   jobs: 100
 - slug: careers.idexx.com
   base: https://careers.idexx.com/us/en
+  jobs: 100
+- slug: www.jobs.abbott
+  base: https://www.jobs.abbott/us/en
+  jobs: 100
+- slug: careers.bonsecours.com
+  base: https://careers.bonsecours.com/us/en
+  jobs: 100
+- slug: careers.king.com
+  base: https://careers.king.com/us/en
+  jobs: 23
+- slug: jobs.msd.com
+  base: https://jobs.msd.com/gb/en
+  jobs: 100
+- slug: jobs.ebayinc.com
+  base: https://jobs.ebayinc.com/us/en/search-results
   jobs: 100
 workday:
 - slug: nvidia
@@ -1256,3 +1275,91 @@ workday:
   host: ig.wd103.myworkdayjobs.com
   site: EXT_IG
   jobs: 55
+custom:
+- slug: amazon
+  site: amazon
+- slug: google
+  site: google
+- slug: microsoft
+  site: eightfold
+  host: apply.careers.microsoft.com
+  domain: microsoft.com
+  company: Microsoft
+- slug: apple-ireland
+  site: generic
+  company: Apple
+  location: Ireland
+  limit: 25
+  url: https://jobs.apple.com/en-us/search?location=ireland-IRL&search=machine%20learning
+- slug: apple-netherlands
+  site: generic
+  company: Apple
+  location: Netherlands
+  limit: 25
+  url: https://jobs.apple.com/en-us/search?location=netherlands-NLD&search=machine%20learning
+- slug: apple-germany
+  site: generic
+  company: Apple
+  location: Germany
+  limit: 25
+  url: https://jobs.apple.com/en-us/search?location=germany-DEU&search=machine%20learning
+- slug: applied-materials
+  site: generic
+  company: Applied Materials
+  url: https://careers.appliedmaterials.com/careers
+  limit: 25
+- slug: nypro
+  site: generic
+  company: Nypro
+  url: https://nypro.com/careers
+  limit: 25
+- slug: bny-mellon
+  site: generic
+  company: Bny Mellon
+  url: https://www.bny.com/corporate/global/en/about-us/careers/work-with-us.html
+  limit: 25
+- slug: dublin-aerospace
+  site: generic
+  company: Dublin Aerospace
+  url: https://www.dublinaerospace.com/careers
+  limit: 25
+- slug: actavo
+  site: generic
+  company: Actavo
+  url: https://careers.actavo.com/
+  limit: 25
+- slug: workday
+  site: generic
+  company: Workday
+  url: https://www.workday.com/en-us/company/careers/overview.html
+  limit: 25
+- slug: radley
+  site: generic
+  company: Radley
+  url: https://www.radley.com/careers/
+  limit: 25
+- slug: red-hat
+  site: generic
+  company: Red Hat
+  url: https://www.redhat.com/en/jobs
+  limit: 25
+- slug: dornan
+  site: generic
+  company: Dornan
+  url: https://jobs.dornan.ie/jobs/search
+  limit: 25
+- slug: bloomberg
+  site: generic
+  company: Bloomberg
+  url: https://bloomberg.avature.net/careers
+  limit: 25
+- slug: combilift
+  site: generic
+  company: Combilift
+  url: https://combilift.com/careers/
+  limit: 25
+- slug: mongodb
+  site: generic
+  company: Mongodb
+  url: https://www.mongodb.com/company/careers/see-jobs
+  limit: 25

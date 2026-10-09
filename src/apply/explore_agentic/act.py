@@ -16,8 +16,8 @@ by the pin see put on it. An answer:
     search:<regex>; <regex>        the agent's patterns, most specific first (\bIndia\b, ^I):
                                    each run over the list's entries (a nested list's chains);
                                    what each matches is reported, nothing picked
-    file:resume                    the resume file for the resume / CV field (the .docx)
-    file:resume_second             the same resume in the other format (the PDF), for a second
+    file:resume                    the resume file for the resume / CV field (.docx or PDF)
+    file:resume_second             the same resume in the other format, for a second
                                    attachment field (cover letter, additional documents)
     add:<n>                        a repeated section's Add, pressed n times, each checked
     <the question itself>          nothing stored: a required box gets a placeholder text

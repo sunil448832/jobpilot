@@ -102,6 +102,15 @@ def fetch_jd(url):
     if jd is None:
         jd = fetch_generic(url)
         print(f"  [fetch] HTML scrape -> {len(jd['text'])} chars")
+        try:                                       # the posting's own JobPosting data, when it has it
+            from jobpilot.apply.platforms import generic
+            p = generic.posting(url)
+        except Exception:
+            p = None
+        if p and len(p["jd"]) > 300:
+            jd.update(title=p["title"] or jd["title"], company=p["company"] or jd["company"],
+                      location=p["location"] or jd.get("location", ""), text=p["jd"])
+            print(f"  [fetch] JobPosting data -> {len(p['jd'])} chars")
         if not platforms.get(portal):
             for link in (jd.get("apply_links") or [])[:6]:
                 pid, known = platforms.detect(link)

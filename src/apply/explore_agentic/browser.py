@@ -138,10 +138,16 @@ def open_browser(pw):
 # ---------------------------------------------------------------- around the form
 
 def resume_path(answers, company_slug):
-    """The resume for the form's resume field: files.upload_for_ats_portal (the PDF), else the
-    other built format, else the base PDF."""
+    """The resume for the form's resume field: files.upload_for_ats_portal (pdf, docx, or random:
+    a 50/50 coin per application), else the other built format, else the base PDF."""
     files = answers["files"]
-    key = "resume_docx_pattern" if files["upload_for_ats_portal"] == "docx" else "resume_pdf_pattern"
+    mode = files["upload_for_ats_portal"]
+    if mode == "random":
+        # a coin per application, from its name: half get the .docx, half the PDF, and one
+        # application always gets the same file (explore, submit and redrafts agree)
+        import hashlib
+        mode = "docx" if int(hashlib.sha1(company_slug.encode()).hexdigest(), 16) % 2 else "pdf"
+    key = "resume_docx_pattern" if mode == "docx" else "resume_pdf_pattern"
     for k in (key, "resume_pdf_pattern"):
         p = os.path.join(TOOL, files[k].format(company=company_slug))
         if os.path.isfile(p):

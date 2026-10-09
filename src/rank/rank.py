@@ -99,7 +99,7 @@ def score_job(job, t, con=None):
 
     b = t["scoring"]["boost"]
     # the tag visa.py stored before ranking (the screener's own answer once it has one)
-    tag = job.get("visa") or visa.classify(jd, job["market"])[0]
+    tag = job.get("visa") or visa.classify(jd, job["market"], job.get("company"))[0]
     if tag == "explicit":
         score += b["sponsorship_explicit"]
         reasons.append("sponsors visas")

@@ -4,8 +4,9 @@ Description=jobpilot scans at 07:00 and 17:00 (local time), two hours before eac
 [Timer]
 OnCalendar=*-*-* 07,17:00:00
 RandomizedDelaySec=300
-# no catch-up run after the laptop wakes or boots
-Persistent=false
+# a run missed while the laptop was off or asleep starts as soon as it is back (2026-10-08:
+# the 17:00 scan was lost to a shutdown 16:54-18:20)
+Persistent=true
 
 [Install]
 WantedBy=timers.target

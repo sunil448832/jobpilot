@@ -129,6 +129,11 @@ visa:
   # employer silent on it answers "requires sponsorship: yes" with an automatic reject
   # (2026-10-06: 26 of 57 sent were US, no positive reply).
   explicit_only_markets: [usa]
+  # NL / IE employers on the government's sponsor lists (rank/sponsors.py: the IND
+  # register, Ireland's permits issued) count as explicit even when the posting is silent.
+  sponsor_refresh_days: 30
+  # No register in these markets: a silent posting by an employer on the NL / IE lists is implicit.
+  proxy_markets: [switzerland]
 
 screen:
   # A role asking for (your years in answers.yaml experience_summary.total_years
@@ -222,7 +227,8 @@ discovery:
   # ADZUNA_APP_ID+KEY (all in .env). linkedin = guest search
   # for employer NAMES only, never Sunil's account; names resolve to careers
   # pages under tenant_budget_s seconds, registered as they resolve.
-  tenant_sources: sweep,search,adzuna,linkedin
+  tenant_sources: sweep,search,adzuna,linkedin,sponsors
+  sponsor_batch: 120    # sponsor-register employers looked up per discovery run
   # Discovery runs from a scan when its last run is older than this (it was Sunday-only,
   # and a laptop off on Sunday skipped it). Markets with enough employers are not searched.
   every_days: 3

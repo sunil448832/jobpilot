@@ -133,7 +133,7 @@ def build_prompt(rows):
         years=years, max_years=years + int(cfg("screen.years_margin", 2)))]
     from jobpilot.rank import visa
     for i, (key, co, title, loc, market, score, url, jd) in enumerate(rows, 1):
-        tag, why = visa.classify(jd, market)
+        tag, why = visa.classify(jd, market, co)
         parts.append(
             f"\n--- id: {i} ---\n"
             f"{title} @ {co}\n"

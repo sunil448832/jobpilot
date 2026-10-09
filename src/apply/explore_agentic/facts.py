@@ -17,10 +17,10 @@ value is looked up here when the code acts.
     learned:<key>               his answer for this very form, approved on the phone
                                 — a <key> comes from the question's words (answers.question_key),
                                 so a recorded key keeps meaning the same answer
-    file:resume                 the resume for the resume / CV field: the .docx
-                                (answers.yaml files.upload_for_ats_portal; the PDF if no .docx)
-    file:resume_second          the same resume in the other format (the PDF), for a second
-                                attachment field — one field: the .docx only; two: both
+    file:resume                 the resume for the resume / CV field: .docx or PDF
+                                (answers.yaml files.upload_for_ats_portal: random = a coin per application)
+    file:resume_second          the same resume in the other format, for a second attachment
+                                field — one field: file:resume only; two: both
     (file:resume_docx,          what records made before 2026-10-05 name a second attachment
      file:resume_pdf             field: both now take file:resume_second; not shown to the agent)
 

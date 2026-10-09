@@ -86,8 +86,27 @@ def _find(patterns, t, positive=False):
     return None
 
 
-def classify(jd, market=None):
-    """(tag, evidence) — tag one of ORDER; evidence is the matched text, or why."""
+def classify(jd, market=None, company=None):
+    """(tag, evidence) — tag one of ORDER; evidence is the matched text, or why. A posting
+    that says nothing, by an employer on its country's sponsor register (sponsors.py: the
+    IND list, Ireland's permits issued), is explicit: the government list says it sponsors."""
+    tag, why = _classify(jd, market)
+    if tag in ("silent", "implicit") and company and market in ("netherlands", "ireland"):
+        from jobpilot.rank import sponsors
+        hit = sponsors.known(company, market)
+        if hit:
+            return "explicit", hit
+    # Switzerland publishes no such list (permits are case by case, under quotas): a
+    # multinational that sponsors in NL or IE is a likely yes there, a small Swiss firm is not
+    if tag == "silent" and company and market in (cfg("visa.proxy_markets", ["switzerland"]) or []):
+        from jobpilot.rank import sponsors
+        hit = sponsors.known(company, "ireland") or sponsors.known(company, "netherlands")
+        if hit:
+            return "implicit", f"sponsors elsewhere in Europe — {hit}"
+    return tag, why
+
+
+def _classify(jd, market=None):
     # boards hand some JDs over as escaped HTML ("aren&#39;t", "<strong>")
     t = html.unescape(re.sub(r"<[^>]+>", " ", html.unescape(jd or "")))
     t = " ".join(t.lower().replace("\u2019", "'").split())
@@ -139,7 +158,7 @@ def main():
     rows = con.execute(f"SELECT key, company, title, market, status, jd FROM jobs WHERE {where}").fetchall()
     n = dict.fromkeys(ORDER, 0)
     for key, co, title, market, status, jd in rows:
-        tag, why = classify(jd, market)
+        tag, why = classify(jd, market, co)
         n[tag] += 1
         con.execute("UPDATE jobs SET visa=?, visa_why=? WHERE key=?", (tag, why[:200], key))
         # a refusal ends the role before ranking — unless it is already a card (queued)

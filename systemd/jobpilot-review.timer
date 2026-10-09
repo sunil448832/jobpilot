@@ -3,7 +3,9 @@ Description=jobpilot review at 09:00 and 19:00 (local time)
 
 [Timer]
 OnCalendar=*-*-* 09,19:00:00
-Persistent=false
+# a run missed while the laptop was off or asleep starts as soon as it is back; it waits up
+# to 15 min for the internet first (daily.online)
+Persistent=true
 
 [Install]
 WantedBy=timers.target

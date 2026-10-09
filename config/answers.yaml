@@ -351,10 +351,12 @@ files:
   # name reads as machine-generated. The folder keeps them apart.
   resume_pdf_pattern: "applications/{company}/sunil_resume.pdf"
   resume_docx_pattern: "applications/{company}/sunil_resume.docx"
-  # Which one to upload where (his instruction, 2026-10-05): the resume field gets the
-  # .docx; a form with a second attachment field (cover letter, additional documents) gets
-  # the PDF there too. A field that accepts only PDF gets the PDF.
-  upload_for_ats_portal: "docx"
+  # Which one to upload where (his instruction, 2026-10-08): the resume field gets the .docx
+  # or the PDF at random — a 50/50 coin per application, fixed for that application so its
+  # fill, submit and redrafts agree. A form with a second attachment field (cover letter,
+  # additional documents) gets the other format there. A field that accepts only one format
+  # gets that one. pdf / docx pin it.
+  upload_for_ats_portal: "random"
   upload_for_human_review: "pdf"
   default_fallback_pdf: "sunil_resume.pdf"
 

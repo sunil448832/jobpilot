@@ -450,6 +450,24 @@ def from_phenom(entry):
             break
 
 
+def from_custom(entry):
+    """An employer's own careers site (boards.yaml `custom:`): its platform module's search —
+    amazon, google, eightfold (Microsoft ...), or generic for any other site."""
+    from jobpilot.apply import platforms
+    mod = platforms.get(entry.get("site"))
+    if not (mod and hasattr(mod, "search")):
+        raise ValueError(f"no reader for site {entry.get('site')!r}")
+    kw = {k: v for k, v in entry.items() if k not in ("slug", "site", "jobs", "yc")}
+    markets = [m["id"] for m in load_targets().get("markets", [])]
+    t = load_targets()
+    # a careers site reads each posting's JD separately: only for titles intake would keep
+    want = lambda title: title_ok(title or "", t)
+    for j in mod.search(markets, known=KNOWN_JD, want=want, **kw):
+        if not j.get("jd") and j.get("url") in KNOWN_JD:
+            j["jd"] = KNOWN_JD[j["url"]]
+        yield {"source": entry.get("site"), "board": entry["slug"], **j}
+
+
 def from_aggregators():
     try:
         for j in get("https://remotive.com/api/remote-jobs?category=software-dev&limit=200").get("jobs", []):
@@ -603,6 +621,8 @@ def pull(workers=None, limit=None):
         fetchers.append((from_phenom, entry))
     for entry in boards.get("workday", []):
         fetchers.append((from_workday, entry))
+    for entry in boards.get("custom", []):              # employers' own careers sites
+        fetchers.append((from_custom, entry))
     try:
         scans = json.load(open(SCANS))
     except (OSError, ValueError):

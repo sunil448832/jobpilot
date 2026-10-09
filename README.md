@@ -90,8 +90,8 @@ daemon (no login). After a reinstall, remove the old machine in the
 nothing system-wide) and starts the review site (`jobpilot-form.service`) and Tailscale
 (`jobpilot-tailscale.service`, so no `setup-tailscale` after a reboot). `./jobpilot start`
 turns on the scans and review runs (`jobpilot-daily.timer`, `jobpilot-review.timer`);
-`./jobpilot stop` turns them off. The runs are low priority (nice, idle I/O) and never
-catch up after the laptop sleeps. While plugged in, closing the lid does not suspend the laptop
+`./jobpilot stop` turns them off. The runs are low priority (nice, idle I/O); a run
+missed while the laptop was off or asleep starts as soon as it is back. While plugged in, closing the lid does not suspend the laptop
 (`jobpilot-lid.service`, a user inhibitor lock held only on AC); on battery it sleeps as before. User units run while he is logged in; to keep them
 running after logout, `loginctl enable-linger`.
 
@@ -177,8 +177,9 @@ jobpilot/
   never kept; a different pick is asked on `/questions`, never overwritten.
 - The form agent answers in this order: his answers for this form → stored facts → this
   portal's entries → this portal's picks → otherwise a question on the card.
-- Resume uploads: the **.docx** in the resume field; when the form has a second attachment field
-  (cover letter, additional documents) the **PDF** there too. A field that accepts only PDF gets the PDF.
+- Resume uploads: the resume field gets the **.docx or the PDF, 50/50** — a coin per application,
+  fixed for it, so its fill, submit and redrafts agree; a second attachment field (cover letter,
+  additional documents) gets the other format. A field that accepts only one format gets that one.
 
 ## Tailoring
 
@@ -241,6 +242,14 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Per run:** 10 roles tailored, at most 3 from one company, at most 30% silent on visas, and no
   country above its share (`pipeline.market_max_share`: US, UAE, AU 30%; DE, NL, IE 40%; CH, LU,
   remote 20%); 10 cards filed per review run.
+- **Sponsor registers** (`rank/sponsors.py`, refreshed monthly into `data/sponsors.json`): the IND
+  public register of recognised sponsors (NL, ~13,000) and Ireland's employment permits issued to
+  companies (~12,700). A silent posting by a listed employer counts as **explicit** — Meta, Google,
+  Workday, Stripe, Adyen, Booking … rarely say it in the JD. `python -m jobpilot.rank.sponsors --who <name>`.
+  The full list is written to `data/sponsoring_companies.csv` (company, country, permits, why it is a
+  lead, whether its jobs are already scanned). Discovery's `sponsors` source looks up their job
+  boards, largest sponsors first, 120 a run. Switzerland has no register (permits are case by case,
+  under quotas): a silent Swiss posting by an employer on the NL / IE lists counts as implicit.
 - **Visa:** US roles only when the posting says it sponsors; a silent posting in the Netherlands,
   Ireland, Germany, Luxembourg or the UAE counts as a likely yes. The resume header says only
   "Open to relocation to X" — the forms answer the sponsorship question.
@@ -248,6 +257,15 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
   Mistral, Reflection, Meta, Cohere).
 - **Employer discovery** (`tenants.py`: curated lists per market + LinkedIn guest search for names)
   runs from a scan when its last run is over 3 days old; the US is not searched (it has the most).
+- **Own careers sites** (`custom:` in `boards.yaml`, read by code; the form agent applies on them as
+  anywhere): Amazon (amazon.jobs JSON), Google (the results page's embedded data), Microsoft
+  (Eightfold JSON — `site: eightfold` works for other Eightfold sites too), and `site: generic` for any
+  other site (Apple ...): it finds the listing's job links (rendered in headless Chrome when drawn by
+  script) and reads each posting's schema.org JobPosting, else its rendered text. Postings already in
+  `state.db` and titles intake would drop are not fetched. Sponsor-register discovery registers an
+  employer's own careers site as a generic entry when it finds job links on it, and records every
+  careers page in `data/sponsor_careers.json` (the `careers_url` / `platform` columns of the CSV).
+  Meta's site is not readable this way (no plain job links).
 - **Intake:** `--source-limit N` stops after N matching postings (about 40 s for 200 instead of
   3.5 min for all), stalest boards first.
 

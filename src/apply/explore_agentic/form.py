@@ -41,6 +41,10 @@ CONFIRMED_RX = re.compile(r"thank(s| you)( so much| a lot| very much)? for (appl
                           r"your application (was|has been) (successfully )?(submitted|sent|received)", re.I)
 # a status the page announces in its alert region that is not an error ("sunil_resume.pdf
 # successfully uploaded" stayed up after Workday's Submit and read as one, 2026-10-05)
+# words a form adds under a field it refused, read when it marks nothing in ARIA
+INLINE_ERROR_RX = re.compile(r"\b(is required|are required|required field|please (attach|upload|enter|select|provide|"
+                             r"fill|complete|choose)|attach your|upload your|must (be|have|attach|upload|enter)|"
+                             r"invalid|not valid|too (long|short|large))\b", re.I)
 NOT_ERROR_RX = re.compile(r"success|uploaded|saved|loading|complete[d]?\b|please wait|processing", re.I)
 REFUSED_RX = re.compile(r"(couldn.t|could not|cannot|can.t|unable to) (submit|process) (your )?application|"
                         r"may not apply more than|application limit|already applied|you have already applied", re.I)
@@ -490,7 +494,9 @@ class Form:
         if self.is_last(self.step) or "submit" in name or "send application" in name:
             return "refused: this session never sends the application — call finish"
         before_step, before_snap = self.step, S.snapshot(self.frame())
+        tabs = list(self.br.pages)
         S.tap(A.locate(self.frame(), c))
+        self.follow_new_tab(tabs)
         B.wait_quiet(self.page.main_frame, max_s=4)
         self.pass_gate()
         t0 = time.time()
@@ -508,6 +514,23 @@ class Form:
         self.log(f"  press {c.ref!r}: stayed on '{self.step}' {errs[:3]}")
         return (f"still on page {self.step!r}. " + ("The page says: " + "; ".join(errs) if errs else
                 "It shows no error message") + ". see it for what changed.")
+
+    def follow_new_tab(self, before, wait_s=4):
+        """A press that opened a new tab (an aggregator's "Apply now", target=_blank): the form is
+        there, so work goes on in it. Arbeitnow postings stalled on the old tab (2026-10)."""
+        t0 = time.time()
+        while time.time() - t0 < wait_s:
+            new = [pg for pg in self.br.pages if pg not in before and not pg.is_closed()]
+            if new:
+                self.page = new[-1]
+                try:
+                    self.page.wait_for_load_state("domcontentloaded", timeout=30000)
+                except Exception:
+                    pass
+                self.log(f"  the press opened a new tab: now on {self.page.url[:90]}")
+                return True
+            time.sleep(0.25)
+        return False
 
     def finish(self, outcome, note, submit_id=None):
         """The end. On the last page the agent names the button that sends the application: it
@@ -531,6 +554,7 @@ class Form:
         page_was = self.step
         self.item.setdefault("submit_presses", []).append(dt.datetime.now().isoformat(timespec="seconds"))
         _save(self.item)                                 # written BEFORE the press: a rerun never presses blind
+        self.ensure_resume()
         standing = self.page_lines()                     # what the page said before: never read as its answer
         self.watching = True
         S.tap(A.locate(self.frame(), c))
@@ -554,6 +578,27 @@ class Form:
                 "code-needed": f"CODE NEEDED: {detail}. Do not press again; call finish('code-needed', note).",
                 }.get(outcome, f"NOT ACCEPTED: {detail}. see the page, fix what it says, then submit again "
                                f"({MAX_PRESSES - len(self.presses)} press(es) left).")
+
+    def ensure_resume(self):
+        """An empty file input whose surroundings name a resume / CV gets the resume before Submit:
+        a custom drop zone hides its input from the agent, and Newspresso's form was sent twice
+        without one ("Attach your resume as a PDF", 2026-10-12). Logged; nothing else is touched."""
+        frame = self.frame()
+        try:
+            n = frame.locator("input[type=file]").count()
+        except Exception:
+            return
+        for i in range(n):
+            el = frame.locator("input[type=file]").nth(i)
+            try:
+                empty = el.evaluate("e => !e.files || e.files.length === 0")
+                near = el.evaluate("e => { let b = e; for (let k = 0; k < 4 && b.parentElement; k++) b = b.parentElement;"
+                                   " return (b.innerText || '') + ' ' + (e.name || '') + ' ' + (e.id || ''); }") or ""
+            except Exception:
+                continue
+            if empty and re.search(r"resume|\bcv\b|curriculum|lebenslauf", near, re.I) and self.resume:
+                r = A.give_file(frame, el, self.resume)
+                self.log(f"  resume field the record left empty: {r.get('shown')} ({'ok' if r.get('ok') else 'not shown'})")
 
     def submit_refused(self, c):
         """Why this press may not happen (None when it may)."""
@@ -630,6 +675,9 @@ class Form:
                 return "not-accepted", f"the portal sent the form back to page {step!r}: " + \
                     ("; ".join(S.errors(self.frame())[:6]) or "no message shown")
             errs = [e for e in S.errors(frame) if not NOT_ERROR_RX.search(e)]
+            if not errs:                                 # words the page added under a field, no ARIA
+                errs = [ln.strip("- ") for ln in text.splitlines()
+                        if INLINE_ERROR_RX.search(ln) and not NOT_ERROR_RX.search(ln)][:4]
             erred = erred + 1 if errs else 0
             if erred >= 3 and self.still_there(ident):   # errors that stay: the form was not taken
                 sure = self.confirmed_soon(standing)

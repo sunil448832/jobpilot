@@ -195,6 +195,8 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         roles.add(role)
         if ck in held:
             continue                       # deliberately paused, see config.yaml
+        if Q.never(co):
+            continue                       # never applied to (apply.never_apply) — his own links too
         left = Q.room(co, waiting=True, rows=quota)
         if left is not None and left - sum(1 for o in out if Q.key(o["company"]) == ck) <= 0:
             continue                       # the company is at its application limit (core/quota.py)

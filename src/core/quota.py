@@ -43,6 +43,15 @@ def key(company):
     return re.sub(r"[^a-z0-9]+", "", (company or "").lower())
 
 
+def never(company):
+    """True for a company on apply.never_apply: never applied to, at any step."""
+    name = " ".join(re.sub(r"[^a-z0-9]+", " ", (company or "").lower()).split())
+    # whole words from the start: "amazon" stops "Amazon EU SARL", not "Amazonas Tech"
+    return any(re.match(rf"{re.escape(w)}(\s|$)", name)
+               for w in (" ".join(re.sub(r"[^a-z0-9]+", " ", str(x).lower()).split())
+                         for x in (cfg("apply.never_apply", []) or [])) if w)
+
+
 def limits(k):
     """[(max, window_days), ...] for a company key: an entry under apply.quotas may be one
     limit or a list (OpenAI: 2 in 30 days AND its portal's 5 in 180); max 0 is no limit."""
@@ -126,6 +135,11 @@ def hold(dry=False):
     con = sqlite3.connect(DB, timeout=30)
     held = released = 0
     opens = {}
+    # never applied to (apply.never_apply): rejected before ranking, not just held
+    for jk, co in con.execute("SELECT key, company FROM jobs WHERE status IN ('new', 'held')").fetchall():
+        if never(co) and not dry:
+            con.execute("UPDATE jobs SET status='rejected', reason=? WHERE key=?",
+                        ("never apply: " + (co or "")[:40], jk))
     for jk, co, st in con.execute("SELECT key, company, status FROM jobs WHERE status IN ('new', 'held')").fetchall():
         k = key(co)
         if st == "new" and k in full:

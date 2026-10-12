@@ -27,6 +27,8 @@ import subprocess
 import sys
 import urllib.parse
 
+import requests
+
 from bs4 import BeautifulSoup
 
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, TRACKING, POLICY,  # noqa: E402
@@ -87,6 +89,10 @@ def landing(url):
         return url
 
 
+# job boards whose apply link only redirects to the employer: {host: the apply URL's pattern}
+AGGREGATOR_APPLY = {"arbeitnow.com": "{url}/apply"}
+
+
 def fetch_jd(url):
     portal = detect_portal(url)
     jd = None
@@ -121,6 +127,25 @@ def fetch_jd(url):
                     print(f"  [fetch] the page's Apply goes to {pid}: {link[:90]}")
                     portal, jd["apply_url"] = pid, link
                     break
+    # A job board that only forwards: its apply link redirects to the employer's own page,
+    # which is where the form is (Arbeitnow's JS "Apply" button stalled the agent, 2026-10).
+    for host, pattern in AGGREGATOR_APPLY.items():
+        if host in urllib.parse.urlparse(url).netloc:
+            try:
+                r = requests.get(pattern.format(url=url.rstrip("/")), headers={"User-Agent": "Mozilla/5.0"},
+                                 timeout=30, allow_redirects=True)
+                final = r.url
+            except Exception as e:
+                print(f"  [fetch] {host} apply redirect failed ({e})")
+                break
+            if host in urllib.parse.urlparse(final).netloc:
+                break                                    # no redirect: leave it to the agent
+            if r.status_code == 404:
+                raise SystemExit(f"EXPIRED: the employer's page is gone (404) — {final}")
+            portal, _known = platforms.detect(final)
+            jd["apply_url"] = final
+            print(f"  [fetch] {host} forwards to the employer: {portal} {final[:90]}")
+            break
     jd.pop("apply_links", None)
     jd["portal"] = portal
     jd["url"] = url

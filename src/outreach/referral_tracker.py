@@ -254,9 +254,13 @@ def esc(s):
 
 
 def referral_link():
-    """One page over Tailscale beats a dozen Telegram messages on a phone."""
+    """One page on the phone beats a dozen Telegram messages: the review site's own link — the
+    public tunnel (his fixed ngrok address) while it runs, else Tailscale, else the LAN."""
     e = env()
     tok = e.get("FORM_TOKEN", "")
+    from jobpilot.review import tunnel
+    if tunnel.current() and tok:
+        return f"{tunnel.current()}/referrals?t={tok}"
     host = ""
     try:
         import subprocess

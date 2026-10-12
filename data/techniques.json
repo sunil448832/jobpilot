@@ -1,0 +1,45 @@
+{
+ "workday": {
+  "list": "entries",
+  "digits": "keys",
+  "type": "fill",
+  "tick": "click",
+  "file": "input",
+  "date": "together"
+ },
+ "greenhouse": {
+  "file": "input",
+  "list": "entries",
+  "type": "fill",
+  "tick": "click"
+ },
+ "ashby": {
+  "file": "input",
+  "type": "fill",
+  "tick": "click",
+  "list": "entries",
+  "press": "click",
+  "digits": "keys"
+ },
+ "workable": {
+  "file": "input",
+  "tick": "click",
+  "type": "fill",
+  "list": "entries"
+ },
+ "g42": {
+  "file": "input",
+  "select": "label",
+  "tick": "click",
+  "type": "fill"
+ },
+ "newspresso": {
+  "type": "fill",
+  "file": "input"
+ },
+ "arbeitnow": {
+  "select": "label",
+  "file": "input",
+  "type": "fill"
+ }
+}

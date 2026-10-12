@@ -99,6 +99,7 @@ usage() { cat <<'TXT'
 
   ONE-OFF SETUP
     ./jobpilot setup-telegram  create/verify the Telegram bot
+    ./jobpilot signin <site>   sign in once (google, talentmate, a URL) in the filler's own browser
     ./jobpilot setup-tailscale start Tailscale as you (no sudo, no system changes); first run logs in
     ./jobpilot services        (re)install + enable the systemd units
 
@@ -187,6 +188,7 @@ case "$cmd" in
               if [[ "${1:-}" =~ ^[0-9]+$ ]]; then py apply.explore_agentic.replay --limit "$1"
               elif [ -n "${1:-}" ]; then py apply.explore_agentic.replay "$1" --submit "${@:2}"
               else py apply.explore_agentic.replay; fi ;;
+  signin)     py apply.signin "$@" ;;       # sign in to a careers site once, by hand, in the filler's browser
   dryrun)     [ $# -ge 1 ] || { echo "  usage: ./jobpilot dryrun <slug>"; exit 1; }
               py apply.explore_agentic.replay "$1" "${@:2}" ;;
   log)        tail -n "${1:-40}" -f "$LOGS/daily.log" ;;

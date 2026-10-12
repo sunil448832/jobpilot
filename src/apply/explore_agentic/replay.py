@@ -128,6 +128,8 @@ async def file(slug, submit=False, item_id=None, model="opus", effort="low"):
         item = queue_item(slug, item_id)
         if item.get("status") != "approved" or item.get("submitted_at"):
             raise Skip(f"{item['id']} is not approved ({item.get('status')}) — nothing opened, nothing sent")
+        if Q.never(item.get("company")):
+            raise Skip(f"{item['id']}: {item.get('company')} is on apply.never_apply — nothing opened, nothing sent")
         if rec.get("at") and (item.get("created") or "") < rec["at"]:
             raise Skip(f"{item['id']} was approved before the exploration it would file ({rec['at']}) — "
                        "explore it again for a card of this record; nothing opened, nothing sent")

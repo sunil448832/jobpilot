@@ -535,6 +535,18 @@ def give_file(frame, el, path):
     except Exception:
         accept = ""
     ext = os.path.splitext(str(path))[1].lower()
+    if not accept:
+        # no accept list: the field's own words may say it ("Resume (PDF, max 4 MB)") — Newspresso
+        # refused a .docx so ("Attach your resume as a PDF", 2026-10-12)
+        try:
+            near = (el.evaluate("e => { let b = e; for (let i = 0; i < 4 && b.parentElement; i++) b = b.parentElement;"
+                                " return b.innerText || ''; }") or "").lower()
+        except Exception:
+            near = ""
+        if re.search(r"\bpdf\b", near) and not re.search(r"\bdocx?\b|word", near):
+            accept = ".pdf"
+        elif re.search(r"\bdocx?\b|\bword\b", near) and not re.search(r"\bpdf\b", near):
+            accept = ".doc,.docx"
     if accept and "*" not in accept and ext not in accept:
         other = os.path.splitext(str(path))[0] + (".pdf" if ext == ".docx" else ".docx")
         if os.path.isfile(other) and os.path.splitext(other)[1] in accept:

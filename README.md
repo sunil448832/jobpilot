@@ -196,6 +196,10 @@ A low score from a real gap is reported, not chased. No code adds or removes ter
 
 ## The form and filing
 
+- A press that opens a new tab (an aggregator's "Apply now") is followed: the form is there.
+- Sites that need an account (Google careers, Talentmate): `./jobpilot signin google` opens the
+  filler's own browser profile on the desktop; sign in once by hand and close it — fills reuse the
+  session. jobpilot never sees the password.
 - Exploring: the agent sees each page through `see`, fills it with `act`, presses Next, and ends
   on the last page with `finish`, naming the Submit button. It never presses Submit.
 - Filing: code redoes `calls.json` with his approved answers (no Claude while pages match), then
@@ -253,6 +257,9 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Visa:** US roles only when the posting says it sponsors; a silent posting in the Netherlands,
   Ireland, Germany, Luxembourg or the UAE counts as a likely yes. The resume header says only
   "Open to relocation to X" — the forms answer the sponsorship question.
+- **Never applied to** (`apply.never_apply` in config.yaml, now Amazon / AWS): intake rejects their
+  postings, the pick skips them (links he adds too), the filer refuses their cards; matched on whole
+  words from the start of the name. Their careers-site reader is off too (`discovery.deny_boards`).
 - **Frontier labs:** at most 2 applications a month each (Anthropic, OpenAI, DeepMind, xAI,
   Mistral, Reflection, Meta, Cohere).
 - **Employer discovery** (`tenants.py`: curated lists per market + LinkedIn guest search for names)

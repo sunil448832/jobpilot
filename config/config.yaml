@@ -202,6 +202,10 @@ apply:
   # the RL post-training project reached the resume; it landed 2026-09-22 and the
   # hold was lifted the same day. Its 5-per-180-days quota still applies above.
   hold_companies: []
+  # Companies never applied to, at any step (his instruction): intake rejects their postings,
+  # the tailor pick skips them (his own links too), the filer refuses their cards. Matched on
+  # the company name's start (amazon -> Amazon EU SARL, Amazon Web Services).
+  never_apply: [amazon, aws]
 
 keywords_learn:
   # Weekly, from the JDs you actually applied to (applications/*/JD.md): the top
@@ -247,7 +251,7 @@ discovery:
   # marketplace whose 829 gig listings cleared the enterprise scale tier, so each
   # one collected the biggest company-scale bonus rank.py gives. `pulse` stopped
   # returning JSON. Filtered in intake.load_boards, so they never reach state.db.
-  deny_boards: [agency, pulse]
+  deny_boards: [agency, pulse, amazon]   # amazon: never applied to (apply.never_apply), so not scanned
   board_timeout: 25
 
 server:

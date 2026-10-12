@@ -1,0 +1,4329 @@
+{
+ "Airbnb": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.airbnb.com/",
+  "tried": "2026-09-23T18:09:34",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "AbbVie": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.abbvie.com/",
+  "tried": "2026-09-23T18:09:43",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Aflac": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.aflac.com/",
+  "tried": "2026-09-23T18:09:53",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:05"
+ },
+ "American Express": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.americanexpress.com/en/sites/CX_1",
+  "tried": "2026-09-23T18:09:56",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Advanced Micro Devices": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.amd.com/en.html?utm_campaign=domain&utm_medium=redirect&utm_source=301&utm_term=advancedmicrodevices.com",
+  "tried": "2026-09-23T18:09:57",
+  "registered": null,
+  "deepened": "2026-09-23T18:57:34"
+ },
+ "Amazon": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://amazon.jobs/en/",
+  "tried": "2026-09-23T18:09:59",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Amgen": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.amgen.com/en",
+  "tried": "2026-09-23T18:10:09",
+  "registered": "amgen.wd1.myworkdayjobs.com/Careers",
+  "deepened": "2026-09-23T18:54:16",
+  "ats_url": "https://amgen.wd1.myworkdayjobs.com/en-US/Careers/login"
+ },
+ "Allstate": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.allstatecorporation.com/careers.aspx",
+  "tried": "2026-09-23T18:10:09",
+  "registered": "allstate.wd5.myworkdayjobs.com/allstate_careers",
+  "deepened": "2026-09-23T18:53:28",
+  "ats_url": "https://allstate.wd5.myworkdayjobs.com/allstate_careers/login"
+ },
+ "Aon plc": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.aon.com/en/",
+  "tried": "2026-09-23T18:10:09",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Align Technology": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://jobs.aligntech.com",
+  "tried": "2026-09-23T18:10:18",
+  "registered": null,
+  "deepened": "2026-09-23T18:55:48"
+ },
+ "Ameriprise Financial": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.ameriprise.com/careers",
+  "tried": "2026-09-23T18:10:29",
+  "registered": "ameriprise.wd5.myworkdayjobs.com/Ameriprise",
+  "deepened": "2026-09-23T18:52:59",
+  "ats_url": "https://ameriprise.wd5.myworkdayjobs.com/Ameriprise"
+ },
+ "Abbott Laboratories": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.abbott.com/en-us/careers",
+  "tried": "2026-09-23T18:10:29",
+  "registered": "abbott.wd5.myworkdayjobs.com/abbottcareers",
+  "deepened": "2026-09-23T18:51:59",
+  "ats_url": "https://abbott.wd5.myworkdayjobs.com/abbottcareers/login"
+ },
+ "AppLovin": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://applovin.com/en/careers",
+  "tried": "2026-09-23T18:10:30",
+  "registered": "applovin.com"
+ },
+ "Applied Materials": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.appliedmaterials.com/careers",
+  "tried": "2026-09-23T18:10:40",
+  "registered": null,
+  "deepened": "2026-09-23T18:54:16"
+ },
+ "Akamai Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:10:41"
+ },
+ "Apple Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://idmsac.apple.com/IDMSWebAuth/appleauth/auth/oauth2/v2/authorize?client_id=k8pehdkbjdfms5zvaavpjtmxj2d5nh&redirect_uri=https%3A//people.apple.com/idms/oidc-authorize&response_type=code&state=/careers&scope=openid%20offline_access%20profile%20email%20roles%20api%20extended_profile",
+  "tried": "2026-09-23T18:10:41",
+  "registered": null,
+  "deepened": "2026-09-23T18:54:16"
+ },
+ "Agilent Technologies": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.agilent.com/",
+  "tried": "2026-09-23T18:10:54",
+  "registered": "agilent.wd5.myworkdayjobs.com/Agilent_Student_Careers",
+  "deepened": "2026-09-23T18:54:11",
+  "ats_url": "https://agilent.wd5.myworkdayjobs.com/Agilent_Student_Careers"
+ },
+ "Aptiv": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.aptiv.com/en/jobs",
+  "tried": "2026-09-23T18:10:55",
+  "registered": null,
+  "deepened": "2026-09-23T19:02:37"
+ },
+ "Apollo Global Management": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.apollo.com/careers",
+  "tried": "2026-09-23T18:11:07",
+  "registered": "athene.wd5.myworkdayjobs.com/Apollo_Careers",
+  "deepened": "2026-09-23T18:55:14",
+  "ats_url": "https://athene.wd5.myworkdayjobs.com/Apollo_Careers"
+ },
+ "Ares Management": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.ares.com/careers",
+  "tried": "2026-09-23T18:11:07",
+  "registered": "aresmgmt.wd1.myworkdayjobs.com/External",
+  "deepened": "2026-09-23T18:55:21",
+  "ats_url": "https://aresmgmt.wd1.myworkdayjobs.com/External"
+ },
+ "3M": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:08"
+ },
+ "AutoZone": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.autozone.com/hcmUI/CandidateExperience/en/sites/CX_1",
+  "tried": "2026-09-23T18:11:08",
+  "registered": null,
+  "deepened": "2026-09-23T18:55:48"
+ },
+ "Adobe Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:09"
+ },
+ "Assurant": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://jobs.assurant.com/",
+  "tried": "2026-09-23T18:11:09",
+  "registered": "assurant.wd1.myworkdayjobs.com/Assurant_Careers",
+  "deepened": "2026-09-23T18:55:48",
+  "ats_url": "https://assurant.wd1.myworkdayjobs.com/Assurant_Careers"
+ },
+ "Bank of America": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.bankofamerica.com/en-us",
+  "tried": "2026-09-23T18:11:11",
+  "registered": null,
+  "deepened": "2026-09-23T18:56:35",
+  "ats_url": "https://ghr.wd1.myworkdayjobs.com/en-us/lateral-us/login"
+ },
+ "Autodesk": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:13"
+ },
+ "BlackRock": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.blackrock.com/",
+  "tried": "2026-09-23T18:11:13",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Biogen": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.biogen.com:443/careers.html",
+  "tried": "2026-09-23T18:11:23",
+  "registered": "biibhr.wd3.myworkdayjobs.com/external",
+  "deepened": "2026-09-23T18:55:59",
+  "ats_url": "https://biibhr.wd3.myworkdayjobs.com/external"
+ },
+ "Arch Capital Group": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://arch.ai/careers",
+  "tried": "2026-09-23T18:11:24",
+  "registered": null,
+  "deepened": "2026-09-23T18:57:34"
+ },
+ "Bio-Techne": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:36"
+ },
+ "Amphenol": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:36"
+ },
+ "Blackstone Inc.": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.blackstone.com/careers/careers-blackstone/",
+  "tried": "2026-09-23T18:11:36",
+  "registered": "blackstone.wd1.myworkdayjobs.com/Blackstone_Careers",
+  "deepened": "2026-09-23T18:56:17",
+  "ats_url": "https://blackstone.wd1.myworkdayjobs.com/en-US/Blackstone_Careers"
+ },
+ "Booking Holdings": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.booking.com/",
+  "tried": "2026-09-23T18:11:36",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:42"
+ },
+ "Baxter International": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://jobs.baxter.com/en",
+  "tried": "2026-09-23T18:11:37",
+  "registered": "baxter.wd1.myworkdayjobs.com/baxter",
+  "deepened": "2026-09-23T18:56:37",
+  "ats_url": "https://baxter.wd1.myworkdayjobs.com/en-US/baxter/login?redirect=/en-US/baxter/jobAlerts"
+ },
+ "Berkshire Hathaway": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://berkshirehathaway.ai/",
+  "tried": "2026-09-23T18:11:38",
+  "registered": null,
+  "deepened": "2026-09-23T18:57:34"
+ },
+ "Block, Inc.": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:46"
+ },
+ "Alphabet Inc. (Class C)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:46"
+ },
+ "Boeing": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://jobs.boeing.com",
+  "tried": "2026-09-23T18:11:46",
+  "registered": "boeing.wd1.myworkdayjobs.com/EXTERNAL_CAREERS",
+  "deepened": "2026-09-23T18:57:34",
+  "ats_url": "https://boeing.wd1.myworkdayjobs.com/en-US/EXTERNAL_CAREERS/login"
+ },
+ "Arthur J. Gallagher & Co.": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://arthurj.com/careers",
+  "tried": "2026-09-23T18:11:47",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "AT&T": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:57"
+ },
+ "Alphabet Inc. (Class A)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:11:57"
+ },
+ "Broadcom": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.broadcom.com/company/careers",
+  "tried": "2026-09-23T18:11:57",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "BNY Mellon": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.bny.com/corporate/global/en/about-us/careers/work-with-us.html",
+  "tried": "2026-09-23T18:12:05",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Boston Scientific": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.bostonscientific.com/en-US/careers.html",
+  "tried": "2026-09-23T18:12:14",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:42"
+ },
+ "Carvana": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.carvana.com/careers",
+  "tried": "2026-09-23T18:12:22",
+  "registered": null,
+  "deepened": "2026-09-23T19:00:55"
+ },
+ "Caterpillar Inc.": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.caterpillar.com/en/",
+  "tried": "2026-09-23T18:12:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:00:55"
+ },
+ "Arista Networks": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:12:39"
+ },
+ "Becton Dickinson": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:12:39"
+ },
+ "Carnival Corporation": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://jobs.carnival.com/",
+  "tried": "2026-09-23T18:12:39",
+  "registered": null,
+  "deepened": "2026-09-23T19:03:42"
+ },
+ "Best Buy": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://brandtime.com/bestbuy",
+  "tried": "2026-09-23T18:12:51",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Analog Devices": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://analog.io/careers",
+  "tried": "2026-09-23T18:13:03",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Cboe Global Markets": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.cboe.com/us/en",
+  "tried": "2026-09-23T18:13:03",
+  "registered": "careers.cboe.com"
+ },
+ "Cencora": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.cencora.com/us/en",
+  "tried": "2026-09-23T18:13:07",
+  "registered": "careers.cencora.com"
+ },
+ "Chubb Limited": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://fa-ewgu-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001",
+  "tried": "2026-09-23T18:13:11",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Centene Corporation": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://jobs.centene.com/us/en/",
+  "tried": "2026-09-23T18:13:13",
+  "registered": "centene.wd5.myworkdayjobs.com/centene_external",
+  "deepened": "2026-09-23T19:00:19",
+  "ats_url": "https://centene.wd5.myworkdayjobs.com/centene_external"
+ },
+ "Cisco": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.cisco.com/global/en",
+  "tried": "2026-09-23T18:13:14",
+  "registered": "careers.cisco.com"
+ },
+ "Cincinnati Financial": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.cincinnati.com/",
+  "tried": "2026-09-23T18:13:16",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "CDW Corporation": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.cdwjobs.com/?cm_mmc=vanity-_-careers-_-NA-_-NA",
+  "tried": "2026-09-23T18:13:24",
+  "registered": null,
+  "deepened": "2026-09-23T18:58:36"
+ },
+ "Citigroup": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://jobs.citi.com/",
+  "tried": "2026-09-23T18:13:31",
+  "registered": "citi.wd5.myworkdayjobs.com/2",
+  "deepened": "2026-09-23T18:58:36",
+  "ats_url": "https://citi.wd5.myworkdayjobs.com/en-US/2/userHome"
+ },
+ "Coinbase": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.coinbase.com/en-in/careers",
+  "tried": "2026-09-23T18:13:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:42"
+ },
+ "Coherent Corp.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.coherent.com/peopleandculture",
+  "tried": "2026-09-23T18:13:39",
+  "registered": null,
+  "deepened": "2026-09-23T19:05:46"
+ },
+ "Comcast": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:13:49"
+ },
+ "Citizens Financial Group": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:13:49"
+ },
+ "Capital One": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://capital.com/en-int/about-us/careers",
+  "tried": "2026-09-23T18:13:49",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:05"
+ },
+ "Brown & Brown": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:13:57"
+ },
+ "Cigna": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://jobs.thecignagroup.com/us/en",
+  "tried": "2026-09-23T18:13:57",
+  "registered": "jobs.thecignagroup.com"
+ },
+ "CrowdStrike": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.crowdstrike.com/en-us/careers/",
+  "tried": "2026-09-23T18:14:04",
+  "registered": "crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers",
+  "deepened": "2026-09-23T18:59:44",
+  "ats_url": "https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers"
+ },
+ "Charles Schwab Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:14:04"
+ },
+ "Datadog": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.datadoghq.com",
+  "tried": "2026-09-23T18:14:04",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:05"
+ },
+ "Corpay": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.corpay.com/careers",
+  "tried": "2026-09-23T18:14:12",
+  "registered": "corpay.wd103.myworkdayjobs.com/Ext_001",
+  "deepened": "2026-09-23T19:00:55",
+  "ats_url": "https://corpay.wd103.myworkdayjobs.com/Ext_001?locationCountry=131d5ac7e3ee4d7b962bdc96e498e412&amp;locationCountry=9696868b09c64d52a62ee13b052383cc&amp;locationCountry=8cd04a563fd94da7b06857a79faaf815&amp;locationCountry=04a05835925f45b3a59406a2a6b72c8a&amp;locationCountry=dcc5b7608d8644b3a93716604e78e995&amp;locationCountry=54c5b6971ffb4bf0b116fe7651ec789a&amp;locationCountry=49ab063f422741e2aef271de00efeac8&amp;locationCountry=fc078443155c4ad294201ecf5a61a499&amp;locationCountry=bd34c524a6a04ae6915f5d96fa086199&amp;locationCountry=29247e57dbaf46fb855b224e03170bc7"
+ },
+ "DaVita": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.davita.com/",
+  "tried": "2026-09-23T18:14:12",
+  "registered": "careers.davita.com"
+ },
+ "Dexcom": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.dexcom.com/careers",
+  "tried": "2026-09-23T18:14:17",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:05"
+ },
+ "Deere & Company": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.deere.com/careers",
+  "tried": "2026-09-23T18:14:17",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:05"
+ },
+ "Bristol Myers Squibb": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:14:18"
+ },
+ "American International Group": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:14:18"
+ },
+ "Domino's": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://jobs.dominos.com/us/",
+  "tried": "2026-09-23T18:14:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:02:12"
+ },
+ "Deckers Brands": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://deckers.com/careers",
+  "tried": "2026-09-23T18:14:27",
+  "registered": "deckers.wd5.myworkdayjobs.com/Deckers",
+  "deepened": "2026-09-23T19:01:05",
+  "ats_url": "https://deckers.wd5.myworkdayjobs.com/en-US/Deckers"
+ },
+ "Ciena": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:14:29"
+ },
+ "D. R. Horton": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:14:29"
+ },
+ "EchoStar": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://echostar.com/careers",
+  "tried": "2026-09-23T18:14:29",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Cooper Companies (The)": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.cooper.ai/careers",
+  "tried": "2026-09-23T18:14:30",
+  "registered": null,
+  "deepened": "2026-09-23T19:01:05"
+ },
+ "eBay Inc.": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.ebayinc.com/",
+  "tried": "2026-09-23T18:14:39",
+  "registered": null,
+  "deepened": "2026-09-23T19:04:51"
+ },
+ "CME Group": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:14:50"
+ },
+ "Edwards Lifesciences": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://edwards.com/careers",
+  "tried": "2026-09-23T18:14:50",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:40"
+ },
+ "Everpure": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.pentair.com/en-us/brands/everpure.html",
+  "tried": "2026-09-23T18:14:51",
+  "registered": "careers.pentair.com",
+  "deepened": "2026-09-23T19:02:33",
+  "ats_url": "https://careers.pentair.com/us/en"
+ },
+ "Elevance Health": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.elevancehealth.com/",
+  "tried": "2026-09-23T18:15:02",
+  "registered": "elevancehealth.wd1.myworkdayjobs.com/ANT",
+  "deepened": "2026-09-23T19:01:42",
+  "ats_url": "https://elevancehealth.wd1.myworkdayjobs.com/ANT/job/CA-WOODLAND-HILLS-21215-BURBANK-BLVD/AI-Product-Strategy-Director_JR202170-1/apply"
+ },
+ "Corning Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:15:04"
+ },
+ "Dell Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://enterpriseplatform.dell.com/hcmUI/CandidateExperience/en/sites/careers",
+  "tried": "2026-09-23T18:15:04",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Charles River Laboratories": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:15:06"
+ },
+ "Emerson Electric": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.emerson.com/en/corporate/careers",
+  "tried": "2026-09-23T18:15:06",
+  "registered": null,
+  "deepened": "2026-09-23T19:04:51"
+ },
+ "F5, Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.f5.com/company/careers",
+  "tried": "2026-09-23T18:15:14",
+  "registered": "ffive.wd5.myworkdayjobs.com/f5jobs",
+  "deepened": "2026-09-23T19:02:12",
+  "ats_url": "https://ffive.wd5.myworkdayjobs.com/f5jobs"
+ },
+ "Cadence Design Systems": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.cadence.com:443/en_US/home/ai/overview.html",
+  "tried": "2026-09-23T18:15:16",
+  "registered": "cadence.wd1.myworkdayjobs.com/External_Careers",
+  "deepened": "2026-09-23T19:02:37",
+  "ats_url": "https://cadence.wd1.myworkdayjobs.com/External_Careers"
+ },
+ "FactSet": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.factset.com/careers",
+  "tried": "2026-09-23T18:15:23",
+  "registered": null,
+  "deepened": "2026-09-23T19:02:33"
+ },
+ "Cardinal Health": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:15:33"
+ },
+ "Fiserv": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.fiserv.com/us/en",
+  "tried": "2026-09-23T18:15:33",
+  "registered": "careers.fiserv.com"
+ },
+ "DoorDash": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:15:37"
+ },
+ "Expedia Group": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:15:37"
+ },
+ "FedEx Freight": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.fedexfreight.com/",
+  "tried": "2026-09-23T18:15:37",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "Fair Isaac": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.fico.com/en/careers",
+  "tried": "2026-09-23T18:15:40",
+  "registered": "fico.wd1.myworkdayjobs.com/External",
+  "deepened": "2026-09-23T19:04:51",
+  "ats_url": "https://fico.wd1.myworkdayjobs.com/External"
+ },
+ "First Solar": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.firstsolar.com/careers",
+  "tried": "2026-09-23T18:15:45",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Flex Ltd.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://flex.com/careers",
+  "tried": "2026-09-23T18:15:56",
+  "registered": "flextronics.wd1.myworkdayjobs.com/Careers",
+  "deepened": "2026-09-23T19:03:42",
+  "ats_url": "https://flextronics.wd1.myworkdayjobs.com/en-US/Careers"
+ },
+ "Danaher Corporation": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:15:57"
+ },
+ "Fortinet": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.fortinet.com/corporate/careers",
+  "tried": "2026-09-23T18:15:57",
+  "registered": null,
+  "deepened": "2026-09-23T19:05:00"
+ },
+ "Eaton Corporation": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:16:05"
+ },
+ "FedEx": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://x.com/Jamessfbay",
+  "tried": "2026-09-23T18:16:05",
+  "registered": null,
+  "deepened": "2026-09-23T19:04:51"
+ },
+ "Garmin": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.garmin.com/en-US/careers/",
+  "tried": "2026-09-23T18:16:05",
+  "registered": null,
+  "deepened": "2026-09-23T19:05:46"
+ },
+ "Ford Motor Company": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.careers.ford.com",
+  "tried": "2026-09-23T18:16:13",
+  "registered": null,
+  "deepened": "2026-09-23T19:07:20"
+ },
+ "Gartner": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://jobs.gartner.com/",
+  "tried": "2026-09-23T18:16:22",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "GE Aerospace": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.geaerospace.com/global/en",
+  "tried": "2026-09-23T18:16:29",
+  "registered": "careers.geaerospace.com"
+ },
+ "GE Vernova": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.gevernova.com/",
+  "tried": "2026-09-23T18:16:32",
+  "registered": "gevernova.wd5.myworkdayjobs.com/Vernova_ExternalSite",
+  "deepened": "2026-09-23T19:05:00",
+  "ats_url": "https://gevernova.wd5.myworkdayjobs.com/Vernova_ExternalSite/job/MESAGNE/Aero-Alliance-Europe-Finance-Specialist_R5053787-3/apply"
+ },
+ "Fidelity National Information Services": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://jobs.fidelity.com/en/",
+  "tried": "2026-09-23T18:16:35",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "GE HealthCare": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.gehealthcare.com/global/en",
+  "tried": "2026-09-23T18:16:44",
+  "registered": "careers.gehealthcare.com"
+ },
+ "Gen Digital": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.gendigital.com/us/en/life-gen/",
+  "tried": "2026-09-23T18:16:52",
+  "registered": "www.gendigital.com"
+ },
+ "Goldman Sachs": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.goldmansachs.com/careers",
+  "tried": "2026-09-23T18:16:54",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "GoDaddy": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.godaddy/",
+  "tried": "2026-09-23T18:17:02",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Everest Group": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:17:21"
+ },
+ "Globe Life": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://globelife.com/en/careers/",
+  "tried": "2026-09-23T18:17:21",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Fox Corporation (Class A)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:17:31"
+ },
+ "Fox Corporation (Class B)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:17:31"
+ },
+ "Erie Indemnity": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:17:31"
+ },
+ "Hasbro": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://consumercare.hasbro.com/en-in/where-to-buy",
+  "tried": "2026-09-23T18:17:31",
+  "registered": "consumercare.hasbro.com"
+ },
+ "Home Depot (The)": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.homedepot.com/",
+  "tried": "2026-09-23T18:17:33",
+  "registered": "homedepot.wd5.myworkdayjobs.com/CareerDepot",
+  "deepened": "2026-09-23T19:05:46",
+  "ats_url": "https://homedepot.wd5.myworkdayjobs.com/CareerDepot/login"
+ },
+ "Honeywell Aerospace": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.honeywellaerospace.com/us/en/company/careers",
+  "tried": "2026-09-23T18:17:34",
+  "registered": null,
+  "deepened": "2026-09-23T19:08:26"
+ },
+ "Honeywell Technologies": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.honeywell.com/us/en/careers",
+  "tried": "2026-09-23T18:18:03",
+  "registered": null,
+  "deepened": "2026-09-23T19:07:17"
+ },
+ "Henry Schein": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.henry.com/support/careers/",
+  "tried": "2026-09-23T18:18:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:13:12"
+ },
+ "Charter Communications": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:18:44"
+ },
+ "Fifth Third Bancorp": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:18:44"
+ },
+ "Carrier Global": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.carrier.com/carrier/en/worldwide/error-404.html",
+  "tried": "2026-09-23T18:18:44",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53",
+  "ats_url": "https://carrier.wd5.myworkdayjobs.com/jobs/login"
+ },
+ "Idexx Laboratories": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.idexx.com/en/",
+  "tried": "2026-09-23T18:18:53",
+  "registered": "careers.idexx.com",
+  "deepened": "2026-09-23T19:07:17",
+  "ats_url": "https://careers.idexx.com/us/en"
+ },
+ "Hilton Worldwide": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:01"
+ },
+ "IBM": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.ibm.com/careers",
+  "tried": "2026-09-23T18:19:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Humana": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:10"
+ },
+ "HCA Healthcare": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:10"
+ },
+ "Incyte": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.incyte.com/jobs",
+  "tried": "2026-09-23T18:19:10",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "Illumina, Inc.": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://facility.illumina.io/careers",
+  "tried": "2026-09-23T18:19:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:06:53"
+ },
+ "Franklin Resources": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.franklin.ai/careers",
+  "tried": "2026-09-23T18:19:21",
+  "registered": "www.franklin.ai"
+ },
+ "Gilead Sciences": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.gilead.com/careers",
+  "tried": "2026-09-23T18:19:25",
+  "registered": null,
+  "deepened": "2026-09-23T19:07:15",
+  "ats_url": "https://gilead.wd1.myworkdayjobs.com/gileadcareers&quot;,&quot;intendedAudience&quot;:&quot;patient/professional&quot;,&quot;language&quot;:&quot;english&quot;,&quot;subject&quot;:&quot;button&quot;}"
+ },
+ "Hewlett Packard Enterprise": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:26"
+ },
+ "Intuit": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:26"
+ },
+ "Interactive Brokers": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.interactivebrokers.com/en/general/about/careers-splash.php",
+  "tried": "2026-09-23T18:19:26",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "Invesco": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.invesco.com/",
+  "tried": "2026-09-23T18:19:37",
+  "registered": "invesco.wd1.myworkdayjobs.com/IVZ",
+  "deepened": "2026-09-23T19:06:53",
+  "ats_url": "https://invesco.wd1.myworkdayjobs.com/IVZ"
+ },
+ "Genuine Parts Company": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:37"
+ },
+ "Jabil": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.jabil.com/",
+  "tried": "2026-09-23T18:19:37",
+  "registered": "jabil.wd5.myworkdayjobs.com/Jabil_Careers",
+  "deepened": "2026-09-23T19:07:20",
+  "ats_url": "https://jabil.wd5.myworkdayjobs.com/en-US/Jabil_Careers/introduceYourself"
+ },
+ "Global Payments": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.global.com/",
+  "tried": "2026-09-23T18:19:39",
+  "registered": "thisisglobal.wd3.myworkdayjobs.com/Global",
+  "deepened": "2026-09-23T19:08:20",
+  "ats_url": "https://thisisglobal.wd3.myworkdayjobs.com/Global/login?careersite"
+ },
+ "Intercontinental Exchange": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.ice.com/index",
+  "tried": "2026-09-23T18:19:41",
+  "registered": null,
+  "deepened": "2026-09-23T19:07:20"
+ },
+ "HP Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:19:50"
+ },
+ "Jack Henry & Associates": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.jackhenry.com/",
+  "tried": "2026-09-23T18:19:50",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "KKR & Co.": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.kkr.com/careers",
+  "tried": "2026-09-23T18:20:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:09:14",
+  "ats_url": "https://boards.greenhouse.io/embed/job_board/js?for=stage\\&#34;"
+ },
+ "Huntington Bancshares": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://huntington-careers.com/",
+  "tried": "2026-09-23T18:20:10",
+  "registered": null,
+  "deepened": "2026-09-23T19:11:32"
+ },
+ "Labcorp": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.labcorp.com/global/en",
+  "tried": "2026-09-23T18:20:20",
+  "registered": "careers.labcorp.com"
+ },
+ "JPMorgan Chase": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.jpmorganchase.com/careers",
+  "tried": "2026-09-23T18:20:24",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "Lam Research": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.lamresearch.com/careers",
+  "tried": "2026-09-23T18:20:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:08:25"
+ },
+ "Insulet Corporation": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:20:37"
+ },
+ "Lennar": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.lennar.com/",
+  "tried": "2026-09-23T18:20:37",
+  "registered": "lennar.wd1.myworkdayjobs.com/Early_Careers",
+  "deepened": "2026-09-23T19:09:15",
+  "ats_url": "https://lennar.wd1.myworkdayjobs.com/Early_Careers"
+ },
+ "Loews Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://loews.com/careers/",
+  "tried": "2026-09-23T18:20:48",
+  "registered": "loewscorp.wd1.myworkdayjobs.com/loewscorp",
+  "deepened": "2026-09-23T19:08:25",
+  "ats_url": "https://loewscorp.wd1.myworkdayjobs.com/loewscorp"
+ },
+ "Live Nation Entertainment": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://www.livenationentertainment.com/careers",
+  "tried": "2026-09-23T18:20:49",
+  "registered": "livenation.wd503.myworkdayjobs.com/LNExternalSite",
+  "deepened": "2026-09-23T19:08:26",
+  "ats_url": "https://livenation.wd503.myworkdayjobs.com/en-US/LNExternalSite"
+ },
+ "Lockheed Martin": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.lockheedmartin.com/en-us/careers/index.html",
+  "tried": "2026-09-23T18:20:50",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "Johnson Controls": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://jobs.johnsoncontrols.com/",
+  "tried": "2026-09-23T18:21:00",
+  "registered": "jci.wd5.myworkdayjobs.com/JCI",
+  "deepened": "2026-09-23T19:09:16",
+  "ats_url": "https://jci.wd5.myworkdayjobs.com/en-US/JCI/login"
+ },
+ "KLA Corporation": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.kla.com/careers",
+  "tried": "2026-09-23T18:21:02",
+  "registered": "kla.wd1.myworkdayjobs.com/Search",
+  "deepened": "2026-09-23T19:10:30",
+  "ats_url": "https://kla.wd1.myworkdayjobs.com/Search"
+ },
+ "M&T Bank": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:21:04"
+ },
+ "Keysight Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.keysight.com/external",
+  "tried": "2026-09-23T18:21:04",
+  "registered": null,
+  "deepened": "2026-09-23T19:22:50"
+ },
+ "Lumentum": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.lumentum.com/careers",
+  "tried": "2026-09-23T18:21:06",
+  "registered": "lumentum.wd5.myworkdayjobs.com/LITE",
+  "deepened": "2026-09-23T19:10:06",
+  "ats_url": "https://lumentum.wd5.myworkdayjobs.com/LITE"
+ },
+ "Marriott International": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.marriott.com/",
+  "tried": "2026-09-23T18:21:08",
+  "registered": null,
+  "deepened": "2026-09-23T19:12:25"
+ },
+ "Lowe's": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://talent.lowes.com/us/en",
+  "tried": "2026-09-23T18:21:18",
+  "registered": "talent.lowes.com"
+ },
+ "General Motors": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:21:25"
+ },
+ "Illinois Tool Works": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:21:25"
+ },
+ "Mastercard": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.mastercard.com/us/en/",
+  "tried": "2026-09-23T18:21:25",
+  "registered": "careers.mastercard.com"
+ },
+ "McKesson Corporation": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.mckesson.com/en",
+  "tried": "2026-09-23T18:21:28",
+  "registered": null,
+  "deepened": "2026-09-23T19:14:37"
+ },
+ "Hartford (The)": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:21:39"
+ },
+ "Intel": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:21:39"
+ },
+ "Lululemon Athletica": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.lululemon.com/en_US/careers",
+  "tried": "2026-09-23T18:21:39",
+  "registered": null,
+  "deepened": "2026-09-23T19:13:12"
+ },
+ "Microsoft": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.microsoft.com/v2/global/en/home.html",
+  "tried": "2026-09-23T18:21:42",
+  "registered": null,
+  "deepened": "2026-09-23T19:10:30"
+ },
+ "Marsh McLennan": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.marsh.com/global/en",
+  "tried": "2026-09-23T18:21:50",
+  "registered": "careers.marsh.com"
+ },
+ "Micron Technology": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.micron.com/about/careers",
+  "tried": "2026-09-23T18:21:57",
+  "registered": null,
+  "deepened": "2026-09-23T19:12:25"
+ },
+ "Marvell Technology": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:22:06"
+ },
+ "Moody's Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.moodys.com/en",
+  "tried": "2026-09-23T18:22:06",
+  "registered": null,
+  "deepened": "2026-09-23T19:12:25"
+ },
+ "Johnson & Johnson": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://tenantres.bgw001-us-west-2.edge.lkt.cloud/tenant-form.ftl?C1f3C_tres_id=rEE6MbhzR6p8pKexpdjTyL&C1f3C_tres_ru=aHR0cHM6Ly93d3cuam9obnNvbi5pby9jYXJlZXJzP2MxZjNjX2NrYz10cnVl",
+  "tried": "2026-09-23T18:22:06",
+  "registered": null,
+  "deepened": "2026-09-23T19:11:32"
+ },
+ "Morgan Stanley": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.morganstanley.com/people",
+  "tried": "2026-09-23T18:22:17",
+  "registered": null,
+  "deepened": "2026-09-23T19:19:44"
+ },
+ "Mettler Toledo": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:22:18"
+ },
+ "MetLife": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.metlifecareers.com/en_US/ml",
+  "tried": "2026-09-23T18:22:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "MSCI": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.msci.com/",
+  "tried": "2026-09-23T18:22:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:40"
+ },
+ "Motorola Solutions": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.motorolasolutions.com/en_us/about/careers.html",
+  "tried": "2026-09-23T18:22:34",
+  "registered": "motorolasolutions.wd5.myworkdayjobs.com/Careers",
+  "deepened": "2026-09-23T19:11:32",
+  "ats_url": "https://motorolasolutions.wd5.myworkdayjobs.com/Careers"
+ },
+ "NetApp": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.netapp.com/",
+  "tried": "2026-09-23T18:22:34",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:19"
+ },
+ "Netflix": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://www.netflix.com/NotFound?prev=https%3A%2F%2Fwww.netflix.com%2Fcareers",
+  "tried": "2026-09-23T18:22:34",
+  "registered": null,
+  "deepened": "2026-09-23T19:12:25"
+ },
+ "Lilly (Eli)": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:22:43"
+ },
+ "News Corp (Class B)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://www.cnet.com/news/",
+  "tried": "2026-09-23T18:22:43",
+  "registered": null,
+  "deepened": "2026-09-23T19:16:54"
+ },
+ "News Corp (Class A)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://www.cnet.com/news/",
+  "tried": "2026-09-23T18:22:53",
+  "registered": null,
+  "deepened": "2026-09-23T19:16:54"
+ },
+ "NXP Semiconductors": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:22:53"
+ },
+ "Nike, Inc.": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.nike.com/",
+  "tried": "2026-09-23T18:22:53",
+  "registered": "nike.wd1.myworkdayjobs.com/nke",
+  "deepened": "2026-09-23T19:12:25",
+  "ats_url": "https://nike.wd1.myworkdayjobs.com/nke/job/Beaverton-Oregon/Lead-Process-Analyst_R-88191/apply"
+ },
+ "Northern Trust": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://ntrs.wd1.myworkdayjobs.com/northerntrust",
+  "tried": "2026-09-23T18:23:06",
+  "registered": "ntrs.wd1.myworkdayjobs.com/northerntrust"
+ },
+ "Northrop Grumman": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.northropgrumman.com/careers",
+  "tried": "2026-09-23T18:24:04",
+  "registered": null,
+  "deepened": "2026-09-23T19:14:55"
+ },
+ "Nvidia": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.nvidia.com/en-us/about-nvidia/careers/",
+  "tried": "2026-09-23T18:24:12",
+  "registered": "nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+  "deepened": "2026-09-23T19:18:19",
+  "ats_url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite?q=Research"
+ },
+ "Oracle Corporation": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.oracle.com/en/sites/jobsearch",
+  "tried": "2026-09-23T18:24:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:14:55"
+ },
+ "Intuitive Surgical": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.intuitive.com/en/",
+  "tried": "2026-09-23T18:24:14",
+  "registered": "careers.intuitive.com"
+ },
+ "Nasdaq, Inc.": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.nasdaq.com/about/careers",
+  "tried": "2026-09-23T18:24:21",
+  "registered": "nasdaq.wd1.myworkdayjobs.com/Global_External_Site",
+  "deepened": "2026-09-23T19:14:38",
+  "ats_url": "https://nasdaq.wd1.myworkdayjobs.com/Global_External_Site"
+ },
+ "Otis Worldwide": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://www.otis.com/en/us/careers",
+  "tried": "2026-09-23T18:24:25",
+  "registered": "otis.wd504.myworkdayjobs.com/REC_Ext_Gateway",
+  "deepened": "2026-09-23T19:15:55",
+  "ats_url": "https://otis.wd504.myworkdayjobs.com/REC_Ext_Gateway"
+ },
+ "IQVIA": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.iqvia.com/solutions/innovative-models/artificial-intelligence-and-machine-learning/iqvia-ai-platform",
+  "tried": "2026-09-23T18:24:26",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:00"
+ },
+ "Medtronic": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:24:50"
+ },
+ "Omnicom Group": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:24:50"
+ },
+ "Pfizer": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.pfizer.com/about/careers",
+  "tried": "2026-09-23T18:24:50",
+  "registered": "pfizer.wd1.myworkdayjobs.com/PfizerCareers",
+  "deepened": "2026-09-23T19:14:55",
+  "ats_url": "https://pfizer.wd1.myworkdayjobs.com/PfizerCareers/page/61cd8c398601100158e598894f100000"
+ },
+ "Palantir Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.palantir.com/careers",
+  "tried": "2026-09-23T18:24:51",
+  "registered": "www.palantir.com"
+ },
+ "O'Reilly Automotive": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.oreilly.com/careers",
+  "tried": "2026-09-23T18:24:58",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:40"
+ },
+ "PayPal": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.pypl.com/home/",
+  "tried": "2026-09-23T18:25:10",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:19",
+  "ats_url": "https://paypal.wd1.myworkdayjobs.com/jobs/login"
+ },
+ "PNC Financial Services": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:17"
+ },
+ "Palo Alto Networks": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://jobs.paloaltonetworks.com/en",
+  "tried": "2026-09-23T18:25:17",
+  "registered": "paloaltonetworks.wd5.myworkdayjobs.com/panwexternalcareers",
+  "deepened": "2026-09-23T19:16:54",
+  "ats_url": "https://paloaltonetworks.wd5.myworkdayjobs.com/en-US/panwexternalcareers/introduceYourself?clientRequestID=06f06ca6dae2441d99391ed600fc2265"
+ },
+ "Meta Platforms": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:18"
+ },
+ "Principal Financial Group": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.principal.com/careers-home",
+  "tried": "2026-09-23T18:25:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:24:26"
+ },
+ "PulteGroup": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://pultegroupinc.com/careers/opportunities/default.aspx",
+  "tried": "2026-09-23T18:25:20",
+  "registered": "pultegroup.wd1.myworkdayjobs.com/PGI",
+  "deepened": "2026-09-23T19:17:47",
+  "ats_url": "https://pultegroup.wd1.myworkdayjobs.com/PGI"
+ },
+ "Microchip Technology": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:21"
+ },
+ "PTC Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.ptc.com/en/careers",
+  "tried": "2026-09-23T18:25:21",
+  "registered": "ptc.wd1.myworkdayjobs.com/PTC",
+  "deepened": "2026-09-23T19:18:03",
+  "ats_url": "https://ptc.wd1.myworkdayjobs.com/PTC"
+ },
+ "Qualcomm": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.qualcomm.com/careers",
+  "tried": "2026-09-23T18:25:22",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:19"
+ },
+ "Qnity Electronics": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://qnity.com/careers",
+  "tried": "2026-09-23T18:25:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:19"
+ },
+ "ON Semiconductor": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:40"
+ },
+ "Reddit": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://www.reddit.com/",
+  "tried": "2026-09-23T18:25:40",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:19"
+ },
+ "Moderna": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:48"
+ },
+ "Quest Diagnostics": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.questdiagnostics.com/",
+  "tried": "2026-09-23T18:25:48",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:40"
+ },
+ "Merck & Co.": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:50"
+ },
+ "RTX Corporation": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.rtx.com/global/en",
+  "tried": "2026-09-23T18:25:50",
+  "registered": "careers.rtx.com"
+ },
+ "Robinhood Markets": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.robinhood.com/",
+  "tried": "2026-09-23T18:25:54",
+  "registered": "api.greenhouse.io/v1",
+  "deepened": "2026-09-23T19:18:19",
+  "ats_url": "https://api.greenhouse.io/v1/boards/robinhood/jobs"
+ },
+ "Paramount Skydance Corporation": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://careers.paramount.com/",
+  "tried": "2026-09-23T18:25:55",
+  "registered": null,
+  "deepened": "2026-09-23T19:19:44"
+ },
+ "ResMed|": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.resmed.com/",
+  "tried": "2026-09-23T18:25:58",
+  "registered": "resmed.wd3.myworkdayjobs.com/Resmed_External_Careers",
+  "deepened": "2026-09-23T19:18:21",
+  "ats_url": "https://resmed.wd3.myworkdayjobs.com/en-US/Resmed_External_Careers?source=resmed_careers"
+ },
+ "NVR, Inc.": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:25:59"
+ },
+ "Regions Financial Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.regions.com/us/en",
+  "tried": "2026-09-23T18:25:59",
+  "registered": "careers.regions.com"
+ },
+ "Royal Caribbean Group": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://careers.royalcaribbeangroup.com/",
+  "tried": "2026-09-23T18:26:02",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "Sandisk": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.sandisk.com/careers/jobs-at-sandisk",
+  "tried": "2026-09-23T18:26:11",
+  "registered": "www.sandisk.com"
+ },
+ "Revvity": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://jobs.revvity.com/",
+  "tried": "2026-09-23T18:26:13",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:40"
+ },
+ "S&P Global": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.spglobal.com/jobs",
+  "tried": "2026-09-23T18:26:24",
+  "registered": null,
+  "deepened": "2026-09-23T19:18:40",
+  "ats_url": "https://spgi.wd5.myworkdayjobs.com/SPGI_Careers\\"
+ },
+ "Seagate Technology": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.seagate.com/in/en/careers/",
+  "tried": "2026-09-23T18:26:27",
+  "registered": null,
+  "deepened": "2026-09-23T19:19:44"
+ },
+ "Prudential Financial": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:26:34"
+ },
+ "Parker Hannifin": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:26:34"
+ },
+ "Regeneron Pharmaceuticals": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.regeneron.com/en/",
+  "tried": "2026-09-23T18:26:34",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "Skyworks Solutions": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.skyworksinc.com",
+  "tried": "2026-09-23T18:26:43",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:53"
+ },
+ "Salesforce": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.salesforce.com/company/careers/?bc=OTH",
+  "tried": "2026-09-23T18:26:55",
+  "registered": null,
+  "deepened": "2026-09-23T19:22:50"
+ },
+ "KeyCorp": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:27:03"
+ },
+ "State Street Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.statestreet.com/global/en",
+  "tried": "2026-09-23T18:27:03",
+  "registered": "careers.statestreet.com"
+ },
+ "Stryker Corporation": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.stryker.com/",
+  "tried": "2026-09-23T18:27:07",
+  "registered": "stryker.wd1.myworkdayjobs.com/StrykerCareers",
+  "deepened": "2026-09-23T19:18:42",
+  "ats_url": "https://stryker.wd1.myworkdayjobs.com/StrykerCareers/login"
+ },
+ "Steris": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.steris.com/us/en",
+  "tried": "2026-09-23T18:27:10",
+  "registered": "careers.steris.com"
+ },
+ "Synopsys": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://careers.synopsys.com/",
+  "tried": "2026-09-23T18:27:15",
+  "registered": null,
+  "deepened": "2026-09-23T19:22:50"
+ },
+ "TE Connectivity": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:27:25"
+ },
+ "T. Rowe Price": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.troweprice.com/en/us/careers?van=Careers",
+  "tried": "2026-09-23T18:27:25",
+  "registered": "troweprice.wd5.myworkdayjobs.com/TRowePrice",
+  "deepened": "2026-09-23T19:19:44",
+  "ats_url": "https://troweprice.wd5.myworkdayjobs.com/TRowePrice/jobs"
+ },
+ "Supermicro": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:27:25"
+ },
+ "Tapestry, Inc.": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.tapestry.com/careers/",
+  "tried": "2026-09-23T18:27:25",
+  "registered": "tapestry.wd108.myworkdayjobs.com/Tapestry_Careers",
+  "deepened": "2026-09-23T19:20:17",
+  "ats_url": "https://tapestry.wd108.myworkdayjobs.com/Tapestry_Careers"
+ },
+ "Teledyne Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.teledyne.com/en-us",
+  "tried": "2026-09-23T18:27:27",
+  "registered": null,
+  "deepened": "2026-09-23T19:20:17"
+ },
+ "ServiceNow": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:27:37"
+ },
+ "Roper Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:27:37"
+ },
+ "Teradyne": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://jobs.teradyne.com/teradyne",
+  "tried": "2026-09-23T18:27:37",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Trane Technologies": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://careers.tranetechnologies.com/global/en/home",
+  "tried": "2026-09-23T18:27:40",
+  "registered": "careers.tranetechnologies.com"
+ },
+ "Monolithic Power Systems": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:27:44"
+ },
+ "Take-Two Interactive": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://taketwo.ai/careers",
+  "tried": "2026-09-23T18:27:44",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "Tyler Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://tyler.com/careers",
+  "tried": "2026-09-23T18:27:53",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "Trimble Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.trimble.com/en/careers",
+  "tried": "2026-09-23T18:28:02",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "T-Mobile US": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:28:11"
+ },
+ "Thermo Fisher Scientific": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://jobs.thermofisher.com/global/en",
+  "tried": "2026-09-23T18:28:11",
+  "registered": "jobs.thermofisher.com"
+ },
+ "Progressive Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:28:15"
+ },
+ "Solventum": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:28:15"
+ },
+ "Tesla, Inc.": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:28:15"
+ },
+ "Uber": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": "https://jobs.uber.com/en/",
+  "tried": "2026-09-23T18:28:15",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "Veeva Systems": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.veeva.com/",
+  "tried": "2026-09-23T18:28:15",
+  "registered": null,
+  "deepened": "2026-09-23T19:22:50"
+ },
+ "Raymond James Financial": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://raymond.io/",
+  "tried": "2026-09-23T18:28:23",
+  "registered": null,
+  "deepened": "2026-09-23T19:21:27"
+ },
+ "Verizon": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://mycareer.verizon.com",
+  "tried": "2026-09-23T18:28:34",
+  "registered": "verizon.wd12.myworkdayjobs.com/verizon-careers",
+  "deepened": "2026-09-23T19:22:50",
+  "ats_url": "https://verizon.wd12.myworkdayjobs.com/verizon-careers/job/10000-Reisterstown-Rd-Owings-Mills-Maryland/Retail-Sales-Associate_R-1098450-1/apply"
+ },
+ "Travelers Companies (The)": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.travelers.com/",
+  "tried": "2026-09-23T18:28:41",
+  "registered": "travelers.wd5.myworkdayjobs.com/External",
+  "deepened": "2026-09-23T19:21:27",
+  "ats_url": "https://travelers.wd5.myworkdayjobs.com/External"
+ },
+ "Ulta Beauty": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.ulta.com",
+  "tried": "2026-09-23T18:28:42",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Visa Inc.": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.visa.co.in/careers.html",
+  "tried": "2026-09-23T18:28:52",
+  "registered": null,
+  "deepened": "2026-09-23T19:22:50"
+ },
+ "Rockwell Automation": {
+  "index": "sp500",
+  "sector": "Industrials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:29:00"
+ },
+ "Ralph Lauren Corporation": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:29:00"
+ },
+ "Walt Disney Company (The)": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://www.disney.com/",
+  "tried": "2026-09-23T18:29:00",
+  "registered": null,
+  "deepened": "2026-09-23T19:22:50"
+ },
+ "Verisign": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.verisign.com/careers",
+  "tried": "2026-09-23T18:29:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:24:43"
+ },
+ "Truist Financial": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://careers.truist.com/us/en",
+  "tried": "2026-09-23T18:29:17",
+  "registered": "careers.truist.com"
+ },
+ "TKO Group Holdings": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:29:25"
+ },
+ "Synchrony Financial": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:29:25"
+ },
+ "Viatris": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.viatris.com/en/careers",
+  "tried": "2026-09-23T18:29:25",
+  "registered": "viatris.wd5.myworkdayjobs.com/External",
+  "deepened": "2026-09-23T19:23:45",
+  "ats_url": "https://viatris.wd5.myworkdayjobs.com/External"
+ },
+ "Western Digital": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.westerndigital.com/careers",
+  "tried": "2026-09-23T18:29:28",
+  "registered": "www.westerndigital.com"
+ },
+ "Workday, Inc.": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.workday.com/en-us/company/careers/overview.html",
+  "tried": "2026-09-23T18:29:30",
+  "registered": "workday.wd5.myworkdayjobs.com/Workday",
+  "deepened": "2026-09-23T19:22:50",
+  "ats_url": "https://workday.wd5.myworkdayjobs.com/Workday"
+ },
+ "West Pharmaceutical Services": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.westpharma.com/careers",
+  "tried": "2026-09-23T18:29:30",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:00"
+ },
+ "Wells Fargo": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.wellsfargojobs.com?utm_medium=www-redirect&utm_source=careers",
+  "tried": "2026-09-23T18:29:32",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Adyen": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.adyen.com/",
+  "tried": "2026-09-23T18:29:41",
+  "registered": "careers.adyen.com"
+ },
+ "Williams-Sonoma, Inc.": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": "https://www.williams.com/careers/",
+  "tried": "2026-09-23T18:29:50",
+  "registered": "williams.wd5.myworkdayjobs.com/External",
+  "deepened": "2026-09-23T19:24:26",
+  "ats_url": "https://williams.wd5.myworkdayjobs.com/External"
+ },
+ "W. R. Berkley Corporation": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://berkley.com/about-us/careers",
+  "tried": "2026-09-23T18:29:51",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Zebra Technologies": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": "https://www.zebra.com/us/en/about-zebra/careers.html",
+  "tried": "2026-09-23T18:29:53",
+  "registered": "zebra.wd501.myworkdayjobs.com/Zebra_careers",
+  "deepened": "2026-09-23T19:26:19",
+  "ats_url": "https://zebra.wd501.myworkdayjobs.com/Zebra_careers"
+ },
+ "Zoetis": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://www.zoetis.com/join-us",
+  "tried": "2026-09-23T18:29:53",
+  "registered": "zoetis.wd5.myworkdayjobs.com/zoetis",
+  "deepened": "2026-09-23T19:26:02",
+  "ats_url": "https://zoetis.wd5.myworkdayjobs.com/zoetis/jobs"
+ },
+ "Ahold Delhaize": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.aholddelhaize.com/",
+  "tried": "2026-09-23T18:29:54",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:00"
+ },
+ "Waters Corporation": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:06"
+ },
+ "Allianz": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.allianz.com/global/en",
+  "tried": "2026-09-23T18:30:06",
+  "registered": "careers.allianz.com"
+ },
+ "Air Liquide": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.airliquide.com/join-us/careers-air-liquide",
+  "tried": "2026-09-23T18:30:09",
+  "registered": "airliquidehr.wd3.myworkdayjobs.com/AirLiquideExternalCareer",
+  "deepened": "2026-09-23T19:24:43",
+  "ats_url": "https://airliquidehr.wd3.myworkdayjobs.com/AirLiquideExternalCareer"
+ },
+ "Zimmer Biomet": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": "https://careers.zimmerbiomet.com/us/en",
+  "tried": "2026-09-23T18:30:10",
+  "registered": "careers.zimmerbiomet.com"
+ },
+ "Argenx": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.argenx.com/",
+  "tried": "2026-09-23T18:30:14",
+  "registered": "argenx.wd3.myworkdayjobs.com/External_Careers",
+  "deepened": "2026-09-23T19:26:43",
+  "ats_url": "https://argenx.wd3.myworkdayjobs.com/en-US/External_Careers"
+ },
+ "UnitedHealth Group": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:15"
+ },
+ "Texas Instruments": {
+  "index": "sp500",
+  "sector": "Information Technology",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:15"
+ },
+ "Willis Towers Watson": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": "https://www.wtwco.com/en-in",
+  "tried": "2026-09-23T18:30:15",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "BASF": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.basf.com/global/en/careers",
+  "tried": "2026-09-23T18:30:23",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:00"
+ },
+ "ASML Holding": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.asml.com/en/careers",
+  "tried": "2026-09-23T18:30:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "BBVA": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.bbva.com/es/empleo/",
+  "tried": "2026-09-23T18:30:41",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:53",
+  "ats_url": "https://bbva.wd3.myworkdayjobs.com/es/BBVA?AreaBBVA=52abfccf8e8b1000f33129aaf4e50000"
+ },
+ "Warner Bros. Discovery": {
+  "index": "sp500",
+  "sector": "Communication Services",
+  "tld": "com",
+  "careers": "https://careers.wbd.com:443/global/en",
+  "tried": "2026-09-23T18:30:42",
+  "registered": "careers.wbd.com:443"
+ },
+ "Airbus": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:45"
+ },
+ "Danone": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.danone.com/en-global/home.html",
+  "tried": "2026-09-23T18:30:45",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Axa": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.axa.com/careers-home/",
+  "tried": "2026-09-23T18:30:45",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:46"
+ },
+ "Adidas": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:48"
+ },
+ "Deutsche Telekom": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.telekom.com",
+  "tried": "2026-09-23T18:30:48",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Vertex Pharmaceuticals": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:56"
+ },
+ "U.S. Bancorp": {
+  "index": "sp500",
+  "sector": "Financials",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:56"
+ },
+ "Herm\u00e8s": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:30:56"
+ },
+ "Eni": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.eni.com/en-IT/careers/job-opportunities/employee-value-proposition.html",
+  "tried": "2026-09-23T18:30:56",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "EssilorLuxottica": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.essilorluxottica.com/",
+  "tried": "2026-09-23T18:30:58",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "BNP Paribas": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:31:01"
+ },
+ "Infineon Technologies": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.infineon.com",
+  "tried": "2026-09-23T18:31:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Inditex": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.inditex.com/itxcomweb/kr/en/home",
+  "tried": "2026-09-23T18:31:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "ING Group": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.ing.com/en",
+  "tried": "2026-09-23T18:31:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:00"
+ },
+ "Universal Health Services": {
+  "index": "sp500",
+  "sector": "Health Care",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:31:30"
+ },
+ "Enel": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://jobs.enel.com/en_US/careers",
+  "tried": "2026-09-23T18:31:30",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Ferrari": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://jobs.ferrari.com/",
+  "tried": "2026-09-23T18:32:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:44"
+ },
+ "Munich Re": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.munichre.com/en",
+  "tried": "2026-09-23T18:32:04",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54"
+ },
+ "Intesa Sanpaolo": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://group.intesasanpaolo.com/it/careers",
+  "tried": "2026-09-23T18:32:14",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58"
+ },
+ "Nordea": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.nordea.com/",
+  "tried": "2026-09-23T18:32:29",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:46"
+ },
+ "Prosus": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://jobs.eu.lever.co/prosus",
+  "tried": "2026-09-23T18:32:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:26:54",
+  "ats_url": "https://jobs.eu.lever.co/prosus"
+ },
+ "L'Or\u00e9al": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:32:31"
+ },
+ "BMW": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:32:31"
+ },
+ "Deutsche B\u00f6rse": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:32:31"
+ },
+ "Bayer": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://jobs.bayer.com/",
+  "tried": "2026-09-23T18:32:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:44"
+ },
+ "SAP": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.sap.com/",
+  "tried": "2026-09-23T18:32:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Safran": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.safran.com/en-gb/careers",
+  "tried": "2026-09-23T18:32:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:00"
+ },
+ "TotalEnergies": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.totalenergies.com/en",
+  "tried": "2026-09-23T18:32:44",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:45"
+ },
+ "Sanofi": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://jobs.sanofi.com/en",
+  "tried": "2026-09-23T18:32:52",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:45"
+ },
+ "Vinci SA": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://jobs.vinci.com/en",
+  "tried": "2026-09-23T18:33:03",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:46"
+ },
+ "Siemens": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.siemens.com/en-us/company/jobs/",
+  "tried": "2026-09-23T18:33:13",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:44"
+ },
+ "Anheuser-Busch InBev": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:33:20"
+ },
+ "Wolters Kluwer": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://careers.wolterskluwer.com/",
+  "tried": "2026-09-23T18:33:20",
+  "registered": "wk.wd3.myworkdayjobs.com/External",
+  "deepened": "2026-09-23T19:27:00",
+  "ats_url": "https://wk.wd3.myworkdayjobs.com/External"
+ },
+ "Deutsche Bank": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:33:23"
+ },
+ "Iberdrola": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:33:23"
+ },
+ "Fresenius": {
+  "index": "dax",
+  "sector": "Healthcare",
+  "tld": "de",
+  "careers": "https://careers.fresenius.com/",
+  "tried": "2026-09-23T18:33:23",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:45"
+ },
+ "Rheinmetall": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:33:33"
+ },
+ "Mercedes-Benz Group": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:33:33"
+ },
+ "Continental": {
+  "index": "dax",
+  "sector": "Automotive",
+  "tld": "de",
+  "careers": "https://jobs.continental.com/en/",
+  "tried": "2026-09-23T18:33:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:27:45",
+  "ats_url": "https://subscriptions.smartrecruiters.com/widget/v1/sr-job-alerts.js?dcr_id=DCRA1"
+ },
+ "MTU Aero Engines": {
+  "index": "dax",
+  "sector": "Aerospace & Defence",
+  "tld": "de",
+  "careers": "https://www.mtu.de/careers/",
+  "tried": "2026-09-23T18:33:44",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Banco Santander": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:33:54"
+ },
+ "Commerzbank": {
+  "index": "dax",
+  "sector": "Financial Services",
+  "tld": "de",
+  "careers": "https://jobs.commerzbank.com/index.php?ac=search_result",
+  "tried": "2026-09-23T18:33:54",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Fresenius Medical Care": {
+  "index": "dax",
+  "sector": "Healthcare",
+  "tld": "de",
+  "careers": "https://jobs.freseniusmedicalcare.com/",
+  "tried": "2026-09-23T18:34:06",
+  "registered": "freseniusmedicalcare.wd3.myworkdayjobs.com/fme",
+  "deepened": "2026-09-23T19:27:46",
+  "ats_url": "https://freseniusmedicalcare.wd3.myworkdayjobs.com/fme"
+ },
+ "Deutsche Post": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:34:09"
+ },
+ "Porsche SE": {
+  "index": "dax",
+  "sector": "Automotive",
+  "tld": "de",
+  "careers": "https://www.porsche.com/international/aboutporsche/jobs/",
+  "tried": "2026-09-23T18:34:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Schneider Electric": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://schneiderjobs.com",
+  "tried": "2026-09-23T18:34:21",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Volkswagen Group": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.volkswagen.co.in/en.html",
+  "tried": "2026-09-23T18:34:24",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:44"
+ },
+ "Zalando": {
+  "index": "dax",
+  "sector": "E-Commerce",
+  "tld": "de",
+  "careers": "https://jobs.zalando.com/en",
+  "tried": "2026-09-23T18:34:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Scout24": {
+  "index": "dax",
+  "sector": "E-Commerce",
+  "tld": "de",
+  "careers": "https://www.scout24.com/en/career",
+  "tried": "2026-09-23T18:34:42",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Tractor Supply": {
+  "index": "sp500",
+  "sector": "Consumer Discretionary",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:34:56"
+ },
+ "Qiagen": {
+  "index": "dax",
+  "sector": "Biotech",
+  "tld": "de",
+  "careers": "https://www.qiagen.com/in/careers",
+  "tried": "2026-09-23T18:34:56",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:44",
+  "ats_url": "https://qiagen.wd502.myworkdayjobs.com/QIAGEN&quot;,&quot;ShowFlatDescendants&quot;:false,&quot;SkipNavigationBreak&quot;:false,&quot;Items&quot;:[],&quot;Teasers&quot;:[],&quot;IsExternal&quot;:true}],&quot;Teasers&quot;:[{&quot;Title&quot;:&quot;Trainee"
+ },
+ "Publicis": {
+  "index": "cac40",
+  "sector": "Communication Services",
+  "tld": "fr",
+  "careers": null,
+  "tried": "2026-09-23T18:35:34"
+ },
+ "Cr\u00e9dit Agricole": {
+  "index": "cac40",
+  "sector": "Financial Services",
+  "tld": "fr",
+  "careers": "https://www.credit-agricole.pl/klienci-indywidualni",
+  "tried": "2026-09-23T18:35:34",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:44"
+ },
+ "Eurofins Scientific": {
+  "index": "cac40",
+  "sector": "Healthcare",
+  "tld": "fr",
+  "careers": "https://careers.eurofins.com/",
+  "tried": "2026-09-23T18:35:48",
+  "registered": "careers.eurofins.com"
+ },
+ "Stellantis": {
+  "index": "cac40",
+  "sector": "Consumer Cyclical",
+  "tld": "fr",
+  "careers": "https://careers.stellantis.com/",
+  "tried": "2026-09-23T18:35:50",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Orange": {
+  "index": "cac40",
+  "sector": "Communication Services",
+  "tld": "fr",
+  "careers": "https://www.orange.com/en",
+  "tried": "2026-09-23T18:36:00",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:24"
+ },
+ "LVMH Mo\u00ebt Hennessy Louis Vuitton": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": "https://www.lvmh.com/join-us",
+  "tried": "2026-09-23T18:36:10",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Thales": {
+  "index": "cac40",
+  "sector": "Industrials",
+  "tld": "fr",
+  "careers": "https://www.thales.com/careers",
+  "tried": "2026-09-23T18:36:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "UniCredit": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:36:20"
+ },
+ "ASM International": {
+  "index": "aex",
+  "sector": "Technology",
+  "tld": "nl",
+  "careers": "https://www.asminternational.org/",
+  "tried": "2026-09-23T18:36:20",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "BE Semiconductors": {
+  "index": "aex",
+  "sector": "Technology",
+  "tld": "nl",
+  "careers": null,
+  "tried": "2026-09-23T18:36:31"
+ },
+ "ABN AMRO": {
+  "index": "aex",
+  "sector": "Financials",
+  "tld": "nl",
+  "careers": "https://www.abnamro.com/en/careers",
+  "tried": "2026-09-23T18:36:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:24"
+ },
+ "Saint-Gobain": {
+  "index": "eurostoxx",
+  "sector": "",
+  "tld": "com",
+  "careers": null,
+  "tried": "2026-09-23T18:36:41"
+ },
+ "Dassault Syst\u00e8mes": {
+  "index": "cac40",
+  "sector": "Technology",
+  "tld": "fr",
+  "careers": "https://dassault.fr/en/careers",
+  "tried": "2026-09-23T18:36:41",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Renault": {
+  "index": "cac40",
+  "sector": "Consumer Cyclical",
+  "tld": "fr",
+  "careers": "https://www.renaultgroup.com/en/careers/",
+  "tried": "2026-09-23T18:36:50",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:24"
+ },
+ "Siemens Healthineers": {
+  "index": "dax",
+  "sector": "Medical Equipment",
+  "tld": "de",
+  "careers": "https://www.siemens.com/en-us/company/jobs/",
+  "tried": "2026-09-23T18:37:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "KPN": {
+  "index": "aex",
+  "sector": "Telecommunications",
+  "tld": "nl",
+  "careers": "https://jobs.kpn.com/",
+  "tried": "2026-09-23T18:37:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "ASR Nederland": {
+  "index": "aex",
+  "sector": "Financials",
+  "tld": "nl",
+  "careers": null,
+  "tried": "2026-09-23T18:37:12"
+ },
+ "Symrise": {
+  "index": "dax",
+  "sector": "Chemicals",
+  "tld": "de",
+  "careers": "https://www.symrise.com",
+  "tried": "2026-09-23T18:37:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Novartis International AG": {
+  "index": "smi",
+  "sector": "Health care",
+  "tld": "ch",
+  "careers": "https://www.novartis.com/careers",
+  "tried": "2026-09-23T18:37:21",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Aegon": {
+  "index": "aex",
+  "sector": "Financials",
+  "tld": "nl",
+  "careers": "https://www.asr.nl/hallo-klant-van-aegon",
+  "tried": "2026-09-23T18:37:31",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "Roche Holding AG": {
+  "index": "smi",
+  "sector": "Health care",
+  "tld": "ch",
+  "careers": "https://careers.roche.com/global/en",
+  "tried": "2026-09-23T18:37:41",
+  "registered": "careers.roche.com"
+ },
+ "Soci\u00e9t\u00e9 G\u00e9n\u00e9rale": {
+  "index": "cac40",
+  "sector": "Financial Services",
+  "tld": "fr",
+  "careers": null,
+  "tried": "2026-09-23T18:37:43"
+ },
+ "UBS Group AG": {
+  "index": "smi",
+  "sector": "Financials",
+  "tld": "ch",
+  "careers": "https://careers.ubs.com/",
+  "tried": "2026-09-23T18:37:43",
+  "registered": null,
+  "deepened": "2026-09-23T19:28:46"
+ },
+ "ABB Ltd": {
+  "index": "smi",
+  "sector": "Industrials",
+  "tld": "ch",
+  "careers": "https://careers.abb/global/en",
+  "tried": "2026-09-23T18:37:52",
+  "registered": "careers.abb"
+ },
+ "Daimler Truck": {
+  "index": "dax",
+  "sector": "Automotive",
+  "tld": "de",
+  "careers": null,
+  "tried": "2026-09-23T18:37:58"
+ },
+ "Hannover Re": {
+  "index": "dax",
+  "sector": "Insurance",
+  "tld": "de",
+  "careers": "https://www.hannover.de/Wirtschaft-Wissenschaft/Arbeit/Arbeitsmarkt/Jobsuche/Arbeit-und-Ausbildung-in-der-Regionsverwaltung/Stellenangebote",
+  "tried": "2026-09-23T18:37:58",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58"
+ },
+ "NN Group": {
+  "index": "aex",
+  "sector": "Financials",
+  "tld": "nl",
+  "careers": "https://www.nn.com/careers",
+  "tried": "2026-09-23T18:38:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:24"
+ },
+ "Alcon Inc": {
+  "index": "smi",
+  "sector": "Health care",
+  "tld": "ch",
+  "careers": "https://www.alcon.com/careers/",
+  "tried": "2026-09-23T18:38:39",
+  "registered": "alcon.wd5.myworkdayjobs.com/careers_alcon",
+  "deepened": "2026-09-23T19:28:46",
+  "ats_url": "https://alcon.wd5.myworkdayjobs.com/careers_alcon"
+ },
+ "Universal Music Group": {
+  "index": "aex",
+  "sector": "Consumer Discretionary",
+  "tld": "nl",
+  "careers": "https://www.universalmusic.com/careers/",
+  "tried": "2026-09-23T18:38:39",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58"
+ },
+ "Philips": {
+  "index": "aex",
+  "sector": "Health Care",
+  "tld": "nl",
+  "careers": "https://www.careers.philips.com/in/en/",
+  "tried": "2026-09-23T18:38:51",
+  "registered": "www.careers.philips.com"
+ },
+ "3i": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.3i.com/about-us/careers/",
+  "tried": "2026-09-23T18:38:53",
+  "registered": "3i.wd103.myworkdayjobs.com/Intern_Career",
+  "deepened": "2026-09-23T19:29:24",
+  "ats_url": "https://3i.wd103.myworkdayjobs.com/en-US/Intern_Career/introduceYourself"
+ },
+ "Geberit AG": {
+  "index": "smi",
+  "sector": "Industrials",
+  "tld": "ch",
+  "careers": "https://jobs.geberit.com/",
+  "tried": "2026-09-23T18:38:55",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58"
+ },
+ "Aberdeen Group": {
+  "index": "ftse100",
+  "sector": "Financial Services",
+  "tld": "co.uk",
+  "careers": "https://www.aberdeen.com",
+  "tried": "2026-09-23T18:38:58",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:26"
+ },
+ "STMicroelectronics": {
+  "index": "cac40",
+  "sector": "Technology",
+  "tld": "fr",
+  "careers": null,
+  "tried": "2026-09-23T18:39:06"
+ },
+ "Logitech International SA": {
+  "index": "smi",
+  "sector": "Information technology",
+  "tld": "ch",
+  "careers": "https://www.logitech.com/en-in/careers",
+  "tried": "2026-09-23T18:39:06",
+  "registered": "logitech.wd5.myworkdayjobs.com/Logitech",
+  "deepened": "2026-09-23T19:29:26",
+  "ats_url": "https://logitech.wd5.myworkdayjobs.com/Logitech"
+ },
+ "RELX": {
+  "index": "aex",
+  "sector": "Consumer Discretionary",
+  "tld": "nl",
+  "careers": null,
+  "tried": "2026-09-23T18:39:08"
+ },
+ "AstraZeneca": {
+  "index": "ftse100",
+  "sector": "Pharmaceuticals & biotechnology",
+  "tld": "co.uk",
+  "careers": "https://careers.astrazeneca.com/",
+  "tried": "2026-09-23T18:39:08",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Babcock International": {
+  "index": "ftse100",
+  "sector": "Aerospace & defence",
+  "tld": "co.uk",
+  "careers": "https://careers.babcockinternational.com/",
+  "tried": "2026-09-23T18:39:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Merck": {
+  "index": "dax",
+  "sector": "Pharmaceuticals",
+  "tld": "de",
+  "careers": null,
+  "tried": "2026-09-23T18:39:18"
+ },
+ "Swiss Reinsurance Company Ltd": {
+  "index": "smi",
+  "sector": "Financials",
+  "tld": "ch",
+  "careers": "https://www.swiss.com/in/en/homepage",
+  "tried": "2026-09-23T18:39:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Partners Group Holding AG": {
+  "index": "smi",
+  "sector": "Financials",
+  "tld": "ch",
+  "careers": "https://www.partnersgroup.com",
+  "tried": "2026-09-23T18:39:25",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:05"
+ },
+ "Barclays": {
+  "index": "ftse100",
+  "sector": "Banks",
+  "tld": "co.uk",
+  "careers": "https://home.barclays/careers/",
+  "tried": "2026-09-23T18:39:38",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Beazley": {
+  "index": "ftse100",
+  "sector": "Insurance",
+  "tld": "co.uk",
+  "careers": "https://careers.beazley.com/jobs",
+  "tried": "2026-09-23T18:39:45",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Computacenter": {
+  "index": "ftse100",
+  "sector": "Software & Computer Services",
+  "tld": "co.uk",
+  "careers": "https://careers.computacenter.com/",
+  "tried": "2026-09-23T18:39:47",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "BAE Systems": {
+  "index": "ftse100",
+  "sector": "Aerospace & defence",
+  "tld": "co.uk",
+  "careers": "https://jobs.baesystems.com/global/en",
+  "tried": "2026-09-23T18:40:01",
+  "registered": "jobs.baesystems.com"
+ },
+ "BT Group": {
+  "index": "ftse100",
+  "sector": "Telecommunications services",
+  "tld": "co.uk",
+  "careers": "https://jobs.bt.com/",
+  "tried": "2026-09-23T18:40:07",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Convatec": {
+  "index": "ftse100",
+  "sector": "Health care equipment & supplies",
+  "tld": "co.uk",
+  "careers": "https://careers.convatec.com/global/gb",
+  "tried": "2026-09-23T18:40:09",
+  "registered": "careers.convatec.com"
+ },
+ "GSK plc": {
+  "index": "ftse100",
+  "sector": "Pharmaceuticals & biotechnology",
+  "tld": "co.uk",
+  "careers": "https://www.gsk.com/en-gb/careers",
+  "tried": "2026-09-23T18:40:14",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Haleon": {
+  "index": "ftse100",
+  "sector": "Pharmaceuticals & biotechnology",
+  "tld": "co.uk",
+  "careers": "https://careers.haleon.com/careers",
+  "tried": "2026-09-23T18:40:16",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:48"
+ },
+ "Halma plc": {
+  "index": "ftse100",
+  "sector": "Electronic equipment & parts",
+  "tld": "co.uk",
+  "careers": "https://www.halma.com/careers",
+  "tried": "2026-09-23T18:40:25",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:59"
+ },
+ "HSBC": {
+  "index": "ftse100",
+  "sector": "Banks",
+  "tld": "co.uk",
+  "careers": "https://www.hsbc.com/careers",
+  "tried": "2026-09-23T18:40:41",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Hiscox": {
+  "index": "ftse100",
+  "sector": "Non-life Insurance",
+  "tld": "co.uk",
+  "careers": "https://www.hiscoxgroup.com/careers",
+  "tried": "2026-09-23T18:40:50",
+  "registered": "hiscox.wd3.myworkdayjobs.com/Hiscox_External_Site",
+  "deepened": "2026-09-23T19:29:48",
+  "ats_url": "https://hiscox.wd3.myworkdayjobs.com/Hiscox_External_Site"
+ },
+ "Swisscom AG": {
+  "index": "smi",
+  "sector": "Communication services",
+  "tld": "ch",
+  "careers": "https://www.swisscom.ch/de/about/karriere/offene-stellen.html",
+  "tried": "2026-09-23T18:40:51",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58",
+  "ats_url": "https://swisscom.wd103.myworkdayjobs.com/de-DE/SwisscomExternalCareers&#34;,&#34;active&#34;:false,&#34;hidden&#34;:false,&#34;dataset&#34;:{&#34;trackLabel&#34;:&#34;karriere_offene-stellen&#34;,&#34;trackCategory&#34;:&#34;l1-mdd&#34;,&#34;trackLocation&#34;:&#34;header&#34;,&#34;trackAction&#34;:&#34;link&#34;},&#34;description&#34;:&#34;Alle"
+ },
+ "Informa": {
+  "index": "ftse100",
+  "sector": "Media",
+  "tld": "co.uk",
+  "careers": "https://careers.smartrecruiters.com/InformaGroupPlc/",
+  "tried": "2026-09-23T18:40:52",
+  "registered": "careers.smartrecruiters.com/InformaGroupPlc"
+ },
+ "Autotrader Group": {
+  "index": "ftse100",
+  "sector": "Media",
+  "tld": "co.uk",
+  "careers": "https://careers.autotrader.co.uk/",
+  "tried": "2026-09-23T18:40:56",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:05",
+  "ats_url": "https://job-boards.eu.greenhouse.io/autotrader/jobs/4982461101\\"
+ },
+ "Airtel Africa": {
+  "index": "ftse100",
+  "sector": "Telecommunications services",
+  "tld": "co.uk",
+  "careers": "https://www.airtel.in/",
+  "tried": "2026-09-23T18:41:04",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58"
+ },
+ "London Stock Exchange Group": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.londonstockexchange.com/careers",
+  "tried": "2026-09-23T18:41:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:58"
+ },
+ "IG Group": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.iggroup.com/about-us/careers",
+  "tried": "2026-09-23T18:41:22",
+  "registered": "ig.wd103.myworkdayjobs.com/EXT_IG",
+  "deepened": "2026-09-23T19:29:59",
+  "ats_url": "https://ig.wd103.myworkdayjobs.com/EXT_IG"
+ },
+ "Legal & General": {
+  "index": "ftse100",
+  "sector": "Life insurance",
+  "tld": "co.uk",
+  "careers": "https://legalgeneral.co.uk/careers",
+  "tried": "2026-09-23T18:41:24",
+  "registered": null,
+  "deepened": "2026-09-23T19:29:59"
+ },
+ "Exor": {
+  "index": "aex",
+  "sector": "Financials",
+  "tld": "nl",
+  "careers": null,
+  "tried": "2026-09-23T18:41:33"
+ },
+ "M&G": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.mg.co.uk:443/careers",
+  "tried": "2026-09-23T18:41:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Investec": {
+  "index": "ftse100",
+  "sector": "Financial Services",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:41:42"
+ },
+ "Aviva": {
+  "index": "ftse100",
+  "sector": "Life insurance",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:41:42"
+ },
+ "Pearson plc": {
+  "index": "ftse100",
+  "sector": "Media",
+  "tld": "co.uk",
+  "careers": "https://pearson.jobs/",
+  "tried": "2026-09-23T18:41:42",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Croda International": {
+  "index": "ftse100",
+  "sector": "Chemicals",
+  "tld": "co.uk",
+  "careers": "https://www.croda.com/en-gb/careers",
+  "tried": "2026-09-23T18:41:44",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Sage Group": {
+  "index": "ftse100",
+  "sector": "Software & computer services",
+  "tld": "co.uk",
+  "careers": "https://www.sage.com/en-gb/company/careers/",
+  "tried": "2026-09-23T18:41:54",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Swiss Life Holding AG": {
+  "index": "smi",
+  "sector": "Financials",
+  "tld": "ch",
+  "careers": "https://www.swiss.com/in/en/homepage",
+  "tried": "2026-09-23T18:42:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Sika AG": {
+  "index": "smi",
+  "sector": "Materials",
+  "tld": "ch",
+  "careers": null,
+  "tried": "2026-09-23T18:42:01"
+ },
+ "Vodafone Group": {
+  "index": "ftse100",
+  "sector": "Mobile telecommunications",
+  "tld": "co.uk",
+  "careers": "https://careers.vodafone.com/",
+  "tried": "2026-09-23T18:42:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Schroders": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.schroders.com/en/global/individual/",
+  "tried": "2026-09-23T18:42:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Pershing Square Holdings": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.bny.com/corporate/global/en/about-us/careers/work-with-us.html",
+  "tried": "2026-09-23T18:42:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "St. James's Place": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:42:18"
+ },
+ "Prudential plc": {
+  "index": "ftse100",
+  "sector": "Life insurance",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:42:18"
+ },
+ "Lion Finance Group": {
+  "index": "ftse100",
+  "sector": "Banking Services",
+  "tld": "co.uk",
+  "careers": "http://www.lion.com/careers",
+  "tried": "2026-09-23T18:42:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Admiral Group": {
+  "index": "ftse100",
+  "sector": "Insurance",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:42:28"
+ },
+ "Bankinter": {
+  "index": "ibex35",
+  "sector": "Financial Services",
+  "tld": "es",
+  "careers": "https://www.bankinter.com/banca/inicio",
+  "tried": "2026-09-23T18:42:28",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Cellnex Telecom": {
+  "index": "ibex35",
+  "sector": "Telecommunications",
+  "tld": "es",
+  "careers": "https://www.cellnex.com/talent/careers/",
+  "tried": "2026-09-23T18:42:38",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Zurich Insurance Group AG": {
+  "index": "smi",
+  "sector": "Financials",
+  "tld": "ch",
+  "careers": null,
+  "tried": "2026-09-23T18:42:40"
+ },
+ "Lloyds Banking Group": {
+  "index": "ftse100",
+  "sector": "Banks",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:42:40"
+ },
+ "Grifols": {
+  "index": "ibex35",
+  "sector": "Pharmaceuticals",
+  "tld": "es",
+  "careers": "https://www.grifols.com/en/careers",
+  "tried": "2026-09-23T18:42:40",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "ICG": {
+  "index": "ftse100",
+  "sector": "Financial services",
+  "tld": "co.uk",
+  "careers": "https://www.icg.trading/careers",
+  "tried": "2026-09-23T18:42:53",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06"
+ },
+ "Santander": {
+  "index": "ibex35",
+  "sector": "Financial Services",
+  "tld": "es",
+  "careers": "https://www.santander.com/en/careers",
+  "tried": "2026-09-23T18:43:01",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:07",
+  "ats_url": "https://santander.wd3.myworkdayjobs.com/en-US/SantanderCareers?q="
+ },
+ "Weir": {
+  "index": "ftse100",
+  "sector": "Industrial goods and services",
+  "tld": "co.uk",
+  "careers": "https://weir.ai/careers",
+  "tried": "2026-09-23T18:43:03",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "EQT": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": "https://www.eqt.com/careers",
+  "tried": "2026-09-23T18:43:13",
+  "registered": null,
+  "deepened": "2026-09-23T19:30:06",
+  "ats_url": "https://boards.greenhouse.io/embed/job_board/js?for=eqtcorporation"
+ },
+ "Ericsson B": {
+  "index": "omxs30",
+  "sector": "Information Technology",
+  "tld": "se",
+  "careers": "https://www.ericsson.com/en/careers",
+  "tried": "2026-09-23T18:43:13",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Standard Chartered": {
+  "index": "ftse100",
+  "sector": "Banks",
+  "tld": "co.uk",
+  "careers": "https://www.standard.com/get-to-know-standard/careers",
+  "tried": "2026-09-23T18:43:21",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Evolution": {
+  "index": "omxs30",
+  "sector": "Consumer Discretionary",
+  "tld": "se",
+  "careers": "https://careers.evolution.com/",
+  "tried": "2026-09-23T18:43:22",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Mapfre": {
+  "index": "ibex35",
+  "sector": "Insurance",
+  "tld": "es",
+  "careers": "https://jobs.mapfre.com/",
+  "tried": "2026-09-23T18:43:33",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Industriv\u00e4rden C": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": null,
+  "tried": "2026-09-23T18:43:35"
+ },
+ "Smith & Nephew": {
+  "index": "ftse100",
+  "sector": "Health care equipment & supplies",
+  "tld": "co.uk",
+  "careers": "https://www.slb.com/legacy-companies/smith-bits",
+  "tried": "2026-09-23T18:43:35",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "NatWest Group": {
+  "index": "ftse100",
+  "sector": "Banks",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:43:48"
+ },
+ "Melrose Industries": {
+  "index": "ftse100",
+  "sector": "Aerospace & defence",
+  "tld": "co.uk",
+  "careers": null,
+  "tried": "2026-09-23T18:43:48"
+ },
+ "Standard Life": {
+  "index": "ftse100",
+  "sector": "Life insurance",
+  "tld": "co.uk",
+  "careers": "https://www.standard.com/get-to-know-standard/careers",
+  "tried": "2026-09-23T18:43:48",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Laboratorios Rovi\u00a0[es]": {
+  "index": "ibex35",
+  "sector": "Pharmaceuticals",
+  "tld": "es",
+  "careers": null,
+  "tried": "2026-09-23T18:43:48"
+ },
+ "Handelsbanken A": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": "https://www.handelsbanken.com/en/careers",
+  "tried": "2026-09-23T18:43:48",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Nordea Bank Abp": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": "https://careers.nordea.com/",
+  "tried": "2026-09-23T18:44:05",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Volvo B": {
+  "index": "omxs30",
+  "sector": "Industrials",
+  "tld": "se",
+  "careers": "https://www.volvo.com/en/",
+  "tried": "2026-09-23T18:44:05",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Tele2 B": {
+  "index": "omxs30",
+  "sector": "Communication Services",
+  "tld": "se",
+  "careers": "https://jobs.tele2.com/",
+  "tried": "2026-09-23T18:44:14",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Telia Company": {
+  "index": "omxs30",
+  "sector": "Communication Services",
+  "tld": "se",
+  "careers": "https://www.telia.se/",
+  "tried": "2026-09-23T18:44:16",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "arGEN-X\u00a0[nl]": {
+  "index": "bel20",
+  "sector": "Health Care",
+  "tld": "be",
+  "careers": "https://careers.argenx.com/",
+  "tried": "2026-09-23T18:44:37",
+  "registered": "argenx.wd3.myworkdayjobs.com/External_Careers",
+  "deepened": "2026-09-23T19:31:07",
+  "ats_url": "https://argenx.wd3.myworkdayjobs.com/en-US/External_Careers"
+ },
+ "Hennes & Mauritz B": {
+  "index": "omxs30",
+  "sector": "Consumer Discretionary",
+  "tld": "se",
+  "careers": null,
+  "tried": "2026-09-23T18:44:37"
+ },
+ "Telef\u00f3nica": {
+  "index": "ibex35",
+  "sector": "Telecommunications",
+  "tld": "es",
+  "careers": null,
+  "tried": "2026-09-23T18:44:37"
+ },
+ "Unicaja": {
+  "index": "ibex35",
+  "sector": "Financial Services",
+  "tld": "es",
+  "careers": null,
+  "tried": "2026-09-23T18:44:37"
+ },
+ "Indra": {
+  "index": "ibex35",
+  "sector": "Information Technology",
+  "tld": "es",
+  "careers": null,
+  "tried": "2026-09-23T18:44:37"
+ },
+ "CaixaBank": {
+  "index": "ibex35",
+  "sector": "Financial Services",
+  "tld": "es",
+  "careers": null,
+  "tried": "2026-09-23T18:44:37"
+ },
+ "D'Ieteren": {
+  "index": "bel20",
+  "sector": "Consumer Discretionary",
+  "tld": "be",
+  "careers": "https://www.dieterengroup.com/careers/",
+  "tried": "2026-09-23T18:44:37",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "UCB": {
+  "index": "bel20",
+  "sector": "Health Care",
+  "tld": "be",
+  "careers": "https://careers.ucb.com/global/en",
+  "tried": "2026-09-23T18:44:50",
+  "registered": "careers.ucb.com"
+ },
+ "Cairn Homes": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://careers.cairnhomes.com/",
+  "tried": "2026-09-23T18:44:53",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Bank of Ireland": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://careers.bankofireland.com/",
+  "tried": "2026-09-23T18:45:02",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Hexagon B": {
+  "index": "omxs30",
+  "sector": "Information Technology",
+  "tld": "se",
+  "careers": null,
+  "tried": "2026-09-23T18:45:12"
+ },
+ "GBL": {
+  "index": "bel20",
+  "sector": "Financials",
+  "tld": "be",
+  "careers": "https://www.gbl.com/en/culture-careers",
+  "tried": "2026-09-23T18:45:12",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Ageas": {
+  "index": "bel20",
+  "sector": "Financials",
+  "tld": "be",
+  "careers": null,
+  "tried": "2026-09-23T18:45:23"
+ },
+ "Banco Sabadell": {
+  "index": "ibex35",
+  "sector": "Financial Services",
+  "tld": "es",
+  "careers": null,
+  "tried": "2026-09-23T18:45:23"
+ },
+ "Investor B": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": null,
+  "tried": "2026-09-23T18:45:23"
+ },
+ "Glanbia": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://careers.glanbia.com/",
+  "tried": "2026-09-23T18:45:23",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Hammerson plc": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://www.hammerson.com/careers",
+  "tried": "2026-09-23T18:45:25",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "SEB A": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": null,
+  "tried": "2026-09-23T18:45:34"
+ },
+ "AIB Group": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://www.aib.ie/careers",
+  "tried": "2026-09-23T18:45:34",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Kerry Group": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://www.kerry.com/careers",
+  "tried": "2026-09-23T18:45:35",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Origin Enterprises": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://originenterprises.com/careers/",
+  "tried": "2026-09-23T18:45:44",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Swedbank A": {
+  "index": "omxs30",
+  "sector": "Financials",
+  "tld": "se",
+  "careers": "https://jobs.swedbank.com/",
+  "tried": "2026-09-23T18:45:54",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Rolls-Royce Holdings": {
+  "index": "ftse100",
+  "sector": "Aerospace & defence",
+  "tld": "co.uk",
+  "careers": "https://rolls.com/careers",
+  "tried": "2026-09-23T18:46:05",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Saab B": {
+  "index": "omxs30",
+  "sector": "Industrials",
+  "tld": "se",
+  "careers": null,
+  "tried": "2026-09-23T18:46:35"
+ },
+ "Mincon group": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://mincon.com/careers/",
+  "tried": "2026-09-23T18:46:35",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Donegal investment group": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://donegalsquare.com/",
+  "tried": "2026-09-23T18:46:43",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Greencoat Renewables": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:46:56"
+ },
+ "Ryanair Holdings": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://careers.ryanair.com/",
+  "tried": "2026-09-23T18:46:56",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Sofina": {
+  "index": "bel20",
+  "sector": "Financials",
+  "tld": "be",
+  "careers": null,
+  "tried": "2026-09-23T18:46:57"
+ },
+ "Kingspan Group": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:46:57"
+ },
+ "Uniphar": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": "https://www.uniphar.ie/customer/account/login/referer/aHR0cHM6Ly93d3cudW5pcGhhci5pZS8~/",
+  "tried": "2026-09-23T18:46:57",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "KBC": {
+  "index": "bel20",
+  "sector": "Financials",
+  "tld": "be",
+  "careers": "https://authc.jobs.kbc.be/login?client_id=55qvicc34ced2qua78mavj4c8c&lang=en&redirect_uri=https%3A%2F%2Fjobs.kbc.be%2Fauth%2Fcognito_idp%2Fcallback&response_type=code&scope=openid%20email%20profile%20aws.cognito.signin.user.admin&state=a291a9a1ed98760a93db6d49be1a068be639df0dec843c82",
+  "tried": "2026-09-23T18:47:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "ADNOC": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://jobs.adnoc.ae/us/en",
+  "tried": "2026-09-23T18:47:18",
+  "registered": "jobs.adnoc.ae"
+ },
+ "TAQA": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://taqa.com/careers",
+  "tried": "2026-09-23T18:47:20",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Aldar": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.aldar.com/en/careers",
+  "tried": "2026-09-23T18:47:28",
+  "registered": "www.aldar.com"
+ },
+ "Mashreq": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.mashreq.com/en/uae/about-us/careers/careers-portal",
+  "tried": "2026-09-23T18:47:28",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Melexis\u00a0[nl]": {
+  "index": "bel20",
+  "sector": "Electronic Equipment",
+  "tld": "be",
+  "careers": null,
+  "tried": "2026-09-23T18:47:42"
+ },
+ "Aramex": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://careers.aramex.com/",
+  "tried": "2026-09-23T18:47:42",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Emirates NBD": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.emiratesnbd.com/careers",
+  "tried": "2026-09-23T18:47:45",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Emaar": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.emaar.com/en/careers",
+  "tried": "2026-09-23T18:47:53",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Emirates": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:48:00"
+ },
+ "FBD Holdings": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:48:00"
+ },
+ "stc": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.stc.com/ar/errors-pages/404.html",
+  "tried": "2026-09-23T18:48:00",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Mubadala": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.mubadala.com/en/careers",
+  "tried": "2026-09-23T18:48:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Malin Corp.": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:48:18"
+ },
+ "SABIC": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.sabic.com/en/careers",
+  "tried": "2026-09-23T18:48:18",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Presight AI": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://careers.presight.com/",
+  "tried": "2026-09-23T18:48:29",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Mobily": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://mobily.com/careers",
+  "tried": "2026-09-23T18:48:37",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Al Rajhi Bank": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://alrajhibank.com/not-found",
+  "tried": "2026-09-23T18:48:45",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "e& (Etisalat)": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:48:56"
+ },
+ "NEOM": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://careers.neom.com/careers",
+  "tried": "2026-09-23T18:48:56",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "du (EITC)": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://introvert.com/?domain=du.io",
+  "tried": "2026-09-23T18:49:09",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Ma'aden": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://careers.maaden.com/gb/en",
+  "tried": "2026-09-23T18:49:18",
+  "registered": "careers.maaden.com"
+ },
+ "Kenmare Resources": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:49:21"
+ },
+ "ACWA Power": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://careers.acwapower.com/",
+  "tried": "2026-09-23T18:49:21",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Irish Continental Group": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:49:23"
+ },
+ "First Abu Dhabi Bank": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://www.remax.com:443/ind/en",
+  "tried": "2026-09-23T18:49:23",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "SDAIA": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:49:32"
+ },
+ "DEWA": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:49:32"
+ },
+ "Riyad Bank": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": "https://careers.riyadbank.com/",
+  "tried": "2026-09-23T18:49:32",
+  "registered": null,
+  "deepened": "2026-09-23T19:31:07"
+ },
+ "Dubai Islamic Bank": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ },
+ "ADQ": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ },
+ "Elm": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ },
+ "Permanent TSB": {
+  "index": "iseq",
+  "sector": "",
+  "tld": "ie",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ },
+ "Abu Dhabi Commercial Bank": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ },
+ "Saudi National Bank": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ },
+ "Saudi Aramco": {
+  "index": "gulf",
+  "sector": "",
+  "tld": "ae",
+  "careers": null,
+  "tried": "2026-09-23T18:50:17"
+ }
+}

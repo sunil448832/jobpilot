@@ -1,7 +1,25 @@
 # secrets (tokens, passwords): NEVER versioned, the repo is public
 .env
-# machine-written state and run output: never versioned
-data/
+# data/: research the tool gathers is versioned (sponsor registers, careers pages found,
+# listed / YC companies, discovery memory, portal techniques, rates). Kept out: his
+# application history and personal data, secrets, and run markers.
+data/state.db*
+data/connections.csv
+data/quota_blocks.json
+data/keyword_learn.json
+data/keyword_gaps.md
+data/resume_todo.md
+data/asks/
+data/.auto/
+data/chrome-profile/
+data/brave-profile/
+data/tailscale/
+data/tunnel_url
+data/tunnel_told
+data/.daily.lock
+data/.tenants_last
+data/board_scans.json
+# run output: never versioned
 logs/
 jobpilot.egg-info/
 __pycache__/

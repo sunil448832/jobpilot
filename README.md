@@ -293,3 +293,5 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 3. `page.fill()` lies on React typeaheads: read every value back.
 4. Yes / No is often a `<button>`, not an `<input>`.
 5. Look at the screenshot before believing a log.
+6. A reCAPTCHA "I'm not a robot" checkbox is a captcha even though it is a strip, not a puzzle (BambooHR, Giotto 2026-10-13).
+7. Every ATS words its thank-you page its own way: Greenhouse says "We appreciate your application" (Telnyx 2026-10-13).

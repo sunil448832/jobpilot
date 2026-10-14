@@ -240,8 +240,14 @@ def captcha(page):
         # puzzle: it held Destinus's Workable form at "Submitting…" three times (2026-10-07/08)
         if box and "challenges.cloudflare" in (fr.url or "") and box["width"] > 150 and box["height"] > 40:
             return True
+        # reCAPTCHA's "I'm not a robot" checkbox (anchor frame, ~300x78) is the same kind of strip;
+        # its invisible badge (size=invisible, bottom corner) is not. Giotto's BambooHR form held
+        # at "Almost there! Please confirm you're not a robot" and read as unclear (2026-10-13)
+        if box and re.search(r"recaptcha/(api2|enterprise)/anchor", fr.url or "") and "size=invisible" not in (fr.url or "") \
+                and box["width"] > 150 and box["height"] > 40:
+            return True
     try:
-        if re.search(r"verify you are human", page.main_frame.inner_text("body", timeout=2000) or "", re.I):
+        if re.search(r"verify you are human|not a robot", page.main_frame.inner_text("body", timeout=2000) or "", re.I):
             return True
     except Exception:
         pass

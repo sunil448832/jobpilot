@@ -41,5 +41,10 @@
   "select": "label",
   "file": "input",
   "type": "fill"
+ },
+ "bamboohr": {
+  "file": "input",
+  "type": "fill",
+  "list": "entries"
  }
 }

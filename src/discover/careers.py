@@ -106,7 +106,7 @@ def detect(url):
                       (r"workable", "workable"), (r"recruitee", "recruitee"),
                       (r"myworkdayjobs", "workday"), (r"icims", "icims"),
                       (r"taleo", "taleo"), (r"successfactors", "successfactors"),
-                      (r"hcmRestApi|oracle.*recruit", "oracle")):
+                      (r"hcmRestApi|oracle.*recruit", "oracle"), (r"pinpointhq\.com", "pinpoint")):
         m = re.search(pat, html, re.I)
         if m:
             found = slug_from(html, plat)
@@ -199,7 +199,35 @@ ATS_HOSTS = {
     "phenompeople": "phenom", "eightfold.ai": "eightfold", "teamtailor": "teamtailor",
     "personio": "personio", "join.com": "join", "jobvite": "jobvite",
     "oraclecloud.com": "oracle", "hcmRestApi": "oracle", "avature": "avature",
+    "pinpointhq.com": "pinpoint",
 }
+
+# Sites intake reads through their own module under `custom:` (apply/platforms/<site>.py
+# search()), keyed by the host the page calls. The entry is what the module's search() takes.
+SITE_HOST = {
+    "oracle": r"([a-z0-9.-]+\.oraclecloud\.com)",
+    "pinpoint": r"([a-z0-9-]+\.pinpointhq\.com)",
+}
+
+
+def site_entry(plat, url, blob):
+    """A `custom:` entry for an ATS read by its own module: {slug, site, host, (site_number), company}."""
+    pat = SITE_HOST.get(plat)
+    m = pat and re.search(pat, url + " " + blob, re.I)
+    if not m:
+        return None
+    host = m.group(1).lower()
+    entry = {"site": plat, "host": host}
+    if plat == "oracle":
+        sn = re.search(r"/sites/(CX_\d+)", url + " " + blob, re.I)
+        entry["site_number"] = sn.group(1) if sn else "CX_1"
+        entry["slug"] = host.split(".")[0]
+    else:
+        entry["slug"] = host.split(".")[0]
+    p = urllib.parse.urlparse(url)
+    entry["company"] = re.sub(r"^(www|careers|jobs)\.", "", p.netloc).split(".")[0].title() if "pinpointhq" not in p.netloc \
+        and "oraclecloud" not in p.netloc else entry["slug"].title()
+    return entry
 
 
 def detect_deep(url, timeout=25000):
@@ -251,7 +279,10 @@ def detect_deep(url, timeout=25000):
                         break
                 if slug:
                     break
-            return plat, {"slug": slug, "via": "rendered"} if slug else {"via": "rendered"}
+            info = {"slug": slug, "via": "rendered"} if slug else {"via": "rendered"}
+            if plat in SITE_HOST:
+                info["blob"] = blob[:200000]
+            return plat, info
     return None, {"note": "no ATS seen even after rendering"}
 
 
@@ -323,6 +354,26 @@ def add(url, deep=True):
         d["workday"].append({**entry, "jobs": n})
         yaml.safe_dump(d, open(BOARDS, "w"), sort_keys=False)
         print(f"    -> saved to boards.yaml ({n} jobs)")
+        return True
+    if plat in SITE_HOST:
+        entry = site_entry(plat, url, cfg.get("blob") or "")
+        if not entry:
+            print(f"    -> {plat} recognised but its host was not seen; not saved")
+            return False
+        d = yaml.safe_load(open(BOARDS)) if os.path.isfile(BOARDS) else {}
+        d.setdefault("custom", [])
+        if any(b.get("host") == entry["host"] and b.get("site_number") == entry.get("site_number") for b in d["custom"]):
+            print("    -> already in boards.yaml")
+            return True
+        from jobpilot.discover import intake
+        try:
+            n = len(list(intake.from_custom(entry)))
+        except Exception as e:
+            print(f"    -> {entry['host']} did not answer ({type(e).__name__}: {str(e)[:60]}); not saved")
+            return False
+        d["custom"].append({**entry, "jobs": n})
+        yaml.safe_dump(d, open(BOARDS, "w"), sort_keys=False)
+        print(f"    -> saved to boards.yaml as custom/{plat} ({n} jobs)")
         return True
     if cfg.get("slug"):
         d = yaml.safe_load(open(BOARDS)) if os.path.isfile(BOARDS) else {}

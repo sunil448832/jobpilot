@@ -301,8 +301,10 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
   searched (it has the most).
 - **Own careers sites** (`custom:` in `boards.yaml`, read by code; the form agent applies on them as
   anywhere): Amazon (amazon.jobs JSON), Google (the results page's embedded data), Microsoft
-  (Eightfold JSON — `site: eightfold` works for other Eightfold sites too), and `site: generic` for any
-  other site (Apple ...): it finds the listing's job links (rendered in headless Chrome when drawn by
+  (Eightfold JSON — `site: eightfold` works for other Eightfold sites too), Oracle Recruiting Cloud
+  sites (`site: oracle`, the CandidateExperience REST list + details: Presight ...), Pinpoint sites
+  (`site: pinpoint`, their postings.json: tabby ...) — `./jobpilot careers <url>` recognises and
+  registers both — and `site: generic` for any other site (Apple ...): it finds the listing's job links (rendered in headless Chrome when drawn by
   script) and reads each posting's schema.org JobPosting, else its rendered text. Postings already in
   `state.db` and titles intake would drop are not fetched. Sponsor-register discovery registers an
   employer's own careers site as a generic entry when it finds job links on it, and records every

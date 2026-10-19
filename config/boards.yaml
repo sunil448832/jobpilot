@@ -1635,3 +1635,14 @@ custom:
   company: Huspy
   url: https://revolutpeople.com/huspy/public/careers
   limit: 25
+- site: oracle
+  host: iaambv.fa.ocs.oraclecloud.com
+  site_number: CX_1
+  slug: iaambv
+  company: Iaambv
+  jobs: 1
+- site: pinpoint
+  host: tabby.pinpointhq.com
+  slug: tabby
+  company: Tabby
+  jobs: 40

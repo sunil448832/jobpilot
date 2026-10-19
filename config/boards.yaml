@@ -295,6 +295,8 @@ lever:
   jobs: 11
 - slug: apex-ai
   jobs: 7
+- slug: ifm-us
+  jobs: 45
 ashby:
 - slug: Watershed
   jobs: 37
@@ -853,6 +855,8 @@ ashby:
   jobs: 20
 - slug: altura
   jobs: 4
+- slug: ziina
+  jobs: 13
 smartrecruiters:
 - slug: Eurofins
   jobs: 100
@@ -1080,6 +1084,9 @@ phenom:
 - slug: colescareers.com.au
   base: https://colescareers.com.au/au/en/home
   jobs: 100
+- slug: careers.damacproperties.com
+  base: https://careers.damacproperties.com/global/en/jointalentcommunity
+  jobs: 26
 workday:
 - slug: 3i
   host: 3i.wd103.myworkdayjobs.com
@@ -1592,4 +1599,39 @@ custom:
   site: generic
   company: Mastek
   url: https://careers.mastek.com/
+  limit: 25
+- slug: core42
+  site: generic
+  company: Core42
+  url: https://careers.core42.ai/
+  limit: 25
+- slug: edgegroup
+  site: generic
+  company: Edgegroup
+  url: https://careers.edgegroup.ae/go/View-All-Jobs/4166222/
+  limit: 25
+- slug: tamara
+  site: generic
+  company: Tamara
+  url: https://tamara.co/en-sa/careers
+  limit: 25
+- slug: talabat
+  site: generic
+  company: Talabat
+  url: https://careers.deliveryhero.com/talabat
+  limit: 25
+- slug: chalhoubgroup
+  site: generic
+  company: Chalhoubgroup
+  url: https://careers.chalhoubgroup.com/
+  limit: 25
+- slug: careem
+  site: generic
+  company: Careem
+  url: https://jobs.careem.com/
+  limit: 25
+- slug: huspy
+  site: generic
+  company: Huspy
+  url: https://revolutpeople.com/huspy/public/careers
   limit: 25

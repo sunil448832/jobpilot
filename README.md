@@ -283,7 +283,7 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
   boards, largest sponsors first, 120 a run. Switzerland has no register (permits are case by case,
   under quotas): a silent Swiss posting by an employer on any register counts as implicit.
 - **Sourcing lists are data:** `config/employers.yaml` holds the sweep list per market (Australia 67,
-  Gulf 57, NL 27, DE 25, LU 23, CH 22, IE 19); `boards.yaml aggregators:` the cross-company feeds
+  UAE 57, NL 27, DE 25, LU 23, CH 22, IE 19); `boards.yaml aggregators:` the cross-company feeds
   (Remotive, Arbeitnow, RemoteOK, We Work Remotely — `json_api` with a field map, or `rss`). Add an
   employer, a feed or a market there; nothing in `src/` names one.
 - **Visa:** US roles only when the posting says it sponsors; a silent posting in the Netherlands,

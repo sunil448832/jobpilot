@@ -1978,8 +1978,8 @@
   "registered": false
  },
  "jobs.adnoc.ae": {
-  "first_seen": "2026-09-23T18:47:18",
-  "url": "https://jobs.adnoc.ae/us/en",
+  "first_seen": "2026-10-19T09:49:17",
+  "url": "https://jobs.adnoc.ae/us/ph-job-cart-count-v3-view2-jkn0zo-NhOmOm",
   "registered": true
  },
  "taqa.com": {
@@ -8327,5 +8327,185 @@
   "first_seen": "2026-10-19T09:16:32",
   "name": "Euram",
   "url": null
+ },
+ "careers.mbzuai.ac.ae": {
+  "first_seen": "2026-10-19T09:44:04",
+  "url": "https://careers.mbzuai.ac.ae/",
+  "registered": false
+ },
+ "careers.core42.ai": {
+  "first_seen": "2026-10-19T09:44:12",
+  "url": "https://careers.core42.ai/",
+  "registered": false
+ },
+ "iaambv.fa.ocs.oraclecloud.com": {
+  "first_seen": "2026-10-19T09:48:12",
+  "url": "https://iaambv.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+  "registered": false
+ },
+ "careers.g42.ai": {
+  "first_seen": "2026-10-19T09:48:28",
+  "url": "https://careers.g42.ai/global/search-results",
+  "registered": true
+ },
+ "careers.edgegroup.ae": {
+  "first_seen": "2026-10-19T09:48:43",
+  "url": "https://careers.edgegroup.ae/go/View-All-Jobs/4166222/",
+  "registered": false
+ },
+ "careers.tii.ae": {
+  "first_seen": "2026-10-19T09:48:52",
+  "url": "https://careers.tii.ae/us/search-results",
+  "registered": true
+ },
+ "careers.m42.ae": {
+  "first_seen": "2026-10-19T09:44:20",
+  "url": "https://careers.m42.ae/jobs",
+  "registered": false
+ },
+ "careers.stc.com.sa": {
+  "first_seen": "2026-10-19T09:44:23",
+  "url": "https://careers.stc.com.sa/",
+  "registered": false
+ },
+ "tamara.co": {
+  "first_seen": "2026-10-19T09:44:25",
+  "url": "https://tamara.co/en-sa/careers",
+  "registered": false
+ },
+ "tabby.pinpointhq.com": {
+  "first_seen": "2026-10-19T09:49:47",
+  "url": "https://tabby.pinpointhq.com/?scroll_to=js-careers-jobs-block",
+  "registered": false
+ },
+ "www.neom.com": {
+  "first_seen": "2026-10-19T09:44:37",
+  "url": "https://www.neom.com/en-us/be-part-of-neom/work-at-neom",
+  "registered": false
+ },
+ "jobs.dubizzle.com": {
+  "first_seen": "2026-10-19T09:44:45",
+  "url": "https://jobs.dubizzle.com/",
+  "registered": false
+ },
+ "anghami.zenats.com": {
+  "first_seen": "2026-10-19T09:44:52",
+  "url": "https://anghami.zenats.com/en/careers_page",
+  "registered": false
+ },
+ "www.kitopi.com": {
+  "first_seen": "2026-10-19T09:51:45",
+  "url": "https://www.kitopi.com/careers#kitopijobs",
+  "registered": false
+ },
+ "careers.chalhoubgroup.com": {
+  "first_seen": "2026-10-19T09:45:10",
+  "url": "https://careers.chalhoubgroup.com/",
+  "registered": false
+ },
+ "careers.majidalfuttaim.com": {
+  "first_seen": "2026-10-19T09:52:30",
+  "url": "https://careers.majidalfuttaim.com/global/search-results",
+  "registered": true
+ },
+ "careers.landmarkgroup.com": {
+  "first_seen": "2026-10-19T09:45:20",
+  "url": "https://careers.landmarkgroup.com/",
+  "registered": false
+ },
+ "www.alfuttaim.com": {
+  "first_seen": "2026-10-19T09:45:28",
+  "url": "https://www.alfuttaim.com/en/careers/",
+  "registered": false
+ },
+ "jobs.careem.com": {
+  "first_seen": "2026-10-19T09:45:36",
+  "url": "https://jobs.careem.com/",
+  "registered": true
+ },
+ "careers.sarwa.co": {
+  "first_seen": "2026-10-19T09:53:28",
+  "url": "https://careers.sarwa.co/jobs",
+  "registered": false
+ },
+ "huspy.com": {
+  "first_seen": "2026-10-19T09:45:57",
+  "url": "https://huspy.com/careers",
+  "registered": false
+ },
+ "www.emiratesgroupcareers.com": {
+  "first_seen": "2026-10-19T09:54:54",
+  "url": "https://www.emiratesgroupcareers.com/search-and-apply/",
+  "registered": false
+ },
+ "www.eand.com": {
+  "first_seen": "2026-10-19T09:46:07",
+  "url": "https://www.eand.com/en/index.html",
+  "registered": false
+ },
+ "www.du.ae": {
+  "first_seen": "2026-10-19T09:46:15",
+  "url": "https://www.du.ae/about-us/careers",
+  "registered": false
+ },
+ "careers.damacproperties.com": {
+  "first_seen": "2026-10-19T09:55:33",
+  "url": "https://careers.damacproperties.com/global/en/zFqeWNQe-6wpm97uy",
+  "registered": true
+ },
+ "www.digitaldubai.ae": {
+  "first_seen": "2026-10-19T09:46:30",
+  "url": "https://www.digitaldubai.ae/error-pages/404",
+  "registered": false
+ },
+ "wio.io": {
+  "first_seen": "2026-10-19T09:46:41",
+  "url": "https://wio.io/careers",
+  "registered": false
+ },
+ "ziina.com": {
+  "first_seen": "2026-10-19T09:46:49",
+  "url": "https://ziina.com/careers",
+  "registered": true
+ },
+ "jobs.lever.co/ifm-us": {
+  "first_seen": "2026-10-19T09:47:34",
+  "url": "https://jobs.lever.co/ifm-us/51bb158c-d47f-4455-8ff1-d9ef0d79dfc2",
+  "registered": true
+ },
+ "boards-api.greenhouse.io/v1": {
+  "first_seen": "2026-10-19T09:49:19",
+  "url": "https://boards-api.greenhouse.io/v1/boards/${CONFIG.boardToken}`;",
+  "registered": false
+ },
+ "jobs.lever.co/kitopi": {
+  "first_seen": "2026-10-19T09:51:23",
+  "url": "https://jobs.lever.co/kitopi/",
+  "registered": false
+ },
+ "jobs.lever.co/aldar": {
+  "first_seen": "2026-10-19T09:52:15",
+  "url": "https://jobs.lever.co/aldar",
+  "registered": true
+ },
+ "www.afuturewithus.com": {
+  "first_seen": "2026-10-19T09:52:58",
+  "url": "https://www.afuturewithus.com/",
+  "registered": false
+ },
+ "revolutpeople.com": {
+  "first_seen": "2026-10-19T09:53:56",
+  "url": "https://revolutpeople.com/huspy/public/careers",
+  "registered": false
+ },
+ "emhm.fa.em2.oraclecloud.com": {
+  "first_seen": "2026-10-19T09:54:26",
+  "url": "https://emhm.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/",
+  "registered": false
+ },
+ "jobs.ashbyhq.com/ziina": {
+  "first_seen": "2026-10-19T09:55:45",
+  "url": "https://jobs.ashbyhq.com/ziina",
+  "registered": true
  }
 }

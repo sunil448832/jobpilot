@@ -201,8 +201,9 @@ australia:
   - hipages.com.au
   - whispir.com
 
-# UAE (Saudi dropped 2026-10-05). Widened 2026-10-19 (goals plan step 2): MBZUAI, Core42, Presight, AIQ, Careem, Noon, Emirates, Etihad, Mubadala, ADQ, e&, du, Dubai Holding, DAMAC, banks, telcos.
-gulf:
+# Key must equal the market id in targets.yaml (it was "gulf" while the market is "uae": the UAE
+# sweep never ran until 2026-10-19). UAE (Saudi dropped 2026-10-05). Widened 2026-10-19 (goals plan step 2): MBZUAI, Core42, Presight, AIQ, Careem, Noon, Emirates, Etihad, Mubadala, ADQ, e&, du, Dubai Holding, DAMAC, banks, telcos.
+uae:
   - tii.ae
   - g42.ai
   - mbzuai.ac.ae

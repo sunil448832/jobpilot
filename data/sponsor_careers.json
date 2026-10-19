@@ -1305,5 +1305,80 @@
   "careers_url": "https://www.keohane.com/about/careers",
   "platform": null,
   "at": "2026-10-19"
+ },
+ "Mbzuai": {
+  "careers_url": "https://careers.mbzuai.ac.ae/",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Core42": {
+  "careers_url": "https://careers.core42.ai/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "G42": {
+  "careers_url": "https://careers.g42.ai/global/en",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Edgegroup": {
+  "careers_url": "https://careers.edgegroup.ae/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Tii": {
+  "careers_url": "https://careers.tii.ae/us/en",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Adnoc": {
+  "careers_url": "https://jobs.adnoc.ae/us/en",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Tamara": {
+  "careers_url": "https://tamara.co/en-sa/careers",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Talabat": {
+  "careers_url": "https://careers.deliveryhero.com/talabat",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Aldar": {
+  "careers_url": "https://www.aldar.com/en/careers",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Chalhoubgroup": {
+  "careers_url": "https://careers.chalhoubgroup.com/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Majidalfuttaim": {
+  "careers_url": "https://careers.majidalfuttaim.com/global/en",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Careem": {
+  "careers_url": "https://jobs.careem.com/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Huspy": {
+  "careers_url": "https://huspy.com/careers",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Damacproperties": {
+  "careers_url": "https://careers.damacproperties.com/global/en/jointalentcommunity",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Ziina": {
+  "careers_url": "https://ziina.com/careers",
+  "platform": "ats",
+  "at": "2026-10-19"
  }
 }

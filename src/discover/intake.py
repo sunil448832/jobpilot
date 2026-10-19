@@ -23,6 +23,7 @@ Usage:
 import argparse
 import datetime as dt
 import json
+import html as html_mod
 import os
 import re
 import sqlite3
@@ -468,23 +469,62 @@ def from_custom(entry):
         yield {"source": entry.get("site"), "board": entry["slug"], **j}
 
 
+AGGREGATOR_KINDS = ("json_api", "rss")
+
+
+def _dig(obj, path):
+    """obj['a']['b'] for path 'a.b'; '' when missing."""
+    for k in (path or "").split("."):
+        if not k:
+            continue
+        obj = obj.get(k) if isinstance(obj, dict) else None
+        if obj is None:
+            return ""
+    return obj if obj is not None else ""
+
+
 def from_aggregators():
-    try:
-        for j in get("https://remotive.com/api/remote-jobs?category=software-dev&limit=200").get("jobs", []):
-            yield {"source": "remotive", "board": "remotive",
-                   "company": j.get("company_name", ""), "title": j.get("title", ""),
-                   "location": j.get("candidate_required_location", "Remote"),
-                   "url": j.get("url", ""), "jd": (j.get("description") or "")[:12000]}
-    except Exception as e:
-        print(f"    [warn] remotive: {e}")
-    try:
-        for j in get("https://www.arbeitnow.com/api/job-board-api").get("data", []):
-            yield {"source": "arbeitnow", "board": "arbeitnow",
-                   "company": j.get("company_name", ""), "title": j.get("title", ""),
-                   "location": j.get("location", "") + (" Remote" if j.get("remote") else ""),
-                   "url": j.get("url", ""), "jd": (j.get("description") or "")[:12000]}
-    except Exception as e:
-        print(f"    [warn] arbeitnow: {e}")
+    """Cross-company feeds, listed in config/boards.yaml `aggregators:` (add one there, no code):
+        - {id: remotive, kind: json_api, url: ..., items: jobs, fields: {company: company_name, ...}}
+        - {id: weworkremotely, kind: rss, url: ..., title_split: ": "}
+    json_api: `items` is the key of the list (blank = the whole body); `fields` maps job keys
+    (company, title, location, url, jd, remote) to the item's keys, 'a.b' for nested ones; a
+    `location_suffix` is added when `remote` is truthy. rss: one job per <item>; the company is
+    the part of the title before `title_split` ("Yooli: Software Engineer"); location is
+    <region> else "Remote"."""
+    for agg in load_boards().get("aggregators") or []:
+        kind, aid = agg.get("kind"), agg.get("id") or agg.get("url", "")[:30]
+        try:
+            if kind == "json_api":
+                body = get(agg["url"])
+                items = _dig(body, agg.get("items")) if agg.get("items") else body
+                f = agg.get("fields") or {}
+                for j in items or []:
+                    if not isinstance(j, dict) or not _dig(j, f.get("title", "title")):
+                        continue
+                    loc = str(_dig(j, f.get("location", "location")) or agg.get("default_location", "Remote"))
+                    if agg.get("location_suffix") and _dig(j, f.get("remote", "remote")):
+                        loc += " " + agg["location_suffix"]
+                    yield {"source": aid, "board": aid,
+                           "company": str(_dig(j, f.get("company", "company"))), "title": str(_dig(j, f.get("title", "title"))),
+                           "location": loc, "url": str(_dig(j, f.get("url", "url"))),
+                           "jd": _html_to_text(str(_dig(j, f.get("jd", "description"))))[:12000]}
+            elif kind == "rss":
+                import xml.etree.ElementTree as ET
+                r = requests.get(agg["url"], headers={"User-Agent": "Mozilla/5.0"}, timeout=25)
+                r.raise_for_status()
+                sep = agg.get("title_split", ": ")
+                for it in ET.fromstring(r.content).iter("item"):
+                    title = (it.findtext("title") or "").strip()
+                    company, _, role = title.partition(sep) if sep in title else ("", "", title)
+                    yield {"source": aid, "board": aid, "company": company.strip(), "title": role.strip(),
+                           "location": (it.findtext("region") or agg.get("default_location") or "Remote").strip(),
+                           "url": (it.findtext("link") or "").strip(),
+                           "jd": _html_to_text(html_mod.unescape(it.findtext("description") or ""))[:12000]}
+            else:
+                print(f"    [warn] aggregator {aid}: unknown kind {kind!r} (one of {AGGREGATOR_KINDS})")
+        except Exception as e:
+            print(f"    [warn] {aid}: {e}")
 
 
 # -------------------------------------------------------------------- filters
@@ -505,6 +545,24 @@ NOT_ML = ("backend engineer", "frontend engineer", "fullstack", "full stack",
           "support engineer", "solutions architect", "account", "technical writer")
 
 
+# An IC AI/ML title the 13 exact phrases miss: "Software Engineer II, AI/Machine Learning",
+# "Senior Machine Learning Scientist", "AI Researcher - Post-Training", "Forward Deployed
+# Software Engineer". On 2026-10-15 the boards held ~90 such titles in the non-US markets
+# against ~80 that passed the phrases. Needs an AI word AND an IC noun, and none of the
+# non-IC words (managers, architects, consultants, interns, quants, wet-lab research).
+AI_WORD = re.compile(r"\b(ai|ml|a\.i\.|ai/ml|ml/ai|machine learning|deep learning|llms?|nlp|genai|gen ai|"
+                     r"generative ai|reinforcement learning|computer vision|applied ai|mlops|speech|"
+                     r"post-training|pre-training|foundation models?|agentic|agents?|research (scientist|engineer))\b", re.I)
+IC_NOUN = re.compile(r"\b(engineer|engineering|scientist|researcher|research engineer|research staff|developer)\b", re.I)
+FORWARD_DEPLOYED = re.compile(r"\bforward[ -]deployed\b.*\b(engineer|scientist)\b", re.I)
+NOT_IC = ("manager", "director", "head of", "architect", "consultant", "analyst", "counsel", "marketing",
+          "governance", "evaluator", "sales", "customer", "strategist", "specialist", "partner", "verification",
+          "security", "transformation", "enablement", "intern", "student", "thesis", "quant", "hft", "biolog",
+          "pharmacolog", "molecular", "in-vivo", "lab ", "program", "portfolio", "builder", "lead", "video",
+          "hardware", "fixed wing", "data engineer", "platform engineer", "infrastructure", "frameworks",
+          "tooling", "reliability", "vice president", "vp ", "systems engineer")
+
+
 def title_ok(title, t):
     tl = (title or "").lower()
     if any(_has(a, tl) for a in t["titles"]["avoid"]):
@@ -514,7 +572,11 @@ def title_ok(title, t):
     if any(n in tl for n in NOT_ML):
         return False
     wanted = t["titles"]["primary"] + t["titles"]["also_consider"]
-    return any(_has(w, tl) for w in wanted)
+    if any(_has(w, tl) for w in wanted):
+        return True
+    if any(n in tl for n in NOT_IC):
+        return False
+    return bool(FORWARD_DEPLOYED.search(tl) or (AI_WORD.search(tl) and IC_NOUN.search(tl)))
 
 
 MARKET_HINTS = {
@@ -634,7 +696,11 @@ def pull(workers=None, limit=None):
     # Which boards belong to YC companies, so postings can be tagged and boosted.
     yc_of, size_of = {}, {}
     for kind, lst in boards.items():
+        if kind == "aggregators" or not isinstance(lst, list):      # feeds, not boards
+            continue
         for b in lst:
+            if not isinstance(b, dict) or not b.get("slug"):
+                continue
             if b.get("yc"):
                 yc_of[b["slug"]] = b["yc"]
             # Open-req count is the best scale proxy available without paid data:

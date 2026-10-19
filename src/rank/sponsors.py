@@ -3,10 +3,14 @@
 sponsors.py — employers the government lists as sponsoring work permits, so a posting silent
 on visas is still a known yes (Meta, Google, Booking ... rarely say it in the JD).
 
-    netherlands   IND public register of recognised sponsors, regular labour and highly
-                  skilled migrants (~13,000 employers): only these can sponsor a kennismigrant
-    ireland       Department of Enterprise, employment permits issued to companies, this year
-                  and last (~8,000 employers, with the count)
+    The registers are listed in config.yaml visa.sponsor_registers (market, kind, label,
+    url or path) — add one there, no code:
+    netherlands   ind_html: IND public register of recognised sponsors, regular labour and
+                  highly skilled migrants (~13,000 employers): only these can sponsor
+    ireland       dete_xlsx: Department of Enterprise, employment permits issued to companies,
+                  this year and last (~8,000 employers, with the count)
+    australia     csv: data/registers/australia_sponsors.csv (a Home Affairs FOI snapshot,
+                  filled by hand — no official live dataset exists, 2026-10-19)
 
 Germany and Luxembourg have no such list: an EU Blue Card needs no licensed sponsor, and a
 silent posting there already counts as implicit (visa.implicit_markets).
@@ -49,18 +53,65 @@ def words(name):
     return [w for w in re.sub(r"[^a-z0-9 ]+", " ", NOISE.sub(" ", n)).split() if w]
 
 
-def fetch_nl():
-    t = requests.get(IND, headers=UA, timeout=60).text
+def registers():
+    """config.yaml visa.sponsor_registers, with the two original registers as the default."""
+    regs = cfg("visa.sponsor_registers", None)
+    if not regs:
+        regs = [{"market": "netherlands", "kind": "ind_html", "label": "IND recognised sponsor", "url": IND},
+                {"market": "ireland", "kind": "dete_xlsx", "label": "Irish employment permits issued",
+                 "url": DETE, "names": list(DETE_NAMES)}]
+    return [r for r in regs if r.get("market") and r.get("kind")]
+
+
+def register_markets():
+    return sorted({r["market"] for r in registers()})
+
+
+def label_of(market):
+    return " / ".join(r.get("label") or r["kind"] for r in registers() if r["market"] == market) or "sponsor register"
+
+
+def fetch(reg):
+    """One register -> {name: permits or None}."""
+    kind = reg["kind"]
+    if kind == "ind_html":
+        return {n: None for n in fetch_nl(reg.get("url") or IND)}
+    if kind == "dete_xlsx":
+        return fetch_ie(reg.get("url") or DETE, reg.get("names") or DETE_NAMES)
+    if kind == "csv":
+        return fetch_csv(reg["path"])
+    raise ValueError(f"unknown register kind {kind!r}")
+
+
+def fetch_csv(path):
+    """A local file: company,permits (permits optional); '#' lines are comments."""
+    import csv
+    from jobpilot.core.paths import TOOL
+    out = {}
+    full = path if os.path.isabs(path) else os.path.join(TOOL, path)
+    with open(full, encoding="utf-8") as f:
+        rows = [r for r in csv.reader(l for l in f if not l.lstrip().startswith("#")) if r]
+    for r in rows:
+        co = (r[0] or "").strip()
+        if not co or co.lower() == "company":
+            continue
+        n = r[1].strip() if len(r) > 1 and r[1] else ""
+        out[co] = int(float(n)) if re.match(r"^\d+(\.\d+)?$", n) else None
+    return out
+
+
+def fetch_nl(url=IND):
+    t = requests.get(url, headers=UA, timeout=60).text
     return sorted({html.unescape(m).strip() for m in re.findall(r'<th scope="row">([^<]+)</th>', t)})
 
 
-def fetch_ie():
+def fetch_ie(url=DETE, names=DETE_NAMES):
     import openpyxl
     out = {}
     year = dt.date.today().year
     for y in (year - 1, year):
-        for name in DETE_NAMES:
-            r = requests.get(DETE.format(name=name.format(y=y)), headers=UA, timeout=60)
+        for name in names:
+            r = requests.get(url.format(name=name.format(y=y)), headers=UA, timeout=60)
             if r.status_code != 200 or not r.content.startswith(b"PK"):
                 continue
             rows = list(openpyxl.load_workbook(io.BytesIO(r.content), read_only=True).worksheets[0].iter_rows(values_only=True))
@@ -78,9 +129,26 @@ def fetch_ie():
 
 
 def refresh():
-    doc = {"fetched": dt.date.today().isoformat(), "netherlands": fetch_nl(), "ireland": fetch_ie()}
-    if not doc["netherlands"] or not doc["ireland"]:
-        raise RuntimeError(f"a register came back empty: nl {len(doc['netherlands'])}, ie {len(doc['ireland'])}")
+    """Every register in config, merged per market: {market: {name: permits or None}}. A
+    remote register that fails keeps its last cached copy; a local one may be empty."""
+    try:
+        old = json.load(open(CACHE))
+    except (OSError, ValueError):
+        old = {}
+    doc = {"fetched": dt.date.today().isoformat()}
+    for reg in registers():
+        m = reg["market"]
+        try:
+            got = fetch(reg)
+        except Exception as e:
+            print(f"  [sponsors] {m} ({reg['kind']}) failed: {type(e).__name__}: {e} — keeping the cached list")
+            got = None
+        if got is None:
+            prev = old.get(m)
+            got = prev if isinstance(prev, dict) else {n: None for n in (prev or [])}
+        if not got and reg["kind"] != "csv":
+            raise RuntimeError(f"the {m} register came back empty")
+        doc.setdefault(m, {}).update(got)
     json.dump(doc, open(CACHE, "w"), indent=0)
     try:
         export()
@@ -109,13 +177,14 @@ def index():
             print(f"  [sponsors] refresh failed ({type(e).__name__}: {e}); "
                   + ("using the list of " + doc["fetched"] if doc else "no list"))
     _INDEX = {}
-    for market in ("netherlands", "ireland"):
+    for market in register_markets():
         entries = (doc or {}).get(market) or {}
         idx = _INDEX.setdefault(market, {})
         for name in entries:
             w = words(name)
             if w:
-                label = f"{name} ({entries[name]} permits)" if isinstance(entries, dict) else name
+                n = entries[name] if isinstance(entries, dict) else None
+                label = f"{name} ({n} permits)" if n else name
                 idx.setdefault(w[0], []).append((w, label))
     return _INDEX
 
@@ -141,13 +210,13 @@ def known(company, market):
     "Booking.com B.V.") — never "Meta-Skills B.V." or "Booking Experts B.V.". Longer names
     match word for word from the start ("Flow Traders" -> "Flow Traders Amsterdam Services")."""
     w = words(company)
-    if not w or market not in ("netherlands", "ireland"):
+    if not w or market not in register_markets():
         return None
     for alias in ALIASES.get(" ".join(w), []):   # registered under a former name
         hit = known(alias, market)
         if hit:
             return hit
-    reg = {"netherlands": "IND recognised sponsor", "ireland": "Irish employment permits issued"}[market]
+    reg = label_of(market)
     idx = index().get(market, {})
     if len(w) > 1:
         for rw, label in idx.get(w[0], []):
@@ -191,6 +260,8 @@ def candidates():
     index()
     doc = json.load(open(CACHE))
     nl, ie = doc.get("netherlands") or [], doc.get("ireland") or {}
+    if isinstance(nl, dict):
+        nl = list(nl)
     # a multinational: its first word (4+ letters) names an Irish employer with 5+ permits
     ie_first = {(words(n) or [""])[0] for n, c in ie.items() if c >= 5 and len((words(n) or [""])[0]) >= 4}
     out = []
@@ -206,6 +277,13 @@ def candidates():
     for name in nl:
         if not NOT_TECH.search(name) and TECH.search(name) and not (words(name) and words(name)[0] in ie_first):
             out.append((name, "netherlands", None, "tech name"))
+    for market in register_markets():                # any other register (a csv): every tech-looking name
+        if market in ("netherlands", "ireland"):
+            continue
+        entries = doc.get(market) or {}
+        for name in (entries if isinstance(entries, dict) else list(entries)):
+            if not NOT_TECH.search(name):
+                out.append((name, market, entries.get(name) if isinstance(entries, dict) else None, label_of(market)))
     return out
 
 
@@ -242,6 +320,13 @@ def export():
         rows.append((name, "Ireland", "employment permits issued to companies", n, lead.get((name, "ireland"), "")))
     for name in doc.get("netherlands") or []:
         rows.append((name, "Netherlands", "IND recognised sponsor", "", lead.get((name, "netherlands"), "")))
+    for market in register_markets():
+        if market in ("netherlands", "ireland"):
+            continue
+        entries = doc.get(market) or {}
+        for name in (entries if isinstance(entries, dict) else list(entries)):
+            rows.append((name, market.title(), label_of(market), (entries.get(name) if isinstance(entries, dict) else "") or "",
+                         lead.get((name, market), "")))
     with open(EXPORT, "w", newline="", encoding="utf-8") as f:
         wr = csv.writer(f)
         wr.writerow(["company", "country", "register", "permits", "lead", "in_boards", "careers_url", "platform", "fetched"])
@@ -261,11 +346,11 @@ def main():
     a = ap.parse_args()
     if a.refresh:
         d = refresh()
-        print(f"  netherlands {len(d['netherlands'])} recognised sponsors, ireland {len(d['ireland'])} employers with permits")
+        print("  " + ", ".join(f"{m} {len(d.get(m) or {})}" for m in register_markets()))
     if a.export or a.refresh:
         print(f"  {export()} employers -> {EXPORT}")
     if a.who:
-        for m in ("netherlands", "ireland"):
+        for m in register_markets():
             print(f"  {m:12} {known(a.who, m) or '-'}")
 
 

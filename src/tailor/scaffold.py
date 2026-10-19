@@ -90,7 +90,9 @@ def landing(url):
 
 
 # job boards whose apply link only redirects to the employer: {host: the apply URL's pattern}
-AGGREGATOR_APPLY = {"arbeitnow.com": "{url}/apply"}
+# Any Arbeitnow country site (.com .nl .ch .de ...): the .nl / .ch postings slipped past the
+# .com-only key and three explorations stalled on the aggregator page (2026-10-15)
+AGGREGATOR_APPLY = {"arbeitnow.": "{url}/apply"}
 
 
 def fetch_jd(url):

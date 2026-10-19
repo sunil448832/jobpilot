@@ -91,18 +91,18 @@ def classify(jd, market=None, company=None):
     that says nothing, by an employer on its country's sponsor register (sponsors.py: the
     IND list, Ireland's permits issued), is explicit: the government list says it sponsors."""
     tag, why = _classify(jd, market)
-    if tag in ("silent", "implicit") and company and market in ("netherlands", "ireland"):
-        from jobpilot.rank import sponsors
+    from jobpilot.rank import sponsors
+    reg_markets = sponsors.register_markets()            # config.yaml visa.sponsor_registers
+    if tag in ("silent", "implicit") and company and market in reg_markets:
         hit = sponsors.known(company, market)
         if hit:
             return "explicit", hit
     # Switzerland publishes no such list (permits are case by case, under quotas): a
     # multinational that sponsors in NL or IE is a likely yes there, a small Swiss firm is not
     if tag == "silent" and company and market in (cfg("visa.proxy_markets", ["switzerland"]) or []):
-        from jobpilot.rank import sponsors
-        hit = sponsors.known(company, "ireland") or sponsors.known(company, "netherlands")
+        hit = next((h for h in (sponsors.known(company, m) for m in reg_markets if m != market) if h), None)
         if hit:
-            return "implicit", f"sponsors elsewhere in Europe — {hit}"
+            return "implicit", f"sponsors elsewhere — {hit}"
     return tag, why
 
 

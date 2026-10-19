@@ -35,48 +35,21 @@ PATTERNS = [
 # AI/ML-relevant employers in Sunil's sponsorship markets, grouped so a sweep can
 # target one country at a time. The US is deliberately absent — it is oversupplied
 # and H-1B-gated, so discovery effort spent there displaces reachable markets.
-MARKETS = {
-    "gulf": """tii.ae g42.ai mbzuai.ac.ae core42.ai presight.ai inceptioniai.org
-        m42.ae bayanat.ai edgegroup.ae aramco.com stc.com.sa sdaia.gov.sa neom.com
-        adnoc.ae mubadala.com tabby.ai tamara.co talabat.com kitopi.com
-        propertyfinder.ae bayut.com dubizzle.com noon.com anghami.com swvl.com
-        emiratesnbd.com mashreqbank.com bankfab.com adcb.com aldar.com emaar.com
-        majidalfuttaim.com chalhoubgroup.com alfuttaim.com landmarkgroup.com
-        careem.com sarwa.co baraka.com huspy.com""".split(),
-    "netherlands": """booking.com adyen.com mollie.com picnic.app catawiki.com
-        backbase.com bynder.com tomtom.com miro.com channable.com optiver.com
-        imc.com flowtraders.com asml.com philips.com ing.com rabobank.nl kpn.com
-        justeattakeaway.com coolblue.nl bol.com elastic.co nedap.com sendcloud.com
-        framer.com bird.com messagebird.com""".split(),
-    # Added 2026-09-07. Ireland and Germany join NL at priority 1: Critical
-    # Skills and the Blue Card are both no-labour-market-test routes for ML.
-    "ireland": """stripe.com intercom.com hubspot.com datadoghq.com workday.com
-        udemy.com squarespace.com tines.com wayflyer.com letsgetchecked.com
-        fenergo.com flipdish.com genesys.com guidewire.com nuritas.com
-        ubotica.com soapboxlabs.com everseen.com transfermate.com""".split(),
-    "germany": """helsing.ai aleph-alpha.com blackforestlabs.ai deepl.com
-        celonis.com merantix.com parloa.com deepset.ai langdock.com zalando.com
-        traderepublic.com personio.com getyourguide.com sennder.com forto.com
-        taxfix.de raisin.com konux.com wandelbots.com ada.com doctolib.com
-        flix.com quantum-systems.com isaraerospace.com nyonic.ai""".split(),
-    "luxembourg": """talkwalker.com luxai.com ses.com arcelormittal.com post.lu
-        foyer.lu bil.com quintet.com spuerkeess.lu list.lu uni.lu datathings.com
-        motion-s.com salonkee.com clearstream.com luxinnovation.lu encevo.eu
-        goodyear.com eurofins.com b-medical-systems.com tarkett.com
-        luxairgroup.lu husky.co""".split(),
-    # Switzerland is low-volume by design — the Permit B quota means only firms
-    # that already run the process will engage. Roche and Novartis are listed
-    # because Sunil has shipped production work on Roche projects.
-    "switzerland": """roche.com novartis.com latticeflow.ai unique.ch
-        deepjudge.ai scandit.com nexthink.com beekeeper.io frontify.com
-        ledgy.com yokoy.io climeworks.com on.com sonarsource.com daedalean.ai
-        visium.ch logitech.com swisscom.ch temenos.com ecorobotix.com
-        sensirion.com avaloq.com""".split(),
-    "australia": """canva.com atlassian.com safetyculture.com cultureamp.com
-        airwallex.com immutable.com eucalyptus.vc rokt.com linktr.ee
-        employmenthero.com rea-group.com seek.com.au xero.com zip.co
-        octopus.com deputy.com""".split(),
-}
+EMPLOYERS = os.path.join(CONFIG, "employers.yaml")
+
+
+def load_markets():
+    """{market: [domains]} from config/employers.yaml — the sweep lists live there, not here."""
+    try:
+        import yaml
+        doc = yaml.safe_load(open(EMPLOYERS, encoding="utf-8")) or {}
+        return {k: [str(d).strip() for d in (v or []) if str(d).strip()] for k, v in doc.items()}
+    except (OSError, ValueError) as e:
+        print(f"  [find_careers] {EMPLOYERS}: {type(e).__name__}: {e}")
+        return {}
+
+
+MARKETS = load_markets()
 
 
 def probe_url(url, timeout=12):

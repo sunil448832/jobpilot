@@ -39,6 +39,7 @@ CONFIRMED_RX = re.compile(r"thank(s| you)( so much| a lot| very much)? for (appl
                           r"application (has )?(successfully )?(been )?(successfully )?(submitted|received)|"
                           r"successfully submitted|we('ve| have) received your application|congratulations|"
                           r"we appreciate your application|track your application|"      # Greenhouse's thank-you page (Telnyx, 2026-10-13)
+                          r"will review your application|thank you( so much)? for your interest in|"   # Ashby's banner (Permitflow, 2026-10-15)
                           r"your application (was|has been) (successfully )?(submitted|sent|received)", re.I)
 # a status the page announces in its alert region that is not an error ("sunil_resume.pdf
 # successfully uploaded" stayed up after Workday's Submit and read as one, 2026-10-05)

@@ -5,4 +5,4 @@ llm: screen
 max_turns: 1
 timeout: 900
 allowed_tools: []
-params: [resume, policy, name, citizenship, country, years, max_years]
+params: [resume, policy, name, citizenship, country, years, max_years, goals]

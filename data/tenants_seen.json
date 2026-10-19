@@ -1058,8 +1058,8 @@
   "registered": false
  },
  "careers.pypl.com": {
-  "first_seen": "2026-09-23T18:25:10",
-  "url": "https://careers.pypl.com/home/",
+  "first_seen": "2026-10-16T17:30:09",
+  "url": "https://careers.pypl.com/locations/default.aspx",
   "registered": false
  },
  "jobs.paloaltonetworks.com": {
@@ -2243,8 +2243,8 @@
   "registered": true
  },
  "boards.greenhouse.io/embed": {
-  "first_seen": "2026-09-23T19:30:06",
-  "url": "https://boards.greenhouse.io/embed/job_board/js?for=eqtcorporation",
+  "first_seen": "2026-10-17T07:21:58",
+  "url": "https://boards.greenhouse.io/embed/job_board/js?for=tetra",
   "registered": false
  },
  "lennar.wd1.myworkdayjobs.com/Early_Careers": {
@@ -2308,7 +2308,7 @@
   "registered": true
  },
  "paypal.wd1.myworkdayjobs.com/jobs": {
-  "first_seen": "2026-09-23T19:18:19",
+  "first_seen": "2026-10-16T17:29:22",
   "url": "https://paypal.wd1.myworkdayjobs.com/jobs/login",
   "registered": false
  },
@@ -5096,6 +5096,3236 @@
  "company:mchale": {
   "first_seen": "2026-10-12T18:03:10",
   "name": "Mchale",
+  "url": null
+ },
+ "www.justeattakeaway.com": {
+  "first_seen": "2026-10-14T18:22:04",
+  "url": "https://www.justeattakeaway.com/about/our-story/default.aspx",
+  "registered": false
+ },
+ "company:tbauctions": {
+  "first_seen": "2026-10-14T18:22:33",
+  "name": "TBAuctions",
+  "url": "https://careers.tbauctions.com/"
+ },
+ "company:techmahindra": {
+  "first_seen": "2026-10-14T18:22:41",
+  "name": "Tech Mahindra",
+  "url": "https://careers.techmahindra.com/"
+ },
+ "company:marktlink": {
+  "first_seen": "2026-10-14T18:22:51",
+  "name": "Marktlink",
+  "url": "https://careers.marktlink.com/"
+ },
+ "company:swordmiddleeast": {
+  "first_seen": "2026-10-14T18:23:03",
+  "name": "Sword Middle East",
+  "url": null
+ },
+ "company:noon": {
+  "first_seen": "2026-10-14T18:23:03",
+  "name": "noon",
+  "url": "https://www.noon.ai/careers"
+ },
+ "company:stealthstartup": {
+  "first_seen": "2026-10-14T18:23:11",
+  "name": "Stealth Startup",
+  "url": "https://stealthstartup.nl/careers"
+ },
+ "company:openinnovationai": {
+  "first_seen": "2026-10-14T18:23:19",
+  "name": "Open Innovation AI",
+  "url": null
+ },
+ "company:talentmate": {
+  "first_seen": "2026-10-14T18:23:19",
+  "name": "TALENTMATE",
+  "url": null
+ },
+ "company:gal": {
+  "first_seen": "2026-10-14T18:23:19",
+  "name": "GAL",
+  "url": "https://careers.gal.ae/"
+ },
+ "company:oliverjames": {
+  "first_seen": "2026-10-14T18:23:29",
+  "name": "Oliver James",
+  "url": null
+ },
+ "company:uwv": {
+  "first_seen": "2026-10-14T18:24:40",
+  "name": "UWV",
+  "url": null
+ },
+ "company:drumderry": {
+  "first_seen": "2026-10-14T18:24:42",
+  "name": "Drumderry",
+  "url": null
+ },
+ "company:alexion": {
+  "first_seen": "2026-10-14T18:24:44",
+  "name": "Alexion",
+  "url": "https://careers.alexion.com/"
+ },
+ "company:fliprecast": {
+  "first_seen": "2026-10-14T18:25:35",
+  "name": "Fli Precast",
+  "url": "https://fliprecast.com/careers/"
+ },
+ "company:motor": {
+  "first_seen": "2026-10-14T18:25:58",
+  "name": "Motor",
+  "url": "https://eevd.fa.us6.oraclecloud.com:443/hcmUI/CandidateExperience/en/sites/CX_20"
+ },
+ "company:paypal": {
+  "first_seen": "2026-10-14T18:26:55",
+  "name": "Paypal",
+  "url": "https://careers.pypl.com/home/"
+ },
+ "company:setanta": {
+  "first_seen": "2026-10-14T18:27:45",
+  "name": "Setanta",
+  "url": null
+ },
+ "company:hand": {
+  "first_seen": "2026-10-14T18:27:45",
+  "name": "H And",
+  "url": "https://ignitetech.ai/"
+ },
+ "company:rototech": {
+  "first_seen": "2026-10-14T18:28:10",
+  "name": "Rototech",
+  "url": null
+ },
+ "company:technimark": {
+  "first_seen": "2026-10-14T18:28:10",
+  "name": "Technimark",
+  "url": "https://www.technimark.com/careers/"
+ },
+ "company:armalou": {
+  "first_seen": "2026-10-14T18:28:39",
+  "name": "Armalou",
+  "url": null
+ },
+ "company:esker": {
+  "first_seen": "2026-10-14T18:28:39",
+  "name": "Esker",
+  "url": null
+ },
+ "company:brendan": {
+  "first_seen": "2026-10-14T18:28:39",
+  "name": "Brendan",
+  "url": "https://www.brendan.com/careers/"
+ },
+ "company:energywise": {
+  "first_seen": "2026-10-14T18:29:18",
+  "name": "Energywise",
+  "url": null
+ },
+ "company:kskrathmor": {
+  "first_seen": "2026-10-14T18:29:18",
+  "name": "Ksk Rathmor",
+  "url": null
+ },
+ "company:mater": {
+  "first_seen": "2026-10-14T18:29:18",
+  "name": "Mater",
+  "url": null
+ },
+ "company:kerry": {
+  "first_seen": "2026-10-14T18:29:18",
+  "name": "Kerry",
+  "url": "https://jobs.kerry.com/gb/en"
+ },
+ "company:radiance": {
+  "first_seen": "2026-10-14T18:29:22",
+  "name": "Radiance",
+  "url": "https://radiance.ie/"
+ },
+ "company:novartis": {
+  "first_seen": "2026-10-14T18:30:01",
+  "name": "Novartis",
+  "url": "https://www.novartis.com/careers"
+ },
+ "company:mcelwain": {
+  "first_seen": "2026-10-14T18:30:14",
+  "name": "Mcelwain",
+  "url": null
+ },
+ "company:travglen": {
+  "first_seen": "2026-10-14T18:30:14",
+  "name": "Travglen",
+  "url": null
+ },
+ "company:omnicommediagroup": {
+  "first_seen": "2026-10-14T18:30:14",
+  "name": "Omnicommediagroup",
+  "url": "https://omnicommedia.com/careers/"
+ },
+ "company:tender": {
+  "first_seen": "2026-10-14T18:31:25",
+  "name": "Tender",
+  "url": null
+ },
+ "company:innopharma": {
+  "first_seen": "2026-10-14T18:31:25",
+  "name": "Innopharma",
+  "url": null
+ },
+ "company:infineon": {
+  "first_seen": "2026-10-14T18:31:25",
+  "name": "Infineon",
+  "url": "https://jobs.infineon.com/careers"
+ },
+ "company:caring": {
+  "first_seen": "2026-10-14T18:31:42",
+  "name": "Caring",
+  "url": "https://careers.caring.com/"
+ },
+ "company:mazeppa": {
+  "first_seen": "2026-10-14T18:32:11",
+  "name": "Mazeppa",
+  "url": null
+ },
+ "company:leonard": {
+  "first_seen": "2026-10-14T18:32:11",
+  "name": "Leonard",
+  "url": "https://www.stinson.com/careers-your-career"
+ },
+ "company:tempside": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Tempside",
+  "url": null
+ },
+ "company:electrical": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Electrical",
+  "url": null
+ },
+ "company:whisbay": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Whisbay",
+  "url": null
+ },
+ "company:gaffney": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Gaffney",
+  "url": null
+ },
+ "company:domanska": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Domanska",
+  "url": null
+ },
+ "company:jriamerica": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Jri America",
+  "url": null
+ },
+ "company:barretstown": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Barretstown",
+  "url": null
+ },
+ "company:ventside": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Ventside",
+  "url": null
+ },
+ "company:lamresearch": {
+  "first_seen": "2026-10-14T18:32:57",
+  "name": "Lam Research",
+  "url": "https://careers.lamresearch.com/careers"
+ },
+ "company:clearstream": {
+  "first_seen": "2026-10-14T18:33:05",
+  "name": "Clearstream",
+  "url": "https://apply.workable.com/clearstream/"
+ },
+ "company:dream": {
+  "first_seen": "2026-10-14T18:33:06",
+  "name": "Dream",
+  "url": "https://dream.ai/careers"
+ },
+ "company:protrans": {
+  "first_seen": "2026-10-14T18:33:24",
+  "name": "Protrans",
+  "url": "https://protrans.com/join-our-team"
+ },
+ "company:abhann": {
+  "first_seen": "2026-10-14T18:34:07",
+  "name": "Abhann",
+  "url": null
+ },
+ "company:stryker": {
+  "first_seen": "2026-10-14T18:34:07",
+  "name": "Stryker",
+  "url": "https://careers.stryker.com/"
+ },
+ "company:amneal": {
+  "first_seen": "2026-10-14T18:34:09",
+  "name": "Amneal",
+  "url": "https://careers.amneal.com/i/us/en/loginoptions?RelayState=https%3A%2F%2Fcareers.amneal.com%2Fi%2F"
+ },
+ "company:allstar": {
+  "first_seen": "2026-10-14T18:34:13",
+  "name": "All Star",
+  "url": null
+ },
+ "company:appliedprocess": {
+  "first_seen": "2026-10-14T18:34:13",
+  "name": "Applied Process",
+  "url": null
+ },
+ "company:careaboutyou": {
+  "first_seen": "2026-10-14T18:34:13",
+  "name": "Careaboutyou",
+  "url": null
+ },
+ "company:eatzen": {
+  "first_seen": "2026-10-14T18:34:13",
+  "name": "Eatzen",
+  "url": "https://eatzen.com/careers"
+ },
+ "company:globe": {
+  "first_seen": "2026-10-14T18:34:44",
+  "name": "Globe",
+  "url": "https://globe.rec.pro.ukg.net/BOS1501BGMP/JobBoard/3ebc7d47-2d31-4b8d-817d-db673315517a/"
+ },
+ "company:crewit": {
+  "first_seen": "2026-10-14T18:35:28",
+  "name": "Crewit",
+  "url": null
+ },
+ "company:connaught": {
+  "first_seen": "2026-10-14T18:35:28",
+  "name": "Connaught",
+  "url": "https://www.connaught.ie/careers"
+ },
+ "company:manguard": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Manguard",
+  "url": null
+ },
+ "company:cunningham": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Cunningham",
+  "url": null
+ },
+ "company:hibernia": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Hibernia",
+  "url": null
+ },
+ "company:nirocon": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Nirocon",
+  "url": null
+ },
+ "company:mcdermott": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Mcdermott",
+  "url": null
+ },
+ "company:smbc": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Smbc",
+  "url": null
+ },
+ "company:mhlb": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Mhlb",
+  "url": null
+ },
+ "company:janssen": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Janssen",
+  "url": null
+ },
+ "company:sparkoo": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Sparkoo",
+  "url": null
+ },
+ "company:sgs": {
+  "first_seen": "2026-10-14T18:36:02",
+  "name": "Sgs",
+  "url": "https://www.sgs.com/en/our-company/careers-at-sgs"
+ },
+ "company:mirha": {
+  "first_seen": "2026-10-14T18:36:26",
+  "name": "Mirha",
+  "url": null
+ },
+ "company:pisana": {
+  "first_seen": "2026-10-14T18:36:26",
+  "name": "Pisana",
+  "url": null
+ },
+ "company:joriding": {
+  "first_seen": "2026-10-14T18:36:26",
+  "name": "Joriding",
+  "url": null
+ },
+ "company:wings": {
+  "first_seen": "2026-10-14T18:36:26",
+  "name": "Wings",
+  "url": "https://www.wings.ai/careers"
+ },
+ "company:john": {
+  "first_seen": "2026-10-14T18:36:48",
+  "name": "John",
+  "url": null
+ },
+ "company:oconnor": {
+  "first_seen": "2026-10-14T18:36:48",
+  "name": "O Connor",
+  "url": null
+ },
+ "company:patrick": {
+  "first_seen": "2026-10-14T18:36:48",
+  "name": "Patrick",
+  "url": "https://hi.patrick.com/"
+ },
+ "company:tetra": {
+  "first_seen": "2026-10-14T18:37:20",
+  "name": "Tetra",
+  "url": "https://www.tetra.com/careers"
+ },
+ "company:rccengineering": {
+  "first_seen": "2026-10-14T18:37:37",
+  "name": "Rcc Engineering",
+  "url": "https://rightgroup.ie/careers/"
+ },
+ "company:asml": {
+  "first_seen": "2026-10-14T18:38:05",
+  "name": "Asml",
+  "url": "https://www.asml.com/en/careers"
+ },
+ "company:expleo": {
+  "first_seen": "2026-10-14T18:38:36",
+  "name": "Expleo",
+  "url": "https://careers.expleo.com/en/"
+ },
+ "company:breffni": {
+  "first_seen": "2026-10-14T18:39:39",
+  "name": "Breffni",
+  "url": null
+ },
+ "company:keywords": {
+  "first_seen": "2026-10-14T18:39:39",
+  "name": "Keywords",
+  "url": "https://introvert.com/?domain=keywords.io"
+ },
+ "company:aspiegel": {
+  "first_seen": "2026-10-14T18:39:56",
+  "name": "Aspiegel",
+  "url": null
+ },
+ "company:pjmartley": {
+  "first_seen": "2026-10-14T18:39:56",
+  "name": "Pj Martley",
+  "url": null
+ },
+ "company:shabra": {
+  "first_seen": "2026-10-14T18:39:56",
+  "name": "Shabra",
+  "url": "https://shabra.com/careers/"
+ },
+ "company:nuigalway": {
+  "first_seen": "2026-10-14T18:40:19",
+  "name": "Nui Galway",
+  "url": "https://www.universityofgalway.ie/careers/"
+ },
+ "company:prodig": {
+  "first_seen": "2026-10-14T18:40:36",
+  "name": "Prodig",
+  "url": null
+ },
+ "company:tirushmore": {
+  "first_seen": "2026-10-14T18:40:36",
+  "name": "Ti Rushmore",
+  "url": null
+ },
+ "company:phantomarc": {
+  "first_seen": "2026-10-14T18:40:36",
+  "name": "Phantomarc",
+  "url": null
+ },
+ "company:elliott": {
+  "first_seen": "2026-10-14T18:40:36",
+  "name": "Elliott",
+  "url": null
+ },
+ "company:vodafone": {
+  "first_seen": "2026-10-14T18:40:36",
+  "name": "Vodafone",
+  "url": "https://careers.vodafone.com/"
+ },
+ "company:werlay": {
+  "first_seen": "2026-10-14T18:41:14",
+  "name": "Werlay",
+  "url": null
+ },
+ "company:aerogen": {
+  "first_seen": "2026-10-14T18:41:14",
+  "name": "Aerogen",
+  "url": "https://www.aerogen.com/careers-/working-at-aerogen"
+ },
+ "company:xtech": {
+  "first_seen": "2026-10-14T18:41:55",
+  "name": "Xtech",
+  "url": null
+ },
+ "company:yuno": {
+  "first_seen": "2026-10-14T18:41:55",
+  "name": "Yuno",
+  "url": "https://yuno.ai/careers"
+ },
+ "company:chlokat": {
+  "first_seen": "2026-10-14T18:42:16",
+  "name": "Chlokat",
+  "url": null
+ },
+ "company:bishopsisland": {
+  "first_seen": "2026-10-14T18:42:16",
+  "name": "Bishopsisland",
+  "url": null
+ },
+ "company:vitalograph": {
+  "first_seen": "2026-10-14T18:42:16",
+  "name": "Vitalograph",
+  "url": "https://vitalograph.com/about/careers"
+ },
+ "company:order": {
+  "first_seen": "2026-10-14T18:42:52",
+  "name": "Order",
+  "url": null
+ },
+ "company:lsmengineering": {
+  "first_seen": "2026-10-14T18:42:52",
+  "name": "Lsm Engineering",
+  "url": null
+ },
+ "company:stantec": {
+  "first_seen": "2026-10-14T18:42:52",
+  "name": "Stantec",
+  "url": null
+ },
+ "company:stephen": {
+  "first_seen": "2026-10-14T18:42:52",
+  "name": "Stephen",
+  "url": "https://stephen.omg.lol/"
+ },
+ "company:malanaphy": {
+  "first_seen": "2026-10-14T18:43:21",
+  "name": "Malanaphy",
+  "url": null
+ },
+ "company:ryanair": {
+  "first_seen": "2026-10-14T18:43:21",
+  "name": "Ryanair",
+  "url": "https://careers.ryanair.com/"
+ },
+ "company:depaul": {
+  "first_seen": "2026-10-14T18:43:50",
+  "name": "Depaul",
+  "url": null
+ },
+ "company:bdosupport": {
+  "first_seen": "2026-10-14T18:43:50",
+  "name": "Bdo Support",
+  "url": null
+ },
+ "company:ballinlough": {
+  "first_seen": "2026-10-14T18:43:50",
+  "name": "Ballinlough",
+  "url": null
+ },
+ "company:mkexpert": {
+  "first_seen": "2026-10-14T18:43:50",
+  "name": "Mk Expert",
+  "url": null
+ },
+ "company:sugarloaf": {
+  "first_seen": "2026-10-14T18:43:50",
+  "name": "Sugarloaf",
+  "url": null
+ },
+ "company:sparrow": {
+  "first_seen": "2026-10-14T18:43:50",
+  "name": "Sparrow",
+  "url": "https://sparrow.com/careers/"
+ },
+ "company:people": {
+  "first_seen": "2026-10-14T18:43:53",
+  "name": "People",
+  "url": "https://www.backstory.ai/about-us/careers"
+ },
+ "company:test": {
+  "first_seen": "2026-10-14T18:43:56",
+  "name": "Test",
+  "url": null
+ },
+ "company:colonel": {
+  "first_seen": "2026-10-14T18:43:56",
+  "name": "Colonel",
+  "url": null
+ },
+ "company:astellas": {
+  "first_seen": "2026-10-14T18:43:56",
+  "name": "Astellas",
+  "url": "https://careers.astellas.com/"
+ },
+ "company:opening": {
+  "first_seen": "2026-10-14T18:44:57",
+  "name": "Opening",
+  "url": null
+ },
+ "company:running": {
+  "first_seen": "2026-10-14T18:44:57",
+  "name": "Running",
+  "url": null
+ },
+ "company:futuregrass": {
+  "first_seen": "2026-10-14T18:44:57",
+  "name": "Future Grass",
+  "url": null
+ },
+ "company:globoforce": {
+  "first_seen": "2026-10-14T18:44:57",
+  "name": "Globoforce",
+  "url": "https://www.workhuman.com"
+ },
+ "company:bruscar": {
+  "first_seen": "2026-10-14T18:45:08",
+  "name": "Bruscar",
+  "url": null
+ },
+ "company:coldridge": {
+  "first_seen": "2026-10-14T18:45:08",
+  "name": "Coldridge",
+  "url": null
+ },
+ "company:arista": {
+  "first_seen": "2026-10-14T18:45:08",
+  "name": "Arista",
+  "url": null
+ },
+ "company:dromone": {
+  "first_seen": "2026-10-14T18:45:08",
+  "name": "Dromone",
+  "url": "https://dromone.com/careers/"
+ },
+ "company:linkedin": {
+  "first_seen": "2026-10-14T18:46:56",
+  "name": "Linkedin",
+  "url": "https://careers.linkedin.com/"
+ },
+ "company:counter": {
+  "first_seen": "2026-10-14T18:47:28",
+  "name": "Counter",
+  "url": null
+ },
+ "company:hitachi": {
+  "first_seen": "2026-10-14T18:47:28",
+  "name": "Hitachi",
+  "url": null
+ },
+ "company:midcork": {
+  "first_seen": "2026-10-14T18:47:28",
+  "name": "Mid Cork",
+  "url": null
+ },
+ "company:resot": {
+  "first_seen": "2026-10-14T18:47:28",
+  "name": "Resot",
+  "url": null
+ },
+ "company:proofpoint": {
+  "first_seen": "2026-10-14T18:47:28",
+  "name": "Proofpoint",
+  "url": "https://www.proofpoint.com/us/company/careers"
+ },
+ "company:eaton": {
+  "first_seen": "2026-10-14T18:47:42",
+  "name": "Eaton",
+  "url": null
+ },
+ "company:intact": {
+  "first_seen": "2026-10-14T18:47:42",
+  "name": "Intact",
+  "url": null
+ },
+ "company:keywaste": {
+  "first_seen": "2026-10-14T18:47:42",
+  "name": "Key Waste",
+  "url": "https://www.keygreen.ie/"
+ },
+ "company:sparantus": {
+  "first_seen": "2026-10-14T18:48:08",
+  "name": "Sparantus",
+  "url": null
+ },
+ "company:sapservice": {
+  "first_seen": "2026-10-14T18:48:08",
+  "name": "Sap Service",
+  "url": null
+ },
+ "company:lmhengineering": {
+  "first_seen": "2026-10-14T18:48:08",
+  "name": "Lmh Engineering",
+  "url": null
+ },
+ "company:smithstown": {
+  "first_seen": "2026-10-14T18:48:08",
+  "name": "Smithstown",
+  "url": null
+ },
+ "company:sumitomo": {
+  "first_seen": "2026-10-14T18:48:08",
+  "name": "Sumitomo",
+  "url": null
+ },
+ "company:watershed": {
+  "first_seen": "2026-10-14T18:48:08",
+  "name": "Watershed",
+  "url": "https://watershed.com/careers"
+ },
+ "company:winthrop": {
+  "first_seen": "2026-10-14T18:48:20",
+  "name": "Winthrop",
+  "url": "https://winthrop.com/careers/"
+ },
+ "company:welove": {
+  "first_seen": "2026-10-14T18:48:41",
+  "name": "We Love",
+  "url": "https://welove.ai"
+ },
+ "company:kent": {
+  "first_seen": "2026-10-14T18:49:30",
+  "name": "Kent",
+  "url": null
+ },
+ "company:athassel": {
+  "first_seen": "2026-10-14T18:49:30",
+  "name": "Athassel",
+  "url": null
+ },
+ "company:motorola": {
+  "first_seen": "2026-10-14T18:49:30",
+  "name": "Motorola",
+  "url": "https://www.motorola.com/ie/en/homepage"
+ },
+ "company:admore": {
+  "first_seen": "2026-10-14T18:50:10",
+  "name": "Admore",
+  "url": null
+ },
+ "company:silent": {
+  "first_seen": "2026-10-14T18:50:10",
+  "name": "Silent",
+  "url": "https://introvert.com/?domain=silent.io"
+ },
+ "company:sean": {
+  "first_seen": "2026-10-14T18:50:26",
+  "name": "Sean",
+  "url": null
+ },
+ "company:camile": {
+  "first_seen": "2026-10-14T18:50:26",
+  "name": "Camile",
+  "url": "https://www.camile.com/careers"
+ },
+ "company:coyle": {
+  "first_seen": "2026-10-14T18:50:47",
+  "name": "Coyle",
+  "url": "https://www.coyle.com/careers"
+ },
+ "company:24doc": {
+  "first_seen": "2026-10-14T18:51:17",
+  "name": "24 Doc",
+  "url": null
+ },
+ "company:sunlife": {
+  "first_seen": "2026-10-14T18:51:17",
+  "name": "Sun Life",
+  "url": "https://www.sunlife.ie/en/"
+ },
+ "company:hmclaughlin": {
+  "first_seen": "2026-10-14T18:51:50",
+  "name": "H Mclaughlin",
+  "url": null
+ },
+ "company:cully": {
+  "first_seen": "2026-10-14T18:51:50",
+  "name": "Cully",
+  "url": "https://www.cully.ie/careers"
+ },
+ "company:emerton": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Emerton",
+  "url": null
+ },
+ "company:blacklion": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Blacklion",
+  "url": null
+ },
+ "company:brown": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Brown",
+  "url": null
+ },
+ "company:pudaxa": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Pudaxa",
+  "url": null
+ },
+ "company:noblewood": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Noblewood",
+  "url": null
+ },
+ "company:ourlady": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Our Lady",
+  "url": null
+ },
+ "company:technowiz": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Technowiz",
+  "url": null
+ },
+ "company:albany": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Albany",
+  "url": null
+ },
+ "company:saotharlann": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Saotharlann",
+  "url": null
+ },
+ "company:yivee": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Yivee",
+  "url": null
+ },
+ "company:exlservice": {
+  "first_seen": "2026-10-14T18:52:14",
+  "name": "Exlservice",
+  "url": "https://www.exlservice.com/careers"
+ },
+ "company:dublincentral": {
+  "first_seen": "2026-10-14T18:53:18",
+  "name": "Dublin Central",
+  "url": null
+ },
+ "company:cobra": {
+  "first_seen": "2026-10-14T18:53:18",
+  "name": "Cobra",
+  "url": null
+ },
+ "company:mardukh": {
+  "first_seen": "2026-10-14T18:53:18",
+  "name": "Mardukh",
+  "url": "https://mardukh.com/careers"
+ },
+ "company:jacobs": {
+  "first_seen": "2026-10-14T18:53:50",
+  "name": "Jacobs",
+  "url": "https://www.jacobs.com/careers-jacobs"
+ },
+ "company:globallogic": {
+  "first_seen": "2026-10-14T18:55:40",
+  "name": "Globallogic",
+  "url": null
+ },
+ "company:tricel": {
+  "first_seen": "2026-10-14T18:55:40",
+  "name": "Tricel",
+  "url": null
+ },
+ "company:port": {
+  "first_seen": "2026-10-14T18:55:40",
+  "name": "Port",
+  "url": "https://www.port.io/careers"
+ },
+ "company:alizashanza": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Alizashanza",
+  "url": null
+ },
+ "company:fleury": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Fleury",
+  "url": null
+ },
+ "company:willowcrest": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Willowcrest",
+  "url": null
+ },
+ "company:soti": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Soti",
+  "url": null
+ },
+ "company:eskplant": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Esk Plant",
+  "url": null
+ },
+ "company:elmcollection": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Elm Collection",
+  "url": null
+ },
+ "company:angelshine": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Angelshine",
+  "url": null
+ },
+ "company:ethos": {
+  "first_seen": "2026-10-14T18:55:55",
+  "name": "Ethos",
+  "url": "https://www.ethos.com/careers/"
+ },
+ "company:mulranny": {
+  "first_seen": "2026-10-14T18:55:58",
+  "name": "Mulranny",
+  "url": null
+ },
+ "company:harmony": {
+  "first_seen": "2026-10-14T18:55:58",
+  "name": "Harmony",
+  "url": "https://harmony.ai/careers"
+ },
+ "company:freshways": {
+  "first_seen": "2026-10-14T18:56:23",
+  "name": "Freshways",
+  "url": null
+ },
+ "company:forsythia": {
+  "first_seen": "2026-10-14T18:56:23",
+  "name": "Forsythia",
+  "url": null
+ },
+ "company:managed": {
+  "first_seen": "2026-10-14T18:56:23",
+  "name": "Managed",
+  "url": "https://managed.com/careers"
+ },
+ "company:musgrave": {
+  "first_seen": "2026-10-14T18:56:54",
+  "name": "Musgrave",
+  "url": "https://sigerson.co.uk/"
+ },
+ "company:neueda": {
+  "first_seen": "2026-10-14T18:57:15",
+  "name": "Neueda",
+  "url": "https://neueda.com/careers/"
+ },
+ "company:ornua": {
+  "first_seen": "2026-10-14T18:57:47",
+  "name": "Ornua",
+  "url": "https://careers.ornua.com/"
+ },
+ "company:lanathai": {
+  "first_seen": "2026-10-14T18:58:25",
+  "name": "Lanathai",
+  "url": null
+ },
+ "company:daapublic": {
+  "first_seen": "2026-10-14T18:58:25",
+  "name": "Daa Public",
+  "url": null
+ },
+ "company:willis": {
+  "first_seen": "2026-10-14T18:58:25",
+  "name": "Willis",
+  "url": "https://www.wtwco.com/en-in"
+ },
+ "company:stablefield": {
+  "first_seen": "2026-10-14T18:58:54",
+  "name": "Stablefield",
+  "url": null
+ },
+ "company:cope": {
+  "first_seen": "2026-10-14T18:58:54",
+  "name": "Cope",
+  "url": null
+ },
+ "company:kellogg": {
+  "first_seen": "2026-10-14T18:58:54",
+  "name": "Kellogg",
+  "url": null
+ },
+ "company:amgen": {
+  "first_seen": "2026-10-14T18:58:54",
+  "name": "Amgen",
+  "url": "https://careers.amgen.com/en"
+ },
+ "company:luke": {
+  "first_seen": "2026-10-14T18:58:56",
+  "name": "Luke",
+  "url": null
+ },
+ "company:bearingpoint": {
+  "first_seen": "2026-10-14T18:58:56",
+  "name": "Bearingpoint",
+  "url": "https://www.bearingpoint.com/en/"
+ },
+ "company:chewbay": {
+  "first_seen": "2026-10-14T18:59:48",
+  "name": "Chewbay",
+  "url": null
+ },
+ "company:drescator": {
+  "first_seen": "2026-10-14T18:59:48",
+  "name": "Drescator",
+  "url": null
+ },
+ "company:glendonagh": {
+  "first_seen": "2026-10-14T18:59:48",
+  "name": "Glendonagh",
+  "url": null
+ },
+ "company:wall": {
+  "first_seen": "2026-10-14T18:59:48",
+  "name": "Wall",
+  "url": "https://x.com/Jamessfbay"
+ },
+ "company:asmservice": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "Asm Service",
+  "url": null
+ },
+ "company:rps": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "Rps",
+  "url": null
+ },
+ "company:hewlett": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "Hewlett",
+  "url": null
+ },
+ "company:mand": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "M And",
+  "url": null
+ },
+ "company:allfresh": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "All Fresh",
+  "url": null
+ },
+ "company:condon": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "Condon",
+  "url": null
+ },
+ "company:glorial": {
+  "first_seen": "2026-10-14T19:00:05",
+  "name": "Glorial",
+  "url": "https://glorial.ie/careers"
+ },
+ "company:great": {
+  "first_seen": "2026-10-14T19:00:24",
+  "name": "Great",
+  "url": null
+ },
+ "company:mheffernan": {
+  "first_seen": "2026-10-14T19:00:24",
+  "name": "M Heffernan",
+  "url": null
+ },
+ "company:remitly": {
+  "first_seen": "2026-10-14T19:00:24",
+  "name": "Remitly",
+  "url": "https://careers.remitly.com/"
+ },
+ "company:robinson": {
+  "first_seen": "2026-10-14T19:01:00",
+  "name": "Robinson",
+  "url": "https://jobs.robinson.com/startseite/"
+ },
+ "company:pscbiotech": {
+  "first_seen": "2026-10-14T19:01:45",
+  "name": "Psc Biotech",
+  "url": null
+ },
+ "company:beaumont": {
+  "first_seen": "2026-10-14T19:01:45",
+  "name": "Beaumont",
+  "url": null
+ },
+ "company:sheephaven": {
+  "first_seen": "2026-10-14T19:01:45",
+  "name": "Sheephaven",
+  "url": null
+ },
+ "company:northern": {
+  "first_seen": "2026-10-14T19:01:45",
+  "name": "Northern",
+  "url": null
+ },
+ "company:profile": {
+  "first_seen": "2026-10-14T19:01:45",
+  "name": "Profile",
+  "url": "https://www.profile.io/careers"
+ },
+ "company:zoetis": {
+  "first_seen": "2026-10-14T19:02:09",
+  "name": "Zoetis",
+  "url": "https://www.zoetis.com/join-us"
+ },
+ "company:lakeview": {
+  "first_seen": "2026-10-14T19:02:10",
+  "name": "Lakeview",
+  "url": null
+ },
+ "company:mungret": {
+  "first_seen": "2026-10-14T19:02:10",
+  "name": "Mungret",
+  "url": null
+ },
+ "company:cnnoodle": {
+  "first_seen": "2026-10-14T19:02:10",
+  "name": "Cn Noodle",
+  "url": null
+ },
+ "company:carebright": {
+  "first_seen": "2026-10-14T19:02:10",
+  "name": "Carebright",
+  "url": "https://www.carebright.ie/careers"
+ },
+ "company:stluke": {
+  "first_seen": "2026-10-14T19:02:31",
+  "name": "St Luke",
+  "url": null
+ },
+ "company:harte": {
+  "first_seen": "2026-10-14T19:02:31",
+  "name": "Harte",
+  "url": null
+ },
+ "company:userpilot": {
+  "first_seen": "2026-10-14T19:02:31",
+  "name": "Userpilot",
+  "url": null
+ },
+ "company:corby": {
+  "first_seen": "2026-10-14T19:02:31",
+  "name": "Corby",
+  "url": "https://www.corbyofwindsor.com/about/careers"
+ },
+ "company:maisonbeech": {
+  "first_seen": "2026-10-14T19:03:18",
+  "name": "Maisonbeech",
+  "url": null
+ },
+ "company:sligo": {
+  "first_seen": "2026-10-14T19:03:18",
+  "name": "Sligo",
+  "url": null
+ },
+ "company:khengineering": {
+  "first_seen": "2026-10-14T19:03:18",
+  "name": "Kh Engineering",
+  "url": null
+ },
+ "company:cram": {
+  "first_seen": "2026-10-14T19:03:18",
+  "name": "C Ram",
+  "url": "https://introvert.com/?domain=cram.io"
+ },
+ "company:mcmahon": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Mcmahon",
+  "url": null
+ },
+ "company:gavin": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Gavin",
+  "url": null
+ },
+ "company:alltec": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Alltec",
+  "url": null
+ },
+ "company:ethomas": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "E Thomas",
+  "url": null
+ },
+ "company:alfa": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Alfa",
+  "url": null
+ },
+ "company:bloodaxe": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Bloodaxe",
+  "url": null
+ },
+ "company:smarthorizon": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Smart Horizon",
+  "url": null
+ },
+ "company:season": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Season",
+  "url": null
+ },
+ "company:prestwick": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Prestwick",
+  "url": null
+ },
+ "company:ambf": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Ambf",
+  "url": null
+ },
+ "company:callan": {
+  "first_seen": "2026-10-14T19:03:33",
+  "name": "Callan",
+  "url": "https://www.callan.com/careers/"
+ },
+ "company:diageo": {
+  "first_seen": "2026-10-14T19:03:40",
+  "name": "Diageo",
+  "url": "https://www.diageo.com/en/careers"
+ },
+ "company:bord": {
+  "first_seen": "2026-10-14T19:04:09",
+  "name": "Bord",
+  "url": "https://bord.ai/careers"
+ },
+ "company:enable": {
+  "first_seen": "2026-10-14T19:04:34",
+  "name": "Enable",
+  "url": "https://www.enable.com/careers/"
+ },
+ "company:aerlingus": {
+  "first_seen": "2026-10-14T19:04:37",
+  "name": "Aer Lingus",
+  "url": null
+ },
+ "company:caiseal": {
+  "first_seen": "2026-10-14T19:04:37",
+  "name": "Caiseal",
+  "url": null
+ },
+ "company:holy": {
+  "first_seen": "2026-10-14T19:04:37",
+  "name": "Holy",
+  "url": "https://weareholy.notion.site/Work-at-HOLY-c7cdff26df2b4b23963597c6b1b6eea6?pvs=4"
+ },
+ "company:ganavan": {
+  "first_seen": "2026-10-14T19:04:51",
+  "name": "Ganavan",
+  "url": null
+ },
+ "company:coconut": {
+  "first_seen": "2026-10-14T19:04:51",
+  "name": "Coconut",
+  "url": "https://coconut.ie/careers"
+ },
+ "coconut.ie": {
+  "first_seen": "2026-10-14T19:04:51",
+  "url": "https://coconut.ie/careers",
+  "registered": false
+ },
+ "careers.doctolib.com": {
+  "first_seen": "2026-10-16T17:25:53",
+  "url": "https://careers.doctolib.com/",
+  "registered": false
+ },
+ "company:konofficial": {
+  "first_seen": "2026-10-16T17:26:19",
+  "name": "KON-official",
+  "url": null
+ },
+ "company:castai": {
+  "first_seen": "2026-10-16T17:26:54",
+  "name": "Cast AI",
+  "url": null
+ },
+ "company:inspace": {
+  "first_seen": "2026-10-16T17:27:01",
+  "name": "InSpace",
+  "url": "https://inspace.io/nl-nl/careers"
+ },
+ "company:kimchi": {
+  "first_seen": "2026-10-16T17:27:16",
+  "name": "Kimchi",
+  "url": null
+ },
+ "fliprecast.com": {
+  "first_seen": "2026-10-16T17:27:17",
+  "url": "https://fliprecast.com/careers/",
+  "registered": false
+ },
+ "eevd.fa.us6.oraclecloud.com:443": {
+  "first_seen": "2026-10-16T17:27:53",
+  "url": "https://eevd.fa.us6.oraclecloud.com:443/hcmUI/CandidateExperience/en/sites/CX_20",
+  "registered": false
+ },
+ "eevd.fa.us6.oraclecloud.com": {
+  "first_seen": "2026-10-16T17:28:59",
+  "url": "https://eevd.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_20/requisitions?lastSelectedFacet=CATEGORIES&mode=location&selectedCategoriesFacet=300000145719801",
+  "registered": false
+ },
+ "ignitetech.ai": {
+  "first_seen": "2026-10-16T17:30:38",
+  "url": "https://ignitetech.ai/",
+  "registered": false
+ },
+ "www.technimark.com": {
+  "first_seen": "2026-10-16T17:31:26",
+  "url": "https://www.technimark.com/careers/",
+  "registered": false
+ },
+ "www.brendan.com": {
+  "first_seen": "2026-10-16T17:31:58",
+  "url": "https://www.brendan.com/careers/",
+  "registered": false
+ },
+ "radiance.ie": {
+  "first_seen": "2026-10-16T17:32:46",
+  "url": "https://radiance.ie/",
+  "registered": false
+ },
+ "company:adyen": {
+  "first_seen": "2026-10-17T07:16:08",
+  "name": "Adyen",
+  "url": "https://careers.adyen.com/"
+ },
+ "careers.caring.com": {
+  "first_seen": "2026-10-17T07:16:41",
+  "url": "https://careers.caring.com/",
+  "registered": false
+ },
+ "www.stinson.com": {
+  "first_seen": "2026-10-17T07:17:51",
+  "url": "https://www.stinson.com/careers-current-opportunities",
+  "registered": false
+ },
+ "dream.ai": {
+  "first_seen": "2026-10-17T07:18:12",
+  "url": "https://dream.ai/careers",
+  "registered": false
+ },
+ "protrans.com": {
+  "first_seen": "2026-10-17T07:18:32",
+  "url": "https://protrans.com/join-our-team",
+  "registered": false
+ },
+ "workforcenow.adp.com": {
+  "first_seen": "2026-10-17T07:18:57",
+  "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=a5c22954-7ebe-4617-8325-6b5eb6f5920d&ccId=19000101_000001&lang=en_US",
+  "registered": false
+ },
+ "eatzen.com": {
+  "first_seen": "2026-10-17T07:19:25",
+  "url": "https://eatzen.com/careers",
+  "registered": false
+ },
+ "www.connaught.ie": {
+  "first_seen": "2026-10-17T07:20:00",
+  "url": "https://www.connaught.ie/careers",
+  "registered": false
+ },
+ "www.sgs.com": {
+  "first_seen": "2026-10-17T07:20:57",
+  "url": "https://www.sgs.com/en/our-company/careers-at-sgs/job-opportunities",
+  "registered": false
+ },
+ "www.wings.ai": {
+  "first_seen": "2026-10-17T07:21:04",
+  "url": "https://www.wings.ai/careers",
+  "registered": false
+ },
+ "hi.patrick.com": {
+  "first_seen": "2026-10-17T07:21:29",
+  "url": "https://hi.patrick.com/",
+  "registered": false
+ },
+ "www.tetra.com": {
+  "first_seen": "2026-10-17T07:21:57",
+  "url": "https://www.tetra.com/careers",
+  "registered": false
+ },
+ "rightgroup.ie": {
+  "first_seen": "2026-10-17T07:22:15",
+  "url": "https://rightgroup.ie/careers/",
+  "registered": false
+ },
+ "careers.expleo.com": {
+  "first_seen": "2026-10-17T07:23:11",
+  "url": "https://careers.expleo.com/en/roles/industry/",
+  "registered": false
+ },
+ "company:ibm": {
+  "first_seen": "2026-10-17T07:23:45",
+  "name": "Ibm",
+  "url": "https://www.ibm.com/careers"
+ },
+ "company:knockeen": {
+  "first_seen": "2026-10-17T07:24:26",
+  "name": "Knockeen",
+  "url": null
+ },
+ "company:liffeyfield": {
+  "first_seen": "2026-10-17T07:24:26",
+  "name": "Liffeyfield",
+  "url": null
+ },
+ "company:jinyang": {
+  "first_seen": "2026-10-17T07:24:26",
+  "name": "Jin Yang",
+  "url": null
+ },
+ "company:lighthouse": {
+  "first_seen": "2026-10-17T07:24:26",
+  "name": "Lighthouse",
+  "url": "https://lighthouse.com/careers"
+ },
+ "company:lerio": {
+  "first_seen": "2026-10-17T07:24:40",
+  "name": "Lerio",
+  "url": null
+ },
+ "company:pkfbrenson": {
+  "first_seen": "2026-10-17T07:24:40",
+  "name": "Pkf Brenson",
+  "url": null
+ },
+ "company:elgrito": {
+  "first_seen": "2026-10-17T07:24:40",
+  "name": "El Grito",
+  "url": null
+ },
+ "company:neworient": {
+  "first_seen": "2026-10-17T07:24:40",
+  "name": "New Orient",
+  "url": "https://neworient.com/"
+ },
+ "company:shawcove": {
+  "first_seen": "2026-10-17T07:25:09",
+  "name": "Shawcove",
+  "url": null
+ },
+ "company:sitecore": {
+  "first_seen": "2026-10-17T07:25:09",
+  "name": "Sitecore",
+  "url": "https://jobs.ashbyhq.com/sitecore"
+ },
+ "company:donal": {
+  "first_seen": "2026-10-17T07:25:10",
+  "name": "Donal",
+  "url": null
+ },
+ "company:teleflex": {
+  "first_seen": "2026-10-17T07:25:10",
+  "name": "Teleflex",
+  "url": "https://careers.teleflex.com/"
+ },
+ "company:roughan": {
+  "first_seen": "2026-10-17T07:25:51",
+  "name": "Roughan",
+  "url": null
+ },
+ "company:sprout": {
+  "first_seen": "2026-10-17T07:25:51",
+  "name": "Sprout",
+  "url": "https://sprout.ai/careers/"
+ },
+ "company:transact": {
+  "first_seen": "2026-10-17T07:25:53",
+  "name": "Transact",
+  "url": "https://transact.com/careers/"
+ },
+ "company:valcao": {
+  "first_seen": "2026-10-17T07:26:14",
+  "name": "Valcao",
+  "url": null
+ },
+ "company:irishcasing": {
+  "first_seen": "2026-10-17T07:26:14",
+  "name": "Irish Casing",
+  "url": null
+ },
+ "company:workman": {
+  "first_seen": "2026-10-17T07:26:14",
+  "name": "Workman",
+  "url": "https://www.hachettebookgroup.com/about/careers/?lens=workman-publishing-company"
+ },
+ "company:custom": {
+  "first_seen": "2026-10-17T07:26:41",
+  "name": "Custom",
+  "url": null
+ },
+ "company:prostainless": {
+  "first_seen": "2026-10-17T07:26:41",
+  "name": "Pro Stainless",
+  "url": null
+ },
+ "company:yahoo": {
+  "first_seen": "2026-10-17T07:26:41",
+  "name": "Yahoo",
+  "url": "https://www.yahooinc.com/careers/"
+ },
+ "company:aperee": {
+  "first_seen": "2026-10-17T07:27:12",
+  "name": "Aperee",
+  "url": null
+ },
+ "company:zadelle": {
+  "first_seen": "2026-10-17T07:27:12",
+  "name": "Zadelle",
+  "url": null
+ },
+ "company:apleona": {
+  "first_seen": "2026-10-17T07:27:12",
+  "name": "Apleona",
+  "url": "https://jobs.apleona.com/"
+ },
+ "company:avanacar": {
+  "first_seen": "2026-10-17T07:28:06",
+  "name": "Avanacar",
+  "url": null
+ },
+ "company:boogran": {
+  "first_seen": "2026-10-17T07:28:06",
+  "name": "Boogran",
+  "url": null
+ },
+ "company:three": {
+  "first_seen": "2026-10-17T07:28:06",
+  "name": "Three",
+  "url": "https://three.io/careers"
+ },
+ "company:catalyx": {
+  "first_seen": "2026-10-17T07:28:30",
+  "name": "Catalyx",
+  "url": "https://careers.catalyx.ai/"
+ },
+ "company:cbre": {
+  "first_seen": "2026-10-17T07:29:03",
+  "name": "Cbre",
+  "url": "https://www.cbre.com/careers"
+ },
+ "company:pallas": {
+  "first_seen": "2026-10-17T07:29:58",
+  "name": "Pallas",
+  "url": null
+ },
+ "company:aand": {
+  "first_seen": "2026-10-17T07:29:58",
+  "name": "A And",
+  "url": null
+ },
+ "company:andhra": {
+  "first_seen": "2026-10-17T07:29:58",
+  "name": "Andhra",
+  "url": null
+ },
+ "company:eirebloc": {
+  "first_seen": "2026-10-17T07:29:58",
+  "name": "Eirebloc",
+  "url": "https://eirebloc.com/careers"
+ },
+ "company:dleonard": {
+  "first_seen": "2026-10-17T07:30:25",
+  "name": "D Leonard",
+  "url": null
+ },
+ "company:atlantach": {
+  "first_seen": "2026-10-17T07:30:25",
+  "name": "Atlantach",
+  "url": null
+ },
+ "company:eurofins": {
+  "first_seen": "2026-10-17T07:30:25",
+  "name": "Eurofins",
+  "url": "https://careers.eurofins.com/"
+ },
+ "company:woodfire": {
+  "first_seen": "2026-10-17T07:30:27",
+  "name": "Woodfire",
+  "url": null
+ },
+ "company:fallon": {
+  "first_seen": "2026-10-17T07:30:27",
+  "name": "Fallon",
+  "url": "https://www.fallon.com/careers"
+ },
+ "company:gourmet": {
+  "first_seen": "2026-10-17T07:30:49",
+  "name": "Gourmet",
+  "url": "https://www.epicurious.com/"
+ },
+ "company:osb": {
+  "first_seen": "2026-10-17T07:31:17",
+  "name": "Osb",
+  "url": null
+ },
+ "company:greaney": {
+  "first_seen": "2026-10-17T07:31:17",
+  "name": "Greaney",
+  "url": null
+ },
+ "company:chase": {
+  "first_seen": "2026-10-17T07:31:17",
+  "name": "Chase",
+  "url": "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1002"
+ },
+ "company:commonstown": {
+  "first_seen": "2026-10-17T07:31:28",
+  "name": "Commonstown",
+  "url": null
+ },
+ "company:mcorduff": {
+  "first_seen": "2026-10-17T07:31:28",
+  "name": "M Corduff",
+  "url": null
+ },
+ "company:gortana": {
+  "first_seen": "2026-10-17T07:31:28",
+  "name": "Gortana",
+  "url": null
+ },
+ "company:kroll": {
+  "first_seen": "2026-10-17T07:31:28",
+  "name": "Kroll",
+  "url": "https://careers.kroll.com/en"
+ },
+ "company:mdscommercial": {
+  "first_seen": "2026-10-17T07:32:15",
+  "name": "Mds Commercial",
+  "url": null
+ },
+ "company:circus": {
+  "first_seen": "2026-10-17T07:32:15",
+  "name": "Circus",
+  "url": "https://circus.io/careers"
+ },
+ "company:propylon": {
+  "first_seen": "2026-10-17T07:32:35",
+  "name": "Propylon",
+  "url": "https://propylon.com/careers/"
+ },
+ "propylon.com": {
+  "first_seen": "2026-10-17T07:32:35",
+  "url": "https://propylon.com/careers/",
+  "registered": false
+ },
+ "company:adg": {
+  "first_seen": "2026-10-17T17:22:26",
+  "name": "ADG",
+  "url": "https://www.adg.com/company/careers"
+ },
+ "company:epamsystems": {
+  "first_seen": "2026-10-17T17:25:44",
+  "name": "EPAM Systems",
+  "url": null
+ },
+ "shabra.com": {
+  "first_seen": "2026-10-17T17:25:45",
+  "url": "https://shabra.com/careers/",
+  "registered": false
+ },
+ "www.universityofgalway.ie": {
+  "first_seen": "2026-10-17T17:26:22",
+  "url": "https://www.universityofgalway.ie/careers/",
+  "registered": false
+ },
+ "www.aerogen.com": {
+  "first_seen": "2026-10-17T17:26:59",
+  "url": "https://www.aerogen.com/careers-/working-at-aerogen",
+  "registered": false
+ },
+ "yuno.ai": {
+  "first_seen": "2026-10-17T17:27:56",
+  "url": "https://yuno.ai/careers",
+  "registered": false
+ },
+ "vitalograph.com": {
+  "first_seen": "2026-10-17T17:28:27",
+  "url": "https://vitalograph.com/about/careers",
+  "registered": false
+ },
+ "stephen.omg.lol": {
+  "first_seen": "2026-10-17T17:29:10",
+  "url": "https://stephen.omg.lol/",
+  "registered": false
+ },
+ "dromone.com": {
+  "first_seen": "2026-10-17T17:29:22",
+  "url": "https://dromone.com/careers/",
+  "registered": false
+ },
+ "company:mcsgroupyourspecialistrecruitmentconsultancy": {
+  "first_seen": "2026-10-18T09:12:31",
+  "name": "MCS Group | Your Specialist Recruitment Consultancy",
+  "url": null
+ },
+ "company:tataconsultancyservices": {
+  "first_seen": "2026-10-18T09:12:31",
+  "name": "Tata Consultancy Services",
+  "url": null
+ },
+ "company:ardonaghanalytics": {
+  "first_seen": "2026-10-18T09:12:32",
+  "name": "Ardonagh Analytics Lab",
+  "url": null
+ },
+ "company:futuresecureai": {
+  "first_seen": "2026-10-18T09:12:32",
+  "name": "Future Secure AI",
+  "url": null
+ },
+ "company:justeattakeawaycom": {
+  "first_seen": "2026-10-18T09:12:33",
+  "name": "Just Eat Takeaway.com",
+  "url": null
+ },
+ "company:anthropic": {
+  "first_seen": "2026-10-18T09:12:34",
+  "name": "Anthropic",
+  "url": "https://www.anthropic.com/careers"
+ },
+ "company:maneconsulting": {
+  "first_seen": "2026-10-18T09:12:42",
+  "name": "Mane Consulting",
+  "url": "https://mane.com.au/"
+ },
+ "company:deloitte": {
+  "first_seen": "2026-10-18T09:12:52",
+  "name": "Deloitte",
+  "url": "https://www.deloitte.com/global/en.html"
+ },
+ "company:australiansuper": {
+  "first_seen": "2026-10-18T09:13:00",
+  "name": "AustralianSuper",
+  "url": null
+ },
+ "company:johnsoncontrols": {
+  "first_seen": "2026-10-18T09:13:00",
+  "name": "Johnson Controls",
+  "url": "https://jobs.johnsoncontrols.com/"
+ },
+ "company:westpac": {
+  "first_seen": "2026-10-18T09:13:00",
+  "name": "Westpac",
+  "url": "https://www.westpac.com.au/about-westpac/careers/?wbc-vnty=www.westpac.com.au/careers"
+ },
+ "company:rea": {
+  "first_seen": "2026-10-18T09:13:11",
+  "name": "REA Group",
+  "url": "https://www.rea-group.com/careers/rea-culture/innovation-at-rea/"
+ },
+ "company:voize": {
+  "first_seen": "2026-10-18T09:13:22",
+  "name": "voize",
+  "url": null
+ },
+ "company:benjamin": {
+  "first_seen": "2026-10-18T09:13:49",
+  "name": "Benjamin",
+  "url": null
+ },
+ "www.keygreen.ie": {
+  "first_seen": "2026-10-18T09:15:00",
+  "url": "https://www.keygreen.ie/",
+  "registered": false
+ },
+ "winthrop.com": {
+  "first_seen": "2026-10-18T09:15:28",
+  "url": "https://winthrop.com/careers/",
+  "registered": false
+ },
+ "welove.ai": {
+  "first_seen": "2026-10-18T09:15:49",
+  "url": "https://welove.ai",
+  "registered": false
+ },
+ "www.motorola.com": {
+  "first_seen": "2026-10-18T09:17:18",
+  "url": "https://www.motorola.com/ie/en/homepage",
+  "registered": false
+ },
+ "www.camile.com": {
+  "first_seen": "2026-10-18T09:18:14",
+  "url": "https://www.camile.com/careers",
+  "registered": false
+ },
+ "www.coyle.com": {
+  "first_seen": "2026-10-18T09:18:34",
+  "url": "https://www.coyle.com/careers",
+  "registered": false
+ },
+ "mardukh.com": {
+  "first_seen": "2026-10-18T09:18:54",
+  "url": "https://mardukh.com/careers",
+  "registered": false
+ },
+ "managed.com": {
+  "first_seen": "2026-10-18T09:19:25",
+  "url": "https://managed.com/careers",
+  "registered": false
+ },
+ "careers.hostpapa.com": {
+  "first_seen": "2026-10-18T09:19:38",
+  "url": "https://careers.hostpapa.com/",
+  "registered": false
+ },
+ "sigerson.co.uk": {
+  "first_seen": "2026-10-18T09:19:59",
+  "url": "https://sigerson.co.uk/",
+  "registered": false
+ },
+ "careers.wtwco.com": {
+  "first_seen": "2026-10-18T09:20:30",
+  "url": "https://careers.wtwco.com/",
+  "registered": false
+ },
+ "www.bearingpoint.com": {
+  "first_seen": "2026-10-18T09:21:20",
+  "url": "https://www.bearingpoint.com/en/careers/open-roles/",
+  "registered": false
+ },
+ "company:ralvale": {
+  "first_seen": "2026-10-18T09:21:39",
+  "name": "Ralvale",
+  "url": null
+ },
+ "company:peter": {
+  "first_seen": "2026-10-18T09:21:50",
+  "name": "Peter",
+  "url": null
+ },
+ "company:lesv": {
+  "first_seen": "2026-10-18T09:21:51",
+  "name": "Lesv",
+  "url": null
+ },
+ "company:mediavest": {
+  "first_seen": "2026-10-18T09:21:52",
+  "name": "Mediavest",
+  "url": null
+ },
+ "company:smith": {
+  "first_seen": "2026-10-18T09:21:58",
+  "name": "Smith",
+  "url": "https://www.slb.com/legacy-companies/smith-bits"
+ },
+ "company:shannondoc": {
+  "first_seen": "2026-10-18T09:22:29",
+  "name": "Shannondoc",
+  "url": null
+ },
+ "company:squarespace": {
+  "first_seen": "2026-10-18T09:22:29",
+  "name": "Squarespace",
+  "url": "https://www.squarespace.com/about/careers"
+ },
+ "company:rock": {
+  "first_seen": "2026-10-18T09:22:41",
+  "name": "Rock",
+  "url": "https://introvert.com/?domain=rock.io"
+ },
+ "company:southwest": {
+  "first_seen": "2026-10-18T09:22:55",
+  "name": "Southwest",
+  "url": "https://careers.southwestair.com/us/en/"
+ },
+ "company:suir": {
+  "first_seen": "2026-10-18T09:22:58",
+  "name": "Suir",
+  "url": null
+ },
+ "company:hussein": {
+  "first_seen": "2026-10-18T09:22:58",
+  "name": "Hussein",
+  "url": null
+ },
+ "company:mcculla": {
+  "first_seen": "2026-10-18T09:22:58",
+  "name": "Mcculla",
+  "url": null
+ },
+ "company:vantive": {
+  "first_seen": "2026-10-18T09:22:58",
+  "name": "Vantive",
+  "url": "https://jobs.vantive.com/"
+ },
+ "company:innon": {
+  "first_seen": "2026-10-18T09:23:24",
+  "name": "Inn On",
+  "url": null
+ },
+ "company:anmhuileann": {
+  "first_seen": "2026-10-18T09:23:24",
+  "name": "An Mhuileann",
+  "url": null
+ },
+ "company:atex": {
+  "first_seen": "2026-10-18T09:23:24",
+  "name": "Atex",
+  "url": "https://www.atex.com/resources/careers/"
+ },
+ "company:hrbuddy": {
+  "first_seen": "2026-10-18T09:24:09",
+  "name": "Hr Buddy",
+  "url": "https://www.hrbuddy.ie/"
+ },
+ "company:ruben": {
+  "first_seen": "2026-10-18T09:24:57",
+  "name": "Ruben",
+  "url": null
+ },
+ "company:jaipur": {
+  "first_seen": "2026-10-18T09:24:57",
+  "name": "Jaipur",
+  "url": null
+ },
+ "company:artybaker": {
+  "first_seen": "2026-10-18T09:24:57",
+  "name": "Artybaker",
+  "url": null
+ },
+ "company:coral": {
+  "first_seen": "2026-10-18T09:24:57",
+  "name": "Coral",
+  "url": "https://developers.google.com/coral"
+ },
+ "company:ciaran": {
+  "first_seen": "2026-10-18T09:25:19",
+  "name": "Ciaran",
+  "url": "https://ciaran.ie/"
+ },
+ "company:glennon": {
+  "first_seen": "2026-10-18T09:25:45",
+  "name": "Glennon",
+  "url": "https://www.rewirecompany.com/"
+ },
+ "company:kkrdesignated": {
+  "first_seen": "2026-10-18T09:26:08",
+  "name": "Kkr Designated",
+  "url": null
+ },
+ "company:ldscarpentry": {
+  "first_seen": "2026-10-18T09:26:08",
+  "name": "Lds Carpentry",
+  "url": null
+ },
+ "company:beechfield": {
+  "first_seen": "2026-10-18T09:26:08",
+  "name": "Beechfield",
+  "url": null
+ },
+ "company:gfjia": {
+  "first_seen": "2026-10-18T09:26:08",
+  "name": "Gf Jia",
+  "url": null
+ },
+ "company:redbarn": {
+  "first_seen": "2026-10-18T09:26:08",
+  "name": "Red Barn",
+  "url": "https://www.redbarn.com/pages/career"
+ },
+ "company:frances": {
+  "first_seen": "2026-10-18T09:26:29",
+  "name": "Frances",
+  "url": null
+ },
+ "company:rathcoole": {
+  "first_seen": "2026-10-18T09:26:29",
+  "name": "Rathcoole",
+  "url": null
+ },
+ "company:tyco": {
+  "first_seen": "2026-10-18T09:26:29",
+  "name": "Tyco",
+  "url": null
+ },
+ "company:veltrix": {
+  "first_seen": "2026-10-18T09:26:29",
+  "name": "Veltrix",
+  "url": "https://veltrix.com/careers"
+ },
+ "company:alslife": {
+  "first_seen": "2026-10-18T09:26:52",
+  "name": "Als Life",
+  "url": null
+ },
+ "company:roadstone": {
+  "first_seen": "2026-10-18T09:26:52",
+  "name": "Roadstone",
+  "url": "https://www.roadstone.ie/careers"
+ },
+ "company:awphealth": {
+  "first_seen": "2026-10-18T09:27:23",
+  "name": "Awp Health",
+  "url": null
+ },
+ "company:amundi": {
+  "first_seen": "2026-10-18T09:27:23",
+  "name": "Amundi",
+  "url": "https://jobs.amundi.com/accueil.aspx?LCID=1036"
+ },
+ "company:emerald": {
+  "first_seen": "2026-10-18T09:27:53",
+  "name": "Emerald",
+  "url": "https://emerald.ie/cgi-sys/suspendedpage.cgi"
+ },
+ "company:dawnlough": {
+  "first_seen": "2026-10-18T09:28:15",
+  "name": "Dawnlough",
+  "url": "https://dawnlough.com/careers/"
+ },
+ "company:ssdevelopment": {
+  "first_seen": "2026-10-18T09:28:55",
+  "name": "Ss Development",
+  "url": null
+ },
+ "company:conor": {
+  "first_seen": "2026-10-18T09:28:55",
+  "name": "Conor",
+  "url": "https://www.conor.com/careers/"
+ },
+ "company:atview": {
+  "first_seen": "2026-10-18T09:29:44",
+  "name": "Atview",
+  "url": null
+ },
+ "company:doco": {
+  "first_seen": "2026-10-18T09:29:44",
+  "name": "Doco",
+  "url": "https://careers.doco.com/en/"
+ },
+ "careers.doco.com": {
+  "first_seen": "2026-10-18T09:29:44",
+  "url": "https://careers.doco.com/en/",
+  "registered": false
+ },
+ "company:incaridevelopmentplatform": {
+  "first_seen": "2026-10-18T17:17:06",
+  "name": "Incari Development Platform",
+  "url": null
+ },
+ "company:plenumagmanagementconsulting": {
+  "first_seen": "2026-10-18T17:17:06",
+  "name": "plenum AG - Management Consulting",
+  "url": null
+ },
+ "company:patriziase": {
+  "first_seen": "2026-10-18T17:17:07",
+  "name": "PATRIZIA SE",
+  "url": null
+ },
+ "company:adserviobelux": {
+  "first_seen": "2026-10-18T17:17:07",
+  "name": "Adservio BeLux",
+  "url": null
+ },
+ "company:scandit": {
+  "first_seen": "2026-10-18T17:17:08",
+  "name": "Scandit",
+  "url": "https://www.scandit.com/careers/"
+ },
+ "company:banquedeluxembourg": {
+  "first_seen": "2026-10-18T17:17:11",
+  "name": "Banque de Luxembourg",
+  "url": "https://jobs.banquedeluxembourg.com/accueil.aspx?LCID=1036"
+ },
+ "company:alpineoconsulting": {
+  "first_seen": "2026-10-18T17:17:23",
+  "name": "Alpineo Consulting",
+  "url": null
+ },
+ "company:harmattanai": {
+  "first_seen": "2026-10-18T17:17:23",
+  "name": "Harmattan AI",
+  "url": null
+ },
+ "company:antaesconsulting": {
+  "first_seen": "2026-10-18T17:17:23",
+  "name": "Antaes Consulting",
+  "url": null
+ },
+ "company:ivypartners": {
+  "first_seen": "2026-10-18T17:17:23",
+  "name": "Ivy Partners",
+  "url": null
+ },
+ "company:axa": {
+  "first_seen": "2026-10-18T17:17:25",
+  "name": "AXA",
+  "url": "https://careers.axa.com/careers-home/"
+ },
+ "company:theflex": {
+  "first_seen": "2026-10-18T17:17:28",
+  "name": "The Flex",
+  "url": null
+ },
+ "company:board": {
+  "first_seen": "2026-10-18T17:17:28",
+  "name": "Board",
+  "url": "https://www.board.com/careers"
+ },
+ "company:ainos": {
+  "first_seen": "2026-10-18T17:17:36",
+  "name": "Ainos",
+  "url": null
+ },
+ "company:axaswitzerland": {
+  "first_seen": "2026-10-18T17:17:36",
+  "name": "AXA Switzerland",
+  "url": "https://www.axa.ch/de/privatkunden.html"
+ },
+ "company:fortil": {
+  "first_seen": "2026-10-18T17:17:46",
+  "name": "fortil",
+  "url": null
+ },
+ "company:rewe": {
+  "first_seen": "2026-10-18T17:17:46",
+  "name": "REWE GROUP",
+  "url": null
+ },
+ "company:zerolook": {
+  "first_seen": "2026-10-18T17:17:46",
+  "name": "Zerolook",
+  "url": null
+ },
+ "company:sozialgestaltung": {
+  "first_seen": "2026-10-18T17:17:54",
+  "name": "SozialGestaltung",
+  "url": null
+ },
+ "glorial.ie": {
+  "first_seen": "2026-10-18T17:18:15",
+  "url": "https://glorial.ie/careers",
+  "registered": false
+ },
+ "jobs.robinson.com": {
+  "first_seen": "2026-10-18T17:18:34",
+  "url": "https://jobs.robinson.com/startseite/",
+  "registered": false
+ },
+ "www.profile.io": {
+  "first_seen": "2026-10-18T17:19:35",
+  "url": "https://www.profile.io/careers",
+  "registered": false
+ },
+ "www.carebright.ie": {
+  "first_seen": "2026-10-18T17:19:58",
+  "url": "https://www.carebright.ie/careers",
+  "registered": false
+ },
+ "www.corbyofwindsor.com": {
+  "first_seen": "2026-10-18T17:20:17",
+  "url": "https://www.corbyofwindsor.com/about/careers",
+  "registered": false
+ },
+ "bord.ai": {
+  "first_seen": "2026-10-18T17:21:04",
+  "url": "https://bord.ai/careers",
+  "registered": false
+ },
+ "neworient.com": {
+  "first_seen": "2026-10-18T17:21:59",
+  "url": "https://neworient.com/",
+  "registered": false
+ },
+ "transact.com": {
+  "first_seen": "2026-10-18T17:22:32",
+  "url": "https://transact.com/careers/",
+  "registered": false
+ },
+ "www.hachettebookgroup.com": {
+  "first_seen": "2026-10-18T17:22:51",
+  "url": "https://www.hachettebookgroup.com/about/careers/?lens=workman-publishing-company",
+  "registered": false
+ },
+ "www.yahooinc.com": {
+  "first_seen": "2026-10-18T17:23:19",
+  "url": "https://www.yahooinc.com/careers/",
+  "registered": false
+ },
+ "jobs.apleona.com": {
+  "first_seen": "2026-10-18T17:23:54",
+  "url": "https://jobs.apleona.com/",
+  "registered": false
+ },
+ "three.io": {
+  "first_seen": "2026-10-18T17:25:04",
+  "url": "https://three.io/careers",
+  "registered": false
+ },
+ "company:endress": {
+  "first_seen": "2026-10-18T17:25:32",
+  "name": "Endress",
+  "url": "https://careers.endress.com/"
+ },
+ "company:ddat": {
+  "first_seen": "2026-10-18T17:25:56",
+  "name": "Ddat",
+  "url": "https://ddat.com/"
+ },
+ "company:dennison": {
+  "first_seen": "2026-10-18T17:26:44",
+  "name": "Dennison",
+  "url": null
+ },
+ "company:currys": {
+  "first_seen": "2026-10-18T17:26:44",
+  "name": "Currys",
+  "url": null
+ },
+ "company:gpwood": {
+  "first_seen": "2026-10-18T17:26:44",
+  "name": "Gp Wood",
+  "url": "https://gpwood.ie/careers"
+ },
+ "company:gelliott": {
+  "first_seen": "2026-10-18T17:27:09",
+  "name": "G Elliott",
+  "url": null
+ },
+ "company:honeywell": {
+  "first_seen": "2026-10-18T17:27:09",
+  "name": "Honeywell",
+  "url": "https://careers.honeywell.com/en/sites/Honeywell"
+ },
+ "company:ippassenger": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Ip Passenger",
+  "url": null
+ },
+ "company:jenker": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Jenker",
+  "url": null
+ },
+ "company:park": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Park",
+  "url": null
+ },
+ "company:efficient": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Efficient",
+  "url": null
+ },
+ "company:nalgec": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Nalgec",
+  "url": null
+ },
+ "company:keeper": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Keeper",
+  "url": null
+ },
+ "company:enfer": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Enfer",
+  "url": null
+ },
+ "company:piper": {
+  "first_seen": "2026-10-18T17:27:43",
+  "name": "Piper",
+  "url": "https://www.piper.com/careers/"
+ },
+ "company:mylife": {
+  "first_seen": "2026-10-18T17:28:06",
+  "name": "My Life",
+  "url": null
+ },
+ "company:kilian": {
+  "first_seen": "2026-10-18T17:28:06",
+  "name": "Kilian",
+  "url": null
+ },
+ "company:raytoon": {
+  "first_seen": "2026-10-18T17:28:06",
+  "name": "Raytoon",
+  "url": null
+ },
+ "company:vita": {
+  "first_seen": "2026-10-18T17:28:06",
+  "name": "Vita",
+  "url": null
+ },
+ "company:madra": {
+  "first_seen": "2026-10-18T17:28:06",
+  "name": "Madra",
+  "url": null
+ },
+ "company:samco": {
+  "first_seen": "2026-10-18T17:28:06",
+  "name": "Samco",
+  "url": "https://www.samco.com/careers/"
+ },
+ "company:quest": {
+  "first_seen": "2026-10-18T17:29:20",
+  "name": "Quest",
+  "url": "https://quest.ie/careers"
+ },
+ "company:sita": {
+  "first_seen": "2026-10-18T17:29:40",
+  "name": "Sita",
+  "url": "https://careers.sita.aero:443/"
+ },
+ "company:james": {
+  "first_seen": "2026-10-18T17:30:06",
+  "name": "James",
+  "url": null
+ },
+ "company:sirius": {
+  "first_seen": "2026-10-18T17:30:06",
+  "name": "Sirius",
+  "url": null
+ },
+ "company:brabazon": {
+  "first_seen": "2026-10-18T17:30:06",
+  "name": "Brabazon",
+  "url": "https://www.brabazon.com/careers"
+ },
+ "company:oxigen": {
+  "first_seen": "2026-10-18T17:30:55",
+  "name": "Oxigen",
+  "url": "https://oxigen.ie/careers"
+ },
+ "company:shannon": {
+  "first_seen": "2026-10-18T17:31:20",
+  "name": "Shannon",
+  "url": null
+ },
+ "company:seamus": {
+  "first_seen": "2026-10-18T17:31:20",
+  "name": "Seamus",
+  "url": null
+ },
+ "company:vhiservices": {
+  "first_seen": "2026-10-18T17:31:20",
+  "name": "Vhi Services",
+  "url": null
+ },
+ "company:uniphar": {
+  "first_seen": "2026-10-18T17:31:20",
+  "name": "Uniphar",
+  "url": "https://www.uniphar.ie/customer/account/login/referer/aHR0cHM6Ly93d3cudW5pcGhhci5pZS8~/"
+ },
+ "company:vhihealth": {
+  "first_seen": "2026-10-18T17:31:38",
+  "name": "Vhi Health",
+  "url": null
+ },
+ "company:tank": {
+  "first_seen": "2026-10-18T17:31:38",
+  "name": "Tank",
+  "url": null
+ },
+ "company:wilton": {
+  "first_seen": "2026-10-18T17:31:38",
+  "name": "Wilton",
+  "url": "https://wilton.com/careers/"
+ },
+ "company:thomond": {
+  "first_seen": "2026-10-18T17:32:21",
+  "name": "Thomond",
+  "url": null
+ },
+ "company:arthur": {
+  "first_seen": "2026-10-18T17:32:21",
+  "name": "Arthur",
+  "url": "https://www.arthur.ai/careers"
+ },
+ "company:spanish": {
+  "first_seen": "2026-10-18T17:32:22",
+  "name": "Spanish",
+  "url": null
+ },
+ "company:paul": {
+  "first_seen": "2026-10-18T17:32:22",
+  "name": "Paul",
+  "url": null
+ },
+ "company:veolia": {
+  "first_seen": "2026-10-18T17:32:22",
+  "name": "Veolia",
+  "url": "https://jobs.veolia.com/fr"
+ },
+ "company:bridgelynn": {
+  "first_seen": "2026-10-18T17:32:56",
+  "name": "Bridgelynn",
+  "url": null
+ },
+ "company:boeing": {
+  "first_seen": "2026-10-18T17:32:56",
+  "name": "Boeing",
+  "url": "https://jobs.boeing.com/"
+ },
+ "company:toptal": {
+  "first_seen": "2026-10-19T07:54:24",
+  "name": "Toptal",
+  "url": "https://www.toptal.com/careers"
+ },
+ "company:thepanel": {
+  "first_seen": "2026-10-19T07:55:00",
+  "name": "The Panel",
+  "url": null
+ },
+ "careers.catalyx.ai": {
+  "first_seen": "2026-10-19T07:55:01",
+  "url": "https://careers.catalyx.ai/",
+  "registered": false
+ },
+ "www.cbre.com": {
+  "first_seen": "2026-10-19T07:55:33",
+  "url": "https://www.cbre.com/careers",
+  "registered": false
+ },
+ "careers.cbre.com": {
+  "first_seen": "2026-10-19T07:56:14",
+  "url": "https://careers.cbre.com/en_US/careers/SearchJobs/?9577=%5B17276%5D&9577_format=10224&listFilterMode=1&jobRecordsPerPage=6&",
+  "registered": false
+ },
+ "eirebloc.com": {
+  "first_seen": "2026-10-19T07:56:31",
+  "url": "https://eirebloc.com/careers",
+  "registered": false
+ },
+ "www.fallon.com": {
+  "first_seen": "2026-10-19T07:57:01",
+  "url": "https://www.fallon.com/careers",
+  "registered": false
+ },
+ "www.epicurious.com": {
+  "first_seen": "2026-10-19T07:57:23",
+  "url": "https://www.epicurious.com/",
+  "registered": false
+ },
+ "careers.kroll.com": {
+  "first_seen": "2026-10-19T07:58:12",
+  "url": "https://careers.kroll.com/listing-page?keyword=&amp;location=",
+  "registered": false
+ },
+ "circus.io": {
+  "first_seen": "2026-10-19T07:58:37",
+  "url": "https://circus.io/careers",
+  "registered": false
+ },
+ "www.atex.com": {
+  "first_seen": "2026-10-19T07:59:43",
+  "url": "https://www.atex.com/resources/careers/",
+  "registered": false
+ },
+ "atex.bamboohr.com": {
+  "first_seen": "2026-10-19T08:00:21",
+  "url": "https://atex.bamboohr.com/careers",
+  "registered": false
+ },
+ "www.hrbuddy.ie": {
+  "first_seen": "2026-10-19T08:00:40",
+  "url": "https://www.hrbuddy.ie/",
+  "registered": false
+ },
+ "developers.google.com": {
+  "first_seen": "2026-10-19T08:01:27",
+  "url": "https://developers.google.com/coral",
+  "registered": false
+ },
+ "ciaran.ie": {
+  "first_seen": "2026-10-19T08:01:58",
+  "url": "https://ciaran.ie/",
+  "registered": false
+ },
+ "www.rewirecompany.com": {
+  "first_seen": "2026-10-19T08:02:28",
+  "url": "https://www.rewirecompany.com/",
+  "registered": false
+ },
+ "company:asahi": {
+  "first_seen": "2026-10-19T08:03:10",
+  "name": "Asahi",
+  "url": null
+ },
+ "company:westbourne": {
+  "first_seen": "2026-10-19T08:03:18",
+  "name": "Westbourne",
+  "url": "https://westbourneit.com/about/careers/"
+ },
+ "company:crowleys": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Crowleys",
+  "url": null
+ },
+ "company:digitalcoder": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Digital Coder",
+  "url": null
+ },
+ "company:bellerophon": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Bellerophon",
+  "url": null
+ },
+ "company:eccdesign": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Ecc Design",
+  "url": null
+ },
+ "company:ecosweethomes": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Eco Sweethomes",
+  "url": null
+ },
+ "company:avoncourt": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Avoncourt",
+  "url": null
+ },
+ "company:commissioning": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Commissioning",
+  "url": null
+ },
+ "company:glenn": {
+  "first_seen": "2026-10-19T08:04:05",
+  "name": "Glenn",
+  "url": "https://careers.glenn.com/"
+ },
+ "company:howth": {
+  "first_seen": "2026-10-19T08:04:31",
+  "name": "Howth",
+  "url": null
+ },
+ "company:dspd": {
+  "first_seen": "2026-10-19T08:04:31",
+  "name": "Dspd",
+  "url": "https://dspd.io/careers"
+ },
+ "company:globalshares": {
+  "first_seen": "2026-10-19T08:04:51",
+  "name": "Global Shares",
+  "url": "https://www.jpmorganworkplacesolutions.com"
+ },
+ "company:western": {
+  "first_seen": "2026-10-19T08:05:12",
+  "name": "Western",
+  "url": null
+ },
+ "company:irishbacon": {
+  "first_seen": "2026-10-19T08:05:12",
+  "name": "Irish Bacon",
+  "url": null
+ },
+ "company:leagrey": {
+  "first_seen": "2026-10-19T08:05:12",
+  "name": "Leagrey",
+  "url": null
+ },
+ "company:lintbrook": {
+  "first_seen": "2026-10-19T08:05:12",
+  "name": "Lintbrook",
+  "url": null
+ },
+ "company:gerson": {
+  "first_seen": "2026-10-19T08:05:12",
+  "name": "Gerson",
+  "url": null
+ },
+ "company:infinite": {
+  "first_seen": "2026-10-19T08:05:12",
+  "name": "Infinite",
+  "url": "https://www.infinite.com/careers/"
+ },
+ "company:kcand": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Kc And",
+  "url": null
+ },
+ "company:kvalito": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Kvalito",
+  "url": null
+ },
+ "company:msdt": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Msd T",
+  "url": null
+ },
+ "company:newpayment": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "New Payment",
+  "url": null
+ },
+ "company:burger": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Burger",
+  "url": null
+ },
+ "company:multilane": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Multilane",
+  "url": null
+ },
+ "company:moscato": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Moscato",
+  "url": null
+ },
+ "company:moorehall": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Moorehall",
+  "url": null
+ },
+ "company:ocarroll": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "O Carroll",
+  "url": null
+ },
+ "company:metlife": {
+  "first_seen": "2026-10-19T08:06:25",
+  "name": "Metlife",
+  "url": "https://www.metlifecareers.com/en_US/ml"
+ },
+ "company:sales": {
+  "first_seen": "2026-10-19T08:07:21",
+  "name": "Sales",
+  "url": "https://www.backstory.ai"
+ },
+ "company:smtfund": {
+  "first_seen": "2026-10-19T08:07:33",
+  "name": "Smt Fund",
+  "url": null
+ },
+ "company:scotiabank": {
+  "first_seen": "2026-10-19T08:07:33",
+  "name": "Scotiabank",
+  "url": "https://jobs.scotiabank.com/"
+ },
+ "company:strandbray": {
+  "first_seen": "2026-10-19T08:08:51",
+  "name": "Strandbray",
+  "url": null
+ },
+ "company:phoenix": {
+  "first_seen": "2026-10-19T08:08:51",
+  "name": "Phoenix",
+  "url": "https://phoenix.ai/careers"
+ },
+ "company:summit": {
+  "first_seen": "2026-10-19T08:09:23",
+  "name": "Summit",
+  "url": "https://summit.com/careers"
+ },
+ "company:jasmine": {
+  "first_seen": "2026-10-19T08:10:36",
+  "name": "Jasmine",
+  "url": null
+ },
+ "company:abbvie": {
+  "first_seen": "2026-10-19T08:10:36",
+  "name": "Abbvie",
+  "url": "https://careers.abbvie.com/"
+ },
+ "company:fruit": {
+  "first_seen": "2026-10-19T08:11:24",
+  "name": "Fruit",
+  "url": "https://www.fruit.com/careers"
+ },
+ "company:accel": {
+  "first_seen": "2026-10-19T08:11:56",
+  "name": "Accel",
+  "url": "https://jobs.accel.com/companies"
+ },
+ "company:noel": {
+  "first_seen": "2026-10-19T08:12:30",
+  "name": "Noel",
+  "url": null
+ },
+ "company:appnext": {
+  "first_seen": "2026-10-19T08:12:30",
+  "name": "Appnext",
+  "url": "https://appnext.com/careers"
+ },
+ "appnext.com": {
+  "first_seen": "2026-10-19T08:12:30",
+  "url": "https://appnext.com/careers",
+  "registered": false
+ },
+ "www.commbank.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.commbank.com.au/about-us/careers.html",
+  "registered": false
+ },
+ "www.westpac.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.westpac.com.au/about-westpac/careers/?wbc-vnty=www.westpac.com.au/careers",
+  "registered": false
+ },
+ "www.nab.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.nab.com.au/about-us/careers?own_cid=shortURL:careers",
+  "registered": false
+ },
+ "www.anz.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.anz.com.au/careers/",
+  "registered": false
+ },
+ "recruitment.macquarie.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://recruitment.macquarie.com/en_US/careers",
+  "registered": false
+ },
+ "www.telstra.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.telstra.com.au/careers/in",
+  "registered": false
+ },
+ "careers.optus.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.optus.com.au/",
+  "registered": false
+ },
+ "block.xyz": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://block.xyz/careers/jobs",
+  "registered": false
+ },
+ "careers.afterpay.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.afterpay.com/",
+  "registered": false
+ },
+ "careers.nuix.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.nuix.com/",
+  "registered": false
+ },
+ "jobs.csiro.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://jobs.csiro.au/",
+  "registered": false
+ },
+ "www.csiro.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.csiro.au/en/research/technology-space",
+  "registered": false
+ },
+ "quantium.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://quantium.com/careers/",
+  "registered": false
+ },
+ "careers.woolworthsgroup.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.woolworthsgroup.com.au/en_GB/apply",
+  "registered": false
+ },
+ "colescareers.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://colescareers.com.au/au/en/home",
+  "registered": true
+ },
+ "www.wesfarmers.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.wesfarmers.com.au/util/careers/working-at-wesfarmers",
+  "registered": false
+ },
+ "careers.bhp.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.bhp.com/",
+  "registered": false
+ },
+ "jobs.riotinto.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://jobs.riotinto.com/",
+  "registered": false
+ },
+ "careers.tyro.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.tyro.com/",
+  "registered": false
+ },
+ "www.upguard.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.upguard.com/careers",
+  "registered": true
+ },
+ "careers.carsales.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.carsales.com.au/",
+  "registered": false
+ },
+ "careers.kogan.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.kogan.com/",
+  "registered": true
+ },
+ "www.linkedin.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.linkedin.com/company/redbubble",
+  "registered": false
+ },
+ "jobs.lever.co/envato-2": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://jobs.lever.co/envato-2",
+  "registered": true
+ },
+ "www.go1.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.go1.com/careers",
+  "registered": true
+ },
+ "mable.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://mable.com.au/about-us/careers-at-mable/",
+  "registered": true
+ },
+ "www.ansarada.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.ansarada.com/careers",
+  "registered": false
+ },
+ "www.nearmap.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.nearmap.com/careers",
+  "registered": true
+ },
+ "careers.dovetail.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.dovetail.com/",
+  "registered": false
+ },
+ "swyftx.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://swyftx.com/careers/",
+  "registered": false
+ },
+ "www.prospa.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.prospa.com/about-us/careers",
+  "registered": false
+ },
+ "www.freelancer.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.freelancer.com/",
+  "registered": false
+ },
+ "www.appen.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.appen.com/careers",
+  "registered": false
+ },
+ "careers.sportsbet.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.sportsbet.com.au/",
+  "registered": false
+ },
+ "careers.tabcorp.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://careers.tabcorp.com.au/jobs/search",
+  "registered": false
+ },
+ "www.canstar.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.canstar.com.au/careers",
+  "registered": false
+ },
+ "www.finder.com.au": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.finder.com.au/careers",
+  "registered": false
+ },
+ "www.whispir.com": {
+  "first_seen": "2026-10-19T08:44:26",
+  "url": "https://www.whispir.com/en-au/",
+  "registered": false
+ },
+ "www.redbarn.com": {
+  "first_seen": "2026-10-19T08:51:57",
+  "url": "https://www.redbarn.com/pages/career",
+  "registered": false
+ },
+ "veltrix.com": {
+  "first_seen": "2026-10-19T08:52:20",
+  "url": "https://veltrix.com/careers",
+  "registered": false
+ },
+ "jobs.amundi.com": {
+  "first_seen": "2026-10-19T08:52:39",
+  "url": "https://jobs.amundi.com/accueil.aspx?LCID=1036",
+  "registered": false
+ },
+ "emerald.ie": {
+  "first_seen": "2026-10-19T08:53:06",
+  "url": "https://emerald.ie/cgi-sys/suspendedpage.cgi",
+  "registered": false
+ },
+ "dawnlough.com": {
+  "first_seen": "2026-10-19T08:53:30",
+  "url": "https://dawnlough.com/careers/",
+  "registered": false
+ },
+ "www.conor.com": {
+  "first_seen": "2026-10-19T08:54:26",
+  "url": "https://www.conor.com/careers/",
+  "registered": false
+ },
+ "recruiting.paylocity.com": {
+  "first_seen": "2026-10-19T08:55:03",
+  "url": "https://recruiting.paylocity.com/recruiting/jobs/All/c697927c-7c1c-414f-9625-61d1d92da0fc/Conor-Commercial-Real-Estate-LLC",
+  "registered": false
+ },
+ "careers.endress.com": {
+  "first_seen": "2026-10-19T08:55:32",
+  "url": "https://careers.endress.com/",
+  "registered": false
+ },
+ "ddat.com": {
+  "first_seen": "2026-10-19T08:55:59",
+  "url": "https://ddat.com/",
+  "registered": false
+ },
+ "gpwood.ie": {
+  "first_seen": "2026-10-19T08:56:55",
+  "url": "https://gpwood.ie/careers",
+  "registered": false
+ },
+ "careers.honeywell.com": {
+  "first_seen": "2026-10-19T08:57:25",
+  "url": "https://careers.honeywell.com/en/sites/Honeywell",
+  "registered": false
+ },
+ "www.piper.com": {
+  "first_seen": "2026-10-19T08:58:04",
+  "url": "https://www.piper.com/careers/",
+  "registered": false
+ },
+ "www.samco.com": {
+  "first_seen": "2026-10-19T08:58:31",
+  "url": "https://www.samco.com/careers/",
+  "registered": false
+ },
+ "company:altura": {
+  "first_seen": "2026-10-19T09:00:01",
+  "name": "Altura",
+  "url": "https://jobs.ashbyhq.com/altura"
+ },
+ "company:csullivan": {
+  "first_seen": "2026-10-19T09:00:02",
+  "name": "C Sullivan",
+  "url": null
+ },
+ "company:athenry": {
+  "first_seen": "2026-10-19T09:00:08",
+  "name": "Athenry",
+  "url": null
+ },
+ "company:errigal": {
+  "first_seen": "2026-10-19T09:00:11",
+  "name": "Errigal",
+  "url": "https://errigal.com/careers/"
+ },
+ "company:euprepia": {
+  "first_seen": "2026-10-19T09:00:38",
+  "name": "Euprepia",
+  "url": null
+ },
+ "company:tang": {
+  "first_seen": "2026-10-19T09:00:38",
+  "name": "Tang",
+  "url": "https://www.tang.ai"
+ },
+ "company:southern": {
+  "first_seen": "2026-10-19T09:01:05",
+  "name": "Southern",
+  "url": "https://southern.ie/"
+ },
+ "company:halo": {
+  "first_seen": "2026-10-19T09:01:29",
+  "name": "Halo",
+  "url": "https://halo.com/careers/"
+ },
+ "company:jabez": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Jabez",
+  "url": null
+ },
+ "company:kiermar": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Kiermar",
+  "url": null
+ },
+ "company:altrad": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Altrad",
+  "url": null
+ },
+ "company:coolworld": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Coolworld",
+  "url": null
+ },
+ "company:mursus": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Mursus",
+  "url": null
+ },
+ "company:sbmosw": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Sbm Osw",
+  "url": null
+ },
+ "company:leetherm": {
+  "first_seen": "2026-10-19T09:02:35",
+  "name": "Leetherm",
+  "url": "https://leetherm.ie/careers/"
+ },
+ "company:goldfinch": {
+  "first_seen": "2026-10-19T09:03:59",
+  "name": "Goldfinch",
+  "url": null
+ },
+ "company:turmec": {
+  "first_seen": "2026-10-19T09:03:59",
+  "name": "Turmec",
+  "url": null
+ },
+ "company:sony": {
+  "first_seen": "2026-10-19T09:03:59",
+  "name": "Sony",
+  "url": null
+ },
+ "company:unum": {
+  "first_seen": "2026-10-19T09:03:59",
+  "name": "Unum",
+  "url": "https://www.unumgroup.com/careers"
+ },
+ "company:oriel": {
+  "first_seen": "2026-10-19T09:04:16",
+  "name": "Oriel",
+  "url": null
+ },
+ "company:urban": {
+  "first_seen": "2026-10-19T09:04:16",
+  "name": "Urban",
+  "url": null
+ },
+ "company:trailers": {
+  "first_seen": "2026-10-19T09:04:16",
+  "name": "Trailers",
+  "url": null
+ },
+ "company:apex": {
+  "first_seen": "2026-10-19T09:04:16",
+  "name": "Apex",
+  "url": "https://www.apex.ai/careers"
+ },
+ "company:yoruba": {
+  "first_seen": "2026-10-19T09:04:20",
+  "name": "Yoruba",
+  "url": null
+ },
+ "company:raptor": {
+  "first_seen": "2026-10-19T09:04:20",
+  "name": "Raptor",
+  "url": null
+ },
+ "company:axaservices": {
+  "first_seen": "2026-10-19T09:04:20",
+  "name": "Axa Services",
+  "url": null
+ },
+ "company:verax": {
+  "first_seen": "2026-10-19T09:04:20",
+  "name": "Verax",
+  "url": null
+ },
+ "company:boulder": {
+  "first_seen": "2026-10-19T09:04:20",
+  "name": "Boulder",
+  "url": null
+ },
+ "company:capital": {
+  "first_seen": "2026-10-19T09:04:20",
+  "name": "Capital",
+  "url": "https://capital.com/en-int/about-us/careers"
+ },
+ "company:cdbaviation": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Cdb Aviation",
+  "url": null
+ },
+ "company:brophy": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Brophy",
+  "url": null
+ },
+ "company:clontarf": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Clontarf",
+  "url": null
+ },
+ "company:brian": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Brian",
+  "url": null
+ },
+ "company:deroiste": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "De Roiste",
+  "url": null
+ },
+ "company:brenda": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Brenda",
+  "url": null
+ },
+ "company:daktu": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Daktu",
+  "url": null
+ },
+ "company:bimeda": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Bimeda",
+  "url": null
+ },
+ "company:eircom": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Eircom",
+  "url": null
+ },
+ "company:cand": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "C And",
+  "url": null
+ },
+ "company:clear": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Clear",
+  "url": null
+ },
+ "company:enernoc": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Enernoc",
+  "url": null
+ },
+ "company:gagamuller": {
+  "first_seen": "2026-10-19T09:07:18",
+  "name": "Gagamuller",
+  "url": "https://www.gagamuller.com/careers/"
+ },
+ "company:globalentserv": {
+  "first_seen": "2026-10-19T09:10:57",
+  "name": "Global Entserv",
+  "url": null
+ },
+ "company:fehily": {
+  "first_seen": "2026-10-19T09:10:57",
+  "name": "Fehily",
+  "url": "https://www.questingvolepress.com/"
+ },
+ "company:gasnetworks": {
+  "first_seen": "2026-10-19T09:14:08",
+  "name": "Gas Networks",
+  "url": "https://www.gasnetworks.ie/about/careers/vacancies"
+ },
+ "company:doyle": {
+  "first_seen": "2026-10-19T09:14:44",
+  "name": "Doyle",
+  "url": null
+ },
+ "company:ingbank": {
+  "first_seen": "2026-10-19T09:14:44",
+  "name": "Ing Bank",
+  "url": null
+ },
+ "company:hillbilly": {
+  "first_seen": "2026-10-19T09:14:44",
+  "name": "Hillbilly",
+  "url": "https://hillbilly.com/password"
+ },
+ "company:terra": {
+  "first_seen": "2026-10-19T09:15:21",
+  "name": "Terra",
+  "url": null
+ },
+ "company:just": {
+  "first_seen": "2026-10-19T09:15:21",
+  "name": "Just",
+  "url": null
+ },
+ "company:charles": {
+  "first_seen": "2026-10-19T09:15:21",
+  "name": "Charles",
+  "url": null
+ },
+ "company:kmgmechanical": {
+  "first_seen": "2026-10-19T09:15:21",
+  "name": "Kmg Mechanical",
+  "url": "https://careers.kmgmechanical.com/"
+ },
+ "company:mastek": {
+  "first_seen": "2026-10-19T09:15:41",
+  "name": "Mastek",
+  "url": "https://careers.mastek.com/"
+ },
+ "company:fresh": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Fresh",
+  "url": null
+ },
+ "company:hanley": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Hanley",
+  "url": null
+ },
+ "company:heng": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Heng",
+  "url": null
+ },
+ "company:mrbrian": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Mr Brian",
+  "url": null
+ },
+ "company:milgan": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Milgan",
+  "url": null
+ },
+ "company:nvdtrading": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Nvd Trading",
+  "url": null
+ },
+ "company:keohane": {
+  "first_seen": "2026-10-19T09:15:59",
+  "name": "Keohane",
+  "url": "https://www.keohane.com/about/careers"
+ },
+ "company:euram": {
+  "first_seen": "2026-10-19T09:16:32",
+  "name": "Euram",
   "url": null
  }
 }

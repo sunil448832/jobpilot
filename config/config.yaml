@@ -53,10 +53,10 @@ pipeline:
   explore_timeout_s: 2400
   # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
   # dial: 10 x 2 scans/day = up to 20/day.
-  tailor_limit: 10
+  tailor_limit: 15    # 10 -> 15 on his instruction, 2026-10-15
   # Approved applications filed per review run (09:00 / 19:00). Approval on the
   # phone is the only gate; this just caps how many go out per run.
-  submit_limit: 10
+  submit_limit: 15    # with tailor_limit, 2026-10-15
   # A submit that fails this many times stays 'failed' (own section on the
   # review page, with the reason) instead of being retried again.
   submit_attempts: 3
@@ -64,29 +64,38 @@ pipeline:
   # ~5 candidates, because Anthropic and OpenAI held 38 of 43 above the floor.
   per_company: 3
   # Below this score a role is not worth a tailoring session. Lowered 55 -> 45
-  # on Sunil's instruction to widen the funnel. MUST stay >= screen.floor: with
-  # require_screen on, a role below the screening floor never gets a verdict and
-  # so can never be tailored, which would make lowering this a no-op.
+  # on Sunil's instruction to widen the funnel. Since 2026-10-14 the floor reads the
+  # pick score (fit_weight * fit + (1 - fit_weight) * rank), the same blend the picks
+  # are ordered by, so a strong fit with a weak keyword rank (Teampicnic: fit 80,
+  # rank 42.5) gets through; an unscreened role is held to its rank. The screen must
+  # dig at least as deep (screen.floor_min) or such a role never gets its fit score.
   tailor_floor: 45.0
   # The mix of a run's picks by what the posting says about a visa (rank/visa.py,
   # the screener's answer winning): at most this share of the roles asked for may
   # be silent; the rest must say explicit or implicit. Fewer sponsoring roles than
   # that means a shorter run, never more silent ones. 1.0 turns the cap off.
-  visa_silent_share: 0.3
+  # 0.3 -> 0.6 (2026-10-15): with 3 US-silent slots a run (below) the share must also
+  # leave room for silent Swiss / Australian postings, or they starve each other.
+  visa_silent_share: 0.6
+  # Silent postings in visa.explicit_only_markets (the US) get at most this many slots a
+  # run; 0 keeps the rule absolute. His call 2026-10-15: 28 screened US roles at fit 55+
+  # sat blocked while runs produced 3, and the target is 10 a run.
+  explicit_only_silent_max: 3
   # The country mix: no market fills more than this share of a run's roles (a cap,
   # not a quota — slots a market cannot fill go to the next-best roles elsewhere).
   # Markets not listed are uncapped. Ranking still orders them by visa odds
   # (targets.yaml market_bonus): NL / IE / DE first, then UAE, AU / CH, the US last.
+  # 2026-10-19 (goals plan, step 1): Australia uncapped — the one market serving both
+  # goals; UAE and Switzerland 4 of a run of 15; the US keeps 3 silent slots.
   market_max_share:
     usa: 0.3
-    uae: 0.3
-    australia: 0.3
+    uae: 0.27
     germany: 0.4
     netherlands: 0.4
     ireland: 0.4
-    switzerland: 0.2
+    switzerland: 0.27
     luxembourg: 0.2
-    remote_india: 0.2
+    remote_india: 0.3   # 0.2 -> 0.3: USD pay on Indian costs serves the savings goal
   # Only tailor roles screen.py has returned a `keep` verdict on. Without this,
   # score alone decided, and 45 of 78 roles above the floor had never been
   # screened — the top-scoring one included. Turning it off means unvetted roles
@@ -108,6 +117,10 @@ pipeline:
   # tailor_floor — after the screener scored Adyen (a role Sunil judged a fit)
   # at 50; the screener is conservative on abstract research JDs.
   fit_min: 55           # raised 45 -> 55 on 2026-10-06: 57 sent, no positive reply
+  # Outside the US a lower fit is worth a session: sponsorship markets are the thin
+  # side of the funnel (2026-10-14: 123 US vs 22 non-US new roles; four non-US keeps
+  # sat at fit 45-54 while every run picked one role). The US keeps fit_min.
+  fit_min_non_usa: 50
   # Selection order for tailoring = fit_weight * fit + (1 - fit_weight) * rank
   # score, non-US markets first. Rank measures "worth pursuing" (market,
   # sponsorship, keywords); fit measures "matches the role as a human reads it".
@@ -132,6 +145,19 @@ visa:
   # NL / IE employers on the government's sponsor lists (rank/sponsors.py: the IND
   # register, Ireland's permits issued) count as explicit even when the posting is silent.
   sponsor_refresh_days: 30
+  # The registers themselves (rank/sponsors.py reads this list; add one here, no code):
+  #   kind ind_html   the IND public register page (Netherlands)
+  #   kind dete_xlsx  Ireland's "permits issued to companies" workbook, this year and last
+  #   kind csv        a local file under data/registers/: company,permits (permits optional)
+  # An employer on its market's register makes a silent posting explicit (visa.classify).
+  sponsor_registers:
+    - {market: netherlands, kind: ind_html, label: "IND recognised sponsor",
+       url: "https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants"}
+    - {market: ireland, kind: dete_xlsx, label: "Irish employment permits issued",
+       url: "https://enterprise.gov.ie/en/publications/publication-files/{name}.xlsx",
+       names: ["employment-permits-issued-to-companies-{y}", "permits-issued-to-companies-{y}"]}
+    - {market: australia, kind: csv, label: "Australian standard business sponsor (FOI snapshot)",
+       path: "data/registers/australia_sponsors.csv"}
   # No register in these markets: a silent posting by an employer on the NL / IE lists is implicit.
   proxy_markets: [switzerland]
 
@@ -155,19 +181,24 @@ screen:
   # When looping, keep screening deeper batches until this many usable roles
   # exist, or max_rounds is spent. Guards against a batch that is mostly
   # ineligible leaving the tailoring queue empty.
-  want_usable: 10
+  # Raised 10 -> 20 and counted in non-usa only (2026-10-14): the tailor wants 10 a
+  # run from sponsorship markets, and the US pool satisfied the count while no
+  # non-US role below the first floor was ever screened.
+  want_usable: 30     # 20 -> 30 with tailor_limit 15 (2026-10-15)
   max_rounds: 3
   # Count only this market toward want_usable. "non-usa" is useful because the
   # US pool is large but H-1B-gated; blank counts every market. When set, that
   # market is also drawn FIRST — otherwise global score order spends every round
   # on US roles that do not count.
-  want_market: ""
+  want_market: "non-usa"
   # A round is capped at per_company x (companies still holding an unscreened
   # role), so it collapses well below `top` once each company's top 3 are done.
   # When looping, a short round drops the floor by this much and re-draws, down
   # to floor_min. At 50 the pool is 88 roles / 18 companies; at 40 it is 139/37.
   floor_step: 5.0
-  floor_min: 40.0
+  # 40 -> 35 (2026-10-14): the tailor floor now reads fit as well as rank, so a role
+  # ranked in the high 30s needs a verdict and a fit score to be picked.
+  floor_min: 35.0
 
 scale_tiers:
   # Company size, as a sponsorship-capability proxy. Signal is open-req count
@@ -232,13 +263,19 @@ discovery:
   # for employer NAMES only, never Sunil's account; names resolve to careers
   # pages under tenant_budget_s seconds, registered as they resolve.
   tenant_sources: sweep,search,adzuna,linkedin,sponsors
-  sponsor_batch: 120    # sponsor-register employers looked up per discovery run
+  # 120 -> 300 and daily (2026-10-14): the register holds 25.7k employers and the non-US
+  # intake was 5-15 roles a day against a 10-roles-a-run target. Budget raised with it.
+  sponsor_batch: 300    # sponsor-register employers looked up per discovery run
   # Discovery runs from a scan when its last run is older than this (it was Sunday-only,
   # and a laptop off on Sunday skipped it). Markets with enough employers are not searched.
-  every_days: 3
+  every_days: 1
   skip_markets: [usa]
   linkedin_max_searches: 40
-  tenant_budget_s: 420
+  tenant_budget_s: 900
+  # The whole discovery run, as the daily run bounds it. Each source spends up to
+  # tenant_budget_s, so the sum can pass 30 minutes (2026-10-19: killed at 1800s with
+  # nothing registered). Discovery runs before intake, so this delays the scan by as much.
+  run_timeout_s: 3600
   yc_min_size: 10       # smaller than this cannot sponsor anyone
   yc_limit: 600
   workers: 14           # parallel probes; higher risks rate limits

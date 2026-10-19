@@ -46,6 +46,36 @@ def market_priority(t, market):
     return 9
 
 
+def goal_points(market, t):
+    """What the market gives toward his goals (targets.yaml `goals` + each market's `goal`):
+    a PR path (years to a settled status; none = 0) and savings (net, as a multiple of
+    India). Each goal is scaled 0..1 between its `worst` and `best`, weighted by
+    goals.weights, and the blend is worth up to goals.max_points. Change the weights to
+    chase a different goal; change a market's `goal` numbers as its rules change — no code."""
+    g = t.get("goals") or {}
+    w = g.get("weights") or {}
+    if not g or not any(float(v or 0) > 0 for v in w.values()):
+        return 0, ""
+    m = next((m for m in t.get("markets", []) if m.get("id") == market), None)
+    facts = (m or {}).get("goal") or {}
+    scores, parts = {}, []
+    for name, spec in (g.get("measures") or {}).items():
+        v = facts.get(spec.get("fact") or name)
+        if v in (None, "", "none"):
+            scores[name] = 0.0
+            continue
+        v, best, worst = float(v), float(spec["best"]), float(spec["worst"])
+        frac = (v - worst) / (best - worst) if best != worst else 0.0
+        scores[name] = max(0.0, min(1.0, frac))
+        parts.append(f"{name} {v:g}")
+    total_w = sum(float(w.get(n) or 0) for n in scores)
+    if not total_w:
+        return 0, ""
+    blend = sum(scores[n] * float(w.get(n) or 0) for n in scores) / total_w
+    pts = round(float(g.get("max_points", 20)) * blend, 1)
+    return pts, f"goals {pts:g}: " + (", ".join(parts) or "no path")
+
+
 def score_job(job, t, con=None):
     """Return (score, reasons[]). Deterministic and cheap — no LLM, no network."""
     title, jd, loc = job["title"] or "", job["jd"] or "", job["location"] or ""
@@ -96,6 +126,10 @@ def score_job(job, t, con=None):
     bonus = (t["scoring"].get("market_bonus") or {1: 22, 2: 18, 3: 12, 4: 2}).get(pri, 0)
     score += bonus
     reasons.append(f"{job['market']} (priority {pri})")
+    gp, gwhy = goal_points(job["market"], t)
+    if gp:
+        score += gp
+        reasons.append(gwhy)
 
     b = t["scoring"]["boost"]
     # the tag visa.py stored before ranking (the screener's own answer once it has one)

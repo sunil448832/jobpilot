@@ -405,5 +405,905 @@
   "platform": null,
   "at": "2026-10-09",
   "retried": "2026-10-12"
+ },
+ "Alexion": {
+  "careers_url": "https://careers.alexion.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Fli Precast": {
+  "careers_url": "https://fliprecast.com/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-16"
+ },
+ "Motor": {
+  "careers_url": "https://eevd.fa.us6.oraclecloud.com:443/hcmUI/CandidateExperience/en/sites/CX_20",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-16"
+ },
+ "Paypal": {
+  "careers_url": "https://careers.pypl.com/home/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-16"
+ },
+ "H And": {
+  "careers_url": "https://ignitetech.ai/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-16"
+ },
+ "Technimark": {
+  "careers_url": "https://www.technimark.com/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-16"
+ },
+ "Brendan": {
+  "careers_url": "https://www.brendan.com/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-16"
+ },
+ "Kerry": {
+  "careers_url": "https://jobs.kerry.com/gb/en",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Radiance": {
+  "careers_url": "https://radiance.ie/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Novartis": {
+  "careers_url": "https://www.novartis.com/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Omnicommediagroup": {
+  "careers_url": "https://omnicommedia.com/careers/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Infineon": {
+  "careers_url": "https://jobs.infineon.com/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Caring": {
+  "careers_url": "https://careers.caring.com/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Leonard": {
+  "careers_url": "https://www.stinson.com/careers-your-career",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Lam Research": {
+  "careers_url": "https://careers.lamresearch.com/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Clearstream": {
+  "careers_url": "https://apply.workable.com/clearstream/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Dream": {
+  "careers_url": "https://dream.ai/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Protrans": {
+  "careers_url": "https://protrans.com/join-our-team",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Stryker": {
+  "careers_url": "https://careers.stryker.com/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Amneal": {
+  "careers_url": "https://careers.amneal.com/i/us/en/loginoptions?RelayState=https%3A%2F%2Fcareers.amneal.com%2Fi%2F",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Eatzen": {
+  "careers_url": "https://eatzen.com/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Globe": {
+  "careers_url": "https://globe.rec.pro.ukg.net/BOS1501BGMP/JobBoard/3ebc7d47-2d31-4b8d-817d-db673315517a/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Connaught": {
+  "careers_url": "https://www.connaught.ie/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Sgs": {
+  "careers_url": "https://www.sgs.com/en/our-company/careers-at-sgs",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Wings": {
+  "careers_url": "https://www.wings.ai/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Patrick": {
+  "careers_url": "https://hi.patrick.com/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Tetra": {
+  "careers_url": "https://www.tetra.com/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Rcc Engineering": {
+  "careers_url": "https://rightgroup.ie/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Asml": {
+  "careers_url": "https://www.asml.com/en/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Expleo": {
+  "careers_url": "https://careers.expleo.com/en/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Keywords": {
+  "careers_url": "https://introvert.com/?domain=keywords.io",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Shabra": {
+  "careers_url": "https://shabra.com/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Nui Galway": {
+  "careers_url": "https://www.universityofgalway.ie/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Vodafone": {
+  "careers_url": "https://careers.vodafone.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Aerogen": {
+  "careers_url": "https://www.aerogen.com/careers-/working-at-aerogen",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Yuno": {
+  "careers_url": "https://yuno.ai/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Vitalograph": {
+  "careers_url": "https://vitalograph.com/about/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Stephen": {
+  "careers_url": "https://stephen.omg.lol/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-17"
+ },
+ "Ryanair": {
+  "careers_url": "https://careers.ryanair.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Sparrow": {
+  "careers_url": "https://sparrow.com/careers/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "People": {
+  "careers_url": "https://www.backstory.ai/about-us/careers",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Astellas": {
+  "careers_url": "https://careers.astellas.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Globoforce": {
+  "careers_url": "https://www.workhuman.com",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Dromone": {
+  "careers_url": "https://dromone.com/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Linkedin": {
+  "careers_url": "https://careers.linkedin.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Proofpoint": {
+  "careers_url": "https://www.proofpoint.com/us/company/careers",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Key Waste": {
+  "careers_url": "https://www.keygreen.ie/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Watershed": {
+  "careers_url": "https://watershed.com/careers",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Winthrop": {
+  "careers_url": "https://winthrop.com/careers/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "We Love": {
+  "careers_url": "https://welove.ai",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Motorola": {
+  "careers_url": "https://www.motorola.com/ie/en/homepage",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Silent": {
+  "careers_url": "https://introvert.com/?domain=silent.io",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Camile": {
+  "careers_url": "https://www.camile.com/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Coyle": {
+  "careers_url": "https://www.coyle.com/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Sun Life": {
+  "careers_url": "https://www.sunlife.ie/en/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Cully": {
+  "careers_url": "https://www.cully.ie/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Exlservice": {
+  "careers_url": "https://www.exlservice.com/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Mardukh": {
+  "careers_url": "https://mardukh.com/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Jacobs": {
+  "careers_url": "https://www.jacobs.com/careers-jacobs",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Port": {
+  "careers_url": "https://www.port.io/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Ethos": {
+  "careers_url": "https://www.ethos.com/careers/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Harmony": {
+  "careers_url": "https://harmony.ai/careers",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Managed": {
+  "careers_url": "https://managed.com/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Musgrave": {
+  "careers_url": "https://sigerson.co.uk/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Neueda": {
+  "careers_url": "https://neueda.com/careers/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Ornua": {
+  "careers_url": "https://careers.ornua.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Willis": {
+  "careers_url": "https://www.wtwco.com/en-in",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Amgen": {
+  "careers_url": "https://careers.amgen.com/en",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Bearingpoint": {
+  "careers_url": "https://www.bearingpoint.com/en/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Wall": {
+  "careers_url": "https://x.com/Jamessfbay",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Glorial": {
+  "careers_url": "https://glorial.ie/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Remitly": {
+  "careers_url": "https://careers.remitly.com/",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Robinson": {
+  "careers_url": "https://jobs.robinson.com/startseite/",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Profile": {
+  "careers_url": "https://www.profile.io/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Zoetis": {
+  "careers_url": "https://www.zoetis.com/join-us",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Carebright": {
+  "careers_url": "https://www.carebright.ie/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Corby": {
+  "careers_url": "https://www.corbyofwindsor.com/about/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "C Ram": {
+  "careers_url": "https://introvert.com/?domain=cram.io",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Callan": {
+  "careers_url": "https://www.callan.com/careers/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Diageo": {
+  "careers_url": "https://www.diageo.com/en/careers",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Bord": {
+  "careers_url": "https://bord.ai/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Enable": {
+  "careers_url": "https://www.enable.com/careers/",
+  "platform": "ats",
+  "at": "2026-10-14"
+ },
+ "Holy": {
+  "careers_url": "https://weareholy.notion.site/Work-at-HOLY-c7cdff26df2b4b23963597c6b1b6eea6?pvs=4",
+  "platform": "custom",
+  "at": "2026-10-14"
+ },
+ "Coconut": {
+  "careers_url": "https://coconut.ie/careers",
+  "platform": null,
+  "at": "2026-10-14",
+  "retried": "2026-10-18"
+ },
+ "Ibm": {
+  "careers_url": "https://www.ibm.com/careers",
+  "platform": "custom",
+  "at": "2026-10-17"
+ },
+ "Lighthouse": {
+  "careers_url": "https://lighthouse.com/careers",
+  "platform": "custom",
+  "at": "2026-10-17"
+ },
+ "New Orient": {
+  "careers_url": "https://neworient.com/",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-18"
+ },
+ "Sitecore": {
+  "careers_url": "https://jobs.ashbyhq.com/sitecore",
+  "platform": "ats",
+  "at": "2026-10-17"
+ },
+ "Teleflex": {
+  "careers_url": "https://careers.teleflex.com/",
+  "platform": "custom",
+  "at": "2026-10-17"
+ },
+ "Sprout": {
+  "careers_url": "https://sprout.ai/careers/",
+  "platform": "ats",
+  "at": "2026-10-17"
+ },
+ "Transact": {
+  "careers_url": "https://transact.com/careers/",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-18"
+ },
+ "Workman": {
+  "careers_url": "https://www.hachettebookgroup.com/about/careers/?lens=workman-publishing-company",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-18"
+ },
+ "Yahoo": {
+  "careers_url": "https://www.yahooinc.com/careers/",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-18"
+ },
+ "Apleona": {
+  "careers_url": "https://jobs.apleona.com/",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-18"
+ },
+ "Three": {
+  "careers_url": "https://three.io/careers",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-18"
+ },
+ "Catalyx": {
+  "careers_url": "https://careers.catalyx.ai/",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Cbre": {
+  "careers_url": "https://www.cbre.com/careers",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Eirebloc": {
+  "careers_url": "https://eirebloc.com/careers",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Eurofins": {
+  "careers_url": "https://careers.eurofins.com/",
+  "platform": "ats",
+  "at": "2026-10-17"
+ },
+ "Fallon": {
+  "careers_url": "https://www.fallon.com/careers",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Gourmet": {
+  "careers_url": "https://www.epicurious.com/",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Chase": {
+  "careers_url": "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1002",
+  "platform": "custom",
+  "at": "2026-10-17"
+ },
+ "Kroll": {
+  "careers_url": "https://careers.kroll.com/en",
+  "platform": "custom",
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Circus": {
+  "careers_url": "https://circus.io/careers",
+  "platform": null,
+  "at": "2026-10-17",
+  "retried": "2026-10-19"
+ },
+ "Smith": {
+  "careers_url": "https://www.slb.com/legacy-companies/smith-bits",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Squarespace": {
+  "careers_url": "https://www.squarespace.com/about/careers",
+  "platform": "custom",
+  "at": "2026-10-18"
+ },
+ "Rock": {
+  "careers_url": "https://introvert.com/?domain=rock.io",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Southwest": {
+  "careers_url": "https://careers.southwestair.com/us/en/",
+  "platform": "ats",
+  "at": "2026-10-18"
+ },
+ "Vantive": {
+  "careers_url": "https://jobs.vantive.com/",
+  "platform": "custom",
+  "at": "2026-10-18"
+ },
+ "Atex": {
+  "careers_url": "https://www.atex.com/resources/careers/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Hr Buddy": {
+  "careers_url": "https://www.hrbuddy.ie/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Coral": {
+  "careers_url": "https://developers.google.com/coral",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Ciaran": {
+  "careers_url": "https://ciaran.ie/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Glennon": {
+  "careers_url": "https://www.rewirecompany.com/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Red Barn": {
+  "careers_url": "https://www.redbarn.com/pages/career",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Veltrix": {
+  "careers_url": "https://veltrix.com/careers",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Roadstone": {
+  "careers_url": "https://www.roadstone.ie/careers",
+  "platform": "custom",
+  "at": "2026-10-18"
+ },
+ "Amundi": {
+  "careers_url": "https://jobs.amundi.com/accueil.aspx?LCID=1036",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Emerald": {
+  "careers_url": "https://emerald.ie/cgi-sys/suspendedpage.cgi",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Dawnlough": {
+  "careers_url": "https://dawnlough.com/careers/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Conor": {
+  "careers_url": "https://www.conor.com/careers/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Endress": {
+  "careers_url": "https://careers.endress.com/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Ddat": {
+  "careers_url": "https://ddat.com/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Gp Wood": {
+  "careers_url": "https://gpwood.ie/careers",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Honeywell": {
+  "careers_url": "https://careers.honeywell.com/en/sites/Honeywell",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Piper": {
+  "careers_url": "https://www.piper.com/careers/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Samco": {
+  "careers_url": "https://www.samco.com/careers/",
+  "platform": null,
+  "at": "2026-10-18",
+  "retried": "2026-10-19"
+ },
+ "Quest": {
+  "careers_url": "https://quest.ie/careers",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Sita": {
+  "careers_url": "https://careers.sita.aero:443/",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Brabazon": {
+  "careers_url": "https://www.brabazon.com/careers",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Oxigen": {
+  "careers_url": "https://oxigen.ie/careers",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Uniphar": {
+  "careers_url": "https://www.uniphar.ie/customer/account/login/referer/aHR0cHM6Ly93d3cudW5pcGhhci5pZS8~/",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Wilton": {
+  "careers_url": "https://wilton.com/careers/",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Arthur": {
+  "careers_url": "https://www.arthur.ai/careers",
+  "platform": "ats",
+  "at": "2026-10-18"
+ },
+ "Veolia": {
+  "careers_url": "https://jobs.veolia.com/fr",
+  "platform": null,
+  "at": "2026-10-18"
+ },
+ "Westbourne": {
+  "careers_url": "https://westbourneit.com/about/careers/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Glenn": {
+  "careers_url": "https://careers.glenn.com/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Dspd": {
+  "careers_url": "https://dspd.io/careers",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Global Shares": {
+  "careers_url": "https://www.jpmorganworkplacesolutions.com",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Infinite": {
+  "careers_url": "https://www.infinite.com/careers/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Metlife": {
+  "careers_url": "https://www.metlifecareers.com/en_US/ml",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Sales": {
+  "careers_url": "https://www.backstory.ai",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Scotiabank": {
+  "careers_url": "https://jobs.scotiabank.com/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Phoenix": {
+  "careers_url": "https://phoenix.ai/careers",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Summit": {
+  "careers_url": "https://summit.com/careers",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Abbvie": {
+  "careers_url": "https://careers.abbvie.com/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Fruit": {
+  "careers_url": "https://www.fruit.com/careers",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Accel": {
+  "careers_url": "https://jobs.accel.com/companies",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Altura": {
+  "careers_url": "https://jobs.ashbyhq.com/altura",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Errigal": {
+  "careers_url": "https://errigal.com/careers/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Tang": {
+  "careers_url": "https://www.tang.ai",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Southern": {
+  "careers_url": "https://southern.ie/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Halo": {
+  "careers_url": "https://halo.com/careers/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Leetherm": {
+  "careers_url": "https://leetherm.ie/careers/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Unum": {
+  "careers_url": "https://www.unumgroup.com/careers",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Apex": {
+  "careers_url": "https://www.apex.ai/careers",
+  "platform": "ats",
+  "at": "2026-10-19"
+ },
+ "Capital": {
+  "careers_url": "https://capital.com/en-int/about-us/careers",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Gagamuller": {
+  "careers_url": "https://www.gagamuller.com/careers/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Fehily": {
+  "careers_url": "https://www.questingvolepress.com/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Gas Networks": {
+  "careers_url": "https://www.gasnetworks.ie/about/careers/vacancies",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Hillbilly": {
+  "careers_url": "https://hillbilly.com/password",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Kmg Mechanical": {
+  "careers_url": "https://careers.kmgmechanical.com/",
+  "platform": null,
+  "at": "2026-10-19"
+ },
+ "Mastek": {
+  "careers_url": "https://careers.mastek.com/",
+  "platform": "custom",
+  "at": "2026-10-19"
+ },
+ "Keohane": {
+  "careers_url": "https://www.keohane.com/about/careers",
+  "platform": null,
+  "at": "2026-10-19"
  }
 }

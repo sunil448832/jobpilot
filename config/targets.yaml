@@ -35,10 +35,37 @@ hard_requirements:
     - "based in the .* region only"
     - "local candidates only"
 
+# What he is optimising for, on top of sponsorship odds (rank/rank.py goal_points).
+# Each market below carries a `goal:` block with the facts; this block says how they
+# count. To chase a different goal later, change the weights here (and the facts as
+# rules change) — no code changes. 2026-10-19: both goals equally, Australia first.
+goals:
+  max_points: 20              # the best possible market gets this many rank points
+  weights:                    # 0 switches a goal off
+    pr: 1.0                   # a settled status (PR / settlement permit / citizenship) within reach
+    savings: 1.0              # net savings as a multiple of what he saves in India
+  measures:
+    pr:      {fact: pr_years, best: 2, worst: 8}     # years to a settled status; "none" = 0 points
+    savings: {fact: savings_x, best: 5, worst: 1}    # net savings / India savings; 1x = 0 points
+  # Shown to the screener (src/agents/screen/prompt.md {goals}) so FIT and the reason reflect
+  # the goals, not only the skills match. Rewrite when the goals change.
+  screener_note: >-
+    Two goals, weighed equally: (1) a settled status (PR / settlement permit / citizenship)
+    within about 5-6 years — Germany (Blue Card settlement in ~2 years), Ireland, the
+    Netherlands and Australia (482 then 186 PR) serve it; the US, UAE and Switzerland do not;
+    (2) net savings at least twice what he saves in India — the UAE, Switzerland, Australia,
+    USD-paid fully-remote work and the US serve it; Ireland and the UK barely do.
+    Australia serves both and is the first choice. A role serving neither goal (a Swiss
+    startup unlikely to clear the Permit B quota, a UK role) needs an exceptional fit to keep.
+    Say which goal the role serves in the reason ("PR", "savings", "both" or "neither").
+
 # Ordered by how realistically sponsorship happens, NOT by salary.
 # Effort should follow this order — see the note on the USA.
 markets:
   - id: netherlands
+    goal:                       # 5 yrs to permanent residence (A2/B1 civic exam); ~USD 32-40k/yr saved with the 30%/27% ruling, ~25k without
+      pr_years: 5
+      savings_x: 2.0
     priority: 1
     country: "Netherlands"
     hubs: ["Amsterdam", "Eindhoven", "Utrecht", "Rotterdam"]
@@ -49,6 +76,9 @@ markets:
     resume_location_line: "Open to relocation to the Netherlands"
 
   - id: uae
+    goal:                       # no PR or citizenship (Golden Visa 10 yrs at AED 30k+/month is residency, not PR); ~USD 90k/yr saved tax-free
+      pr_years: none
+      savings_x: 5.0
     priority: 2
     country: "United Arab Emirates"
     hubs: ["Dubai", "Abu Dhabi"]
@@ -56,19 +86,25 @@ markets:
     sponsorship_reality: >-
       Sponsorship is the norm, not an exception — nearly every hire is an expat.
       Large Indian talent pipeline already established. Fast processing.
-    resume_location_line: "Open to relocation to the UAE"
+    resume_location_line: "Open to relocation to the UAE | Available for immediate relocation"
 
-  - id: australia
-    priority: 3
+  - id: australia                # priority 3 -> 1 on 2026-10-19: the one market that serves both goals
+    goal:                       # 482 then 186 PR after 2 yrs with the sponsor (or 189/190 points); citizenship 4 yrs; ~USD 45k/yr saved incl. super
+      pr_years: 3
+      savings_x: 2.5
+    priority: 1
     country: "Australia"
     hubs: ["Sydney", "Melbourne", "Brisbane", "Canberra"]
     visa_route: "Skills in Demand visa (subclass 482), Core Skills stream"
     sponsorship_reality: >-
       Real but slower. Employer must be an approved sponsor, so it skews toward
       larger companies. ML/software roles are on the skills list. 6-12 weeks.
-    resume_location_line: "Open to relocation to Australia"
+    resume_location_line: "Open to relocation to Australia | Eligible for the Skills in Demand (482) visa"
 
   - id: ireland
+    goal:                       # Stamp 4 after 2 yrs on a CSEP, citizenship after 5 yrs residence; ~USD 25-32k/yr saved (Dublin rent)
+      pr_years: 5
+      savings_x: 1.6
     priority: 1
     country: "Ireland"
     hubs: ["Dublin", "Cork", "Galway", "Limerick"]
@@ -85,6 +121,9 @@ markets:
     resume_location_line: "Open to relocation to Ireland"
 
   - id: germany
+    goal:                       # Blue Card settlement permit after 27 months (21 with B1 German), citizenship 5 yrs; ~USD 30-35k/yr saved (Berlin)
+      pr_years: 2.5
+      savings_x: 1.8
     priority: 1
     country: "Germany"
     hubs: ["Berlin", "Munich", "Hamburg", "Karlsruhe", "Heidelberg"]
@@ -100,6 +139,9 @@ markets:
     resume_location_line: "Open to relocation to Germany"
 
   - id: luxembourg
+    goal:                       # 5 yrs to long-term residence; ~USD 35k/yr saved
+      pr_years: 5
+      savings_x: 2.0
     priority: 1
     country: "Luxembourg"
     hubs: ["Luxembourg City", "Esch-sur-Alzette", "Belval"]
@@ -121,6 +163,9 @@ markets:
     resume_location_line: "Open to relocation to Luxembourg"
 
   - id: switzerland
+    goal:                       # C permit after 10 yrs for Indian nationals; ~USD 80-85k/yr saved (Zurich)
+      pr_years: 10
+      savings_x: 4.5
     priority: 3
     country: "Switzerland"
     hubs: ["Zurich", "Lausanne", "Basel", "Geneva", "Zug"]
@@ -140,6 +185,9 @@ markets:
     resume_location_line: "Open to relocation to Switzerland"
 
   - id: usa
+    goal:                       # EB-2 India backlog runs decades: no settled status in reach; ~USD 60-80k/yr saved if the lottery is won
+      pr_years: none
+      savings_x: 3.5
     priority: 4
     country: "United States"
     hubs: ["San Francisco", "Seattle", "New York", "Austin", "Boston"]
@@ -156,6 +204,9 @@ markets:
     resume_location_line: "Open to relocation to the US"
 
   - id: remote_india
+    goal:                       # no move, no visa; USD/EUR pay on Indian costs: ~USD 50-80k/yr saved
+      pr_years: none
+      savings_x: 3.5
     priority: 1
     country: "Remote (from India)"
     hubs: ["Remote"]
@@ -309,7 +360,7 @@ scoring:
                  #   — no labour-market test, no lottery, weeks not months
     2: 18        # UAE (Saudi Arabia dropped 2026-10-05 on his instruction)
                  #   — routine: nearly every hire there is an expat
-    3: 12        # Australia, Switzerland
+    3: 12        # Switzerland (Australia moved to priority 1 on 2026-10-19 — goals plan)
                  #   — real but rationed: approved-sponsor list / Permit B quota
     4: 2         # USA — H-1B lottery gates most of it regardless of fit
 
@@ -321,7 +372,7 @@ scoring:
   boost:
     sponsorship_explicit: 15    # JD explicitly says it sponsors (rank/visa.py: explicit)
     sponsorship_implicit: 7     # a hint: case by case, relocation help, a market where it is the norm
-    fully_remote_global: 12
+    fully_remote_global: 18     # 12 -> 18 (2026-10-19): USD pay on Indian costs is the best savings per effort
     genai_agentic_focus: 10
     referral_available: 20      # referrals.py found a connection there
     pay_above_ask: 12           # posted pay converts to at or above the ask

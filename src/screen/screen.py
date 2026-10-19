@@ -116,6 +116,11 @@ def digest_jd(jd, limit=1100):
     return out[:limit]
 
 
+def load_targets():
+    from jobpilot.discover.intake import load_targets as _lt
+    return _lt()
+
+
 def build_prompt(rows):
     from jobpilot.core import agents
     from jobpilot.tailor import tex2md
@@ -130,7 +135,8 @@ def build_prompt(rows):
         resume=resume, policy=policy_sections([4]), name=a["personal"]["full_name"],
         citizenship=a["work_authorization"]["citizenship"],
         country=a["work_authorization"]["current_work_country"],
-        years=years, max_years=years + int(cfg("screen.years_margin", 2)))]
+        years=years, max_years=years + int(cfg("screen.years_margin", 2)),
+        goals=((load_targets().get("goals") or {}).get("screener_note") or "No goal note set: judge on fit alone.").strip())]
     from jobpilot.rank import visa
     for i, (key, co, title, loc, market, score, url, jd) in enumerate(rows, 1):
         tag, why = visa.classify(jd, market, co)

@@ -12,6 +12,9 @@ Citizenship: {citizenship}. Lives and works in {country}: anywhere else he needs
 visa sponsorship, or a fully-remote role that hires from {country}.
 Experience: {years} years.
 
+WHAT HE IS OPTIMISING FOR (config/targets.yaml goals — weigh it in FIT and name it in the reason)
+{goals}
+
 KEEP/REJECT is about ELIGIBILITY. When in doubt, KEEP: a wrong keep costs one
 tailoring session, a wrong reject loses the role for good.
 

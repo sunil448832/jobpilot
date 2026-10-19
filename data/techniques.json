@@ -1,9 +1,9 @@
 {
  "workday": {
   "list": "entries",
-  "digits": "keys",
+  "digits": "js",
   "type": "fill",
-  "tick": "click",
+  "tick": "label",
   "file": "input",
   "date": "together"
  },
@@ -46,5 +46,31 @@
   "file": "input",
   "type": "fill",
   "list": "entries"
+ },
+ "successfactors": {
+  "list": "entries",
+  "tick": "click",
+  "type": "fill"
+ },
+ "recruitee": {
+  "type": "fill",
+  "file": "input"
+ },
+ "lever": {
+  "file": "input",
+  "select": "label",
+  "type": "keys",
+  "tick": "click"
+ },
+ "appliedmaterials": {
+  "list": "entries",
+  "tick": "click",
+  "type": "fill",
+  "file": "input"
+ },
+ "arada": {
+  "tick": "click",
+  "type": "fill",
+  "file": "input"
  }
 }

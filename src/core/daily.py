@@ -61,7 +61,8 @@ def run(script, *args, timeout=900):
         for t in tail:
             log(f"   {t}")
         if p.returncode != 0:
-            log(f"   !! {script} exited {p.returncode}: {(p.stderr or '')[:200]}")
+            err = (p.stderr or "").strip()            # the exception is at the END of a traceback
+            log(f"   !! {script} exited {p.returncode}: " + (err[:120] + " … " + err[-500:] if len(err) > 620 else err))
         return p.returncode == 0
     except subprocess.TimeoutExpired:
         log(f"   !! {script} timed out after {timeout}s")
@@ -127,7 +128,7 @@ def discover_if_stale():
             return
     except OSError:
         pass
-    if run("tenants.py", "--quiet", timeout=1800):
+    if run("tenants.py", "--quiet", timeout=int(cfg("discovery.run_timeout_s", 1800))):
         open(stamp, "w").write(dt.datetime.now().isoformat(timespec="seconds"))
 
 

@@ -1,0 +1,5 @@
+# Australian employers approved as Standard Business Sponsors (482 / 186). No official live
+# dataset exists: Home Affairs releases dated FOI snapshots as scanned PDFs (fa-250501968,
+# 30 April 2025) that need OCR. Fill this file from such a release or a verified directory;
+# one employer per line: company,permits (permits optional). Lines starting with # are ignored.
+company,permits

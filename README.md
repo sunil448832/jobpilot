@@ -150,9 +150,10 @@ jobpilot/
   config/                      edited by hand
     POLICY.md                  who he is, what is true, how to tailor — read by every agent
     answers.yaml               stored facts: what forms get (profile, education, salary per market, ...)
-    targets.yaml               which jobs: titles, markets, keywords, rejects, weights
-    config.yaml                how the pipeline runs: limits, models, schedule
-    boards.yaml                the boards intake pulls
+    targets.yaml               which jobs: titles, markets, keywords, rejects, weights, GOALS
+    config.yaml                how the pipeline runs: limits, models, schedule, sponsor registers
+    boards.yaml                the boards intake pulls, and the cross-company feeds (aggregators)
+    employers.yaml             the employer sweep lists per market (discovery's `sweep` source)
   src/                         core/ discover/ rank/ screen/ tailor/ apply/ review/ outreach/ agents/
   .env                         secrets: Telegram, review link, Workday (gitignored, mode 600)
   data/                        general state: state.db (jobs, referrals), connections.csv, caches,
@@ -243,17 +244,31 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Per company: 5 applications in any 30 days** (`apply.default_quota`). A full company is held
   before ranking and its approved cards wait for a slot. OpenAI: 5 per 180 days, full until
   2027-03-28 (its portal refused one).
-- **Per run:** 10 roles tailored, at most 3 from one company, at most 30% silent on visas, and no
-  country above its share (`pipeline.market_max_share`: US, UAE, AU 30%; DE, NL, IE 40%; CH, LU,
-  remote 20%); 10 cards filed per review run.
-- **Sponsor registers** (`rank/sponsors.py`, refreshed monthly into `data/sponsors.json`): the IND
-  public register of recognised sponsors (NL, ~13,000) and Ireland's employment permits issued to
-  companies (~12,700). A silent posting by a listed employer counts as **explicit** — Meta, Google,
+- **Per run:** 15 roles tailored, at most 3 from one company, at most 60% silent on visas (of which
+  at most 3 US-silent, `pipeline.explicit_only_silent_max`), and no country above its share
+  (`pipeline.market_max_share`: US 30%; DE, NL, IE 40%; UAE, CH 27%; remote 30%; LU 20%; Australia
+  uncapped); 15 cards filed per review run.
+- **Goals** (`targets.yaml goals`, since 2026-10-19): what he is optimising for on top of sponsorship
+  odds — a settled status within reach (`pr_years`) and net savings as a multiple of India
+  (`savings_x`), both equally. Every market carries its two facts in its `goal:` block; `goals.weights`
+  says how much each counts and `goals.max_points` (20) what the best market earns in rank; the
+  screener reads `goals.screener_note`. To chase a different goal, change the weights and the note —
+  no code. Australia serves both goals and is priority 1; UAE and Switzerland earn their points on
+  savings; the US, UAE and Switzerland score nothing on PR.
+- **Sponsor registers** (`config.yaml visa.sponsor_registers`, read by `rank/sponsors.py`, refreshed
+  monthly into `data/sponsors.json`; kinds `ind_html`, `dete_xlsx`, `csv`): the IND public register of
+  recognised sponsors (NL, ~13,000), Ireland's employment permits issued to companies (~12,700), and
+  `data/registers/australia_sponsors.csv` for Australian standard business sponsors (empty until a
+  usable list is found: Home Affairs publishes only scanned FOI snapshots). A silent posting by a listed employer counts as **explicit** — Meta, Google,
   Workday, Stripe, Adyen, Booking … rarely say it in the JD. `python -m jobpilot.rank.sponsors --who <name>`.
   The full list is written to `data/sponsoring_companies.csv` (company, country, permits, why it is a
   lead, whether its jobs are already scanned). Discovery's `sponsors` source looks up their job
   boards, largest sponsors first, 120 a run. Switzerland has no register (permits are case by case,
-  under quotas): a silent Swiss posting by an employer on the NL / IE lists counts as implicit.
+  under quotas): a silent Swiss posting by an employer on any register counts as implicit.
+- **Sourcing lists are data:** `config/employers.yaml` holds the sweep list per market (Australia 67,
+  Gulf 57, NL 27, DE 25, LU 23, CH 22, IE 19); `boards.yaml aggregators:` the cross-company feeds
+  (Remotive, Arbeitnow, RemoteOK, We Work Remotely — `json_api` with a field map, or `rss`). Add an
+  employer, a feed or a market there; nothing in `src/` names one.
 - **Visa:** US roles only when the posting says it sponsors; a silent posting in the Netherlands,
   Ireland, Germany, Luxembourg or the UAE counts as a likely yes. The resume header says only
   "Open to relocation to X" — the forms answer the sponsorship question.

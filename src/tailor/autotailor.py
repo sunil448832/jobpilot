@@ -151,13 +151,19 @@ def candidates(limit, floor, per_company=3, require_screen=None):
     con = sqlite3.connect(DB)
     # source='inbox' = a link Sunil pasted himself (discover/inbox.py): already
     # reviewed, so no floor, no screen verdict, no fit gate — and always first.
-    gates = "score >= ? "
+    # The floor applies to the pick score (fit_weight * fit + rank), the same blend the
+    # list is sorted by, not to the keyword rank alone: Teampicnic (NL, fit 80) ranked 42.5
+    # and never reached the tailor while the floor read the rank (2026-10-14). A role the
+    # screener has not scored (fit NULL) is held to its rank.
+    gates = f"(CASE WHEN fit IS NULL THEN score ELSE COALESCE(fit, 0) * {w} + score * {1 - w} END) >= ? "
     if require_screen:
+        fit_min, fit_min_non_usa = int(cfg("pipeline.fit_min", 45)), int(cfg("pipeline.fit_min_non_usa", cfg("pipeline.fit_min", 45)))
         gates += ("AND screen LIKE 'keep%' "
                   # The screener's fit score (0-100, resume vs the role's REAL requirements,
                   # abstract ones and "one of" lists included) gates entry. Keyword scores
                   # cannot read a JD like Adyen's (5 hard keywords in 87 terms); this can.
-                  f"AND fit >= {int(cfg('pipeline.fit_min', 45))} ")
+                  # Sponsorship markets take a lower fit than the US (pipeline.fit_min_non_usa).
+                  f"AND fit >= CASE WHEN market = 'usa' THEN {fit_min} ELSE {fit_min_non_usa} END ")
     from jobpilot.rank import visa
     visa.ensure_columns(con)
     rows = con.execute(
@@ -184,6 +190,10 @@ def candidates(limit, floor, per_company=3, require_screen=None):
     # Shares are caps, not quotas: slots a market cannot fill go to the next-best roles.
     shares = cfg("pipeline.market_max_share", {}) or {}
     per_market = {}
+    # Silent postings in an explicit-only market (the US) get this many slots a run; they
+    # also count toward the silent share above.
+    explicit_silent_max = int(cfg("pipeline.explicit_only_silent_max", 0))
+    explicit_silent = {}
     for k, co, title, loc, url, mk, sc, fit, src, vtag in rows:
         ck = Q.key(co)
         inbox = src == "inbox"
@@ -215,7 +225,11 @@ def candidates(limit, floor, per_company=3, require_screen=None):
         if vtag == "no" and not inbox:
             continue
         if mk in (cfg("visa.explicit_only_markets", []) or []) and vtag != "explicit" and not inbox:
-            continue                       # e.g. the US: silence there is an automatic reject
+            # e.g. the US: silence there is an automatic reject — except for a few a run
+            # (pipeline.explicit_only_silent_max, his call 2026-10-15: 10 a run beats the rule)
+            if explicit_silent.get(mk, 0) >= explicit_silent_max:
+                continue
+            explicit_silent[mk] = explicit_silent.get(mk, 0) + 1
         if mk in shares and not inbox and per_market.get(mk, 0) >= max(1, int(limit * float(shares[mk]) + 1e-9)):
             continue
         if vtag not in ("explicit", "implicit") and not inbox:

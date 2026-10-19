@@ -4,7 +4,8 @@ Finds AI/ML roles, tailors the resume to each, fills the application form, asks 
 on the phone, submits, and tracks follow-ups and referrals. Scans twice a day; Sunil only
 reviews and taps Approve.
 
-423 job boards across 8 ATS platforms · 56 applications submitted (first: OpenAI, 2026-09-05).
+520 job boards across 9 ATS platforms plus 5 cross-company feeds · 117 applications submitted
+(first: OpenAI, 2026-09-05).
 The original plan is in [docs/original-plan.md](docs/original-plan.md); how forms are filled
 is in [docs/form-agent.md](docs/form-agent.md).
 
@@ -20,12 +21,23 @@ is in [docs/form-agent.md](docs/form-agent.md).
 
 | Time (IST) | What runs | What he does |
 |---|---|---|
-| 07:00 · 17:00 | `jobpilot-daily.timer`: scan → rank → screen → tailor + fill up to 10 roles (at least 70% with a visa offer or hint) | nothing |
+| 07:00 · 17:00 | `jobpilot-daily.timer`: discover employers (daily) → scan → rank → screen → tailor + fill up to 15 roles (at most 60% silent on visas, of which at most 3 in the US) | nothing |
 | 09:00 · 19:00 | `jobpilot-review.timer`: Telegram "N waiting" + link; files every approved card | review on the phone |
 
 On the phone (review site over Tailscale) each card is **Approve**, **Later** (comes back next
 time) or **Reject** (dropped). Approved cards are filed at the next 09:00 / 19:00 run, or at once
 with `./jobpilot submit`.
+
+## What he is optimising for
+
+Two goals, weighed equally (his call, 2026-10-19): **a settled status within about 5–6 years**
+(PR, a settlement permit, citizenship) and **net savings at least twice what he saves in India**.
+Australia serves both and is the first choice; Germany, Ireland and the Netherlands serve the
+first; the UAE, Switzerland, USD-paid remote work and the US serve the second. The UK and Canada
+are out of scope. All of it is data: `targets.yaml goals` (the weights, how each goal is measured,
+the note the screener reads) and a `goal:` block per market (`pr_years`, `savings_x`). Ranking adds
+up to 20 points from it, the screener weighs it in FIT, and the run mix caps follow it
+(`pipeline.market_max_share`). To chase a different goal, change the weights and the note.
 
 ## Setup (a new machine)
 
@@ -69,7 +81,7 @@ is public: never commit it). Steps 6 and 8 write their keys; add the rest by han
 |---|---|---|
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | digests, "N waiting", codes asked mid-filing | `./jobpilot setup-telegram` |
 | `FORM_TOKEN` | the review site's `?t=` link | the review site, on first start |
-| `WORKDAY_EMAIL`, `WORKDAY_PASSWORD` | the Workday account gate (one password used nowhere else) | by hand; without them Workday jobs are skipped |
+| `WORKDAY_EMAIL`, `WORKDAY_PASSWORD` | the Workday account gate (one password used nowhere else); SAP's careers site (SuccessFactors) signs in with the same pair unless `SUCCESSFACTORS_EMAIL` / `SUCCESSFACTORS_PASSWORD` are set | by hand; without them Workday and SAP jobs are skipped |
 | `BRAVE_API_KEY` or `GOOGLE_CSE_KEY` + `GOOGLE_CSE_CX` | employer discovery: web search | by hand, optional |
 | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | employer discovery: Adzuna | by hand, optional |
 
@@ -102,7 +114,7 @@ Claude spent) ends in `ALL OK`.
 
 ```bash
 ./jobpilot start | stop | status       # scheduler on / off (stop also kills a run in progress)
-./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 10)
+./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 15)
     --only screen,tailor               #   just those stages (./jobpilot stages lists them)
     --source-limit 200                 #   intake stops at 200 matching postings
     --dry-run                          #   build nothing, fill nothing
@@ -128,10 +140,10 @@ Claude spent) ends in `ALL OK`.
 
 | Stage | Module | What it does | Claude |
 |---|---|---|---|
-| intake | `discover/intake.py` | pulls every board in `boards.yaml` in parallel; keeps target titles in target markets; drops "no sponsorship" / "must be based in" JDs and country-locked remote; stores new rows in `state.db` | — |
+| intake | `discover/intake.py` | pulls every board in `boards.yaml` in parallel plus the cross-company feeds (`aggregators:`); keeps target titles (the `titles` phrases, or an AI word with an IC noun: "Software Engineer II, AI/ML", "Forward Deployed Software Engineer" — managers, architects, consultants, interns and infra roles excluded) in target markets; drops "no sponsorship" / "must be based in" JDs and country-locked remote; stores new rows in `state.db` | — |
 | hold | `core/quota.py` | parks the postings of a company at its application limit as `held` | — |
-| rank | `rank/rank.py` | score = keyword fit + title fit + market bonus (NL/IE/DE/LU/remote 22, Gulf 18, AU/CH 12, US 2) + boosts (pay ≥ ask, sponsorship stated, YC +10) − penalties (8+ years asked, pay < 85% of ask) | — |
-| screen | `screen/screen.py` | reads the top 30 JDs: keep / reject + a 0–100 fit score | Sonnet |
+| rank | `rank/rank.py` | score = keyword fit + title fit + market bonus (NL/IE/DE/LU/AU/remote 22, Gulf 18, CH 12, US 2) + goal points (up to 20: PR path and savings, `targets.yaml goals`) + boosts (pay ≥ ask, sponsorship stated, fully remote 18, YC) − penalties (8+ years asked, pay < 85% of ask) | — |
+| screen | `screen/screen.py` | reads the top 30 JDs, non-US first, digging to floor 35 until 30 non-US are usable: keep / reject + a 0–100 fit score + the visa tag, with the goals in mind | Sonnet |
 | tailor | `tailor/autotailor.py` | builds the resume, scores it against the JD; under 60%, up to 2 tailoring rounds, each undone if it does not raise the score, stuffs keywords or runs past 2 pages | Sonnet |
 | explore | `apply/explore_agentic/` | one agent fills the form page by page in real Chrome, records every step in `calls.json`, stops before Submit; a card goes to the phone | Opus |
 | draft | `apply/draft/` | 2–3 drafted answers for each question only he can answer | Sonnet |
@@ -139,8 +151,10 @@ Claude spent) ends in `ALL OK`.
 | submit | `apply/explore_agentic/replay.py` | redoes the record by code with his answers; the agent only where a page differs; presses Submit and waits for the portal's confirmation | only if a page differs |
 | track | `core/tracker.py`, `outreach/` | follow-up 5 business days later; referral targets and messages | — |
 
-Roles pass rank, screen (keep, fit ≥ 55) and the tailor floor (score ≥ 45) before any Claude
-session is spent on them. Links he adds with `./jobpilot add` skip rank and screen.
+Roles pass rank, screen (keep; fit ≥ 55 in the US, ≥ 50 elsewhere) and the tailor floor (the
+pick score 0.7 × fit + 0.3 × rank ≥ 45) before any Claude session is spent on them. A US posting
+silent on sponsorship gets one of 3 slots a run; a silent posting by an employer on its market's
+sponsor register counts as explicit. Links he adds with `./jobpilot add` skip rank and screen.
 
 ## Where things live
 
@@ -216,7 +230,10 @@ A low score from a real gap is reported, not chased. No code adds or removes ter
 | a refusal (applied already, closed) | **Failed — needs a look** |
 
 - Workday: the account gate (sign in, create account, email verification) is passed by code with
-  credentials from `.env` in the checkout (gitignored); Claude never sees them.
+  credentials from `.env` in the checkout (gitignored); Claude never sees them. SAP's careers site
+  (SuccessFactors, `platforms/successfactors.py`) likewise: sign in only, never an account created;
+  its consent overlay is removed (accepting it reloads the posting) and its "Loading…" after Sign In
+  can take over 30 s.
 
 ## Review site
 
@@ -277,8 +294,11 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
   words from the start of the name. Their careers-site reader is off too (`discovery.deny_boards`).
 - **Frontier labs:** at most 2 applications a month each (Anthropic, OpenAI, DeepMind, xAI,
   Mistral, Reflection, Meta, Cohere).
-- **Employer discovery** (`tenants.py`: curated lists per market + LinkedIn guest search for names)
-  runs from a scan when its last run is over 3 days old; the US is not searched (it has the most).
+- **Employer discovery** (`tenants.py`: the sweep lists in `config/employers.yaml`, the sponsor
+  registers 300 a run, LinkedIn guest search for names, and web search / Adzuna when their keys are
+  in `.env`) runs from the scan once a day (`discovery.every_days`), each source within
+  `discovery.tenant_budget_s`, the whole run within `discovery.run_timeout_s`; the US is not
+  searched (it has the most).
 - **Own careers sites** (`custom:` in `boards.yaml`, read by code; the form agent applies on them as
   anywhere): Amazon (amazon.jobs JSON), Google (the results page's embedded data), Microsoft
   (Eightfold JSON — `site: eightfold` works for other Eightfold sites too), and `site: generic` for any

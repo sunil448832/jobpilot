@@ -59,8 +59,9 @@
  "lever": {
   "file": "input",
   "select": "label",
-  "type": "keys",
-  "tick": "click"
+  "type": "fill",
+  "tick": "click",
+  "list": "typed"
  },
  "appliedmaterials": {
   "list": "entries",

@@ -216,13 +216,19 @@ apply:
   # an entry under quotas replaces it for that company. See src/core/quota.py and
   # ./jobpilot companies.
   default_quota: {max: 5, window_days: 30}
+  # Companies that share one application limit (one careers account): every member counts
+  # under the group's key, matched on the start of the squashed name ("Google Cloud" -> google).
+  quota_groups:
+    google: [google, youtube, deepmind, googledeepmind, waymo, verily, alphabet]
   quotas:
     # Frontier labs: at most 2 a month (2026-10-06 — 7 to Anthropic in a week, no reply;
     # cold applications there rarely get one). OpenAI also keeps its portal's limit.
     openai: [{max: 2, window_days: 30}, {max: 5, window_days: 180}]   # the portal refuses a 6th in 180 days (seen 2026-09-29)
     anthropic: {max: 2, window_days: 30}
-    googledeepmind: {max: 2, window_days: 30}
-    deepmind: {max: 2, window_days: 30}
+    # Google careers (one account for Google, YouTube, DeepMind, Waymo ... postings) allows 3
+    # applications a month; reached on 2026-10-19 (his note). quota_groups below folds the
+    # family into this one key, so the former deepmind 2/30 entries are gone.
+    google: {max: 3, window_days: 30}
     xai: {max: 2, window_days: 30}
     mistralai: {max: 2, window_days: 30}
     mistral: {max: 2, window_days: 30}

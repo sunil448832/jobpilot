@@ -40,7 +40,16 @@ COLUMNS = ("Company", "Submitted", "Sent in window", "Limit", "Room now", "Next 
 
 
 def key(company):
-    return re.sub(r"[^a-z0-9]+", "", (company or "").lower())
+    """A company's quota key: its name squashed to letters and digits — or its group's key
+    when apply.quota_groups puts it in one (Google careers takes 3 applications a month across
+    Google, YouTube and DeepMind postings: one account, one limit)."""
+    k = re.sub(r"[^a-z0-9]+", "", (company or "").lower())
+    for group, members in (cfg("apply.quota_groups", {}) or {}).items():
+        for m in members or []:
+            mk = re.sub(r"[^a-z0-9]+", "", str(m).lower())
+            if mk and (k == mk or k.startswith(mk)):
+                return re.sub(r"[^a-z0-9]+", "", str(group).lower())
+    return k
 
 
 def never(company):

@@ -260,7 +260,9 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 
 - **Per company: 5 applications in any 30 days** (`apply.default_quota`). A full company is held
   before ranking and its approved cards wait for a slot. OpenAI: 5 per 180 days, full until
-  2027-03-28 (its portal refused one).
+  2027-03-28 (its portal refused one). Google careers: 3 a month across Google, YouTube, DeepMind,
+  Waymo ... (one account; `apply.quota_groups` folds a family into one key, `apply.quotas` sets its
+  limit) — reached on 2026-10-19, next slot 2026-11-11.
 - **Per run:** 20 roles tailored, at most 3 from one company, at most 60% silent on visas (of which
   at most 3 US-silent, `pipeline.explicit_only_silent_max`), and no country above its share
   (`pipeline.market_max_share`: US 30%; DE, NL, IE 40%; UAE, CH 27%; remote 30%; LU 20%; Australia

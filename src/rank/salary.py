@@ -95,19 +95,44 @@ def _val(num, suffix):
     return v * MULT.get((suffix or "").lower(), 1)
 
 
+_PAT = None
+_PARSED = {}                                     # sha1 of the text -> entries (a process-level cache)
+
+
+def _pattern():
+    """The pay regex, compiled once: building it per call made company_comparables (up to 60
+    postings per job) 85% of a 6-minute re-rank (2026-10-19)."""
+    global _PAT
+    if _PAT is None:
+        cur_alt = "|".join(sorted((re.escape(c) for c in list(SYMBOL) + list(CODES)),
+                                  key=len, reverse=True))
+        # currency before the number, or immediately after it
+        _PAT = re.compile(
+            rf"(?:(?P<c1>{cur_alt})\s*)?{NUM}"
+            rf"(?:\s*(?:-|–|—|to)\s*(?:(?:{cur_alt})\s*)?{NUM})?"
+            rf"(?:\s*(?P<c2>{cur_alt}))?", re.I)
+    return _PAT
+
+
 def parse_salary(text):
-    """Find posted pay. Returns a list of {min,max,currency,period_mult,raw}."""
+    """Find posted pay. Returns a list of {min,max,currency,period_mult,raw}. Cached per text."""
     if not text:
         return []
+    import hashlib
+    key = hashlib.sha1(text.encode("utf-8", "ignore")).hexdigest()
+    if key in _PARSED:
+        return [dict(e) for e in _PARSED[key]]
+    found = _parse_salary(text)
+    if len(_PARSED) > 20000:
+        _PARSED.clear()
+    _PARSED[key] = [dict(e) for e in found]
+    return found
+
+
+def _parse_salary(text):
     t = re.sub(r"\s+", " ", text)
     found = []
-    cur_alt = "|".join(sorted((re.escape(c) for c in list(SYMBOL) + list(CODES)),
-                              key=len, reverse=True))
-    # currency before the number, or immediately after it
-    pat = re.compile(
-        rf"(?:(?P<c1>{cur_alt})\s*)?{NUM}"
-        rf"(?:\s*(?:-|–|—|to)\s*(?:(?:{cur_alt})\s*)?{NUM})?"
-        rf"(?:\s*(?P<c2>{cur_alt}))?", re.I)
+    pat = _pattern()
     for m in pat.finditer(t):
         cur = (m.group("c1") or m.group("c2") or "").strip()
         if not cur:
@@ -175,10 +200,21 @@ MARKET_BANDS = {
 }
 
 
+_COMPARABLES = {}                                # (company, market) -> median, per process
+
+
 def company_comparables(company, market, con):
     """Strongest estimate: what THIS company pays for similar roles elsewhere."""
     if con is None:
         return None
+    key = (company, market)
+    if key in _COMPARABLES:
+        return _COMPARABLES[key]
+    _COMPARABLES[key] = out = _company_comparables(company, market, con)
+    return out
+
+
+def _company_comparables(company, market, con):
     # MUST be same-market: OpenAI's San Francisco bands say nothing about an
     # Abu Dhabi role, and using them estimated a Gulf job at $325k.
     try:

@@ -18,6 +18,7 @@ TRUE for him — sourced from resume/sections/*.tex and project-memory-backup/.
     python jobs/keywords.py --check "we use RAG with a vector store"
 """
 import argparse
+import functools
 import re
 import os
 import sys
@@ -222,13 +223,22 @@ def forms(term):
     return out
 
 
+@functools.lru_cache(maxsize=4096)
+def _pattern(term):
+    """One compiled regex per term: every alias and variant as alternatives, longest first.
+    forms() plus a compile per variant per call made ranking 465 ms a job — 95% of a 6-minute
+    re-rank (2026-10-19); cached, a job scores in a few ms."""
+    alts = sorted(forms(term), key=len, reverse=True)
+    if not alts:
+        return None
+    return re.compile(r"(?<![a-z0-9])(?:" + "|".join(re.escape(f) for f in alts) + r")(?![a-z0-9])")
+
+
 def hit(term, blob_norm):
     """Does this term (or any alias/variant) appear? Word-boundary anchored so
     'ml' does not match 'html' and 'cv' does not match 'cvs'."""
-    for f in forms(term):
-        if re.search(r"(?<![a-z0-9])" + re.escape(f) + r"(?![a-z0-9])", blob_norm):
-            return True
-    return False
+    rx = _pattern(term)
+    return bool(rx and rx.search(blob_norm))
 
 
 def hits(terms, text):

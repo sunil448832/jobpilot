@@ -53,10 +53,10 @@ pipeline:
   explore_timeout_s: 2400
   # Roles tailored per scan. Each costs 2 Claude sessions, so this is the cost
   # dial: 10 x 2 scans/day = up to 20/day.
-  tailor_limit: 15    # 10 -> 15 on his instruction, 2026-10-15
+  tailor_limit: 20    # 10 -> 15 (2026-10-15) -> 20 (2026-10-19) on his instruction
   # Approved applications filed per review run (09:00 / 19:00). Approval on the
   # phone is the only gate; this just caps how many go out per run.
-  submit_limit: 15    # with tailor_limit, 2026-10-15
+  submit_limit: 20    # with tailor_limit
   # A submit that fails this many times stays 'failed' (own section on the
   # review page, with the reason) instead of being retried again.
   submit_attempts: 3
@@ -184,7 +184,7 @@ screen:
   # Raised 10 -> 20 and counted in non-usa only (2026-10-14): the tailor wants 10 a
   # run from sponsorship markets, and the US pool satisfied the count while no
   # non-US role below the first floor was ever screened.
-  want_usable: 30     # 20 -> 30 with tailor_limit 15 (2026-10-15)
+  want_usable: 40     # 2 x tailor_limit
   max_rounds: 3
   # Count only this market toward want_usable. "non-usa" is useful because the
   # US pool is large but H-1B-gated; blank counts every market. When set, that
@@ -278,7 +278,7 @@ discovery:
   run_timeout_s: 3600
   yc_min_size: 10       # smaller than this cannot sponsor anyone
   yc_limit: 600
-  workers: 14           # parallel probes; higher risks rate limits
+  workers: 24           # parallel probes; higher risks rate limits   # 14 -> 24 (2026-10-19): intake is network-bound, 520 boards
   # Intake stops pulling boards once this many postings match titles + markets, and
   # stores at most that many; boards scanned longest ago go first (data/board_scans.json),
   # so limited runs take turns over every board. 0 = every board, every run.

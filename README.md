@@ -21,7 +21,7 @@ is in [docs/form-agent.md](docs/form-agent.md).
 
 | Time (IST) | What runs | What he does |
 |---|---|---|
-| 07:00 · 17:00 | `jobpilot-daily.timer`: discover employers (daily) → scan → rank → screen → tailor + fill up to 15 roles (at most 60% silent on visas, of which at most 3 in the US) | nothing |
+| 07:00 · 17:00 | `jobpilot-daily.timer`: discover employers (daily) → scan → rank → screen → tailor + fill up to 20 roles (at most 60% silent on visas, of which at most 3 in the US) | nothing |
 | 09:00 · 19:00 | `jobpilot-review.timer`: Telegram "N waiting" + link; files every approved card | review on the phone |
 
 On the phone (review site over Tailscale) each card is **Approve**, **Later** (comes back next
@@ -114,7 +114,7 @@ Claude spent) ends in `ALL OK`.
 
 ```bash
 ./jobpilot start | stop | status       # scheduler on / off (stop also kills a run in progress)
-./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 15)
+./jobpilot pipeline [N]                # one full run now, tailoring N roles (default 20)
     --only screen,tailor               #   just those stages (./jobpilot stages lists them)
     --source-limit 200                 #   intake stops at 200 matching postings
     --dry-run                          #   build nothing, fill nothing
@@ -261,10 +261,10 @@ Tailscale; every page needs the `FORM_TOKEN` link. Restart it after changing its
 - **Per company: 5 applications in any 30 days** (`apply.default_quota`). A full company is held
   before ranking and its approved cards wait for a slot. OpenAI: 5 per 180 days, full until
   2027-03-28 (its portal refused one).
-- **Per run:** 15 roles tailored, at most 3 from one company, at most 60% silent on visas (of which
+- **Per run:** 20 roles tailored, at most 3 from one company, at most 60% silent on visas (of which
   at most 3 US-silent, `pipeline.explicit_only_silent_max`), and no country above its share
   (`pipeline.market_max_share`: US 30%; DE, NL, IE 40%; UAE, CH 27%; remote 30%; LU 20%; Australia
-  uncapped); 15 cards filed per review run.
+  uncapped); 20 cards filed per review run.
 - **Goals** (`targets.yaml goals`, since 2026-10-19): what he is optimising for on top of sponsorship
   odds — a settled status within reach (`pr_years`) and net savings as a multiple of India
   (`savings_x`), both equally. Every market carries its two facts in its `goal:` block; `goals.weights`

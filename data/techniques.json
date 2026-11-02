@@ -54,12 +54,15 @@
  },
  "recruitee": {
   "type": "fill",
-  "file": "input"
+  "file": "input",
+  "tick": "click",
+  "digits": "keys",
+  "list": "entries"
  },
  "lever": {
   "file": "input",
   "select": "label",
-  "type": "fill",
+  "type": "keys",
   "tick": "click",
   "list": "typed"
  },

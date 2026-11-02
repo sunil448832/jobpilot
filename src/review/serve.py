@@ -24,6 +24,7 @@ import argparse
 import copy
 import datetime as dt
 import glob
+import html
 import json
 import os
 import secrets
@@ -410,7 +411,95 @@ class H(BaseHTTPRequestHandler):
                             for i in shown)
                         + "</table></div>" + nav)
 
-            tables = {"submitted": submitted_table, "approved": approved_table, "later": later_table}
+            def paged(rows, param, size, anchor, noun):
+                """One page of rows (?<param>=<page>) and its pager; the other tables keep their page."""
+                pages = max(1, -(-len(rows) // size))
+                page = min(page_of(param), pages)
+
+                def go(n):
+                    keep = {k: v[0] for k, v in q.items() if k not in ("t", param)}
+                    keep[param] = n
+                    return f'/{t}{"&" if t else "?"}' + "&".join(f"{k}={v}" for k, v in keep.items()) + f"#{anchor}"
+                nav = ("" if pages == 1 else
+                       '<p class="m pager">'
+                       + (f'<a href="{go(page - 1)}">← Newer</a> · ' if page > 1 else "")
+                       + f"page {page} of {pages} ({len(rows)} {noun})"
+                       + (f' · <a href="{go(page + 1)}">Older →</a>' if page < pages else "") + "</p>")
+                return rows[(page - 1) * size: page * size], nav
+
+            def failed_table(rows, key):
+                """Filings that did not go through (failed) or may have (unconfirmed), newest
+                first: when, company, role, portal, why, and the 'I submitted this by hand' tick."""
+                rows = sorted(rows, key=lambda i: i.get("decided_at") or i.get("created") or "", reverse=True)
+                shown, nav = paged(rows, "fp" if key == "failed" else "up", PAGE, key, key)
+
+                def why(i):
+                    if key == "unconfirmed":
+                        return "may have been sent — never pressed again"
+                    if i.get("fail_reason"):
+                        return i["fail_reason"][:110]
+                    return "exploration stopped short" if i.get("reached_end") is False else f"attempt {i.get('attempts', 1)} failed"
+                return ('<div class="tbl"><table class="sub"><tr><th>Date</th><th>Company</th><th>Role</th>'
+                        '<th>Portal</th><th>Why</th><th>By hand</th></tr>'
+                        + "".join(
+                            f'<tr><td class="d">{(i.get("decided_at") or i.get("created") or "")[:10]}</td>'
+                            f'<td>{i.get("company","?")}</td>'
+                            f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
+                            f'<td class="d">{i.get("portal") or ""}</td>'
+                            f'<td class="m" style="margin:0">{why(i)}</td>'
+                            f'<td class="d"><input type="checkbox" title="I submitted this by hand" '
+                            f'onchange="byHand(this, \'{i["id"]}\')"></td></tr>'
+                            for i in shown)
+                        + "</table></div>" + nav)
+
+            def review_table(rows, key):
+                """Cards waiting on him (answers, or just Approve), newest first: when ready,
+                company, role, where, market, what is left."""
+                rows = sorted(rows, key=lambda i: i.get("created") or "", reverse=True)
+                shown, nav = paged(rows, "np" if key == "needs_input" else "pp", PAGE, key, "to review")
+
+                def left(i):
+                    n = len([x for x in i.get("questions", []) if x.get("status") != "answered"])
+                    return f"{n} to answer" if n else "ready to approve"
+                return ('<div class="tbl"><table class="sub"><tr><th>Ready</th><th>Company</th><th>Role</th>'
+                        '<th>Where</th><th>Market</th><th>Left</th></tr>'
+                        + "".join(
+                            f'<tr><td class="d">{(i.get("created") or "")[:10]}</td>'
+                            f'<td>{i.get("company","?")}</td>'
+                            f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
+                            f'<td class="d">{(i.get("location") or "")[:28]}</td>'
+                            f'<td class="d">{i.get("market") or ""}</td>'
+                            f'<td class="d">{left(i)}</td></tr>'
+                            for i in shown)
+                        + "</table></div>" + nav)
+
+            def manual_table(rows):
+                """Roles to apply to by hand, newest first: when ready, company, role (its card has
+                the content to copy), where, the employer's apply page, why by hand, the 'done' tick."""
+                rows = sorted(rows, key=lambda i: i.get("created") or "", reverse=True)
+                shown, nav = paged(rows, "mp", PAGE, "manual", "by hand")
+                return ('<div class="tbl"><table class="sub"><tr><th>Ready</th><th>Company</th><th>Role</th>'
+                        '<th>Where</th><th>Apply</th><th>Why</th><th>By hand</th></tr>'
+                        + "".join(
+                            f'<tr><td class="d">{(i.get("created") or "")[:10]}</td>'
+                            f'<td>{i.get("company","?")}</td>'
+                            f'<td><a href="/a/{i["id"]}{t}">{i.get("role","?")}</a></td>'
+                            f'<td class="d">{(i.get("location") or "")[:28]}</td>'
+                            f'<td class="d">' + (f'<a href="{html.escape(html.unescape(i.get("apply_url") or i["url"]), quote=True)}" '
+                                                 f'target="_blank" rel="noopener">open ↗</a>'
+                                                 if i.get("apply_url") or i.get("url") else "") + '</td>'
+                            f'<td class="m" style="margin:0">{(i.get("reason") or "")[:90]}</td>'
+                            f'<td class="d"><input type="checkbox" title="I submitted this by hand" '
+                            f'onchange="byHand(this, \'{i["id"]}\')"></td></tr>'
+                            for i in shown)
+                        + "</table></div>" + nav)
+
+            tables = {"submitted": submitted_table, "approved": approved_table, "later": later_table,
+                      "manual": manual_table,
+                      "failed": lambda r: failed_table(r, "failed"),
+                      "unconfirmed": lambda r: failed_table(r, "unconfirmed"),
+                      "needs_input": lambda r: review_table(r, "needs_input"),
+                      "pending": lambda r: review_table(r, "pending")}
             for k, title, colour in SECT:
                 if not groups[k]:
                     continue

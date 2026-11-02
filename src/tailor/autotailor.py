@@ -33,6 +33,8 @@ import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import yaml
+
 from jobpilot.core.paths import (SRC as JOBS_DIR, TOOL, CONFIG, DATA, LOGS, TRACKING, POLICY,  # noqa: E402
                    RESUME, APPLICATIONS, MEMORY)
 from jobpilot.core.config import cfg  # noqa: E402
@@ -130,6 +132,27 @@ def already_handled():
     return urls, titles
 
 
+def buckets():
+    """({market: bucket}, {bucket: share}, spill) from targets.yaml goals.buckets: each
+    market joins the first bucket whose rule its `goal` fact meets (min / max). No buckets
+    configured = ({}, {}, True) and every market is picked as before."""
+    t = yaml.safe_load(open(os.path.join(CONFIG, "targets.yaml"))) or {}
+    g = t.get("goals") or {}
+    spec = g.get("buckets") or {}
+    of = {}
+    for m in t.get("markets", []):
+        facts = m.get("goal") or {}
+        for name, b in spec.items():
+            v = facts.get(b.get("fact"))
+            if v in (None, "", "none"):
+                continue
+            if ("min" in b and float(v) < float(b["min"])) or ("max" in b and float(v) > float(b["max"])):
+                continue
+            of[m["id"]] = name
+            break
+    return of, {n: float(b.get("share", 0)) for n, b in spec.items()}, bool(g.get("bucket_spill", True))
+
+
 def candidates(limit, floor, per_company=3, require_screen=None):
     """Best-scoring roles not yet acted on, sponsorship markets before the US.
 
@@ -194,9 +217,69 @@ def candidates(limit, floor, per_company=3, require_screen=None):
     # also count toward the silent share above.
     explicit_silent_max = int(cfg("pipeline.explicit_only_silent_max", 0))
     explicit_silent = {}
-    for k, co, title, loc, url, mk, sc, fit, src, vtag in rows:
+    # The goal mix (targets.yaml goals.buckets): high pay 70%, PR within 5 years 30%. A
+    # market in no bucket is not picked; a full bucket's roles wait in `overflow` and take
+    # the slots the other bucket could not fill (goals.bucket_spill).
+    bucket_of, bucket_share, spill = buckets()
+    bucket_cap = {b: round(limit * s) for b, s in bucket_share.items()}
+    per_bucket, overflow = {}, []
+
+    def admit(row, gate=True):
+        """Every per-run rule after dedupe; True when the role was picked."""
+        nonlocal silent
+        k, co, title, loc, url, mk, sc, fit, src, vtag = row
         ck = Q.key(co)
         inbox = src == "inbox"
+        left = Q.room(co, waiting=True, rows=quota)
+        if left is not None and left - sum(1 for o in out if Q.key(o["company"]) == ck) <= 0:
+            return False                   # the company is at its application limit (core/quota.py)
+        slug = slugify(f"{co}-{title}")[:44]
+        if norm_url(url) in handled or norm_url(url) in urls:
+            return False                   # queued already, or picked this run under another title
+        if (co.strip().lower(), title.strip().lower()[:40]) in handled_titles:
+            return False
+        if os.path.isdir(os.path.join(APPLICATIONS, slug)):
+            return False
+        # Cap per company so one employer cannot own the queue — Anthropic and
+        # OpenAI alone account for 38 of the 43 roles above the floor. A cap of 1
+        # was throttling the whole pipeline down to ~5 candidates.
+        if seen.get(co, 0) >= per_company and not inbox:   # his own picks are never capped per company
+            return False
+        if vtag == "no" and not inbox:
+            return False
+        b = bucket_of.get(mk)
+        if bucket_share and not inbox:
+            if b is None:
+                return False               # the market serves neither goal
+            if gate and per_bucket.get(b, 0) >= bucket_cap.get(b, 0):
+                if spill:
+                    overflow.append(row)
+                return False
+        if mk in (cfg("visa.explicit_only_markets", []) or []) and vtag != "explicit" and not inbox:
+            # e.g. the US: silence there is an automatic reject — except for a few a run
+            # (pipeline.explicit_only_silent_max, his call 2026-10-15: 10 a run beats the rule)
+            if explicit_silent.get(mk, 0) >= explicit_silent_max:
+                return False
+            explicit_silent[mk] = explicit_silent.get(mk, 0) + 1
+        if mk in shares and not inbox and per_market.get(mk, 0) >= max(1, int(limit * float(shares[mk]) + 1e-9)):
+            return False
+        if vtag not in ("explicit", "implicit") and not inbox:
+            if silent >= silent_cap:
+                return False
+            silent += 1
+        seen[co] = seen.get(co, 0) + 1
+        per_market[mk] = per_market.get(mk, 0) + 1
+        per_bucket[b] = per_bucket.get(b, 0) + 1
+        urls.add(norm_url(url))
+        out.append({"key": k, "company": co, "title": title, "location": loc,
+                    "url": url, "market": mk, "score": sc, "fit": fit, "slug": slug,
+                    "source": src, "visa": vtag, "bucket": b,
+                    "pick": round((fit or 0) * w + sc * (1 - w), 1)})
+        return True
+
+    for row in rows:
+        co, title, src = row[1], row[2], row[8]
+        ck = Q.key(co)
         # One role, several cities = several rows. Two workers scaffolding the same
         # folder collided on Culture Amp; pick a role once.
         role = (ck, title.strip().lower()[:40])
@@ -207,44 +290,12 @@ def candidates(limit, floor, per_company=3, require_screen=None):
             continue                       # deliberately paused, see config.yaml
         if Q.never(co):
             continue                       # never applied to (apply.never_apply) — his own links too
-        left = Q.room(co, waiting=True, rows=quota)
-        if left is not None and left - sum(1 for o in out if Q.key(o["company"]) == ck) <= 0:
-            continue                       # the company is at its application limit (core/quota.py)
-        slug = slugify(f"{co}-{title}")[:44]
-        if norm_url(url) in handled or norm_url(url) in urls:
-            continue                       # queued already, or picked this run under another title
-        if (co.strip().lower(), title.strip().lower()[:40]) in handled_titles:
-            continue
-        if os.path.isdir(os.path.join(APPLICATIONS, slug)):
-            continue
-        # Cap per company so one employer cannot own the queue — Anthropic and
-        # OpenAI alone account for 38 of the 43 roles above the floor. A cap of 1
-        # was throttling the whole pipeline down to ~5 candidates.
-        if seen.get(co, 0) >= per_company and not inbox:   # his own picks are never capped per company
-            continue
-        if vtag == "no" and not inbox:
-            continue
-        if mk in (cfg("visa.explicit_only_markets", []) or []) and vtag != "explicit" and not inbox:
-            # e.g. the US: silence there is an automatic reject — except for a few a run
-            # (pipeline.explicit_only_silent_max, his call 2026-10-15: 10 a run beats the rule)
-            if explicit_silent.get(mk, 0) >= explicit_silent_max:
-                continue
-            explicit_silent[mk] = explicit_silent.get(mk, 0) + 1
-        if mk in shares and not inbox and per_market.get(mk, 0) >= max(1, int(limit * float(shares[mk]) + 1e-9)):
-            continue
-        if vtag not in ("explicit", "implicit") and not inbox:
-            if silent >= silent_cap:
-                continue
-            silent += 1
-        seen[co] = seen.get(co, 0) + 1
-        per_market[mk] = per_market.get(mk, 0) + 1
-        urls.add(norm_url(url))
-        out.append({"key": k, "company": co, "title": title, "location": loc,
-                    "url": url, "market": mk, "score": sc, "fit": fit, "slug": slug,
-                    "source": src, "visa": vtag,
-                    "pick": round((fit or 0) * w + sc * (1 - w), 1)})
+        if admit(row) and len(out) >= limit:
+            break
+    for row in overflow:                   # best first, as the rows were ordered
         if len(out) >= limit:
             break
+        admit(row, gate=False)
     return out
 
 

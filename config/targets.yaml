@@ -47,16 +47,27 @@ goals:
   measures:
     pr:      {fact: pr_years, best: 2, worst: 8}     # years to a settled status; "none" = 0 points
     savings: {fact: savings_x, best: 5, worst: 1}    # net savings / India savings; 1x = 0 points
+  # A run's picks split into buckets by each market's `goal` facts (tailor/autotailor.py
+  # candidates). A market joins the first bucket whose rule it meets; a market in none is
+  # not picked at all. 2026-11-02, his call: high pay 70%, PR within 5 years 30%.
+  # Today: savings = UAE, Switzerland, USA, remote from India;
+  #        pr = Germany, Australia, Netherlands, Ireland, Luxembourg.
+  buckets:
+    savings: {share: 0.7, fact: savings_x, min: 3}   # net savings at least 3x India
+    pr:      {share: 0.3, fact: pr_years, max: 5}    # settled status in 5 years or less
+  # Slots a bucket cannot fill (too few roles) go to the other, so a run stays full;
+  # false keeps the ratio strict and the run shorter.
+  bucket_spill: true
   # Shown to the screener (src/agents/screen/prompt.md {goals}) so FIT and the reason reflect
   # the goals, not only the skills match. Rewrite when the goals change.
   screener_note: >-
-    Two goals, weighed equally: (1) a settled status (PR / settlement permit / citizenship)
-    within about 5-6 years — Germany (Blue Card settlement in ~2 years), Ireland, the
-    Netherlands and Australia (482 then 186 PR) serve it; the US, UAE and Switzerland do not;
-    (2) net savings at least twice what he saves in India — the UAE, Switzerland, Australia,
-    USD-paid fully-remote work and the US serve it; Ireland and the UK barely do.
-    Australia serves both and is the first choice. A role serving neither goal (a Swiss
-    startup unlikely to clear the Permit B quota, a UK role) needs an exceptional fit to keep.
+    Two separate goals, about 70% of applications for the first and 30% for the second:
+    (1) high pay — net savings at least 3x what he saves in India: the UAE, Switzerland,
+    USD-paid fully-remote work from India, and the US (only where sponsorship is real);
+    (2) a settled status (PR / settlement permit / citizenship) within 5 years: Germany
+    (Blue Card settlement in ~2 years), Australia (482 then 186 PR), the Netherlands,
+    Ireland and Luxembourg. A role serving neither goal (a Swiss startup unlikely to clear
+    the Permit B quota, a UK role) needs an exceptional fit to keep.
     Say which goal the role serves in the reason ("PR", "savings", "both" or "neither").
 
 # Ordered by how realistically sponsorship happens, NOT by salary.
